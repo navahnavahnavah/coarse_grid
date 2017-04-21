@@ -1,0 +1,50 @@
+# 
+#Makefile for the geometry program 
+# 
+
+# macros go here
+FC=mpif90
+FCFLAGS = -I/home/navah/include -mcmodel=large -shared-intel
+#FCFLAGS = -I/home/navah/include -shared-intel
+
+
+# libraries needed for linking, unused in the examples
+LDFLAGS = -L/home/navah/lib -liphreeqc
+
+# List of executables to be built within the package
+PROGRAMS = massacr
+
+# "make" builds all
+all: $(PROGRAMS)
+
+globals:
+
+initialize.o: globals.o
+initialize: globals.o
+ 
+###alteration.o: globals.o
+###alteration: globals.o
+
+massacr.o: globals.o initialize.o
+### alteration.o
+massacr: globals.o initialize.o
+### alteration.o
+
+%: %.o
+	$(FC) $(FCFLAGS) -o $@ $^ $(LDFLAGS)
+	
+%.o: %.f90
+	$(FC) $(FCFLAGS) -c $<
+
+%.o: %.F90
+	$(FC) $(FCFLAGS) -c $<
+	
+
+# Utility targets
+.PHONY: clean veryclean
+
+clean:
+	rm -f *.o *.mod *.MOD
+
+veryclean: clean
+	rm -f *~ $(PROGRAMS)
