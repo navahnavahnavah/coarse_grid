@@ -144,6 +144,27 @@ interface
 		real(4) :: sigma3, sigma4, sigma3a, sigma3b, sigma4a, sigma4b, sigma5, sigma6
 	end function solute_next
 	
+	
+	
+	function solute_next_coarse (sol, uTransport, vTransport, seaw)
+		use globals
+		use initialize
+		implicit none
+		! integers
+		integer :: i, j, ii, n, m
+		! inputs
+		real(4) :: sol(xn/cellx,yn/celly), sol0(xn/cellx,yn/celly)
+		real(4) :: uTransport(xn/cellx,yn/celly), vTransport(xn/cellx,yn/celly)
+		! solver stuff
+		real(4) :: uLong(((xn/cellx)-2)*((yn/celly)-0)), vLong(((xn/cellx)-0)*((yn/celly)-2))
+		real(4) :: aBand(((xn/cellx)-2)*((yn/celly)-0),5), bBand(((xn/cellx)-0)*((yn/celly)-2),5)
+		real(4) :: qx, qy, solute_next_coarse(xn/cellx,yn/celly), vec(((xn/cellx)-2)*((yn/celly)-0))
+		real(4) :: sol_nextRow(((xn/cellx)-2)*((yn/celly)-0)), sol_nextRowB(((xn/cellx)-0)*((yn/celly)-2))
+		real(4) :: seaw
+		real(4) :: bm1(xn/cellx,yn/celly), b0(xn/cellx,yn/celly), bp1(xn/cellx,yn/celly), correction, sigma1, sigma2, sigma1a, sigma1b, sigma2a, sigma2b
+		real(4) :: sigma3, sigma4, sigma3a, sigma3b, sigma4a, sigma4b, sigma5, sigma6
+	end function solute_next_coarse
+	
 
 	! calculates fluid density
 	function rho_next (h_in)
@@ -181,14 +202,14 @@ interface
 		real(4) :: u0(xn,yn), v0(xn,yn)
 	end function velocities
 
-        ! calculates velocities from COARSE streamfunction values
-	function velocitiesCoarse(psiCoarse)
+    ! calculates velocities from COARSE streamfunction values
+	function velocities_coarse(psi_coarse)
 		use globals
 		use initialize
 		implicit none
-		real(4) :: velocitiesCoarse(xn/cellx,2*yn/celly), psiCoarse(xn/cellx,yn/celly)
+		real(4) :: velocities_coarse(xn/cellx,2*yn/celly), psi_coarse(xn/cellx,yn/celly)
 		real(4) :: u0(xn/cellx,yn/celly), v0(xn/cellx,yn/celly)
-	end function velocitiesCoarse
+	end function velocities_coarse
 
 	! calculates partial derivative of any 1D or 2D array
 	function partial(array,rows,cols,d1,d2,dim)
@@ -199,6 +220,16 @@ interface
 		real(4) :: array(rows,cols), d1, d2, d
 		real(4) :: partial(rows,cols)
 	end function partial
+	
+	function partial_coarse(array,rows,cols,d1,d2,dim)
+		use globals
+		use initialize
+		implicit none
+		integer :: rows, cols, dim, i, j, ii, jj
+		real(4) :: array(rows,cols), d1, d2, d
+		real(4) :: partial_coarse(rows,cols)
+	end function partial_coarse
+	
 	
 	! calculates partial derivative of any 1D or 2D array
 	function partial_edge(array,rows,cols,d1,d2,dim)
@@ -262,7 +293,7 @@ real :: timeBit
 real(4) :: rho(xn,yn), visc(xn,yn)
 real(4) :: rhs0(xn,yn)
 integer :: unit
-real(4) :: phiCoarse(xn/cellx,yn/celly)
+real(4) :: phi_coarse(xn/cellx,yn/celly)
 real(4) :: phi0(xn,yn), phi(xn,yn)
 
 ! netCDF & output stuff
@@ -286,8 +317,8 @@ real(4) :: primaryShift(xn/cellx,yn/celly,g_pri), secondaryShift(xn/cellx,yn/cel
 
 ! solute transport stuff
 real(4) :: uTransport(xn/cellx,yn/celly), vTransport(xn/cellx,yn/celly)
-real(4) :: uCoarse(xn/cellx,yn/celly), vCoarse(xn/cellx,yn/celly)
-real(4) :: psiCoarse(xn/cellx,yn/celly), velocitiesCoarse0(xn/cellx,2*yn/celly)
+real(4) :: u_coarse(xn/cellx,yn/celly), v_coarse(xn/cellx,yn/celly)
+real(4) :: psi_coarse(xn/cellx,yn/celly), velocities_coarse0(xn/cellx,2*yn/celly)
 real(4) :: permeability0(xn,yn)
 
 ! message passing stuff
@@ -323,6 +354,13 @@ real(4) :: solFineLocal(xn,yn), solFineLocal_a(xn,yn)
 real(4) :: uFineLong(xn*yn), vFineLong(xn*yn), phiFineLong(xn*yn)
 real(4) :: uFineLongLocal(xn*yn), vFineLongLocal(xn*yn), phiFineLongLocal(xn*yn)
 real(4) :: uFineLocal(xn,yn), vFineLocal(xn,yn), phiFineLocal(xn,yn)
+
+real(4) :: sol_coarse_long((xn/cellx)*(yn/celly)), sol_coarse_long_a((xn/cellx)*(yn/celly))
+real(4) :: sol_coarse_long_local((xn/cellx)*(yn/celly)), sol_coarse_long_local_a((xn/cellx)*(yn/celly))
+real(4) :: sol_coarse_local(xn/cellx,yn/celly), sol_coarse_local_a(xn/cellx,yn/celly)
+real(4) :: u_coarse_long((xn/cellx)*(yn/celly)), v_coarse_long((xn/cellx)*(yn/celly)), phi_coarse_long((xn/cellx)*(yn/celly))
+real(4) :: u_coarse_local(xn/cellx,yn/celly), v_coarse_local(xn/cellx,yn/celly), phi_coarse_local(xn/cellx,yn/celly)
+real(4) :: u_coarse_long_local(xn/cellx,yn/celly), v_coarse_long_local(xn/cellx,yn/celly), phi_coarse_long_local(xn/cellx,yn/celly)
 integer :: an_id_local
 
 real(4) :: priLongBitFull(3*(xn/cellx)*(yn/(2*celly)),g_pri)
@@ -2347,7 +2385,7 @@ call init()
 
 
 permeability0 = permeability
-phiCoarse = .1
+phi_coarse = .1
 phi = .1
 phi = 0.1
 phi0 = phi
@@ -2411,8 +2449,8 @@ end do
 
 uTransport = 0.0
 vTransport = 0.0
-uCoarse = 0.0
-vCoarse = 0.0
+u_coarse = 0.0
+v_coarse = 0.0
 
 
 !-------RESTART STEP!
@@ -2947,25 +2985,46 @@ end if ! end if restart .ne. 1
 if (j .eq. 5) then
 
 			! get velocities from streamfunction
+			
+			do ii = 1,yn/celly
+				do i = 1,xn/cellx
+					h_coarse(i,ii) = sum(h((i-1)*cellx+1:i*cellx,(ii-1)*celly+1:ii*celly))/(cellx*celly)
+					psi_coarse(i,ii) = psi(i*cellx,ii*celly)
+				end do
+			end do
+			
+			velocities_coarse0 = velocities_coarse(psi_coarse)
+			u_coarse = phi_coarse*velocities_coarse0(1:xn/cellx,1:yn/celly)/(rho_fluid)
+			v_coarse = phi_coarse*velocities_coarse0(1:xn/cellx,yn/celly+1:2*yn/celly)/(rho_fluid)
+			u_step_coarse = u_coarse
+			v_step_coarse = v_coarse
+			
 			velocities0 = velocities(psi)
 			u = phi*velocities0(1:xn,1:yn)/(rho_fluid)
 			v = phi*velocities0(1:xn,yn+1:2*yn)/(rho_fluid)
 			u_inter = u
 			v_inter = v
 			
+
 			do ii = 1,yn/celly
 				do i = 1,xn/cellx
 					u((i-1)*cellx+1:i*cellx,(ii-1)*celly+1:ii*celly) = sum(u_inter((i-1)*cellx+1:i*cellx,(ii-1)*celly+1:ii*celly))/(cellx*celly)
 					v((i-1)*cellx+1:i*cellx,(ii-1)*celly+1:ii*celly) = sum(v_inter((i-1)*cellx+1:i*cellx,(ii-1)*celly+1:ii*celly))/(cellx*celly)
 				end do
-				!u(:,ii) = sum(u(:,ii))/xn
-				
-! 				v(:,ii) = sum(v(:,ii))/xn
 			end do
 			
 			do ii = 1,yn/celly
 				u(:,(ii-1)*celly+1:ii*celly) = sum(u(:,(ii-1)*celly+1:ii*celly))/(xn*celly)
 			end do
+			
+			uFineLong = reshape(u, (/xn*yn/))
+			vFineLong = reshape(v, (/xn*yn/))
+			phiFineLong = reshape(phi, (/xn*yn/))
+			
+			
+			u_coarse_long = reshape(u_coarse, (/(xn/cellx)*(yn/celly)/))
+			v_coarse_long = reshape(v_coarse, (/(xn/cellx)*(yn/celly)/))
+			phi_coarse_long = reshape(phi_coarse, (/(xn/cellx)*(yn/celly)/))
 			
 ! 						do ii = 1,yn/cell
 ! 							u(:,ii) = sum(u(:,(ii-1)*celly+1:ii*celly))/(celly)
@@ -2977,16 +3036,10 @@ if (j .eq. 5) then
 ! 			u(f_index1-1:,:) = 0.0
 ! 			v(f_index1-1:,:) = 0.0
 			
-			uFineLong = reshape(u, (/xn*yn/))
-			vFineLong = reshape(v, (/xn*yn/))
-			phiFineLong = reshape(phi, (/xn*yn/))
 			
 			
-			do ii = 1,yn/celly
-				do i = 1,xn/cellx
-					h_coarse(i,ii) = sum(h((i-1)*cellx+1:i*cellx,(ii-1)*celly+1:ii*celly))/(cellx*celly)
-				end do
-			end do
+			
+
 			
 end if
 			
@@ -3154,44 +3207,85 @@ medium_b(:,:,5) = 0.0
 		
 		
 		!--------------FROM MASTER TO SLAVES FOR ADVECTION
+! 		do an_id = 1, 22
+!
+! 			!do gg = 1,cstep
+!  	 			!solute_fine(:,:,2) = solute_next(solute_fine(:,:,2),u/phi,v/phi,sea(2))
+! 				!solute_fine_a(:,:,2) = solute_next(solute_fine_a(:,:,2),u/phi,v/phi,sea(2))
+! 			!end do
+! 			if (an_id .le. 11) then
+! 				!write(*,*) "pre 11 send" , sol_index(an_id)
+! 				solFineLong = reshape(solute_fine(:,:,sol_index(an_id)), (/xn*yn/))
+! 			end if
+!
+! 			if (an_id .gt. 11) then
+! 				!write(*,*) "post 11 send" , sol_index(an_id-11)
+! 				solFineLong = reshape(solute_fine_a(:,:,sol_index(an_id-11)), (/xn*yn/))
+! 			end if
+!
+! 			! send an_id name
+! 	        call MPI_SEND( an_id, 1, MPI_INTEGER, &
+! 			an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+!
+! 			! send long sol fine
+!         	call MPI_SEND( solFineLong, xn*yn, MPI_DOUBLE_PRECISION, &
+! 			an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+!
+! 			! send long u fine
+!         	call MPI_SEND( uFineLong, xn*yn, MPI_DOUBLE_PRECISION, &
+! 			an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+!
+! 			! send long v fine
+!         	call MPI_SEND( vFineLong, xn*yn, MPI_DOUBLE_PRECISION, &
+! 			an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+!
+! 			! send long phi fine
+!         	call MPI_SEND( phiFineLong, xn*yn, MPI_DOUBLE_PRECISION, &
+! 			an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+!
+! 		!write(*,*) "DONE SENDING SOLUTE TO PROCESSOR", an_id
+!
+! 		end do
+
+
 		do an_id = 1, 22
-			
+	
 			!do gg = 1,cstep
- 	 			!solute_fine(:,:,2) = solute_next(solute_fine(:,:,2),u/phi,v/phi,sea(2))
+				!solute_fine(:,:,2) = solute_next(solute_fine(:,:,2),u/phi,v/phi,sea(2))
 				!solute_fine_a(:,:,2) = solute_next(solute_fine_a(:,:,2),u/phi,v/phi,sea(2))
 			!end do
 			if (an_id .le. 11) then
 				!write(*,*) "pre 11 send" , sol_index(an_id)
-				solFineLong = reshape(solute_fine(:,:,sol_index(an_id)), (/xn*yn/))
+				sol_coarse_long = reshape(solute(:,:,sol_index(an_id)), (/(xn/cellx)*(yn/celly)/))
 			end if
-			
+	
 			if (an_id .gt. 11) then
 				!write(*,*) "post 11 send" , sol_index(an_id-11)
-				solFineLong = reshape(solute_fine_a(:,:,sol_index(an_id-11)), (/xn*yn/))
+				sol_coarse_long = reshape(solute_a(:,:,sol_index(an_id-11)), (/(xn/cellx)*(yn/celly)/))
 			end if
-			
+	
 			! send an_id name
-	        call MPI_SEND( an_id, 1, MPI_INTEGER, &
+		    call MPI_SEND( an_id, 1, MPI_INTEGER, &
 			an_id, send_data_tag, MPI_COMM_WORLD, ierr)
-			
+	
 			! send long sol fine
-        	call MPI_SEND( solFineLong, xn*yn, MPI_DOUBLE_PRECISION, &
+			call MPI_SEND( sol_coarse_long, (xn/cellx)*(yn/celly), MPI_DOUBLE_PRECISION, &
 			an_id, send_data_tag, MPI_COMM_WORLD, ierr)
-			
+	
 			! send long u fine
-        	call MPI_SEND( uFineLong, xn*yn, MPI_DOUBLE_PRECISION, &
+			call MPI_SEND( u_coarse_long, (xn/cellx)*(yn/celly), MPI_DOUBLE_PRECISION, &
 			an_id, send_data_tag, MPI_COMM_WORLD, ierr)
-			
+	
 			! send long v fine
-        	call MPI_SEND( vFineLong, xn*yn, MPI_DOUBLE_PRECISION, &
+			call MPI_SEND( v_coarse_long, (xn/cellx)*(yn/celly), MPI_DOUBLE_PRECISION, &
 			an_id, send_data_tag, MPI_COMM_WORLD, ierr)
-			
+	
 			! send long phi fine
-        	call MPI_SEND( phiFineLong, xn*yn, MPI_DOUBLE_PRECISION, &
+			call MPI_SEND( phi_coarse_long, (xn/cellx)*(yn/celly), MPI_DOUBLE_PRECISION, &
 			an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 
 		!write(*,*) "DONE SENDING SOLUTE TO PROCESSOR", an_id	
-		
+
 		end do
 		
 		write(*,*) "...DONE SENDING SOLUTES TO ALL PROCESSORS"
@@ -3203,7 +3297,7 @@ medium_b(:,:,5) = 0.0
 		do an_id = 1, 22
 			
 			! receive sol fine long
-			call MPI_RECV( solFineLong, xn*yn, MPI_DOUBLE_PRECISION, &
+			call MPI_RECV( sol_coarse_long, (xn/cellx)*(yn/celly), MPI_DOUBLE_PRECISION, &
 			an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
 			
 			! reshape received sol fine long into 2d array
@@ -3211,14 +3305,14 @@ medium_b(:,:,5) = 0.0
 				!write(*,*) "pre 11 receive" , sol_index(an_id)
 				!write(*,*) "an_id" , an_id
 				!write(*,*) solute_fine(:,:,sol_index(an_id)) - reshape(solFineLong, (/xn,yn/))
-				solute_fine(:,:,sol_index(an_id)) = reshape(solFineLong, (/xn,yn/))
+				solute(:,:,sol_index(an_id)) = reshape(sol_coarse_long, (/xn/cellx,yn/celly/))
 			end if
 			
 			if (an_id .gt. 11) then
 				!write(*,*) "post 11 receive" , sol_index(an_id-11)
 				!write(*,*) "an_id" , an_id
 				!write(*,*) solute_fine_a(:,:,sol_index(an_id-11)) - reshape(solFineLong, (/xn,yn/))
-				solute_fine_a(:,:,sol_index(an_id-11)) = reshape(solFineLong, (/xn,yn/))
+				solute_a(:,:,sol_index(an_id-11)) = reshape(sol_coarse_long, (/xn/cellx,yn/celly/))
 			end if
 			
 		end do
@@ -3278,57 +3372,62 @@ medium_b(:,:,5) = 0.0
 		
 		
 		
-				write(*,*) "BEGIN COARSIFY-ING FINE SOLUTES"
+! 				write(*,*) "BEGIN COARSIFY-ING FINE SOLUTES"
+!
+! 				n=2
+!
+! 				do ii = 1,yn/celly
+! 					do i = 1,xn/cellx
+!
+!
+! 							i_mask = solute_fine((i-1)*cellx+1:i*cellx,(ii-1)*celly+1:ii*celly,n).gt.0.0
+! 							i_count = count(i_mask)
+! 							!i_count = 20
+! 							if (i_count .gt. 0) then
+! 								solute(i,ii,n) = sum(solute_fine((i-1)*cellx+1:i*cellx,(ii-1)*celly+1:ii*celly,n))/(i_count)
+! 							end if
+!
+! 							i_mask = solute_fine_a((i-1)*cellx+1:i*cellx,(ii-1)*celly+1:ii*celly,n).gt.0.0
+! 							i_count = count(i_mask)
+! 							!i_count = 20
+! 							if (i_count .gt. 0) then
+! 								solute_a(i,ii,n) = sum(solute_fine_a((i-1)*cellx+1:i*cellx,(ii-1)*celly+1:ii*celly,n))/(i_count)
+! 							end if
+!
+! 					end do
+! 				end do
+!
+!
+!
+! 				do n=4,13
+! 						do ii = 1,yn/celly
+! 							do i = 1,xn/cellx
+!
+! 							i_mask = solute_fine((i-1)*cellx+1:i*cellx,(ii-1)*celly+1:ii*celly,n).gt.0.0
+! 							i_count = count(i_mask)
+! 							!i_count = 20
+! 							if (i_count .gt. 0) then
+! 								solute(i,ii,n) = sum(solute_fine((i-1)*cellx+1:i*cellx,(ii-1)*celly+1:ii*celly,n))/(i_count)
+! 							end if
+!
+! 							i_mask = solute_fine_a((i-1)*cellx+1:i*cellx,(ii-1)*celly+1:ii*celly,n).gt.0.0
+! 							i_count = count(i_mask)
+! 							!i_count = 20
+! 							if (i_count .gt. 0) then
+! 								solute_a(i,ii,n) = sum(solute_fine_a((i-1)*cellx+1:i*cellx,(ii-1)*celly+1:ii*celly,n))/(i_count)
+! 							end if
+!
+! 							end do
+! 						end do
+!
+! 				end do
+!
+! 				write(*,*) "...DONE COARSIFY-ING FINE SOLUTES"
 				
-				n=2
-				
-				do ii = 1,yn/celly
-					do i = 1,xn/cellx
-						
-						
-							i_mask = solute_fine((i-1)*cellx+1:i*cellx,(ii-1)*celly+1:ii*celly,n).gt.0.0
-							i_count = count(i_mask)
-							!i_count = 20
-							if (i_count .gt. 0) then
-								solute(i,ii,n) = sum(solute_fine((i-1)*cellx+1:i*cellx,(ii-1)*celly+1:ii*celly,n))/(i_count)
-							end if
-				
-							i_mask = solute_fine_a((i-1)*cellx+1:i*cellx,(ii-1)*celly+1:ii*celly,n).gt.0.0
-							i_count = count(i_mask)
-							!i_count = 20
-							if (i_count .gt. 0) then
-								solute_a(i,ii,n) = sum(solute_fine_a((i-1)*cellx+1:i*cellx,(ii-1)*celly+1:ii*celly,n))/(i_count)
-							end if
-				
-					end do
-				end do
 				
 				
 				
-				do n=4,13
-						do ii = 1,yn/celly
-							do i = 1,xn/cellx
-							
-							i_mask = solute_fine((i-1)*cellx+1:i*cellx,(ii-1)*celly+1:ii*celly,n).gt.0.0
-							i_count = count(i_mask)
-							!i_count = 20
-							if (i_count .gt. 0) then
-								solute(i,ii,n) = sum(solute_fine((i-1)*cellx+1:i*cellx,(ii-1)*celly+1:ii*celly,n))/(i_count)
-							end if
-					
-							i_mask = solute_fine_a((i-1)*cellx+1:i*cellx,(ii-1)*celly+1:ii*celly,n).gt.0.0
-							i_count = count(i_mask)
-							!i_count = 20
-							if (i_count .gt. 0) then
-								solute_a(i,ii,n) = sum(solute_fine_a((i-1)*cellx+1:i*cellx,(ii-1)*celly+1:ii*celly,n))/(i_count)
-							end if
-							
-							end do
-						end do
-					
-				end do
 				
-				write(*,*) "...DONE COARSIFY-ING FINE SOLUTES"
 		!end if	! end if j > mstep
 		
 					
@@ -3671,7 +3770,7 @@ solute_b(:,:,3) = vol_i_b
 			 permyMat(1+xn*(j/(mstep*ar)-1):xn*(j/(mstep*ar)),1:yn) = permy
 
 			 
-			 psiCoarseMat(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/celly) = psiCoarse
+			 psiCoarseMat(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/celly) = psi_coarse
 			 uCoarseMat(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/celly) = uTransport
 			 vCoarseMat(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/celly) = vTransport
 	 		! reset coarse grid velocities for next timestep
@@ -3707,7 +3806,7 @@ solute_b(:,:,3) = vol_i_b
 
 		 
 ! 		 ! get new porosity
- 		 phiCoarse = 0.1 !medium(:,:,1) ! 1.0
+ 		 phi_coarse = 0.1 !medium(:,:,1) ! 1.0
 		 
 ! ! 		 ! transfer new porosity to fine grid
 !  		 do i=1,xn/cellx
@@ -3834,6 +3933,10 @@ yep = write_matrix ( xn, yn, real(h,kind=4), trim(path) // 'h.txt' )
 
 yep = write_matrix ( xn, yn, real(u,kind=4), trim(path) // 'u.txt' )
 yep = write_matrix ( xn, yn, real(v,kind=4), trim(path) // 'v.txt' )
+
+yep = write_matrix ( xn/cellx, yn/celly, real(u_coarse,kind=4), trim(path) // 'u_coarse.txt' )
+yep = write_matrix ( xn/cellx, yn/celly, real(v_coarse,kind=4), trim(path) // 'v_coarse.txt' )
+yep = write_matrix ( xn/cellx, yn/celly, real(psi_coarse,kind=4), trim(path) // 'psi_coarse.txt' )
 
 yep = write_matrix ( xn, yn/2,real(permeability(:,(yn/2)+1:),kind=4), trim(path) // 'permeability.txt' )
 yep = write_vec ( xn, real(x,kind=4), trim(path) // 'x.txt' )
@@ -4157,29 +4260,32 @@ else
 		root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
 		
 		! receive solute long for advection
-		call MPI_RECV ( solFineLongLocal, xn*yn, MPI_DOUBLE_PRECISION, &
+		call MPI_RECV ( sol_coarse_long_local, (xn/cellx)*(yn/celly), MPI_DOUBLE_PRECISION, &
 		root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
 		
 		! receive u long for advection
-		call MPI_RECV ( uFineLongLocal, xn*yn, MPI_DOUBLE_PRECISION, &
+		call MPI_RECV ( u_coarse_long_local, (xn/cellx)*(yn/celly), MPI_DOUBLE_PRECISION, &
 		root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
 ! 		write(*,*) maxval(uFineLongLocal)
 		
 		! receive v long for advection
-		call MPI_RECV ( vFineLongLocal, xn*yn, MPI_DOUBLE_PRECISION, &
+		call MPI_RECV ( v_coarse_long_local, (xn/cellx)*(yn/celly), MPI_DOUBLE_PRECISION, &
 		root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
 ! 		write(*,*) maxval(vFineLongLocal)
 		
 		! receive phi long for advection
-		call MPI_RECV ( phiFineLongLocal, xn*yn, MPI_DOUBLE_PRECISION, &
+		call MPI_RECV ( phi_coarse_long_local, (xn/cellx)*(yn/celly), MPI_DOUBLE_PRECISION, &
 		root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
 ! 		write(*,*) maxval(phiFineLongLocal)
 		
 		! reshape them all
-		solFineLocal = reshape(solFineLongLocal,(/xn,yn/))
-		uFineLocal = reshape(uFineLongLocal,(/xn,yn/))
-		vFineLocal = reshape(vFineLongLocal,(/xn,yn/))
-		phiFineLocal = reshape(phiFineLongLocal,(/xn,yn/))
+		sol_coarse_local = reshape(sol_coarse_long_local,(/xn/cellx,yn/celly/))
+		u_coarse_local = reshape(u_coarse_long_local,(/xn/cellx,yn/celly/))
+		write(*,*) maxval(u_coarse_local)
+		v_coarse_local = reshape(v_coarse_long_local,(/xn/cellx,yn/celly/))
+		write(*,*) maxval(v_coarse_local)
+		phi_coarse_local = reshape(phi_coarse_long_local,(/xn/cellx,yn/celly/))
+		write(*,*) maxval(phi_coarse_local)
 		
 		!write(*,*) "id:" , an_id_local , "u:" , maxval(abs(uFineLocal)) , "v:" , maxval(abs(vFineLocal)) , "phi:" , maxval(abs(phiFineLocal)) 
 		
@@ -4187,7 +4293,7 @@ else
 		
 		if (an_id_local .le. 11) then
 			do ii = 1,cstep
-				solFineLocal = solute_next(solFineLocal,uFineLocal/phiFineLocal,vFineLocal/phiFineLocal,sea(sol_index(an_id_local)))
+				sol_coarse_local = solute_next_coarse(sol_coarse_local,u_coarse_local/phi_coarse_local,v_coarse_local/phi_coarse_local,sea(sol_index(an_id_local)))
 			end do
 			!write(*,*) "moved: " , sea(sol_index(an_id_local)) , "on" , an_id_local
 		end if
@@ -4195,16 +4301,16 @@ else
 		
 		if (an_id_local .gt. 11) then
 			do ii = 1,cstep
-				solFineLocal = solute_next(solFineLocal,uFineLocal/phiFineLocal,vFineLocal/phiFineLocal,sea(sol_index(an_id_local-11)))
+				sol_coarse_local = solute_next_coarse(sol_coarse_local,u_coarse_local/phi_coarse_local,v_coarse_local/phi_coarse_local,sea(sol_index(an_id_local-11)))
 			end do
 			!write(*,*) "moved: " , sea(sol_index(an_id_local-11)) , "on" , an_id_local
 		end if
 		
 		
-		solFineLongLocal = reshape(solFineLocal,(/xn*yn/))
+		sol_coarse_long_local = reshape(sol_coarse_local,(/(xn/cellx)*(yn/celly)/))
 		
 		! send advected solutes back :)
-		call MPI_SEND( solFineLongLocal, xn*yn, MPI_DOUBLE_PRECISION, root_process, &
+		call MPI_SEND( sol_coarse_long_local, (xn/cellx)*(yn/celly), MPI_DOUBLE_PRECISION, root_process, &
 		return_data_tag, MPI_COMM_WORLD, ierr)
 		
 		
@@ -7466,12 +7572,12 @@ implicit none
 ! integers
 integer :: i, j, ii, n, m
 ! inputs
-real(4) :: sol(xn,yn), sol0(xn,yn)
+real(4) :: sol(xn/cellx,yn/celly), sol0(xn/cellx,yn/celly)
 real(4) :: uTransport(xn/cellx,yn/celly), vTransport(xn/cellx,yn/celly)
 ! solver stuff
 real(4) :: uLong(((xn/cellx)-2)*((yn/celly)-0)), vLong(((xn/cellx)-0)*((yn/celly)-2))
 real(4) :: aBand(((xn/cellx)-2)*((yn/celly)-0),5), bBand(((xn/cellx)-0)*((yn/celly)-2),5)
-real(4) :: qx, qy, solute_next(xn/cellx,yn/celly), vec(((xn/cellx)-2)*((yn/celly)-0))
+real(4) :: qx, qy, solute_next_coarse(xn/cellx,yn/celly), vec(((xn/cellx)-2)*((yn/celly)-0))
 real(4) :: sol_nextRow(((xn/cellx)-2)*((yn/celly)-0)), sol_nextRowB(((xn/cellx)-0)*((yn/celly)-2))
 real(4) :: seaw
 real(4) :: bm1(xn/cellx,yn/celly), b0(xn/cellx,yn/celly), bp1(xn/cellx,yn/celly), correction, sigma1, sigma2, sigma1a, sigma1b, sigma2a, sigma2b
@@ -7551,11 +7657,11 @@ do i = 1,xn/cellx
 end do
 
 sol0 = sol
-solute_next = sol
+solute_next_coarse = sol
 
 do j = yn/(2*celly),yn/celly-1
 	! do i = 2,xn-1
-	solute_next(2,j) = sol0(2,j) - qx*uTransport(2,j)*( sol0(2,j) - sol0(1,j) )
+	solute_next_coarse(2,j) = sol0(2,j) - qx*uTransport(2,j)*( sol0(2,j) - sol0(1,j) )
 	do i = 3,xn/cellx-2
 		if (uTransport(i,j) .gt. 1e-9) then
 	!do i = 3,f_index1-2
@@ -7565,7 +7671,7 @@ do j = yn/(2*celly),yn/celly-1
 			! if (uTransport(i,j) .gt. 0.0) then
 			!if (uTransport(i,j) .gt. 0.0) then
 				! upwind including LHS value
-				solute_next(i,j) = sol0(i,j) - qx*uTransport(i,j)*( sol0(i,j) - sol0(i-1,j) )
+				solute_next_coarse(i,j) = sol0(i,j) - qx*uTransport(i,j)*( sol0(i,j) - sol0(i-1,j) )
 				
 
 				! correction loop: sort of a mess
@@ -7661,7 +7767,7 @@ do j = yn/(2*celly),yn/celly-1
 ! 						write(*,*) "sigma6"
 ! 						write(*,*) sigma6
 						correction = (uTransport(i,j)*qx*0.5) * (sigma5 - sigma6) * (dx*cellx - uTransport(i,j)*qx*dx*cellx)
-						solute_next(i,j) = solute_next(i,j) - correction
+						solute_next_coarse(i,j) = solute_next_coarse(i,j) - correction
 
 					!end if ! end if maskP i-2,j .eq. 0
 				!end if ! end if i .gt. 2
@@ -8802,41 +8908,34 @@ end function velocities
 !
 ! VELOCITIES_COARSE
 !
-! SUMMARY : computes the darcy velocity (specific discharge) from the streamfunction
-!           using finite difference partial derivatives
-!
-! INPUTS : psi(xn,yn) : 2D streamfunction array of current timestep
-!
-! RETURNS : velocities(xn,2*yn) : both u and v velocities in one matrix
-!
 ! ----------------------------------------------------------------------------------%%
 
 
 
 ! calculates velocities from COARSE streamfunction values
-function velocitiesCoarse(psiCoarse)
+function velocities_coarse(psi_coarse)
 	use globals
 	use initialize
 	implicit none
 	integer :: i,ii
-	real(4) :: velocitiesCoarse(xn/cellx,2*yn/celly), psiCoarse(xn/cellx,yn/celly)
+	real(4) :: velocities_coarse(xn/cellx,2*yn/celly), psi_coarse(xn/cellx,yn/celly)
 	real(4) :: u0(xn/cellx,yn/celly), v0(xn/cellx,yn/celly)
 
 interface
 
-	function partial(array,rows,cols,d1,d2,dim)
+	function partial_coarse(array,rows,cols,d1,d2,dim)
 		use globals
 		use initialize
 		implicit none
 		integer :: rows, cols, dim, i, j, ii, jj
 		real(4) :: array(rows,cols), d1, d2, d
-		real(4) :: partial(rows,cols)
-	end function partial
+		real(4) :: partial_coarse(rows,cols)
+	end function partial_coarse
 
 end interface
 
-u0 = partial(psiCoarse,xn/cellx,yn/celly,dx*cellx,dy*celly,2)
-v0 = -partial(psiCoarse,xn/cellx,yn/celly,dx*cellx,dy*celly,1)
+u0 = partial_coarse(psi_coarse,xn/cellx,yn/celly,dx*cellx,dy*celly,2)
+v0 = -partial_coarse(psi_coarse,xn/cellx,yn/celly,dx*cellx,dy*celly,1)
 
 ! do i =1,xn
 ! 	do ii = 1,yn
@@ -8846,27 +8945,17 @@ v0 = -partial(psiCoarse,xn/cellx,yn/celly,dx*cellx,dy*celly,1)
 ! 	end do
 ! end do
 
-velocitiesCoarse(1:xn/cellx,1:yn/celly) = u0
-velocitiesCoarse(1:xn/cellx,yn/celly+1:2*yn/celly) = v0
+velocities_coarse(1:xn/cellx,1:yn/celly) = u0
+velocities_coarse(1:xn/cellx,yn/celly+1:2*yn/celly) = v0
 
 return
-end function velocitiesCoarse
+end function velocities_coarse
 
 
 
 ! ----------------------------------------------------------------------------------%%
 !
 ! PARTIAL
-!
-! SUMMARY : versatile function for solving for second-order accurate partial 
-!           derivatives of 1D or 2D arrays with respect to specified dimension
-!           
-! INPUTS : array(rows,cols) : array to be partially differentiated
-!          rows : number of rows
-!          cols : number of columns
-!          d1 : grid spacing in first dimension
-!          d2 : grid spacing in second dimension
-!          dim : dimension you differentiate w.r.t.
 !
 ! ----------------------------------------------------------------------------------%%
 
@@ -9004,17 +9093,7 @@ end function partial
 
 ! ----------------------------------------------------------------------------------%%
 !
-! PARTIAL
-!
-! SUMMARY : versatile function for solving for second-order accurate partial 
-!           derivatives of 1D or 2D arrays with respect to specified dimension
-!           
-! INPUTS : array(rows,cols) : array to be partially differentiated
-!          rows : number of rows
-!          cols : number of columns
-!          d1 : grid spacing in first dimension
-!          d2 : grid spacing in second dimension
-!          dim : dimension you differentiate w.r.t.
+! PARTIAL_COARSE
 !
 ! ----------------------------------------------------------------------------------%%
 
@@ -9029,11 +9108,6 @@ integer :: rows, cols, dim, i, j, ii, jj
 real(4) :: array(rows,cols), d1, d2, d
 real(4) :: partial_coarse(rows,cols)
 
-! write(*,*) "dim"
-! write(*,*) rows
-! write(*,*) cols
-
-! figure out which direction derivative goes (dx or dy)
 
 partial_coarse = 0.0
 
@@ -9052,20 +9126,10 @@ if (dim .eq. 1) then
 		end do
 	end do
 	
-	do i = 2,rows-1
-		do j = 1,cols
-			if ((maskP(i,j) .eq. 3.0) .or. (maskP(i,j) .eq. 3.5) .or. (maskP(i,j) .eq. 3.1) .or. (maskP(i,j) .eq. 3.05) .or. (maskP(i,j) .eq. 3.01) .or. (mask(i,j) .eq. 3.05)) then
-				partial_coarse(i,j) = (array(i,j) - array(i-1,j))/d
-				!partial(i,j) = (3.0*array(i,j) - 4.0*array(i-1,j) + array(i-2,j))/(2.0*d)
-			end if
-			if ((maskP(i,j) .eq. 6.0) .or. (maskP(i,j) .eq. 6.5) .or. (maskP(i,j) .eq. 6.1) .or. (maskP(i,j) .eq. 6.05) .or. (maskP(i,j) .eq. 6.01) .or. (mask(i,j) .eq. 6.05)) then
-				partial_coarse(i,j) = (array(i+1,j) - array(i,j))/d
-				!partial(i,j) = (-3.0*array(i,j) + 4.0*array(i+1,j) - array(i+2,j))/(2.0*d)
-			end if
-		end do
-	end do
 	
 end if
+
+
 
 
 if (dim .eq. 2) then
@@ -9076,13 +9140,18 @@ if (dim .eq. 2) then
 	! compute edges beforehand 
 	partial_coarse(:,1) = ( -3.0*array(:,1) + 4.0*array(:,2) -array(:,3)) / (2.0*d)
 	partial_coarse(:,cols) = ( 3.0*array(:,cols) - 4.0*array(:,cols-1) + array(:,cols-2) ) / (2.0*d)
+	
+	do i = 1,rows
+		do j = 2,cols-1
+			if ((coarse_mask(i,j) .ne. 0.0) .and. (coarse_mask(i,j+1) .ne. 0.0) .and. (coarse_mask(i,j-1) .ne. 0.0)) then
+				partial_coarse(i,j) = (array(i,j+1) - array(i,j-1))/(2.0*d)
+			end if
+		end do
+	end do
+	
 end if
 
-do i = 2,rows-1
-	do j = 1,cols
-		partial_coarse(i,j) = (array(i+1,j) - array(i-1,j))/(2.0*d)
-	end do
-end do
+
 
 
 return
@@ -9100,16 +9169,6 @@ end function partial_coarse
 ! ----------------------------------------------------------------------------------%%
 !
 ! PARTIAL_EDGE
-!
-! SUMMARY : versatile function for solving for second-order accurate partial 
-!           derivatives of 1D or 2D arrays with respect to specified dimension
-!           
-! INPUTS : array(rows,cols) : array to be partially differentiated
-!          rows : number of rows
-!          cols : number of columns
-!          d1 : grid spacing in first dimension
-!          d2 : grid spacing in second dimension
-!          dim : dimension you differentiate w.r.t.
 !
 ! ----------------------------------------------------------------------------------%%
 
@@ -9302,17 +9361,7 @@ end function partial_edge
 
 ! ----------------------------------------------------------------------------------%%
 !
-! partial_edge_p
-!
-! SUMMARY : versatile function for solving for second-order accurate partial 
-!           derivatives of 1D or 2D arrays with respect to specified dimension
-!           
-! INPUTS : array(rows,cols) : array to be partially differentiated
-!          rows : number of rows
-!          cols : number of columns
-!          d1 : grid spacing in first dimension
-!          d2 : grid spacing in second dimension
-!          dim : dimension you differentiate w.r.t.
+! PARTIAL_EDGE_P
 !
 ! ----------------------------------------------------------------------------------%%
 
@@ -9414,14 +9463,6 @@ end function partial_edge_p
 !
 ! WRITE_VEC
 !
-! SUMMARY: Write linspace-style vector to file
-!
-! INPUTS: n : dimension
-!         vector : vector with data
-!         filename : file name
-!
-! RETURNS: write_vec
-!
 ! ----------------------------------------------------------------------------------%%
 
 function write_vec ( n, vector, filename )
@@ -9462,14 +9503,6 @@ end function write_vec
 ! ----------------------------------------------------------------------------------%%
 !
 ! WRITE_MATRIX
-!
-! SUMMARY: Write 2d array to file
-!
-! INPUTS: m,n : 2d dimensinons
-!         table : 2d array with data
-!         filename : file name
-!
-! RETURNS: write_matrix
 !
 ! ----------------------------------------------------------------------------------%%
 

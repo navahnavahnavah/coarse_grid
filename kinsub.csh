@@ -10,7 +10,7 @@
 # you want to run.
 #
 # set the name of the job
-#PBS -N c5_cyc_mins
+#PBS -N coarse_cons
 #
 # set the output and error files
 #PBS -o /home/navah/coarse_grid/mOutG.txt
@@ -76,8 +76,8 @@ set PARAM_F_POR = '6e-4'
 
 
 
-set PARAM_PATH='/home/navah/coarse_grid/output/coarse5/'
-set PARAM_ISO_PATH='/home/navah/coarse_grid/output/coarse5/'
+set PARAM_PATH='/home/navah/coarse_grid/output/coarse_cons/'
+set PARAM_ISO_PATH='/home/navah/coarse_grid/output/coarse_cons/'
 
  
 echo $PARAM_PATH

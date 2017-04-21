@@ -21,7 +21,7 @@ real(4) :: maskLongU((xn-2)*(yn-0)), maskLongTV((xn-0)*(yn-2))
 real(4) :: maskP(xn,yn), maskPLong((xn-2)*((yn/2)-2)), maskPLongT((xn-2)*((yn/2)-2))
 real(4) :: outerBand((xn-2)*((yn/2)-2),2*((yn/2)-2) + 1), bigBand((xn-2)*((yn/2)-2),4*((yn/2)-2) + 3)
 real(4) :: stretch(xn,yn), stretchLong((xn-2)*(yn-2)), stretchT(xn,yn), stretchLongT((xn-2)*(yn-2))
-real(4) :: u_inter(xn,yn), v_inter(xn,yn)
+real(4) :: u_inter(xn,yn), v_inter(xn,yn), u_step_coarse(xn/cellx,yn/celly), v_step_coarse(xn/cellx,yn/celly)
 
 ! 05/06 INPUT STUFF
 real(4) :: primary(xn/cellx,yn/celly,g_pri), primaryMat(xn*tn/(cellx*(mstep*ar)),yn/celly,g_pri)
@@ -289,6 +289,7 @@ solute(:,:,2) = .00243   ! Alk 1.6e-3
 solute(:,:,3) = .266     ! water mass
 solute(:,:,4) = .002100  ! param_dic , TOTAL C
 solute(:,:,5) = .01028   ! Ca
+solute(1:xn/(2*cellx),:,5) = .01428
 solute(:,:,6) = .0528    ! Mg
 solute(:,:,7) = .460     ! Na
 solute(:,:,8) = .00995   ! K
@@ -305,6 +306,7 @@ solute_a(:,:,2) = .00243   ! Alk 1.6e-3
 solute_a(:,:,3) = .266     ! water mass
 solute_a(:,:,4) = .002100  ! param_dic , TOTAL C
 solute_a(:,:,5) = .01028   ! Ca
+solute_a(1:xn/(2*cellx),:,5) = .01428
 solute_a(:,:,6) = .0528    ! Mg
 solute_a(:,:,7) = .460     ! Na
 solute_a(:,:,8) = .00995   ! K
@@ -321,6 +323,7 @@ solute_b(:,:,2) = .00243   ! Alk 1.6e-3
 solute_b(:,:,3) = 0.0266   ! water mass
 solute_b(:,:,4) = .002100  ! param_dic , TOTAL C
 solute_b(:,:,5) = .01028   ! Ca
+solute_b(1:xn/(2*cellx),:,5) = .01428
 solute_b(:,:,6) = .0528    ! Mg
 solute_b(:,:,7) = .460     ! Na
 solute_b(:,:,8) = .00995   ! K
@@ -370,9 +373,9 @@ medium(:,:,2) = 0.0         ! precip
 medium(:,:,3) = 0.266       ! water_volume
 vol_i = medium(1,1,3)
 medium(:,:,4) = 0.01        ! reactive fraction now!
-medium(:,:,5) = 1.0         ! rxn toggle
+medium(:,:,5) = 0.0         ! rxn toggle
 ! medium(:,:,5) = 0.0         ! rxn toggle
-! medium(1,yn/cell-3:,5) = 1.0         ! rxn toggle
+medium(xn,yn/cell-3:,5) = 1.0         ! rxn toggle
 medium(:,:,6) = 0.0         ! x-coord
 medium(:,:,7) = 0.0         ! y-coord
 
