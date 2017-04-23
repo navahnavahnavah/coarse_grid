@@ -37,7 +37,6 @@ real(4) :: bit_thing(xn/cellx,yn/(2*celly)), bit_thing_t(yn/(2*celly),xn/cellx),
 real(4) :: solute_fine(xn,yn,g_sol), solute_fine_a(xn,yn,g_sol), solute_fine_b(xn,yn,g_sol)
 
 ! CHAMBER INPUT STUFF
-
 real(4) :: primary_a(xn/cellx,yn/celly,g_pri), primaryMat_a(xn*tn/(cellx*(mstep*ar)),yn/celly,g_pri)
 real(4) :: secondary_a(xn/cellx,yn/celly,g_sec), secondaryMat_a(xn*tn/(cellx*(mstep*ar)),yn/celly,g_sec)
 real(4) :: solute_a(xn/cellx,yn/celly,g_sol), soluteMat_a(xn*tn/(cellx*(mstep*ar)),yn/celly,g_sol)
@@ -128,10 +127,10 @@ t = linspace ( tn, t_min, t_max)
 
 
 sea = (/8.2, 0.00243, 0.0, 0.0021, 0.01028, 0.0528, 0.460, 0.00995, 0.0, 0.028, 0.0, 0.540, 1.0e-8, 0.00245, 0.0/)
-
+!         1    2       3     4         5      6       7       8      9     10    11   12      13      14      15
 
 sol_index = (/2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13/)
-
+!            alk dic ca mg na k  fe s   si  cl  al
 
 return
 
@@ -252,15 +251,14 @@ primary(:,:,1) = 0.0 !1.29600 ! feldspar
 primary(:,:,2) = 0.0 !.69600 ! plag
 primary(:,:,3) = 0.0 !.12600 ! pyr
 primary(:,:,4) = 0.0 !.04000 ! ol
-primary(:,:,5) = 1.0 !9.67700 ! basaltic glass
-
+primary(:,:,5) = 0.95 !9.67700 ! basaltic glass
 
 primary_a(:,:,:) = 0.0
 primary_a(:,:,1) = 0.0   ! feldspar
 primary_a(:,:,2) = 0.0   ! plag
 primary_a(:,:,3) = 0.0   ! pyr
 primary_a(:,:,4) = 0.0   ! ol
-primary_a(:,:,5) = 1.0  ! basaltic glass
+primary_a(:,:,5) = 1.05  ! basaltic glass
 
 primary_b(:,:,:) = 0.0
 primary_b(:,:,1) = 0.0  ! feldspar
@@ -355,7 +353,7 @@ do g=1,g_sol
 end do
 
 sol_index = (/2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13/)
-
+!            alk dic ca mg na k  fe s   si  cl  al
 
 volume_ratio = 10.0
 mix_ratio = 0.01

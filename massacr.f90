@@ -2992,6 +2992,9 @@ if (j .eq. 5) then
 					psi_coarse(i,ii) = psi(i*cellx,ii*celly)
 				end do
 			end do
+			psi_coarse(xn/cellx,:) = 0.0
+			psi_coarse(xn/cellx-1,:) = 0.0
+			psi_coarse(xn/cellx-2,:) = 0.0
 			
 			velocities_coarse0 = velocities_coarse(psi_coarse)
 			u_coarse = phi_coarse*velocities_coarse0(1:xn/cellx,1:yn/celly)/(rho_fluid)
@@ -3078,18 +3081,18 @@ end if
 ! 		write(*,*) dt*mstep/(cstep*dy*dy*cell*cell)
 
 !NOT RUNNING TRANSPORT RIGHT NOW, JUST CHEMISTRY
-medium_b(:,:,5) = 0.0
-! if (mod(j,tn/res_factor) .ne. 0) then
-! 	medium(:,:,2) = 1000.0
-! 	medium_a(:,:,2) = 1000.0
-! 	medium_b(:,:,2) = 1000.0
-! end if
-! !
-! if (mod(j,tn/res_factor) .eq. 0) then
+!medium_b(:,:,5) = 0.0
+if (mod(j,tn/res_factor) .ne. 0) then
+	medium(:,:,2) = 1000.0
+	medium_a(:,:,2) = 1000.0
+	medium_b(:,:,2) = 1000.0
+end if
+
+if (mod(j,tn/res_factor) .eq. 0) then
 	medium(:,:,2) = 0.0
 	medium_a(:,:,2) = 0.0
 	medium_b(:,:,2) = 0.0
-!end if
+end if
 
 
 ! if (j .gt. mstep) then
@@ -3161,11 +3164,11 @@ medium_b(:,:,5) = 0.0
 			
 			call MPI_RECV( sol_coarse_long, (xn/cellx)*(yn/celly), MPI_DOUBLE_PRECISION, &
 			an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
-			
+
 			if (an_id .le. 11) then
 				solute(:,:,sol_index(an_id)) = reshape(sol_coarse_long, (/xn/cellx,yn/celly/))
 			end if
-			
+
 			if (an_id .gt. 11) then
 				solute_a(:,:,sol_index(an_id-11)) = reshape(sol_coarse_long, (/xn/cellx,yn/celly/))
 			end if
@@ -3180,13 +3183,13 @@ medium_b(:,:,5) = 0.0
 		
 
 
-		medium(:,:,3) = vol_i
-		medium_a(:,:,3) = vol_i_a
-		medium_b(:,:,3) = vol_i_b
-
-		solute(:,:,3) = vol_i
-		solute_a(:,:,3) = vol_i_a
-		solute_b(:,:,3) = vol_i_b
+! 		medium(:,:,3) = vol_i
+! 		medium_a(:,:,3) = vol_i_a
+! 		medium_b(:,:,3) = vol_i_b
+!
+! 		solute(:,:,3) = vol_i
+! 		solute_a(:,:,3) = vol_i_a
+! 		solute_b(:,:,3) = vol_i_b
 		
 		pri_coarse = primary
 		sec_coarse = secondary
@@ -3423,16 +3426,16 @@ medium_b(:,:,5) = 0.0
 			solute_b(:,(yn/(2*celly))+1:,i) = bit_thing_t1
 		end do
 		
-		i=2
-		solute(:,:,i) = solute(:,:,i)*solute(:,:,3)/vol_i
-		solute_a(:,:,i) = solute_a(:,:,i)*solute_a(:,:,3)/vol_i_a
-		solute_b(:,:,i) = solute_b(:,:,i)*solute_b(:,:,3)/vol_i_b
-		
-		do i=4,13
-			solute(:,:,i) = solute(:,:,i)*solute(:,:,3)/vol_i
-			solute_a(:,:,i) = solute_a(:,:,i)*solute_a(:,:,3)/vol_i_a
-			solute_b(:,:,i) = solute_b(:,:,i)*solute_b(:,:,3)/vol_i_b
-		end do
+! 		i=2
+! 		solute(:,:,i) = solute(:,:,i)*solute(:,:,3)/vol_i
+! 		solute_a(:,:,i) = solute_a(:,:,i)*solute_a(:,:,3)/vol_i_a
+! 		solute_b(:,:,i) = solute_b(:,:,i)*solute_b(:,:,3)/vol_i_b
+!
+! 		do i=4,13
+! 			solute(:,:,i) = solute(:,:,i)*solute(:,:,3)/vol_i
+! 			solute_a(:,:,i) = solute_a(:,:,i)*solute_a(:,:,3)/vol_i_a
+! 			solute_b(:,:,i) = solute_b(:,:,i)*solute_b(:,:,3)/vol_i_b
+! 		end do
 
 		
 		do i = 1,g_med
@@ -3453,13 +3456,13 @@ medium_b(:,:,5) = 0.0
 		end do
 		
 
-		medium(:,:,3) = vol_i
-		medium_a(:,:,3) = vol_i_a
-		medium_b(:,:,3) = vol_i_b
-
-		solute(:,:,3) = vol_i
-		solute_a(:,:,3) = vol_i_a
-		solute_b(:,:,3) = vol_i_b
+! 		medium(:,:,3) = vol_i
+! 		medium_a(:,:,3) = vol_i_a
+! 		medium_b(:,:,3) = vol_i_b
+!
+! 		solute(:,:,3) = vol_i
+! 		solute_a(:,:,3) = vol_i_a
+! 		solute_b(:,:,3) = vol_i_b
 
 		write(*,*) "...DONE STRETCHING REACTED CELLS"
 
@@ -3831,13 +3834,13 @@ else
 					sol_coarse_local = solute_next_coarse(sol_coarse_local,u_coarse_local/phi_coarse_local,v_coarse_local/phi_coarse_local,sea(sol_index(an_id_local)))
 				end do
 			end if
-		
+
 			if (an_id_local .gt. 11) then
 				do ii = 1,cstep
 					sol_coarse_local = solute_next_coarse(sol_coarse_local,u_coarse_local/phi_coarse_local,v_coarse_local/phi_coarse_local,sea(sol_index(an_id_local-11)))
 				end do
 			end if
-		
+
 			sol_coarse_long_local = reshape(sol_coarse_local,(/(xn/cellx)*(yn/celly)/))
 		
 			! send advected solutes back :)
@@ -4070,7 +4073,7 @@ write(s_reactive,'(F25.10)') medium3(4)
 ! ----------------------------------%%
 
 kinetics = " precipitate_only"
-kinetics = " "
+!kinetics = " "
 write(s_pressure,'(F25.10)') 250.0 - (medium3(7)/5.0)
 write(si_hematite,'(F25.10)') 1.0! -(solute3(1)*2.5) + 30.0
 
@@ -4106,7 +4109,7 @@ write(si_hematite,'(F25.10)') 1.0! -(solute3(1)*2.5) + 30.0
 		&"    Goethite " // trim(s_precip) // trim(s_goethite) // kinetics //NEW_LINE('')// &
 		&"    Celadonite " // trim(s_precip) // trim(s_celadonite) // kinetics //NEW_LINE('')// & ! mica
 		 !&"    Albite " // trim(s_precip) // trim(s_albite) // kinetics //NEW_LINE('')// & ! plagioclase
-		!&"    Calcite " // trim(s_precip) // trim(s_calcite) // kinetics //NEW_LINE('')// & ! .135
+		&"    Calcite " // trim(s_precip) // trim(s_calcite) // kinetics //NEW_LINE('')// & ! .135
 		&"    Montmor-Na " // trim(s_precip) // trim(s_mont_na) // kinetics //NEW_LINE('')// & ! smectite
 		!&"    Montmor-K " // trim(s_precip) // trim(s_mont_k) // kinetics //NEW_LINE('')// & ! smectite
 		!&"    Montmor-Mg " // trim(s_precip) // trim(s_mont_mg) // kinetics //NEW_LINE('')// & ! smectite
@@ -8152,6 +8155,15 @@ if (dim .eq. 2) then
 			if ((coarse_mask(i,j) .ne. 0.0) .and. (coarse_mask(i,j+1) .ne. 0.0) .and. (coarse_mask(i,j-1) .ne. 0.0)) then
 				partial_coarse(i,j) = (array(i,j+1) - array(i,j-1))/(2.0*d)
 			end if
+			
+			if ((coarse_mask(i,j) .ne. 0.0) .and. (coarse_mask(i,j+1) .ne. 0.0) .and. (coarse_mask(i,j-1) .eq. 0.0)) then
+				partial_coarse(i,j) = (array(i,j+1) - array(i,j))/(1.0*d)
+			end if
+			
+			if ((coarse_mask(i,j) .ne. 0.0) .and. (coarse_mask(i,j+1) .eq. 0.0) .and. (coarse_mask(i,j-1) .ne. 0.0)) then
+				partial_coarse(i,j) = (array(i,j) - array(i,j-1))/(1.0*d)
+			end if
+			
 		end do
 	end do
 	
