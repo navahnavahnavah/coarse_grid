@@ -3025,9 +3025,9 @@ if (j .eq. 5) then
 			u_coarse_long = reshape(u_coarse, (/(xn/cellx)*(yn/celly)/))
 			v_coarse_long = reshape(v_coarse, (/(xn/cellx)*(yn/celly)/))
 			phi_coarse_long = reshape(phi_coarse, (/(xn/cellx)*(yn/celly)/))
-			
+!
 ! 						do ii = 1,yn/cell
-! 							u(:,ii) = sum(u(:,(ii-1)*celly+1:ii*celly))/(celly)
+! 							u_coarse(:,ii) = sum(u_coarse(:,ii))/(yn/celly)
 ! 						end do
 			
 			
@@ -3051,72 +3051,6 @@ end if
 ! 				end do
 ! 			end do
 			
-! 			do jj=2,yn-1
-! 				do i=1,xn
-! 					if ((maskP(i,jj) .eq. 2.5)) then
-! 						u(i,jj) = 0.0
-! 						v(i,jj) = 0.0
-! 					end if
-! 					if ((maskP(i,jj) .eq. 7.5)) then
-! 						u(i,jj) = 0.0
-! 						v(i,jj) = 0.0
-! 					end if
-! 				end do
-! 			end do
-			
-
-			
-!if ((j .ge. thresh) .and. (mod(j,mstep) .eq. 0)) then
-
-!do i = 1,cstep
-! 				iso(:,:,1) = solute_next(iso(:,:,1),u,v,1.0)
-! 				iso(:,:,1) = iso(:,:,1)*exp(-(3.949e-12)*dt)
-!
-! 				iso(:,:,2) = solute_next(iso(:,:,2),u,v,1.0)
-!end do
-!
-! if ((param_trace .eq. 1)) then
-!
-! 				isoTrace(:,:,1) = particles_next(isoTrace(:,:,1),u,v,1.0,ison,particle_sat)
-!
-! 				do jj = 1,cstep
-! 				isoTrace(3,:,1) = isoTrace(3,:,1)*exp(-(3.949e-12)*dt/cstep)
-! 				end do
-!
-! ! 				inertTrace(:,:) = particles_next(inertTrace,u,v,10.0,inertn,inert_sat)
-! end if
-				
-
-			
-		
-
-! 	! interpolate fine grid onto coarse grid
-! 	do jj = 1,yn/celly
-! 	do i = 1,xn/cellx
-! 		!reactiveCoarse(i,jj) = reactive(i*cell,jj*cell)
-! 		!medium(i,jj,4) = reactiveCoarse(i,jj)
-! 		!psiCoarse(i,jj) = psi(i*cell,jj*cell)
-! 	end do
-! 	end do
-	
-! 	write(*,*) "about to call velocitiesCoarse"
-!     velocitiesCoarse0 = velocities(psi)!velocitiesCoarse(psiCoarse)
-!
-
-! 	do i = 1,xn/cellx
-! 		do ii = 1,yn/celly
-! 			psiCoarse(i,ii) = sum(psi((i-1)*cellx+1:i*cellx,(ii-1)*celly+1:ii*celly))/(cellx*celly)
-! 		end do
-! 	end do
-	
-! 	velocitiesCoarse0 = velocitiesCoarse(psiCoarse)
-!     uCoarse = velocitiesCoarse0(1:xn/cellx,1:yn/celly)/phi(1,1)
-!     vCoarse = velocitiesCoarse0(1:xn/cellx,yn/celly+1:2*yn/celly)/phi(1,1)
-	
-! 	uCoarse(i,ii) = sum(u((i-1)*cellx+1:i*cellx,(ii-1)*celly+1:ii*celly))/(cellx*celly)
-! 	vCoarse(i,ii) = sum(v((i-1)*cellx+1:i*cellx,(ii-1)*celly+1:ii*celly))/(cellx*celly)
-	
-	
 
 ! 	write(*,*) "about to start mstep loop"
 	
@@ -3163,43 +3097,18 @@ medium_b(:,:,5) = 0.0
 			write(*,*) "STEP" , j , "STUFF"
 			write(*,*) "BEGIN CHAMBER MIXING"
 			
-! 			n=2 ! alk
-! 			solute_inter = solute_a(:,:,n)
-! 			solute_a(:,:,n) = solute_a(:,:,n)*(1.0-mix_ratio) + solute_b(:,:,n)*mix_ratio
-! 			solute_b(:,:,n) = solute_b(:,:,n)*(1.0-(volume_ratio*mix_ratio)) + solute_inter*volume_ratio*mix_ratio
-!
-! 			do n=4,13 ! solutes
-! 				solute_inter = solute_a(:,:,n)
-! 				solute_a(:,:,n) = solute_a(:,:,n)*(1.0-mix_ratio) + solute_b(:,:,n)*mix_ratio
-! 				solute_b(:,:,n) = solute_b(:,:,n)*(1.0-(volume_ratio*mix_ratio)) + solute_inter*volume_ratio*mix_ratio
-! 			end do
+			n=2 ! alk
+			solute_inter = solute_a(:,:,n)
+			solute_a(:,:,n) = solute_a(:,:,n)*(1.0-mix_ratio) + solute_b(:,:,n)*mix_ratio
+			solute_b(:,:,n) = solute_b(:,:,n)*(1.0-(volume_ratio*mix_ratio)) + solute_inter*volume_ratio*mix_ratio
+
+			do n=4,13 ! solutes
+				solute_inter = solute_a(:,:,n)
+				solute_a(:,:,n) = solute_a(:,:,n)*(1.0-mix_ratio) + solute_b(:,:,n)*mix_ratio
+				solute_b(:,:,n) = solute_b(:,:,n)*(1.0-(volume_ratio*mix_ratio)) + solute_inter*volume_ratio*mix_ratio
+			end do
 			
 			write(*,*) "...DONE WITH CHAMBER MIXING"
-
-
-		! interpolating coarse solutes to fine solutes for advection
-		
-		
-	write(*,*) "BEGIN FINE-IFYING COARSE SOLUTES"
-	
-	do n=1,g_sol
-		do ii = 1,yn/celly
-			do i = 1,xn/cellx
-				
-				!n=2 ! alk
-				solute_fine((i-1)*cellx+1:i*cellx,(ii-1)*celly+1:ii*celly,n) = solute(i,ii,n)
-				solute_fine_a((i-1)*cellx+1:i*cellx,(ii-1)*celly+1:ii*celly,n) = solute_a(i,ii,n)
-				!solute_fine_b((i-1)*cellx+1:i*cellx,(ii-1)*celly+1:ii*celly,n) = solute_b(i,ii,n)
-				
-				!do n=4,13 ! solutes
-					solute_fine((i-1)*cellx+1:i*cellx,(ii-1)*celly+1:ii*celly,n) = solute(i,ii,n)
-					solute_fine_a((i-1)*cellx+1:i*cellx,(ii-1)*celly+1:ii*celly,n) = solute_a(i,ii,n)
-					!solute_fine_b((i-1)*cellx+1:i*cellx,(ii-1)*celly+1:ii*celly,n) = solute_b(i,ii,n)
-			end do
-		end do
-	end do
-	
-	write(*,*) "...DONE FINE-IFYING COARSE SOLUTES"
 
 
 		
@@ -3207,60 +3116,14 @@ medium_b(:,:,5) = 0.0
 		
 		
 		!--------------FROM MASTER TO SLAVES FOR ADVECTION
-! 		do an_id = 1, 22
-!
-! 			!do gg = 1,cstep
-!  	 			!solute_fine(:,:,2) = solute_next(solute_fine(:,:,2),u/phi,v/phi,sea(2))
-! 				!solute_fine_a(:,:,2) = solute_next(solute_fine_a(:,:,2),u/phi,v/phi,sea(2))
-! 			!end do
-! 			if (an_id .le. 11) then
-! 				!write(*,*) "pre 11 send" , sol_index(an_id)
-! 				solFineLong = reshape(solute_fine(:,:,sol_index(an_id)), (/xn*yn/))
-! 			end if
-!
-! 			if (an_id .gt. 11) then
-! 				!write(*,*) "post 11 send" , sol_index(an_id-11)
-! 				solFineLong = reshape(solute_fine_a(:,:,sol_index(an_id-11)), (/xn*yn/))
-! 			end if
-!
-! 			! send an_id name
-! 	        call MPI_SEND( an_id, 1, MPI_INTEGER, &
-! 			an_id, send_data_tag, MPI_COMM_WORLD, ierr)
-!
-! 			! send long sol fine
-!         	call MPI_SEND( solFineLong, xn*yn, MPI_DOUBLE_PRECISION, &
-! 			an_id, send_data_tag, MPI_COMM_WORLD, ierr)
-!
-! 			! send long u fine
-!         	call MPI_SEND( uFineLong, xn*yn, MPI_DOUBLE_PRECISION, &
-! 			an_id, send_data_tag, MPI_COMM_WORLD, ierr)
-!
-! 			! send long v fine
-!         	call MPI_SEND( vFineLong, xn*yn, MPI_DOUBLE_PRECISION, &
-! 			an_id, send_data_tag, MPI_COMM_WORLD, ierr)
-!
-! 			! send long phi fine
-!         	call MPI_SEND( phiFineLong, xn*yn, MPI_DOUBLE_PRECISION, &
-! 			an_id, send_data_tag, MPI_COMM_WORLD, ierr)
-!
-! 		!write(*,*) "DONE SENDING SOLUTE TO PROCESSOR", an_id
-!
-! 		end do
-
 
 		do an_id = 1, 22
-	
-			!do gg = 1,cstep
-				!solute_fine(:,:,2) = solute_next(solute_fine(:,:,2),u/phi,v/phi,sea(2))
-				!solute_fine_a(:,:,2) = solute_next(solute_fine_a(:,:,2),u/phi,v/phi,sea(2))
-			!end do
+
 			if (an_id .le. 11) then
-				!write(*,*) "pre 11 send" , sol_index(an_id)
 				sol_coarse_long = reshape(solute(:,:,sol_index(an_id)), (/(xn/cellx)*(yn/celly)/))
 			end if
 	
 			if (an_id .gt. 11) then
-				!write(*,*) "post 11 send" , sol_index(an_id-11)
 				sol_coarse_long = reshape(solute_a(:,:,sol_index(an_id-11)), (/(xn/cellx)*(yn/celly)/))
 			end if
 	
@@ -3268,19 +3131,19 @@ medium_b(:,:,5) = 0.0
 		    call MPI_SEND( an_id, 1, MPI_INTEGER, &
 			an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 	
-			! send long sol fine
+			! send long sol coarse
 			call MPI_SEND( sol_coarse_long, (xn/cellx)*(yn/celly), MPI_DOUBLE_PRECISION, &
 			an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 	
-			! send long u fine
+			! send long u coarse
 			call MPI_SEND( u_coarse_long, (xn/cellx)*(yn/celly), MPI_DOUBLE_PRECISION, &
 			an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 	
-			! send long v fine
+			! send long v coarse
 			call MPI_SEND( v_coarse_long, (xn/cellx)*(yn/celly), MPI_DOUBLE_PRECISION, &
 			an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 	
-			! send long phi fine
+			! send long phi coarse
 			call MPI_SEND( phi_coarse_long, (xn/cellx)*(yn/celly), MPI_DOUBLE_PRECISION, &
 			an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 
@@ -3296,178 +3159,34 @@ medium_b(:,:,5) = 0.0
 		
 		do an_id = 1, 22
 			
-			! receive sol fine long
 			call MPI_RECV( sol_coarse_long, (xn/cellx)*(yn/celly), MPI_DOUBLE_PRECISION, &
 			an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
 			
-			! reshape received sol fine long into 2d array
 			if (an_id .le. 11) then
-				!write(*,*) "pre 11 receive" , sol_index(an_id)
-				!write(*,*) "an_id" , an_id
-				!write(*,*) solute_fine(:,:,sol_index(an_id)) - reshape(solFineLong, (/xn,yn/))
 				solute(:,:,sol_index(an_id)) = reshape(sol_coarse_long, (/xn/cellx,yn/celly/))
 			end if
 			
 			if (an_id .gt. 11) then
-				!write(*,*) "post 11 receive" , sol_index(an_id-11)
-				!write(*,*) "an_id" , an_id
-				!write(*,*) solute_fine_a(:,:,sol_index(an_id-11)) - reshape(solFineLong, (/xn,yn/))
 				solute_a(:,:,sol_index(an_id-11)) = reshape(sol_coarse_long, (/xn/cellx,yn/celly/))
 			end if
 			
 		end do
 		
 		write(*,*) "...DONE RECEIVING ADVECTED SOLUTES"
-		
-			
-! 			do n=4,g_sol-2
-! 			write(*,*) "starting cstep advection"
-! 			do gg = 1,cstep
-! ! 	! 			n=1 ! pH
-! ! 	! 			solute(:,:,n) = solute_next(solute(:,:,n),u,v,sea(n))
-! ! 	  			n=2 ! alk
-! ! 	  			solute_fine(:,:,n) = solute_next(solute_fine(:,:,n),u/phi,v/phi,sea(n))
-! ! 				solute_fine_a(:,:,n) = solute_next(solute_fine_a(:,:,n),u/phi,v/phi,sea(n))
-! ! 	 			!n=3 ! water?
-! ! 	 	 		!solute(:,:,n) = solute_next(solute(:,:,n),u,v,sea(n))
-! ! 	 			n=4 ! c
-! ! 	 	 		solute_fine(:,:,n) = solute_next(solute_fine(:,:,n),u/phi,v/phi,sea(n))
-! ! 				solute_fine_a(:,:,n) = solute_next(solute_fine_a(:,:,n),u/phi,v/phi,sea(n))
-! ! 				n=5 ! ca
-! ! 				solute_fine(:,:,n) = solute_next(solute_fine(:,:,n),u/phi,v/phi,sea(n))
-! ! 				solute_fine_a(:,:,n) = solute_next(solute_fine_a(:,:,n),u/phi,v/phi,sea(n))
-! ! 				n=6 ! mg
-! ! 		 		solute_fine(:,:,n) = solute_next(solute_fine(:,:,n),u/phi,v/phi,sea(n))
-! ! 				solute_fine_a(:,:,n) = solute_next(solute_fine_a(:,:,n),u/phi,v/phi,sea(n))
-! ! 	 			n=7 ! na
-! ! 	 	 		solute_fine(:,:,n) = solute_next(solute_fine(:,:,n),u/phi,v/phi,sea(n))
-! ! 				solute_fine_a(:,:,n) = solute_next(solute_fine_a(:,:,n),u/phi,v/phi,sea(n))
-! ! 	 			n=8 ! k
-! ! 	 	 		solute_fine(:,:,n) = solute_next(solute_fine(:,:,n),u/phi,v/phi,sea(n))
-! ! 				solute_fine_a(:,:,n) = solute_next(solute_fine_a(:,:,n),u/phi,v/phi,sea(n))
-! ! 	 			n=9 ! fe
-! ! 	 	 		solute_fine(:,:,n) = solute_next(solute_fine(:,:,n),u/phi,v/phi,sea(n))
-! ! 				solute_fine_a(:,:,n) = solute_next(solute_fine_a(:,:,n),u/phi,v/phi,sea(n))
-! ! 	 			n=10 ! s
-! ! 	 	 		solute_fine(:,:,n) = solute_next(solute_fine(:,:,n),u/phi,v/phi,sea(n))
-! ! 				solute_fine_a(:,:,n) = solute_next(solute_fine_a(:,:,n),u/phi,v/phi,sea(n))
-! ! 	 			n=11 ! si
-! ! 	 	 		solute_fine(:,:,n) = solute_next(solute_fine(:,:,n),u/phi,v/phi,sea(n))
-! ! 				solute_fine_a(:,:,n) = solute_next(solute_fine_a(:,:,n),u/phi,v/phi,sea(n))
-! ! 	 			n=12 ! cl
-! ! 	 	 		solute_fine(:,:,n) = solute_next(solute_fine(:,:,n),u/phi,v/phi,sea(n))
-! ! 				solute_fine_a(:,:,n) = solute_next(solute_fine_a(:,:,n),u/phi,v/phi,sea(n))
-! ! 	 			n=13 ! al
-! ! 	 	 		solute_fine(:,:,n) = solute_next(solute_fine(:,:,n),u/phi,v/phi,sea(n))
-! ! 				solute_fine_a(:,:,n) = solute_next(solute_fine_a(:,:,n),u/phi,v/phi,sea(n))
-!  	 	 		solute_fine(:,:,n) = solute_next(solute_fine(:,:,n),u/phi,v/phi,sea(n))
-!  				solute_fine_a(:,:,n) = solute_next(solute_fine_a(:,:,n),u/phi,v/phi,sea(n))
-! 			end do
-! 			write(*,*) "done with cstep advection"
-! 			end do
 
-		
-		
-		
-		
-		
-		
-! 				write(*,*) "BEGIN COARSIFY-ING FINE SOLUTES"
-!
-! 				n=2
-!
-! 				do ii = 1,yn/celly
-! 					do i = 1,xn/cellx
-!
-!
-! 							i_mask = solute_fine((i-1)*cellx+1:i*cellx,(ii-1)*celly+1:ii*celly,n).gt.0.0
-! 							i_count = count(i_mask)
-! 							!i_count = 20
-! 							if (i_count .gt. 0) then
-! 								solute(i,ii,n) = sum(solute_fine((i-1)*cellx+1:i*cellx,(ii-1)*celly+1:ii*celly,n))/(i_count)
-! 							end if
-!
-! 							i_mask = solute_fine_a((i-1)*cellx+1:i*cellx,(ii-1)*celly+1:ii*celly,n).gt.0.0
-! 							i_count = count(i_mask)
-! 							!i_count = 20
-! 							if (i_count .gt. 0) then
-! 								solute_a(i,ii,n) = sum(solute_fine_a((i-1)*cellx+1:i*cellx,(ii-1)*celly+1:ii*celly,n))/(i_count)
-! 							end if
-!
-! 					end do
-! 				end do
-!
-!
-!
-! 				do n=4,13
-! 						do ii = 1,yn/celly
-! 							do i = 1,xn/cellx
-!
-! 							i_mask = solute_fine((i-1)*cellx+1:i*cellx,(ii-1)*celly+1:ii*celly,n).gt.0.0
-! 							i_count = count(i_mask)
-! 							!i_count = 20
-! 							if (i_count .gt. 0) then
-! 								solute(i,ii,n) = sum(solute_fine((i-1)*cellx+1:i*cellx,(ii-1)*celly+1:ii*celly,n))/(i_count)
-! 							end if
-!
-! 							i_mask = solute_fine_a((i-1)*cellx+1:i*cellx,(ii-1)*celly+1:ii*celly,n).gt.0.0
-! 							i_count = count(i_mask)
-! 							!i_count = 20
-! 							if (i_count .gt. 0) then
-! 								solute_a(i,ii,n) = sum(solute_fine_a((i-1)*cellx+1:i*cellx,(ii-1)*celly+1:ii*celly,n))/(i_count)
-! 							end if
-!
-! 							end do
-! 						end do
-!
-! 				end do
-!
-! 				write(*,*) "...DONE COARSIFY-ING FINE SOLUTES"
-				
-				
-				
-				
+	
 				
 		!end if	! end if j > mstep
 		
-					
-
-				
 
 
-		
+		medium(:,:,3) = vol_i
+		medium_a(:,:,3) = vol_i_a
+		medium_b(:,:,3) = vol_i_b
 
-! 		! make coarse arrays
-! 		do i = 1,xn/cellx
-! 			do ii = 1,yn/celly
-!
-!
-! ! 				do jj=1,g_pri
-! ! 					pri_coarse(i,ii,jj) = sum(primary((i-1)*cell+1:i*cell,(ii-1)*cell+1:ii*cell,jj))/(cell*cell)
-! ! 				end do
-! !
-! ! 				do jj=1,g_sec
-! ! 					sec_coarse(i,ii,jj) = sum(secondary((i-1)*cell+1:i*cell,(ii-1)*cell+1:ii*cell,jj))/(cell*cell)
-! ! 				end do
-! !
-! ! 				do jj=1,g_sol
-! ! 					sol_coarse(i,ii,jj) = sum(solute((i-1)*cell+1:i*cell,(ii-1)*cell+1:ii*cell,jj))/(cell*cell)
-! ! 				end do
-! !
-! ! 				do jj=1,3
-! ! 					med_coarse(i,ii,jj) = sum(medium((i-1)*cell+1:i*cell,(ii-1)*cell+1:ii*cell,jj))/(cell*cell)
-! ! 				end do
-!
-! 			end do
-! 		end do
-
-medium(:,:,3) = vol_i
-medium_a(:,:,3) = vol_i_a
-medium_b(:,:,3) = vol_i_b
-
-solute(:,:,3) = vol_i
-solute_a(:,:,3) = vol_i_a
-solute_b(:,:,3) = vol_i_b
+		solute(:,:,3) = vol_i
+		solute_a(:,:,3) = vol_i_a
+		solute_b(:,:,3) = vol_i_b
 		
 		pri_coarse = primary
 		sec_coarse = secondary
@@ -3648,9 +3367,7 @@ solute_b(:,:,3) = vol_i_b
 		write(*,*) "BEGIN STRETCHING REACTED CELLS"
 		
 		!--------------MASTER PROCESSOR SAVES OUTPUT TO BE WRITTEN TO FILE
-	
-		! put stretched vectors back into 2d arrays
-		
+
 		len = (yn/(2*celly))*(xn/cellx)
 		
 		do i = 1,g_pri
@@ -3743,16 +3460,8 @@ solute_b(:,:,3) = vol_i_b
 		solute(:,:,3) = vol_i
 		solute_a(:,:,3) = vol_i_a
 		solute_b(:,:,3) = vol_i_b
-		
-! 		primary(:,yn/2:yn,g_pri) = reshape(priLong,(/(yn/2), xn, g_pri/))
-! 		secondary(:,yn/2:yn,g_sec) = reshape(secLong,(/(yn/2), xn, g_sec/))
-! 		solute(:,yn/2:yn,g_sol) = reshape(solLong,(/(yn/2), xn, g_sol/))
-! 		medium(:,yn/2:yn,g_med) = reshape(medLong,(/(yn/2), xn, g_med/))
-		!saturation(:,yn/2:yn,g_sec) = reshape(secLong(:,g_sec/2:),(/(yn/2), xn, g_sec/2/))
-		
-		write(*,*) "...DONE STRETCHING REACTED CELLS"
-		!yep = write_matrix ( xn, yn, real(primary(:,:,5), kind = 4), trim(path) // 'glass1.txt' )
 
+		write(*,*) "...DONE STRETCHING REACTED CELLS"
 
 
 		! add timestep's output to output arrays
@@ -3798,9 +3507,6 @@ solute_b(:,:,3) = vol_i_b
 			 soluteMat_d = soluteMat_a*(volume_ratio/(1.0+volume_ratio)) + soluteMat_b*(1.0/(1.0+volume_ratio))
 			 
 
-			 
-! 			 isoTraceMat(:,1+ison*(j/(mstep*ar)-1):ison*(j/(mstep*ar)),:) = isoTrace
-! 			 inertTraceMat(:,1+inertn*(j/(mstep*ar)-1):inertn*(j/(mstep*ar))) = inertTrace
 
 			 write(*,*) "...DONE UPDATING _MAT ARRAYS"
 
@@ -3808,50 +3514,7 @@ solute_b(:,:,3) = vol_i_b
 ! 		 ! get new porosity
  		 phi_coarse = 0.1 !medium(:,:,1) ! 1.0
 		 
-! ! 		 ! transfer new porosity to fine grid
-!  		 do i=1,xn/cellx
-!  			 do ii=1,yn/celly
-!  				 !phi((i-1)*cell+1:(i)*cell,(ii-1)*cell+1:(ii)*cell) = phiCoarse(i,ii)
-!  			 end do
-!  		 end do
-! !
-! ! 		 ! update permeability based on porosity change
-!  		 do i = 1,xn
-!  			 do ii = 1,yn
-!  				 !permeability(i,ii) = permeability0(i,ii)
-!  				 !permeability(i,ii) = permeability0(i,ii)*((phi(i,ii)/phi0(i,ii))**3)
-!  			 end do
-!  		 end do
 !
-!
-!
-!
-!
-!
-
-	
-	
-	
-	
-!
-! !--------------WRITE CHECKPOINT TO FILE
-!
-! !yep = write_vec ( 1, real(crashstep,kind=4), trim(path) // 'checkpoint/crashstep.txt' )
-!
-! yep = write_matrix ( xn, yn, real(permeability,kind=4), trim(path) // 'checkpoint/permeability.txt' )
-
-
-
-!if (restart .ne. 1) then
-
-
-
-
-
-
-
-
-
 !yep = write_matrix(xn,yn,real(psi,kind=4),'/data/navah/ic_saturday_400/psi_'// trim(param_o_string) //"_"// trim(param_o_rhs_string) //'.txt')
 !yep = write_matrix(xn,yn,real(h,kind=4),'/data/navah/ic_saturday_400/h_'// trim(param_o_string) //"_"// trim(param_o_rhs_string) //'.txt')
 
@@ -3860,196 +3523,113 @@ solute_b(:,:,3) = vol_i_b
 ! 		OPEN(UNIT=11, FILE='/data/navah/ic_tsw/psi_ic.txt')
 
 
-!
-!
-! yep = write_matrix ( xn/cell, yn/cell, real(solute(:,:,1),kind=4), trim(path) // 'checkpoint/sol_ph.txt' )
-! yep = write_matrix ( xn/cell, yn/cell, real(solute(:,:,2),kind=4), trim(path) // 'checkpoint/sol_w.txt' )
-! yep = write_matrix ( xn/cell, yn/cell, real(solute(:,:,3),kind=4), trim(path) // 'checkpoint/sol_alk.txt' )
-! yep = write_matrix ( xn/cell, yn/cell, real(solute(:,:,4),kind=4), trim(path) // 'checkpoint/sol_c.txt' )
-! yep = write_matrix ( xn/cell, yn/cell, real(solute(:,:,5),kind=4), trim(path) // 'checkpoint/sol_ca.txt' )
-! yep = write_matrix ( xn/cell, yn/cell, real(solute(:,:,6),kind=4), trim(path) // 'checkpoint/sol_mg.txt' )
-! yep = write_matrix ( xn/cell, yn/cell, real(solute(:,:,7),kind=4), trim(path) // 'checkpoint/sol_na.txt' )
-! yep = write_matrix ( xn/cell, yn/cell, real(solute(:,:,8),kind=4), trim(path) // 'checkpoint/sol_k.txt' )
-! yep = write_matrix ( xn/cell, yn/cell, real(solute(:,:,9),kind=4), trim(path) // 'checkpoint/sol_fe.txt' )
-! yep = write_matrix ( xn/cell, yn/cell, real(solute(:,:,10),kind=4), trim(path) // 'checkpoint/sol_s.txt' )
-! yep = write_matrix ( xn/cell, yn/cell, real(solute(:,:,11),kind=4), trim(path) // 'checkpoint/sol_si.txt' )
-! yep = write_matrix ( xn/cell, yn/cell, real(solute(:,:,12),kind=4), trim(path) // 'checkpoint/sol_cl.txt' )
-! yep = write_matrix ( xn/cell, yn/cell, real(solute(:,:,13),kind=4), trim(path) // 'checkpoint/sol_al.txt' )
-! yep = write_matrix ( xn/cell, yn/cell, real(solute(:,:,14),kind=4), trim(path) // 'checkpoint/sol_hco3.txt' )
-! yep = write_matrix ( xn/cell, yn/cell, real(solute(:,:,15),kind=4), trim(path) // 'checkpoint/sol_co3.txt' )
-!
-!
-! yep = write_matrix ( xn/cell, yn/cell, real(primary(:,:,1),kind=4), trim(path) // 'checkpoint/pri_feldspar.txt' )
-! yep = write_matrix ( xn/cell, yn/cell, real(primary(:,:,1),kind=4), trim(path) // 'checkpoint/pri_augite.txt' )
-! yep = write_matrix ( xn/cell, yn/cell, real(primary(:,:,1),kind=4), trim(path) // 'checkpoint/pri_pigeonite.txt' )
-! yep = write_matrix ( xn/cell, yn/cell, real(primary(:,:,1),kind=4), trim(path) // 'checkpoint/pri_magnetite.txt' )
-! yep = write_matrix ( xn/cell, yn/cell, real(primary(:,:,1),kind=4), trim(path) // 'checkpoint/pri_glass.txt' )
-!
-! yep = write_matrix ( xn/cell, yn/cell, real(medium(:,:,1),kind=4), trim(path) // 'checkpoint/med_phi.txt' )
-! yep = write_matrix ( xn/cell, yn/cell, real(medium(:,:,2),kind=4), trim(path) // 'checkpoint/med_s_sp.txt' )
-! yep = write_matrix ( xn/cell, yn/cell, real(medium(:,:,3),kind=4), trim(path) // 'checkpoint/med_v_water.txt' )
-! yep = write_matrix ( xn/cell, yn/cell, real(medium(:,:,4),kind=4), trim(path) // 'checkpoint/med_kgw.txt' )
-!
-!
-! do i = 1,g_sec/2
-!         if (i < 10) then
-! 			write(s_i,'(i1)') i
-!         else
-! 			write(s_i,'(i2)') i
-!         end if
-! 		yep = write_matrix(xn/cell, yn/cell, real(secondary(:,:,i),kind=4), trim(path)//'checkpoint/sec'//trim(s_i)//'.txt')
-! end do
-!
-!
-!
-!
+
+
 !
 ! write(*,*) "written big step to file"
 
-! only write to file 5 times total
-if (mod(j,tn/write_factor) .eq. 0) then
+	! only write to file 5 times total
+	if (mod(j,tn/write_factor) .eq. 0) then
 
-write(*,*) "BEGIN WRITING TO FILE"
+		write(*,*) "BEGIN WRITING TO FILE"
 
 !--------------WRITE EVERYTHING TO FILE
 
+		yep = write_matrix ( xn, yn, real(psi,kind=4), trim(path) // 'psi.txt' )
+		yep = write_matrix ( xn, yn, real(h,kind=4), trim(path) // 'h.txt' )
 
-! yep = write_matrix ( xn, yn, real(mask, kind = 4), trim(path) // 'transfer/mask.txt' )
-! yep = write_vec ( xn, real(x,kind=4), trim(path) // 'transfer/x.txt' )
-! yep = write_vec ( yn, real(y,kind=4), trim(path) // 'transfer/y.txt' )
-! !yep = write_vec ( tn, real(t, kind=4), 't.txt' )
-! yep = write_matrix ( xn, yn*tn/(mstep*ar), real(hmat, kind = 4), trim(path) // 'transfer/hMat.txt' )
-! yep = write_matrix ( xn, yn*tn/(mstep*ar), real(psimat,kind=4), trim(path) // 'transfer/psiMat.txt' )
-! yep = write_matrix ( xn, yn*tn/(mstep*ar), real(umat, kind = 4), trim(path) // 'transfer/uMat.txt' )
-! yep = write_matrix ( xn, yn*tn/(mstep*ar), real(vmat,kind=4), trim(path) // 'transfer/vMat.txt' )
-! yep = write_matrix ( xn, yn*tn/(mstep*ar), real(permmat,kind=4), trim(path) // 'transfer/permMat.txt' )
-! yep = write_matrix ( xn, yn,real(lambdaMat,kind=4), trim(path) // 'transfer/lambdaMat.txt' )
+		yep = write_matrix ( xn, yn, real(u,kind=4), trim(path) // 'u.txt' )
+		yep = write_matrix ( xn, yn, real(v,kind=4), trim(path) // 'v.txt' )
 
+		yep = write_matrix ( xn/cellx, yn/celly, real(u_coarse,kind=4), trim(path) // 'u_coarse.txt' )
+		yep = write_matrix ( xn/cellx, yn/celly, real(v_coarse,kind=4), trim(path) // 'v_coarse.txt' )
+		yep = write_matrix ( xn/cellx, yn/celly, real(psi_coarse,kind=4), trim(path) // 'psi_coarse.txt' )
 
+		yep = write_matrix ( xn, yn/2,real(permeability(:,(yn/2)+1:),kind=4), trim(path) // 'permeability.txt' )
+		yep = write_vec ( xn, real(x,kind=4), trim(path) // 'x.txt' )
+		yep = write_vec ( yn/2, real(y(yn/2:),kind=4), trim(path) // 'y.txt' )
+		yep = write_matrix ( xn, yn/2, real(mask(:,(yn/2)+1:), kind = 4), trim(path) // 'mask.txt' )
+		yep = write_matrix ( xn, yn/2, real(maskP(:,(yn/2)+1:), kind = 4), trim(path) // 'maskP.txt' )
+		yep = write_matrix ( xn/(cellx), yn/(celly), real(coarse_mask,kind=4), trim(path) // 'mask_coarse.txt' )
+		
 
-!yep = write_matrix ( xn, yn, real(rhs0,kind=4), trim(path) // 'rhs.txt' )
-yep = write_matrix ( xn, yn, real(psi,kind=4), trim(path) // 'psi.txt' )
-yep = write_matrix ( xn, yn, real(h,kind=4), trim(path) // 'h.txt' )
+		if (restart .ne. 1) then
+			
+			yep = write_matrix ( yn, 2, real(frac6, kind = 4), trim(path) // 'frac6.txt' )
+			yep = write_matrix ( yn, 2, real(temp6, kind = 4), trim(path) // 'temp6.txt' )
 
-yep = write_matrix ( xn, yn, real(u,kind=4), trim(path) // 'u.txt' )
-yep = write_matrix ( xn, yn, real(v,kind=4), trim(path) // 'v.txt' )
+			yep = write_matrix (xn*tn/(mstep*ar), yn/2, real(hmat(:,(yn/2)+1:), kind = 4), trim(path) // 'hMat.txt' )
+			yep = write_matrix (xn*tn/(mstep*ar), yn/2, real(psimat(:,(yn/2)+1:),kind=4), trim(path) // 'psiMat.txt' )
+			yep = write_matrix (xn*tn/(mstep*ar), yn/2, real(rhomat(:,(yn/2)+1:),kind=4), trim(path) // 'rhoMat.txt' )
+			yep = write_matrix (xn*tn/(mstep*ar), yn/2, real(umat(:,(yn/2)+1:), kind = 4), trim(path) // 'uMat.txt' )
+			yep = write_matrix (xn*tn/(mstep*ar), yn/2, real(vmat(:,(yn/2)+1:),kind=4), trim(path) // 'vMat.txt' )
+			yep = write_matrix ( xn, yn/2,real(lambdaMat(:,(yn/2)+1:),kind=4), trim(path) // 'lambdaMat.txt' )
+			yep = write_matrix ( xn, yn/2,real(phi(:,(yn/2)+1:),kind=4), trim(path) // 'phi.txt' )
 
-yep = write_matrix ( xn/cellx, yn/celly, real(u_coarse,kind=4), trim(path) // 'u_coarse.txt' )
-yep = write_matrix ( xn/cellx, yn/celly, real(v_coarse,kind=4), trim(path) // 'v_coarse.txt' )
-yep = write_matrix ( xn/cellx, yn/celly, real(psi_coarse,kind=4), trim(path) // 'psi_coarse.txt' )
+		end if ! end write only if restart ne 1
+		
 
-yep = write_matrix ( xn, yn/2,real(permeability(:,(yn/2)+1:),kind=4), trim(path) // 'permeability.txt' )
-yep = write_vec ( xn, real(x,kind=4), trim(path) // 'x.txt' )
-yep = write_vec ( yn/2, real(y(yn/2:),kind=4), trim(path) // 'y.txt' )
-yep = write_matrix ( xn, yn/2, real(mask(:,(yn/2)+1:), kind = 4), trim(path) // 'mask.txt' )
-yep = write_matrix ( xn, yn/2, real(maskP(:,(yn/2)+1:), kind = 4), trim(path) // 'maskP.txt' )
+		! solute concentrations
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat(:,(yn/(2*celly))+1:,1),kind=4), trim(path) // 'ch_s/z_sol_ph.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat(:,(yn/(2*celly))+1:,3),kind=4), trim(path) // 'ch_s/z_sol_w.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat(:,(yn/(2*celly))+1:,2),kind=4), trim(path) // 'ch_s/z_sol_alk.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat(:,(yn/(2*celly))+1:,4),kind=4), trim(path) // 'ch_s/z_sol_c.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat(:,(yn/(2*celly))+1:,5),kind=4), trim(path) // 'ch_s/z_sol_ca.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat(:,(yn/(2*celly))+1:,6),kind=4), trim(path) // 'ch_s/z_sol_mg.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat(:,(yn/(2*celly))+1:,7),kind=4), trim(path) // 'ch_s/z_sol_na.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat(:,(yn/(2*celly))+1:,8),kind=4), trim(path) // 'ch_s/z_sol_k.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat(:,(yn/(2*celly))+1:,9),kind=4), trim(path) // 'ch_s/z_sol_fe.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat(:,(yn/(2*celly))+1:,10),kind=4), trim(path) // 'ch_s/z_sol_s.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat(:,(yn/(2*celly))+1:,11),kind=4), trim(path) // 'ch_s/z_sol_si.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat(:,(yn/(2*celly))+1:,12),kind=4), trim(path) // 'ch_s/z_sol_cl.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat(:,(yn/(2*celly))+1:,13),kind=4), trim(path) // 'ch_s/z_sol_al.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat(:,(yn/(2*celly))+1:,14),kind=4), trim(path) // 'ch_s/z_sol_inert.txt' )
 
-if (restart .ne. 1) then
+		! primary minerals
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat(:,(yn/(2*celly))+1:,2),kind=4), trim(path) // 'ch_s/z_pri_plag.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat(:,(yn/(2*celly))+1:,3),kind=4), trim(path) // 'ch_s/z_pri_pyr.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat(:,(yn/(2*celly))+1:,4),kind=4), trim(path) // 'ch_s/z_pri_ol.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat(:,(yn/(2*celly))+1:,5),kind=4), trim(path) // 'ch_s/z_pri_glass.txt' )
 
-
-yep = write_matrix ( yn, 2, real(frac6, kind = 4), trim(path) // 'frac6.txt' )
-yep = write_matrix ( yn, 2, real(temp6, kind = 4), trim(path) // 'temp6.txt' )
-
-
-!yep = write_matrix (xn*tn/(mstep*ar), yn, real(rhsmat, kind = 4), trim(path) // 'rhsMat.txt' )
-yep = write_matrix (xn*tn/(mstep*ar), yn/2, real(hmat(:,(yn/2)+1:), kind = 4), trim(path) // 'hMat.txt' )
-yep = write_matrix (xn*tn/(mstep*ar), yn/2, real(psimat(:,(yn/2)+1:),kind=4), trim(path) // 'psiMat.txt' )
-yep = write_matrix (xn*tn/(mstep*ar), yn/2, real(rhomat(:,(yn/2)+1:),kind=4), trim(path) // 'rhoMat.txt' )
-yep = write_matrix (xn*tn/(mstep*ar), yn/2, real(umat(:,(yn/2)+1:), kind = 4), trim(path) // 'uMat.txt' )
-yep = write_matrix (xn*tn/(mstep*ar), yn/2, real(vmat(:,(yn/2)+1:),kind=4), trim(path) // 'vMat.txt' )
-!yep = write_matrix (xn*tn/(mstep*ar), yn, real(permmat,kind=4), trim(path) // 'permMat.txt' )
-! yep = write_matrix (xn*tn/(mstep*ar), yn, real(permxMat,kind=4), trim(path) // 'permxMat.txt' )
-! yep = write_matrix (xn*tn/(mstep*ar), yn, real(permyMat,kind=4), trim(path) // 'permyMat.txt' )
-yep = write_matrix ( xn, yn/2,real(lambdaMat(:,(yn/2)+1:),kind=4), trim(path) // 'lambdaMat.txt' )
-
-!yep = write_matrix ( xn, yn, real(rho,kind=4), trim(path) // 'rho.txt' )
-!yep = write_matrix ( xn, yn, real(visc,kind=4), trim(path) // 'visc.txt' )
-
-yep = write_matrix ( xn, yn/2,real(phi(:,(yn/2)+1:),kind=4), trim(path) // 'phi.txt' )
-!yep = write_matrix ( xn/cell, yn/cell, real(phiCoarse,kind=4), trim(path) // 'phiCoarse.txt' )
-!yep = write_matrix ( xn, yn,real(reactive,kind=4), trim(path) // 'reactive.txt' )
-!yep = write_matrix ( xn/cell, yn/cell,real(reactiveCoarse,kind=4), trim(path) // 'reactiveCoarse.txt' )
-
-
-! yep = write_matrix ( 3, ison*tn/(cell*mstep*ar), real(isoTraceMat(1:3,:,1),kind=4), trim(path) // 'isopart_1.txt' )
-! yep = write_matrix ( 3, inertn*tn/(cell*mstep*ar), real(inertTraceMat(1:3,:),kind=4), trim(path) // 'inert_trace.txt' )
-! coarse variables
-!yep = write_matrix ( xn*tn/(cell*mstep*ar), yn/cell, real(uCoarseMat,kind=4), trim(path) // 'uCoarseMat.txt' )
-!yep = write_matrix ( xn*tn/(cell*mstep*ar), yn/cell, real(vCoarseMat,kind=4), trim(path) // 'vCoarseMat.txt' )
-!yep = write_matrix ( xn*tn/(cell*mstep*ar), yn/cell, real(psiCoarseMat,kind=4), trim(path) // 'psiCoarseMat.txt' )
-
-!if (maxval(medium(:,:,5)) .eq. 1.0) then
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! SAVING TIME !!!!!!!!!!!!!!!!!!!!!!!!
-
-end if ! end write only if restart ne 1
-
-
-
-!if (maxval(medium(:,:,5)) .eq. 1.0) then
-
-
-
-! solute concentrations
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat(:,(yn/(2*celly))+1:,1),kind=4), trim(path) // 'ch_s/z_sol_ph.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat(:,(yn/(2*celly))+1:,3),kind=4), trim(path) // 'ch_s/z_sol_w.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat(:,(yn/(2*celly))+1:,2),kind=4), trim(path) // 'ch_s/z_sol_alk.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat(:,(yn/(2*celly))+1:,4),kind=4), trim(path) // 'ch_s/z_sol_c.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat(:,(yn/(2*celly))+1:,5),kind=4), trim(path) // 'ch_s/z_sol_ca.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat(:,(yn/(2*celly))+1:,6),kind=4), trim(path) // 'ch_s/z_sol_mg.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat(:,(yn/(2*celly))+1:,7),kind=4), trim(path) // 'ch_s/z_sol_na.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat(:,(yn/(2*celly))+1:,8),kind=4), trim(path) // 'ch_s/z_sol_k.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat(:,(yn/(2*celly))+1:,9),kind=4), trim(path) // 'ch_s/z_sol_fe.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat(:,(yn/(2*celly))+1:,10),kind=4), trim(path) // 'ch_s/z_sol_s.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat(:,(yn/(2*celly))+1:,11),kind=4), trim(path) // 'ch_s/z_sol_si.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat(:,(yn/(2*celly))+1:,12),kind=4), trim(path) // 'ch_s/z_sol_cl.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat(:,(yn/(2*celly))+1:,13),kind=4), trim(path) // 'ch_s/z_sol_al.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat(:,(yn/(2*celly))+1:,14),kind=4), trim(path) // 'ch_s/z_sol_inert.txt' )
-
-! primary minerals
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat(:,(yn/(2*celly))+1:,2),kind=4), trim(path) // 'ch_s/z_pri_plag.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat(:,(yn/(2*celly))+1:,3),kind=4), trim(path) // 'ch_s/z_pri_pyr.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat(:,(yn/(2*celly))+1:,4),kind=4), trim(path) // 'ch_s/z_pri_ol.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat(:,(yn/(2*celly))+1:,5),kind=4), trim(path) // 'ch_s/z_pri_glass.txt' )
-
-! medium properties
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat(:,(yn/(2*celly))+1:,1),kind=4), trim(path) // 'ch_s/z_med_phi.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat(:,(yn/(2*celly))+1:,2),kind=4), trim(path) // 'ch_s/z_med_precip.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat(:,(yn/(2*celly))+1:,3),kind=4), trim(path) // 'ch_s/z_med_v_water.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat(:,(yn/(2*celly))+1:,4),kind=4), trim(path) // 'ch_s/z_med_reactive.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat(:,(yn/(2*celly))+1:,5),kind=4), trim(path) // 'ch_s/z_med_cell_toggle.txt' )
+		! medium properties
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat(:,(yn/(2*celly))+1:,1),kind=4), trim(path) // 'ch_s/z_med_phi.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat(:,(yn/(2*celly))+1:,2),kind=4), trim(path) // 'ch_s/z_med_precip.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat(:,(yn/(2*celly))+1:,3),kind=4), trim(path) // 'ch_s/z_med_v_water.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat(:,(yn/(2*celly))+1:,4),kind=4), trim(path) // 'ch_s/z_med_reactive.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat(:,(yn/(2*celly))+1:,5),kind=4), trim(path) // 'ch_s/z_med_cell_toggle.txt' )
 
 
 
 
 
-! solute concentrations
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_a(:,(yn/(2*celly))+1:,1),kind=4), trim(path) // 'ch_a/z_sol_ph.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_a(:,(yn/(2*celly))+1:,3),kind=4), trim(path) // 'ch_a/z_sol_w.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_a(:,(yn/(2*celly))+1:,2),kind=4), trim(path) // 'ch_a/z_sol_alk.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_a(:,(yn/(2*celly))+1:,4),kind=4), trim(path) // 'ch_a/z_sol_c.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_a(:,(yn/(2*celly))+1:,5),kind=4), trim(path) // 'ch_a/z_sol_ca.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_a(:,(yn/(2*celly))+1:,6),kind=4), trim(path) // 'ch_a/z_sol_mg.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_a(:,(yn/(2*celly))+1:,7),kind=4), trim(path) // 'ch_a/z_sol_na.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_a(:,(yn/(2*celly))+1:,8),kind=4), trim(path) // 'ch_a/z_sol_k.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_a(:,(yn/(2*celly))+1:,9),kind=4), trim(path) // 'ch_a/z_sol_fe.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_a(:,(yn/(2*celly))+1:,10),kind=4), trim(path) // 'ch_a/z_sol_s.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_a(:,(yn/(2*celly))+1:,11),kind=4), trim(path) // 'ch_a/z_sol_si.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_a(:,(yn/(2*celly))+1:,12),kind=4), trim(path) // 'ch_a/z_sol_cl.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_a(:,(yn/(2*celly))+1:,13),kind=4), trim(path) // 'ch_a/z_sol_al.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_a(:,(yn/(2*celly))+1:,14),kind=4), trim(path) // 'ch_a/z_sol_inert.txt' )
+		! solute concentrations
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_a(:,(yn/(2*celly))+1:,1),kind=4), trim(path) // 'ch_a/z_sol_ph.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_a(:,(yn/(2*celly))+1:,3),kind=4), trim(path) // 'ch_a/z_sol_w.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_a(:,(yn/(2*celly))+1:,2),kind=4), trim(path) // 'ch_a/z_sol_alk.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_a(:,(yn/(2*celly))+1:,4),kind=4), trim(path) // 'ch_a/z_sol_c.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_a(:,(yn/(2*celly))+1:,5),kind=4), trim(path) // 'ch_a/z_sol_ca.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_a(:,(yn/(2*celly))+1:,6),kind=4), trim(path) // 'ch_a/z_sol_mg.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_a(:,(yn/(2*celly))+1:,7),kind=4), trim(path) // 'ch_a/z_sol_na.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_a(:,(yn/(2*celly))+1:,8),kind=4), trim(path) // 'ch_a/z_sol_k.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_a(:,(yn/(2*celly))+1:,9),kind=4), trim(path) // 'ch_a/z_sol_fe.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_a(:,(yn/(2*celly))+1:,10),kind=4), trim(path) // 'ch_a/z_sol_s.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_a(:,(yn/(2*celly))+1:,11),kind=4), trim(path) // 'ch_a/z_sol_si.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_a(:,(yn/(2*celly))+1:,12),kind=4), trim(path) // 'ch_a/z_sol_cl.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_a(:,(yn/(2*celly))+1:,13),kind=4), trim(path) // 'ch_a/z_sol_al.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_a(:,(yn/(2*celly))+1:,14),kind=4), trim(path) // 'ch_a/z_sol_inert.txt' )
 
-! primary minerals
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat_a(:,(yn/(2*celly))+1:,2),kind=4), trim(path) // 'ch_a/z_pri_plag.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat_a(:,(yn/(2*celly))+1:,3),kind=4), trim(path) // 'ch_a/z_pri_pyr.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat_a(:,(yn/(2*celly))+1:,4),kind=4), trim(path) // 'ch_a/z_pri_ol.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat_a(:,(yn/(2*celly))+1:,5),kind=4), trim(path) // 'ch_a/z_pri_glass.txt' )
+		! primary minerals
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat_a(:,(yn/(2*celly))+1:,2),kind=4), trim(path) // 'ch_a/z_pri_plag.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat_a(:,(yn/(2*celly))+1:,3),kind=4), trim(path) // 'ch_a/z_pri_pyr.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat_a(:,(yn/(2*celly))+1:,4),kind=4), trim(path) // 'ch_a/z_pri_ol.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat_a(:,(yn/(2*celly))+1:,5),kind=4), trim(path) // 'ch_a/z_pri_glass.txt' )
 
-! medium properties
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat_a(:,(yn/(2*celly))+1:,1),kind=4), trim(path) // 'ch_a/z_med_phi.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat_a(:,(yn/(2*celly))+1:,2),kind=4), trim(path) // 'ch_a/z_med_precip.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat_a(:,(yn/(2*celly))+1:,3),kind=4), trim(path) // 'ch_a/z_med_v_water.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat_a(:,(yn/(2*celly))+1:,4),kind=4), trim(path) // 'ch_a/z_med_reactive.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat_a(:,(yn/(2*celly))+1:,5),kind=4), trim(path) // 'ch_a/z_med_cell_toggle.txt' )
+		! medium properties
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat_a(:,(yn/(2*celly))+1:,1),kind=4), trim(path) // 'ch_a/z_med_phi.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat_a(:,(yn/(2*celly))+1:,2),kind=4), trim(path) // 'ch_a/z_med_precip.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat_a(:,(yn/(2*celly))+1:,3),kind=4), trim(path) // 'ch_a/z_med_v_water.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat_a(:,(yn/(2*celly))+1:,4),kind=4), trim(path) // 'ch_a/z_med_reactive.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat_a(:,(yn/(2*celly))+1:,5),kind=4), trim(path) // 'ch_a/z_med_cell_toggle.txt' )
 
 
 
@@ -4058,166 +3638,131 @@ yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat_a(:,(y
 
 
 
-! solute concentrations
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_b(:,(yn/(2*celly))+1:,1),kind=4), trim(path) // 'ch_b/z_sol_ph.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_b(:,(yn/(2*celly))+1:,3),kind=4), trim(path) // 'ch_b/z_sol_w.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_b(:,(yn/(2*celly))+1:,2),kind=4), trim(path) // 'ch_b/z_sol_alk.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_b(:,(yn/(2*celly))+1:,4),kind=4), trim(path) // 'ch_b/z_sol_c.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_b(:,(yn/(2*celly))+1:,5),kind=4), trim(path) // 'ch_b/z_sol_ca.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_b(:,(yn/(2*celly))+1:,6),kind=4), trim(path) // 'ch_b/z_sol_mg.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_b(:,(yn/(2*celly))+1:,7),kind=4), trim(path) // 'ch_b/z_sol_na.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_b(:,(yn/(2*celly))+1:,8),kind=4), trim(path) // 'ch_b/z_sol_k.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_b(:,(yn/(2*celly))+1:,9),kind=4), trim(path) // 'ch_b/z_sol_fe.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_b(:,(yn/(2*celly))+1:,10),kind=4), trim(path) // 'ch_b/z_sol_s.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_b(:,(yn/(2*celly))+1:,11),kind=4), trim(path) // 'ch_b/z_sol_si.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_b(:,(yn/(2*celly))+1:,12),kind=4), trim(path) // 'ch_b/z_sol_cl.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_b(:,(yn/(2*celly))+1:,13),kind=4), trim(path) // 'ch_b/z_sol_al.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_b(:,(yn/(2*celly))+1:,14),kind=4), trim(path) // 'ch_b/z_sol_inert.txt' )
+		! solute concentrations
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_b(:,(yn/(2*celly))+1:,1),kind=4), trim(path) // 'ch_b/z_sol_ph.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_b(:,(yn/(2*celly))+1:,3),kind=4), trim(path) // 'ch_b/z_sol_w.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_b(:,(yn/(2*celly))+1:,2),kind=4), trim(path) // 'ch_b/z_sol_alk.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_b(:,(yn/(2*celly))+1:,4),kind=4), trim(path) // 'ch_b/z_sol_c.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_b(:,(yn/(2*celly))+1:,5),kind=4), trim(path) // 'ch_b/z_sol_ca.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_b(:,(yn/(2*celly))+1:,6),kind=4), trim(path) // 'ch_b/z_sol_mg.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_b(:,(yn/(2*celly))+1:,7),kind=4), trim(path) // 'ch_b/z_sol_na.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_b(:,(yn/(2*celly))+1:,8),kind=4), trim(path) // 'ch_b/z_sol_k.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_b(:,(yn/(2*celly))+1:,9),kind=4), trim(path) // 'ch_b/z_sol_fe.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_b(:,(yn/(2*celly))+1:,10),kind=4), trim(path) // 'ch_b/z_sol_s.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_b(:,(yn/(2*celly))+1:,11),kind=4), trim(path) // 'ch_b/z_sol_si.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_b(:,(yn/(2*celly))+1:,12),kind=4), trim(path) // 'ch_b/z_sol_cl.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_b(:,(yn/(2*celly))+1:,13),kind=4), trim(path) // 'ch_b/z_sol_al.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_b(:,(yn/(2*celly))+1:,14),kind=4), trim(path) // 'ch_b/z_sol_inert.txt' )
 
-! primary minerals
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat_b(:,(yn/(2*celly))+1:,2),kind=4), trim(path) // 'ch_b/z_pri_plag.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat_b(:,(yn/(2*celly))+1:,3),kind=4), trim(path) // 'ch_b/z_pri_pyr.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat_b(:,(yn/(2*celly))+1:,4),kind=4), trim(path) // 'ch_b/z_pri_ol.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat_b(:,(yn/(2*celly))+1:,5),kind=4), trim(path) // 'ch_b/z_pri_glass.txt' )
+		! primary minerals
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat_b(:,(yn/(2*celly))+1:,2),kind=4), trim(path) // 'ch_b/z_pri_plag.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat_b(:,(yn/(2*celly))+1:,3),kind=4), trim(path) // 'ch_b/z_pri_pyr.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat_b(:,(yn/(2*celly))+1:,4),kind=4), trim(path) // 'ch_b/z_pri_ol.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat_b(:,(yn/(2*celly))+1:,5),kind=4), trim(path) // 'ch_b/z_pri_glass.txt' )
 
-! medium properties
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat_b(:,(yn/(2*celly))+1:,1),kind=4), trim(path) // 'ch_b/z_med_phi.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat_b(:,(yn/(2*celly))+1:,2),kind=4), trim(path) // 'ch_b/z_med_precip.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat_b(:,(yn/(2*celly))+1:,3),kind=4), trim(path) // 'ch_b/z_med_v_water.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat_b(:,(yn/(2*celly))+1:,4),kind=4), trim(path) // 'ch_b/z_med_reactive.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat_b(:,(yn/(2*celly))+1:,5),kind=4), trim(path) // 'ch_b/z_med_cell_toggle.txt' )
+		! medium properties
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat_b(:,(yn/(2*celly))+1:,1),kind=4), trim(path) // 'ch_b/z_med_phi.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat_b(:,(yn/(2*celly))+1:,2),kind=4), trim(path) // 'ch_b/z_med_precip.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat_b(:,(yn/(2*celly))+1:,3),kind=4), trim(path) // 'ch_b/z_med_v_water.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat_b(:,(yn/(2*celly))+1:,4),kind=4), trim(path) // 'ch_b/z_med_reactive.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat_b(:,(yn/(2*celly))+1:,5),kind=4), trim(path) // 'ch_b/z_med_cell_toggle.txt' )
 
 
 
-! solute concentrations
+		! solute concentrations
 
-do ii = (yn/(2*celly))+1,yn/celly
-	do i = 1,xn*tn/(cellx*mstep*ar)
- 	   		soluteMat_d(i,ii,1) = -1.0*log10((volume_ratio/(1.0+volume_ratio))*10.0**(-1.0*soluteMat_a(i,ii,1)) + (1.0/(1.0+volume_ratio))*10.0**(-1.0*soluteMat_b(i,ii,1)))
-	 end do 
- end do
+		do ii = (yn/(2*celly))+1,yn/celly
+			do i = 1,xn*tn/(cellx*mstep*ar)
+		 	   		soluteMat_d(i,ii,1) = -1.0*log10((volume_ratio/(1.0+volume_ratio))*10.0**(-1.0*soluteMat_a(i,ii,1)) + (1.0/(1.0+volume_ratio))*10.0**(-1.0*soluteMat_b(i,ii,1)))
+			 end do 
+		 end do
  
  
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_d(:,(yn/(2*celly))+1:,1),kind=4), trim(path) // 'ch_d/z_sol_ph.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_d(:,(yn/(2*celly))+1:,3),kind=4), trim(path) // 'ch_d/z_sol_w.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_d(:,(yn/(2*celly))+1:,2),kind=4), trim(path) // 'ch_d/z_sol_alk.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_d(:,(yn/(2*celly))+1:,4),kind=4), trim(path) // 'ch_d/z_sol_c.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_d(:,(yn/(2*celly))+1:,5),kind=4), trim(path) // 'ch_d/z_sol_ca.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_d(:,(yn/(2*celly))+1:,6),kind=4), trim(path) // 'ch_d/z_sol_mg.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_d(:,(yn/(2*celly))+1:,7),kind=4), trim(path) // 'ch_d/z_sol_na.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_d(:,(yn/(2*celly))+1:,8),kind=4), trim(path) // 'ch_d/z_sol_k.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_d(:,(yn/(2*celly))+1:,9),kind=4), trim(path) // 'ch_d/z_sol_fe.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_d(:,(yn/(2*celly))+1:,10),kind=4), trim(path) // 'ch_d/z_sol_s.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_d(:,(yn/(2*celly))+1:,11),kind=4), trim(path) // 'ch_d/z_sol_si.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_d(:,(yn/(2*celly))+1:,12),kind=4), trim(path) // 'ch_d/z_sol_cl.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_d(:,(yn/(2*celly))+1:,13),kind=4), trim(path) // 'ch_d/z_sol_al.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_d(:,(yn/(2*celly))+1:,14),kind=4), trim(path) // 'ch_d/z_sol_inert.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_d(:,(yn/(2*celly))+1:,1),kind=4), trim(path) // 'ch_d/z_sol_ph.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_d(:,(yn/(2*celly))+1:,3),kind=4), trim(path) // 'ch_d/z_sol_w.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_d(:,(yn/(2*celly))+1:,2),kind=4), trim(path) // 'ch_d/z_sol_alk.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_d(:,(yn/(2*celly))+1:,4),kind=4), trim(path) // 'ch_d/z_sol_c.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_d(:,(yn/(2*celly))+1:,5),kind=4), trim(path) // 'ch_d/z_sol_ca.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_d(:,(yn/(2*celly))+1:,6),kind=4), trim(path) // 'ch_d/z_sol_mg.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_d(:,(yn/(2*celly))+1:,7),kind=4), trim(path) // 'ch_d/z_sol_na.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_d(:,(yn/(2*celly))+1:,8),kind=4), trim(path) // 'ch_d/z_sol_k.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_d(:,(yn/(2*celly))+1:,9),kind=4), trim(path) // 'ch_d/z_sol_fe.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_d(:,(yn/(2*celly))+1:,10),kind=4), trim(path) // 'ch_d/z_sol_s.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_d(:,(yn/(2*celly))+1:,11),kind=4), trim(path) // 'ch_d/z_sol_si.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_d(:,(yn/(2*celly))+1:,12),kind=4), trim(path) // 'ch_d/z_sol_cl.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_d(:,(yn/(2*celly))+1:,13),kind=4), trim(path) // 'ch_d/z_sol_al.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_d(:,(yn/(2*celly))+1:,14),kind=4), trim(path) // 'ch_d/z_sol_inert.txt' )
 
-! primary minerals
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat_d(:,(yn/(2*celly))+1:,2),kind=4), trim(path) // 'ch_d/z_pri_plag.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat_d(:,(yn/(2*celly))+1:,3),kind=4), trim(path) // 'ch_d/z_pri_pyr.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat_d(:,(yn/(2*celly))+1:,4),kind=4), trim(path) // 'ch_d/z_pri_ol.txt' )
-yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat_d(:,(yn/(2*celly))+1:,5),kind=4), trim(path) // 'ch_d/z_pri_glass.txt' )
-
-
-
-
-
-yep = write_matrix ( xn/(cellx), yn/(celly), real(coarse_mask,kind=4), trim(path) // 'mask_coarse.txt' )
+		! primary minerals
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat_d(:,(yn/(2*celly))+1:,2),kind=4), trim(path) // 'ch_d/z_pri_plag.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat_d(:,(yn/(2*celly))+1:,3),kind=4), trim(path) // 'ch_d/z_pri_pyr.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat_d(:,(yn/(2*celly))+1:,4),kind=4), trim(path) // 'ch_d/z_pri_ol.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat_d(:,(yn/(2*celly))+1:,5),kind=4), trim(path) // 'ch_d/z_pri_glass.txt' )
 
 
 
 
 
-write(*,*) "precipitated"
-do i = 1,g_sec/2
-	if (maxval(secondaryMat(:,:,i)) .gt. 0.0) then
-		write(*,*) i
-	
-        if (i < 10) then
-			write(s_i,'(i1)') i
-        else
-			write(s_i,'(i2)') i
-        end if
-		yep = write_matrix(xn*tn/(cellx*mstep*ar),yn/(2*celly),real(secondaryMat(:,(yn/(2*celly))+1:,i),kind=4),trim(path)//'ch_s/z_sec'//trim(s_i)//'.txt')
-	end if
-	
-	if (maxval(secondaryMat_a(:,:,i)) .gt. 0.0) then
-		write(*,*) i
-	
-        if (i < 10) then
-			write(s_i,'(i1)') i
-        else
-			write(s_i,'(i2)') i
-        end if
-		yep = write_matrix(xn*tn/(cellx*mstep*ar),yn/(2*celly),real(secondaryMat_a(:,(yn/(2*celly))+1:,i),kind=4),trim(path)//'ch_a/z_sec'//trim(s_i)//'.txt')
-	end if
-	
-	if (maxval(secondaryMat_b(:,:,i)) .gt. 0.0) then
-		write(*,*) i
-	
-        if (i < 10) then
-			write(s_i,'(i1)') i
-        else
-			write(s_i,'(i2)') i
-        end if
-		yep = write_matrix(xn*tn/(cellx*mstep*ar),yn/(2*celly),real(secondaryMat_b(:,(yn/(2*celly))+1:,i),kind=4),trim(path)//'ch_b/z_sec'//trim(s_i)//'.txt')
-	end if
-	
-	if (maxval(secondaryMat_d(:,:,i)) .gt. 0.0) then
-		write(*,*) i
-	
-        if (i < 10) then
-			write(s_i,'(i1)') i
-        else
-			write(s_i,'(i2)') i
-        end if
-		yep = write_matrix(xn*tn/(cellx*mstep*ar),yn/(2*celly),real(secondaryMat_d(:,(yn/(2*celly))+1:,i),kind=4),trim(path)//'ch_d/z_sec'//trim(s_i)//'.txt')
-	end if
-	
-end do
-
-
-write(*,*) ""
-write(*,*) "supersaturated"
-do i = 1,g_sec/2
-	if (maxval(saturationMat(:,:,i)) .gt. 0.0) then
-		write(*,*) i
-	end if
-        if (i < 10) then
-			write(s_i,'(i1)') i
-        else
-			write(s_i,'(i2)') i
-        end if
-		!yep = write_matrix(xn*tn/(cell*mstep*ar),yn/cell,real(saturationMat(:,:,i),kind=4),trim(path)//'sat'//trim(s_i)//'.txt')
-end do
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! SAVING TIME !!!!!!!!!!!!!!!!!!!!!!!!
-!end if
-
-write(*,*) "...DONE WRITING TO FILE"
-end if
-! end only write to file 5 times total
-
-
-!
-! write(*,*) "just wrote to file dynamics, step:" , j
-! !yep = write_matrix( 2, 1, real((/j*1.0, tn/), kind = 4), trim(path) // 'dynamicStep.txt' )
-! OPEN(UNIT=8, status = 'replace', FILE=trim(path) // 'dynamicStep.txt')
-! write(*,*) "opened"
-! write(8,*) j
-! close ( 8 )
-
-!end if ! end write if maxval cells on == 1
-
-	 	end if
-		! end mstep*ar loop
-		
 		
 
 
 
-		
-		
+		write(*,*) "precipitated"
+		do i = 1,g_sec/2
+			if (maxval(secondaryMat(:,:,i)) .gt. 0.0) then
+				write(*,*) i
+	
+		        if (i < 10) then
+					write(s_i,'(i1)') i
+		        else
+					write(s_i,'(i2)') i
+		        end if
+				yep = write_matrix(xn*tn/(cellx*mstep*ar),yn/(2*celly),real(secondaryMat(:,(yn/(2*celly))+1:,i),kind=4),trim(path)//'ch_s/z_sec'//trim(s_i)//'.txt')
+			end if
+	
+			if (maxval(secondaryMat_a(:,:,i)) .gt. 0.0) then
+				write(*,*) i
+	
+		        if (i < 10) then
+					write(s_i,'(i1)') i
+		        else
+					write(s_i,'(i2)') i
+		        end if
+				yep = write_matrix(xn*tn/(cellx*mstep*ar),yn/(2*celly),real(secondaryMat_a(:,(yn/(2*celly))+1:,i),kind=4),trim(path)//'ch_a/z_sec'//trim(s_i)//'.txt')
+			end if
+	
+			if (maxval(secondaryMat_b(:,:,i)) .gt. 0.0) then
+				write(*,*) i
+	
+		        if (i < 10) then
+					write(s_i,'(i1)') i
+		        else
+					write(s_i,'(i2)') i
+		        end if
+				yep = write_matrix(xn*tn/(cellx*mstep*ar),yn/(2*celly),real(secondaryMat_b(:,(yn/(2*celly))+1:,i),kind=4),trim(path)//'ch_b/z_sec'//trim(s_i)//'.txt')
+			end if
+	
+			if (maxval(secondaryMat_d(:,:,i)) .gt. 0.0) then
+				write(*,*) i
+	
+		        if (i < 10) then
+					write(s_i,'(i1)') i
+		        else
+					write(s_i,'(i2)') i
+		        end if
+				yep = write_matrix(xn*tn/(cellx*mstep*ar),yn/(2*celly),real(secondaryMat_d(:,(yn/(2*celly))+1:,i),kind=4),trim(path)//'ch_d/z_sec'//trim(s_i)//'.txt')
+			end if
+	
+		end do
+
+
+	write(*,*) "...DONE WRITING TO FILE"
+	end if ! end only write to file 5 times total
+
+
+	end if ! end if (mod(j,mstep*ar) .eq. 0)
+
+	
 end if 
 ! end mstep timestep loop, finally
 
@@ -4251,75 +3796,58 @@ else
 	do jj = 1, tn/mstep
 		
 		if (my_id .le. 22) then
-			
-		! here is a slave process, each process must receive a chunk of the h array and 
-		! take the local mean, print it, send it back.
+
+			! receive an_id
+			call MPI_RECV ( an_id_local, 1 , MPI_INTEGER, &
+			root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
 		
-		! receive an_id
-		call MPI_RECV ( an_id_local, 1 , MPI_INTEGER, &
-		root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+			! receive solute long for advection
+			call MPI_RECV ( sol_coarse_long_local, (xn/cellx)*(yn/celly), MPI_DOUBLE_PRECISION, &
+			root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
 		
-		! receive solute long for advection
-		call MPI_RECV ( sol_coarse_long_local, (xn/cellx)*(yn/celly), MPI_DOUBLE_PRECISION, &
-		root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+			! receive u long for advection
+			call MPI_RECV ( u_coarse_long_local, (xn/cellx)*(yn/celly), MPI_DOUBLE_PRECISION, &
+			root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
 		
-		! receive u long for advection
-		call MPI_RECV ( u_coarse_long_local, (xn/cellx)*(yn/celly), MPI_DOUBLE_PRECISION, &
-		root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
-! 		write(*,*) maxval(uFineLongLocal)
+			! receive v long for advection
+			call MPI_RECV ( v_coarse_long_local, (xn/cellx)*(yn/celly), MPI_DOUBLE_PRECISION, &
+			root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
 		
-		! receive v long for advection
-		call MPI_RECV ( v_coarse_long_local, (xn/cellx)*(yn/celly), MPI_DOUBLE_PRECISION, &
-		root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
-! 		write(*,*) maxval(vFineLongLocal)
+			! receive phi long for advection
+			call MPI_RECV ( phi_coarse_long_local, (xn/cellx)*(yn/celly), MPI_DOUBLE_PRECISION, &
+			root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
 		
-		! receive phi long for advection
-		call MPI_RECV ( phi_coarse_long_local, (xn/cellx)*(yn/celly), MPI_DOUBLE_PRECISION, &
-		root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
-! 		write(*,*) maxval(phiFineLongLocal)
+			! reshape them all
+			sol_coarse_local = reshape(sol_coarse_long_local,(/xn/cellx,yn/celly/))
+			u_coarse_local = reshape(u_coarse_long_local,(/xn/cellx,yn/celly/))
+			write(*,*) maxval(u_coarse_local)
+			v_coarse_local = reshape(v_coarse_long_local,(/xn/cellx,yn/celly/))
+			write(*,*) maxval(v_coarse_local)
+			phi_coarse_local = reshape(phi_coarse_long_local,(/xn/cellx,yn/celly/))
+			write(*,*) maxval(phi_coarse_local)
 		
-		! reshape them all
-		sol_coarse_local = reshape(sol_coarse_long_local,(/xn/cellx,yn/celly/))
-		u_coarse_local = reshape(u_coarse_long_local,(/xn/cellx,yn/celly/))
-		write(*,*) maxval(u_coarse_local)
-		v_coarse_local = reshape(v_coarse_long_local,(/xn/cellx,yn/celly/))
-		write(*,*) maxval(v_coarse_local)
-		phi_coarse_local = reshape(phi_coarse_long_local,(/xn/cellx,yn/celly/))
-		write(*,*) maxval(phi_coarse_local)
+			if (an_id_local .le. 11) then
+				do ii = 1,cstep
+					sol_coarse_local = solute_next_coarse(sol_coarse_local,u_coarse_local/phi_coarse_local,v_coarse_local/phi_coarse_local,sea(sol_index(an_id_local)))
+				end do
+			end if
 		
-		!write(*,*) "id:" , an_id_local , "u:" , maxval(abs(uFineLocal)) , "v:" , maxval(abs(vFineLocal)) , "phi:" , maxval(abs(phiFineLocal)) 
+			if (an_id_local .gt. 11) then
+				do ii = 1,cstep
+					sol_coarse_local = solute_next_coarse(sol_coarse_local,u_coarse_local/phi_coarse_local,v_coarse_local/phi_coarse_local,sea(sol_index(an_id_local-11)))
+				end do
+			end if
 		
-		!write(*,*) "advecting solutes on proc: " , an_id_local
+			sol_coarse_long_local = reshape(sol_coarse_local,(/(xn/cellx)*(yn/celly)/))
 		
-		if (an_id_local .le. 11) then
-			do ii = 1,cstep
-				sol_coarse_local = solute_next_coarse(sol_coarse_local,u_coarse_local/phi_coarse_local,v_coarse_local/phi_coarse_local,sea(sol_index(an_id_local)))
-			end do
-			!write(*,*) "moved: " , sea(sol_index(an_id_local)) , "on" , an_id_local
-		end if
-		
-		
-		if (an_id_local .gt. 11) then
-			do ii = 1,cstep
-				sol_coarse_local = solute_next_coarse(sol_coarse_local,u_coarse_local/phi_coarse_local,v_coarse_local/phi_coarse_local,sea(sol_index(an_id_local-11)))
-			end do
-			!write(*,*) "moved: " , sea(sol_index(an_id_local-11)) , "on" , an_id_local
-		end if
-		
-		
-		sol_coarse_long_local = reshape(sol_coarse_local,(/(xn/cellx)*(yn/celly)/))
-		
-		! send advected solutes back :)
-		call MPI_SEND( sol_coarse_long_local, (xn/cellx)*(yn/celly), MPI_DOUBLE_PRECISION, root_process, &
-		return_data_tag, MPI_COMM_WORLD, ierr)
-		
-		
+			! send advected solutes back :)
+			call MPI_SEND( sol_coarse_long_local, (xn/cellx)*(yn/celly), MPI_DOUBLE_PRECISION, root_process, &
+			return_data_tag, MPI_COMM_WORLD, ierr)
 		
 		end if ! end if my_id .le. 22
 		
 		
-		
-		
+	
 		! receive size of temperature array chunk
 		call MPI_RECV ( num_rows_to_receive, 1 , MPI_INTEGER, &
 		root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
@@ -4365,18 +3893,11 @@ else
 
 	
 		!--------------SLAVE PROCESSOR RUNS GEOCHEMICAL MODEL
-		!write(*,*) "sum of medLocal(:,5)" , sum(medLocal(:,5))
+
 		! slave processor loops through each coarse cell
 		do m=1,num_rows_to_receive
 			
-
-			! TRANSPORT ONLY
-			!medLocal(m,5) = 0.0
-			! TRANSPORT ONLY
-			
 		if (medLocal(m,5) .eq. 1.0) then
-			
-			
 			
 			param_exp_string = '0.01'
 			param_exp1_string = '0.01'
@@ -4385,6 +3906,13 @@ else
 			param_ol_string ='-f MgO 2.0 SiO2 1.0'
 			param_pyr_string='-f CaO 1.0 MgO 1.0 SiO2 2.0'
 			param_plag_string='-f NaAlSi3O8 0.5 CaAl2Si2O8 0.5'
+			
+			! 		&"-f CaO 1.0 FeO 1.0 SiO2 2.0 " //NEW_LINE('')// & ! hedenbergite
+			! 		&"-f CaO 1.0 MgO 1.0 SiO2 2.0 " //NEW_LINE('')// & ! diopside
+			! 		&"-f FeO 1.0 MgO 1.0 SiO2 2.0 " //NEW_LINE('')// & ! fer mag
+			! 		&"-f MgO 2.0 SiO2 2.0 " //NEW_LINE('')// & ! enstatite
+			! 		&"-f FeO 2.0 SiO2 2.0 " //NEW_LINE('')// & ! ferrosilite
+			! 		&"-f CaO 2.0 SiO2 2.0 " //NEW_LINE('')// & ! wollastonite
 
 			exp_ol1 = "0.01"
 			exp_ol2 = "0.01"
@@ -4431,16 +3959,6 @@ else
 			plag_e3 = ""
 			plag_n3 = ""
 
-			
-                       !write(*,*) medLocal(m,6:7)
-					   
-			! run the phreeqc alteration model
-			!alt0 = alt_next(hLocal(m),dt_local*mstep,priLocal(m,:), &
-			!		    secLocal(m,:),solLocal(m,:),medLocal(m,:))
-
-
-! BEGIN MIGRATION INSANITY
-
 !--------------GEOCHEM START
 
 primary3 = priLocal(m,:)
@@ -4452,12 +3970,6 @@ temp3 = hLocal(m)-273.0
 if (temp3 .ge. 300.0) then
 	temp3 = 299.0
 end if
-!write(*,*) "tem..."
-!write(*,*) temp3
-! write(*,*) "priLocal: " , priLocal(m,:)
-! write(*,*) "secLocal: " , secLocal(m,:)
-! write(*,*) "solLocal: " , solLocal(m,:)
-! write(*,*) "medLocal: " , medLocal(m,:)
 
 ! SOLUTES TO STRINGS
 write(s_ph,'(F25.10)') solute3(1)
@@ -4477,35 +3989,16 @@ write(s_hco3,'(F25.10)') solute3(14)
 write(s_co3,'(F25.10)') solute3(15)
 
 ! MEDIUM TO STRINGS
-write(s_w,'(F25.10)') medium3(3)!solute3(3)
+write(s_w,'(F25.10)') medium3(3) !solute3(3)
 
-
-!// trim(s_reactive) //"*M*(1.55e-8)*exp(-25.5/(.008314*("// trim(s_temp) //"+273.0) ))" // &
 solute3(15) = (10.0**(-1.0*solute3(1)))**3
-
-! if (solute3(13) .lt. 1e-15) then
-! 	solute3(13) = 1e-8
-! end if
-!primary3(2) = medium3(4)*primary3(5)*(1.55e-2)*exp(-25.5/(273.0+temp3))*((solute3(15)))
-!primary3(2) = medium3(4)*primary3(5)*(1.55e-6)*exp(-25.5/(273.0+temp3))*((solute3(15)**3)/solute3(13))**.33
-
-! PRIMARIES TO STRINGS
-! write(s_feldspar,'(F25.10)') primary3(1)
-! write(s_augite,'(F25.10)') primary3(2)
-! write(s_pigeonite,'(F25.10)') primary3(3)
-! write(s_magnetite,'(F25.10)') primary3(4)
-! write(s_glass,'(F25.10)') primary3(5)
 
 write(s_basalt3,'(F25.10)') primary3(2)
 write(s_basalt2,'(F25.10)') primary3(3)
 write(s_basalt1,'(F25.10)') primary3(4)
 write(s_glass,'(F25.10)') primary3(5)
 
-
-
-
 ! SECONDARIES TO STRINGS
-!secondary = 0.0
 write(s_stilbite,'(F25.10)') secondary3(1)
 write(s_aragonite,'(F25.10)') secondary3(2)
 write(s_kaolinite,'(F25.10)') secondary3(3)
@@ -4566,14 +4059,10 @@ write(s_daphnite_14a,'(F25.10)') secondary3(54) !!!
 ! write(s_mont_k,'(F25.10)') secondary3(56)
 ! write(s_mont_mg,'(F25.10)') secondary3(57)
 
-
 ! OTHER INFORMATION TO STRINGS
 write(s_temp,'(F25.10)') temp3
 write(s_timestep,'(F25.10)') timestep3
-
 write(s_precip,'(F25.10)') medium3(2)
-!write(*,*) "precip: " , medium3(2) , s_precip , trim(s_precip)
-
 write(s_reactive,'(F25.10)') medium3(4)
 
 ! ----------------------------------%%
@@ -4583,453 +4072,8 @@ write(s_reactive,'(F25.10)') medium3(4)
 kinetics = " precipitate_only"
 kinetics = " "
 write(s_pressure,'(F25.10)') 250.0 - (medium3(7)/5.0)
- 
 write(si_hematite,'(F25.10)') 1.0! -(solute3(1)*2.5) + 30.0
 
-! old inputz0 in here
-! inputz0 = "SOLUTION 1 " //NEW_LINE('')// &
-! !&"    pH " // trim(s_pH) //NEW_LINE('')// &
-! !&"    pe " // trim(s_pe) //NEW_LINE('')// &
-! &"    units   mol/kgw" //NEW_LINE('')// &
-! &"    temp" // trim(s_temp) //NEW_LINE('')// &
-! !&"    pressure 250.0" //NEW_LINE('')// &
-! !&"    pressure " // trim(s_pressure) //NEW_LINE('')// &
-! &"    Ca " // trim(s_ca) //NEW_LINE('')// &
-! &"    Mg " // trim(s_mg) //NEW_LINE('')// &
-! &"    Na " // trim(s_na) //NEW_LINE('')// &
-! &"    K " // trim(s_k) //NEW_LINE('')// &
-! &"    Fe " // trim(s_fe) //NEW_LINE('')// &
-! &"    S "// trim(s_s)  //NEW_LINE('')// &
-! &"    Si " // trim(s_si) //NEW_LINE('')// &
-! &"    Cl " // trim(s_cl) //NEW_LINE('')// &
-! &"    Al " // trim(s_al) //NEW_LINE('')// &
-! &"    C " // trim(s_co2) //NEW_LINE('')// &
-! &"    Alkalinity " // trim(s_alk) //NEW_LINE('')// &
-! ! // "as as Ca0.5(CO3)0.5"
-! &"    -water "// trim(s_w) // " # kg" //NEW_LINE('')// &
-!
-! ! ----------------------------------%%
-! ! HYDROTHERMAL MINERAL CHOICES
-! ! ----------------------------------%%
-!
-!
-! &"EQUILIBRIUM_PHASES 1" //NEW_LINE('')// &
-! &"    Kaolinite 0.0 " // trim(s_kaolinite) // kinetics //NEW_LINE('')// & ! clay
-! &"    Goethite 0.0 " // trim(s_goethite) // kinetics //NEW_LINE('')// &
-! &"    Celadonite 0.0 " // trim(s_celadonite) // kinetics //NEW_LINE('')// & ! mica
-! ! &"    Albite 0.0 " // trim(s_albite) // kinetics //NEW_LINE('')// & ! plagioclase
-! &"    Calcite 1.0 " // trim(s_calcite) // kinetics //NEW_LINE('')// & ! .135
-! &"    Montmor-Na 0.0 " // trim(s_mont_na) // kinetics //NEW_LINE('')// & ! smectite
-! &"    Montmor-K 0.0 " // trim(s_mont_k) // kinetics //NEW_LINE('')// & ! smectite
-! &"    Montmor-Mg 0.0 " // trim(s_mont_mg) // kinetics //NEW_LINE('')// & ! smectite
-! &"    Montmor-Ca 0.0 " // trim(s_mont_ca) // kinetics //NEW_LINE('')// & ! smectite
-! &"    Saponite-Mg 0.0 " // trim(s_saponite) // kinetics //NEW_LINE('')// & ! smectite
-! &"    Stilbite 0.0 " // trim(s_stilbite) // kinetics //NEW_LINE('')// & ! zeolite
-! &"    Clinoptilolite-Ca 0.0 " // trim(s_clinoptilolite) // kinetics //NEW_LINE('')// & ! zeolite
-! &"    Pyrite 0.0 " // trim(s_pyrite) // kinetics //NEW_LINE('')// &
-! ! &"    Quartz 0.0 " // trim(s_quartz) // kinetics //NEW_LINE('')// &
-! &"    K-Feldspar 0.0 " // trim(s_kspar) // kinetics //NEW_LINE('')// &
-!
-! ! NEW MINS
-!  &"    Saponite-Na 0.0 " // trim(s_saponite_na) // kinetics //NEW_LINE('')// & ! smectite
-!  &"    Nontronite-Na 0.0 " // trim(s_nont_na) // kinetics //NEW_LINE('')// & ! smectite
-!  &"    Nontronite-Mg 0.0 " // trim(s_nont_mg) // kinetics //NEW_LINE('')// & ! smectite
-!  &"    Nontronite-K 0.0 " // trim(s_nont_k) // kinetics //NEW_LINE('')// & ! smectite
-! !  &"    Nontronite-H 0.0 " // trim(s_nont_h) // kinetics //NEW_LINE('')// & ! smectite
-!  &"    Nontronite-Ca 0.0 " // trim(s_nont_ca) // kinetics //NEW_LINE('')// & ! smectite
-!  &"    Muscovite 0.0 " // trim(s_muscovite) // kinetics //NEW_LINE('')// & ! mica
-!  &"    Mesolite 0.0 " // trim(s_mesolite) // kinetics //NEW_LINE('')// & ! zeolite
-!  &"    Anhydrite 0.0 " // trim(s_anhydrite) // kinetics //NEW_LINE('')// & ! formerly magnesite
-!  &"    Smectite-high-Fe-Mg 0.0 " // trim(s_smectite) // kinetics //NEW_LINE('')// & ! smectite
-!  &"    Saponite-K 0.0 " // trim(s_saponite_k) // kinetics //NEW_LINE('')// & ! smectite
-!    &"    Vermiculite-Na 0.0 " // trim(s_verm_na) // kinetics //NEW_LINE('')// &
-!   &"    Hematite 0.0 " // trim(s_hematite) // kinetics //NEW_LINE('')// &
-! ! &"    Hematite " // trim(si_hematite) // trim(s_hematite) // kinetics //NEW_LINE('')// &
-!
-! !! MINERALS ADDED 10/18/2014
-!    &"    Vermiculite-Ca 0.0 " // trim(s_verm_ca) // kinetics //NEW_LINE('')// &
-!  &"    Analcime 0.0 " // trim(s_analcime) // kinetics //NEW_LINE('')// & ! zeolite
-!  &"    Phillipsite 0.0 " // trim(s_phillipsite) // kinetics //NEW_LINE('')// & ! zeolite
-!    &"    Diopside 0.0 " // trim(s_diopside) // kinetics //NEW_LINE('')// & ! pyroxene
-!     &"    Epidote  0.0 " // trim(s_epidote) // kinetics //NEW_LINE('')// &
-!    &"    Gismondine 0.0 " // trim(s_gismondine) // kinetics //NEW_LINE('')// & ! zeolite
-!   &"    Hedenbergite 0.0 " // trim(s_hedenbergite) // kinetics //NEW_LINE('')// & ! pyroxene
-!    &"    Chalcedony 0.0 " // trim(s_chalcedony) // kinetics //NEW_LINE('')// & ! quartz
-!    &"    Vermiculite-Mg 0.0 " // trim(s_verm_mg) // kinetics //NEW_LINE('')// &
-!  &"    Ferrihydrite 0.0 " // trim(s_ferrihydrite) // kinetics //NEW_LINE('')// & ! iron oxyhydroxide
-!   &"    Natrolite 0.0 " // trim(s_natrolite) // kinetics //NEW_LINE('')// & ! zeolite
-! &"    Talc 0.0 " // trim(s_talc) // kinetics //NEW_LINE('')// &
-!  &"    Smectite-low-Fe-Mg 0.0 " // trim(s_smectite_low) // kinetics //NEW_LINE('')// & ! smectite
-!   &"    Prehnite 0.0 " // trim(s_prehnite) // kinetics //NEW_LINE('')// &
-!   &"    Chlorite(14A) 0.0 " // trim(s_chlorite) // kinetics //NEW_LINE('')// & ! chlorite
-!   &"    Scolecite 0.0 " // trim(s_scolecite) // kinetics //NEW_LINE('')// & ! zeolite
-!   &"    Chamosite-7A 0.0 " // trim(s_chamosite7a) // kinetics //NEW_LINE('')// & ! chlorite
-!   &"    Clinochlore-14A 0.0 " // trim(s_clinochlore14a) // kinetics //NEW_LINE('')// & ! chlorite
-!   &"    Clinochlore-7A 0.0 " // trim(s_clinochlore7a) // kinetics //NEW_LINE('')// & ! chlorite
-!  !! NEXT ROUND
-!
-!  &"   Saponite-Ca 0.0 " // trim(s_saponite_ca) // kinetics //NEW_LINE('')// & ! smectite
-!  &"   Pyrrhotite 0.0 " // trim(s_pyrrhotite) // kinetics //NEW_LINE('')// & ! sulfide
-!   &"   Magnetite 0.0 " // trim(s_magnetite) // kinetics //NEW_LINE('')// &
-!   &"   Daphnite-7a 0.0 " // trim(s_daphnite_7a) // kinetics //NEW_LINE('')// & ! chlorite
-!   &"   Daphnite-14a 0.0 " // trim(s_daphnite_14a) // kinetics //NEW_LINE('')// & ! chlorite
-!   &"   Vermiculite-K 0.0 " // trim(s_verm_k) // kinetics //NEW_LINE('')// &
-!   &"   Aragonite 0.0 " // trim(s_aragonite) // kinetics //NEW_LINE('')// &
-! ! &" -force_equality"  //NEW_LINE('')// &
-!  &"   Lepidocrocite 0.0 " // trim(s_lepidocrocite) // kinetics //NEW_LINE('')// & ! iron oxyhydroxide
-!
-!
-!
-! ! ---------------------------------%%
-! ! KINETIC DISSOLUTION RATE LAWS
-! ! ----------------------------------%%
-! !	  &"      10 rate0 =" // s_reactive //"*M*(7.7e-11)*exp(-25.0/(.008314*TK))" //NEW_LINE('')// &
-!
-!
-! &"RATES" //NEW_LINE('')// &
-!
-! &"BGlass" //NEW_LINE('')// &
-! &"-start" //NEW_LINE('')// &
-! !CALC_VALUE('R(s_sp)')
-! ! most recent
-! !    &"    10 rate0=M*46.5*(1.53e-5)*" // trim(s_reactive) //"*0.000001*(1e4)*(2.51189e-6)*exp(-25.5/(.008314*TK))" // &
-! !    &"*(((ACT('H+')^3)/(ACT('Al+3')))^.333)" //NEW_LINE('')// &
-!
-! !   	  &"      10 rate0 =" // s_reactive //"*M*(7.7e-11)*exp(-25.0/(.008314*TK))" //NEW_LINE('')// &
-!
-! ! APRIL 2016 BEST TEMP ONLY LAW FOR NOW
-! ! &"      10 rate0 =0.01*" // trim(s_glass) //"*(7.7e-11)*exp(-25.0/(.008314*TK))" //NEW_LINE('')// &
-!
-! ! SAVE 04/27/16
-! &"    10 rate0=M*46.5*(1.53e-5)*0.1*0.00001*(1e4)*(2.51189e-6)*exp(-25.5/(.008314*TK))" // &
-! &"*(((ACT('H+')^3)/(ACT('Al+3')))^.333)" //NEW_LINE('')// &
-! ! &"    10 rate0=M*46.5*(1.53e-5)*0.01*1.0*(1.0e4)*(2.51189e-6)*exp(-25.5/(.008314*TK))" // &
-! ! &"*(((ACT('H+')^3)/(ACT('Al+3')))^.333)" //NEW_LINE('')// &
-!
-!
-!  	  !&"      10 rate0 =TK*7.7e-17" //NEW_LINE('')// &
-!
-! ! &"    10 rate0=" // s_reactive //"*M*.000000001*200.0*23000.0*(2.51189e-6)*exp(-25.5/(.008314*TK))" // &
-! ! &"*(((ACT('H+')^3)/(ACT('Al+3')))^.333)" //NEW_LINE('')// &
-!
-! ! &"    10 rate0=" // trim(s_reactive) //"*M*(1.55e-8)*exp(-25.5/(.008314*("// trim(s_temp) //"+273.0) ))" // &
-! ! &"*(((ACT('H+')^3)/(ACT('Al+3')))^.333)" //NEW_LINE('')// &
-!
-!
-! ! &"    10 rate0=" // trim(s_augite) // "*((ACT('H+')^3)/(ACT('Al+3')))^.333" //NEW_LINE('')// &
-! !&"    10 rate0=" // trim(s_augite) //NEW_LINE('')// &
-!
-! ! this!
-! ! &"      10 rate0 =" // trim(s_reactive) //"*M*(7.7e-12)*exp(-25.0/(.008314*("// trim(s_temp) //"+273.0) ))" //NEW_LINE('')// &
-! !&"      10 rate0 =" // trim(s_reactive) //"*M*(7.7e-12)*exp(-25.0/(.008314*("// trim(s_temp) //"+273.0) ))" //NEW_LINE('')// &
-!
-! !  &"      10 rate0 = (0.25)*M*(10.0^(-10))*exp(-25.0/(.008314*TK))" //NEW_LINE('')// &
-! ! &"      10 rate0 = (.001) * (10^(-2940.0/TK)) *exp(-25.0/(.008314*TK))" //NEW_LINE('')// &
-! &"    20 save rate0 * time" //NEW_LINE('')// &
-! &"-end" //NEW_LINE('')// &
-!
-! ! &"Plagioclase" //NEW_LINE('')// &
-! ! &"-start" //NEW_LINE('')// &
-! ! !(1-SR('Plagioclase'))*
-! ! &"    10 rate = (1-SR('Plagioclase'))*M*270.0*(1.53e-5)*1.0*(((1.58e-9)"//&
-! ! &"*exp(-53.5/(.008314*TK))*(ACT('H+')^0.541) +(3.39e-12)*exp(-57.4/(.008314*TK)) +"//&
-! ! &"(4.78e-15)*exp(-59.0/(.008314*TK))*(ACT('H+'))^-0.57))"//NEW_LINE('')//&
-! ! &"    20 save rate * time"//NEW_LINE('')//&
-! ! &"-end" //NEW_LINE('')// &
-! !
-! ! &"Augite" //NEW_LINE('')// &
-! ! &"-start" //NEW_LINE('')// &
-! ! &"    10 rate0 = (1-SR('Augite'))*M*230.0*(1.53e-5)*1.0*(((1.58e-7)" // &
-! ! &"*exp(-78.0/(.008314*TK))*(ACT('H+')^0.7)+(1.07e-12)*exp(-78.0/(.008314*TK))))" //NEW_LINE('')// &
-! ! &"    20 save rate0 * time" //NEW_LINE('')// &
-! ! &"-end" //NEW_LINE('')// &
-! !
-! ! &"Pigeonite" //NEW_LINE('')// &
-! ! &"-start" //NEW_LINE('')// &
-! ! &"    10 rate0 = (1-SR('Pigeonite'))*M*236.0*(1.53e-5)*1.0*(((1.58e-7)" // &
-! ! &"*exp(-78.0/(.008314*TK))*(ACT('H+')^0.7)+(1.07e-12)*exp(-78.0/(.008314*TK))))"//NEW_LINE('')// &
-! ! &"    20 save rate0 * time" //NEW_LINE('')// &
-! ! &"-end" //NEW_LINE('')// &
-! !
-! ! &"Magnetite" //NEW_LINE('')// &
-! ! &"-start" //NEW_LINE('')// &
-! ! &"    10 rate0 = (1-SR('Magnetite'))*M*231.0*(1.53e-5)*1.0*(((2.57e-9)" // &
-! ! &"*exp(-18.6/(.008314*TK))*(ACT('H+')^0.279)+(1.66e-11)*exp(-18.6/(.008314*TK))))" //NEW_LINE('')// &
-! ! &"    20 save rate0 * time" //NEW_LINE('')// &
-! ! &"-end" //NEW_LINE('')// &
-!
-! ! ----------------------------------%%
-! ! PRIMARY (KINETIC) CONSTITUENTS
-! ! ----------------------------------%%
-!
-! !&"Use solution 1" //NEW_LINE('')// &
-! !&"Use equilibrium_phases 1" //NEW_LINE('')// &
-! &"KINETICS 1" //NEW_LINE('')// &
-! ! &"Plagioclase" //NEW_LINE('')// &
-! ! &"-m0 " // trim(s_feldspar) //NEW_LINE('')// &
-! ! &"Augite" //NEW_LINE('')// &
-! ! &"-m0 " // trim(s_augite) //NEW_LINE('')// &
-! ! &"Pigeonite" //NEW_LINE('')// &
-! ! &"-m0 " // trim(s_pigeonite) //NEW_LINE('')// &
-! ! &"Magnetite" //NEW_LINE('')// &
-! ! &"-m0 " // trim(s_magnetite) //NEW_LINE('')// &
-! &"BGlass" //NEW_LINE('')// &
-!
-! ! ! ! hole 896a
-! ! &"-f CaO .220 SiO2 .856 Al2O3 .15 " //&
-! ! & "FeO .15 MgO .1826 K2O .0042 " //&
-! ! & "Na2O .0333" //NEW_LINE('')// &
-! ! &"-m0 " // trim(s_glass) //NEW_LINE('')// &
-! ! &"    -step " // trim(s_timestep) // " in 1" //NEW_LINE('')// &
-!
-!
-! ! ! seyfried JDF
-! &"-f CaO .1997 SiO2 .847 Al2O3 .138 " //&
-! ! & "Fe2O3 .149 FeO .0075 MgO .1744 K2O .002 " //&
-! & "Fe2O3 .149 MgO .1744 K2O .002 " //&
-! & "Na2O .043" //NEW_LINE('')// &
-! &"-m0 " // trim(s_glass) //NEW_LINE('')// &
-! &"    -step " // trim(s_timestep) // " in 1" //NEW_LINE('')// &
-!
-! &"INCREMENTAL_REACTIONS true" //NEW_LINE('')// &
-!
-! ! ----------------------------------%%
-! ! CALCULATE POROSITY AND STUFF
-! ! ----------------------------------%%
-!
-! &"CALCULATE_VALUES" //NEW_LINE('')// &
-! !
-!
-! &"R(sum)" //NEW_LINE('')// &
-! &"-start" //NEW_LINE('')// &
-! ! &"10 sum = (" //&
-! ! &"(EQUI('stilbite')*480.19/2.15) + (EQUI('aragonite')*100.19/2.93)" // &
-! ! &"+ (EQUI('kaolinite')*258.16/2.63) + (EQUI('albite')*263.02/2.62)" // &
-! ! &"+ (EQUI('Saponite-Mg')*480.19/2.3) + (EQUI('celadonite')*429.02/3.0)" // &
-! ! &"+ (EQUI('Clinoptilolite-Ca')*2742.13/2.15) + (EQUI('pyrite')*119.98/5.02)" // &
-! ! &"+ (EQUI('montmor-na')*549.07/2.01) + (EQUI('goethite')*88.85/4.27)" // &
-! ! &"+ (EQUI('dolomite')*180.4/2.84) + (EQUI('Smectite-high-Fe-Mg')*540.46/2.01)" // &
-! ! &"+ (EQUI('saponite-k')*480.19/2.3) + (EQUI('anhydrite')*136.14/2.97)" // &
-! ! &"+ (EQUI('siderite')*115.86/3.96) + (EQUI('calcite')*100.19/2.71)" // &
-! ! &"+ (EQUI('quartz')*60.08/2.65) + (EQUI('k-feldspar')*278.33/2.56)" // &
-! ! &"+ (EQUI('saponite-na')*480.19/2.3) + (EQUI('nontronite-na')*495.9/2.3)" // &
-! ! &"+ (EQUI('nontronite-mg')*495.9/2.3) + (EQUI('nontronite-k')*495.9/2.3)" // &
-! ! &"+ (EQUI('nontronite-h')*495.9/2.3) + (EQUI('nontronite-ca')*495.9/2.3)" // &
-! ! &"+ (EQUI('muscovite')*398.71/2.81) + (EQUI('mesolite')*1164.9/2.29)" // &
-! ! &"+ (EQUI('hematite')*159.69/5.3) + (EQUI('montmor-ca')*549.07/2.01)" // &
-! ! &"+ (EQUI('vermiculite-ca')*504.19/2.5) + (EQUI('analcime')*220.15/2.27)" // &
-! ! &"+ (EQUI('phillipsite')*704.93/2.2) + (EQUI('diopside')*216.55/3.3)" // &
-! ! &"+ (EQUI('epidote')*519.3/3.41) + (EQUI('gismondine')*718.55/2.26)" // &
-! ! &"+ (EQUI('hedenbergite')*248.08/3.56) + (EQUI('chalcedony')*60.08/2.65)" // &
-! ! &"+ (EQUI('vermiculite-mg')*504.19/2.5) + (EQUI('ferrihydrite')*169.7/3.8)" // &
-! ! &"+ (EQUI('natrolite')*380.22/2.23) + (EQUI('talc')*379.27/2.75)" // &
-! ! &"+ (EQUI('smectite-low-fe-mg')*540.46/2.01) + (EQUI('prehnite')*395.38/2.87)" // &
-! ! &"+ (EQUI('chlorite')*67.4/2.468) + (EQUI('scolecite')*392.34/2.27)" // &
-! ! &"+ (EQUI('chamosite-7a')*664.18/3.0) + (EQUI('clinochlore-14a')*595.22/3.0)" // &
-! ! &"+ (EQUI('clinochlore-7a')*595.22/3.0) + (EQUI('saponite-ca')*480.19/2.3)" // &
-! ! &"+ (EQUI('vermiculite-na')*504.19/2.5) + (EQUI('pyrrhotite')*85.12/4.62)" // &
-! ! &"+ (EQUI('magnetite')*231.53/5.15) + (EQUI('lepidocrocite')*88.85/4.08)" // &
-! ! &"+ (EQUI('daphnite-7a')*664.18/3.2) + (EQUI('daphnite-14a')*664.18/3.2)" // &
-! ! &"+ (EQUI('vermiculite-k')*504.19/2.5) + (EQUI('montmor-k')*549.07/2.01)" // &
-! ! &"+ (EQUI('montmor-mg')*549.07/2.01) + (KIN('Bglass')*96.8/2.92) )" // &
-! ! &"10 sum = (" //&
-! ! &"(EQUI('stilbite')*480.19/2.15) + (EQUI('aragonite')*100.19/2.93)" // &
-! ! &"+ (EQUI('kaolinite')*258.16/2.63) + (EQUI('albite')*263.02/2.62)" // &
-! ! &"+ (EQUI('Saponite-Mg')*480.19/2.3) + (EQUI('celadonite')*429.02/3.0)" // &
-! ! &"+ (EQUI('Clinoptilolite-Ca')*2742.13/2.15) + (EQUI('pyrite')*119.98/5.02)" // &
-! ! &"+ (EQUI('montmor-na')*549.07/2.01) + (EQUI('goethite')*88.85/4.27)" // &
-! ! &"+ (EQUI('dolomite')*180.4/2.84) + (EQUI('Smectite-high-Fe-Mg')*540.46/2.01)" // &
-! ! &"+ (EQUI('saponite-k')*480.19/2.3) + (EQUI('anhydrite')*136.14/2.97)" // &
-! ! &"+ (EQUI('siderite')*115.86/3.96) + (EQUI('calcite')*100.19/2.71)" // &
-! ! &"+ (EQUI('quartz')*60.08/2.65) + (EQUI('k-feldspar')*278.33/2.56)" // &
-! ! &"+ (EQUI('saponite-na')*480.19/2.3) + (EQUI('nontronite-na')*495.9/2.3)" // &
-! ! &"+ (EQUI('nontronite-mg')*495.9/2.3) + (EQUI('nontronite-k')*495.9/2.3)" // &
-! ! &"+ (EQUI('nontronite-h')*495.9/2.3) + (EQUI('nontronite-ca')*495.9/2.3)" // &
-! ! &"+ (EQUI('muscovite')*398.71/2.81) + (EQUI('mesolite')*1164.9/2.29)" // &
-! ! &"+ (EQUI('hematite')*159.69/5.3) + (EQUI('montmor-ca')*549.07/2.01)" // &
-! ! &"+ (EQUI('vermiculite-ca')*504.19/2.5) + (EQUI('analcime')*220.15/2.27)" // &
-! ! &"+ (EQUI('phillipsite')*704.93/2.2) + (EQUI('diopside')*216.55/3.3)" // &
-! ! &"+ (EQUI('epidote')*519.3/3.41) + (EQUI('gismondine')*718.55/2.26)" // &
-! ! &"+ (EQUI('hedenbergite')*248.08/3.56) + (EQUI('chalcedony')*60.08/2.65)" // &
-! ! &"+ (EQUI('vermiculite-mg')*504.19/2.5) + (EQUI('ferrihydrite')*169.7/3.8)" // &
-! ! &"+ (EQUI('natrolite')*380.22/2.23) + (EQUI('talc')*379.27/2.75)" // &
-! ! &"+ (EQUI('smectite-low-fe-mg')*540.46/2.01) + (EQUI('prehnite')*395.38/2.87)" // &
-! ! &"+ (EQUI('chlorite')*67.4/2.468) + (EQUI('scolecite')*392.34/2.27)" // &
-! ! &"+ (EQUI('chamosite-7a')*664.18/3.0) + (EQUI('clinochlore-14a')*595.22/3.0)" // &
-! ! &"+ (EQUI('clinochlore-7a')*595.22/3.0) + (EQUI('saponite-ca')*480.19/2.3)" // &
-! ! &"+ (EQUI('vermiculite-na')*504.19/2.5) + (EQUI('pyrrhotite')*85.12/4.62)" // &
-! ! &"+ (EQUI('magnetite')*231.53/5.15) + (EQUI('lepidocrocite')*88.85/4.08)" // &
-! ! &"+ (EQUI('daphnite-7a')*664.18/3.2) + (EQUI('daphnite-14a')*664.18/3.2)" // &
-! ! &"+ (EQUI('vermiculite-k')*504.19/2.5) + (EQUI('montmor-k')*549.07/2.01)" // &
-! ! &"+ (EQUI('montmor-mg')*549.07/2.01) )" // &
-! &"10 sum = 5.0" //&
-! &"" //NEW_LINE('')// &
-! &"100 SAVE sum" //NEW_LINE('')// &
-! &"-end" //NEW_LINE('')// &
-!
-! !
-! &"R(phi)" //NEW_LINE('')// &
-! &"-start" //NEW_LINE('')// &
-! !&"10 phi = 1.0-(CALC_VALUE('R(sum)')/(CALC_VALUE('R(sum)')+(TOT('water')*1000.0)))" //&
-! &"10 phi = .351" //&
-! &"" //NEW_LINE('')// &
-! &"100 SAVE phi" //NEW_LINE('')// &
-! &"-end" //NEW_LINE('')// &
-! !
-! &"R(water_volume)" //NEW_LINE('')// &
-! &"-start" //NEW_LINE('')// &
-! !&"10 water_volume = SOLN_VOL / RHO" //NEW_LINE('')// &
-! &"10 water_volume = 0.3" //NEW_LINE('')// &
-! &"100 SAVE water_volume" //NEW_LINE('')// &
-! &"-end" //NEW_LINE('')// &
-! !
-! !
-! &"R(rho_s)" //NEW_LINE('')// &
-! &"-start" //NEW_LINE('')// &
-! ! &"10 rho_s = EQUI('Stilbite')*2.15 + EQUI('SiO2(am)')*2.62" //&
-! ! &"+ EQUI('Kaolinite')*2.6 + EQUI('Albite')*2.62" // &
-! ! &"+ EQUI('Saponite-Mg')*2.4 + EQUI('Celadonite')*3.0" // &
-! ! &"+ EQUI('Clinoptilolite-Ca')*2.62 + EQUI('Pyrite')*4.84" // &
-! ! &"+ EQUI('Montmor-Na')*5.3 + EQUI('Goethite')*3.8" // &
-! ! &"+ EQUI('Dolomite')*2.84 + EQUI('Smectite-high-Fe-Mg')*2.7" // &
-! ! &"+ EQUI('Dawsonite')*2.42 + EQUI('Anhydrite')*3.0" // &
-! ! &"+ EQUI('Siderite')*3.96 + EQUI('Calcite')*2.71" // &
-! ! &"+ EQUI('Quartz')*2.62 + EQUI('k-Feldspar')*2.56" // &
-! ! &"+ KIN('Plagioclase')*2.68 + KIN('Augite')*3.4" // &
-! ! &"+ KIN('Pigeonite')*3.38 + KIN('Magnetite')*5.15" // &
-! ! &"+ KIN('BGlass')*2.92" //NEW_LINE('')// &
-! ! &"20 rho_s = rho_s/ (EQUI('Stilbite') + EQUI('SiO2(am)')" //&
-! ! &"+ EQUI('Kaolinite') + EQUI('Albite')" // &
-! ! &"+ EQUI('Saponite-Mg') + EQUI('Celadonite')" // &
-! ! &"+ EQUI('Clinoptilolite-Ca') + EQUI('Pyrite')" // &
-! ! &"+ EQUI('Montmor-Na') + EQUI('Goethite')" // &
-! ! &"+ EQUI('Dolomite') + EQUI('Smectite-high-Fe-Mg')" // &
-! ! &"+ EQUI('Dawsonite') + EQUI('Anhydrite')" // &
-! ! &"+ EQUI('Siderite') + EQUI('Calcite')" // &
-! ! &"+ EQUI('Quartz') + EQUI('K-Feldspar')" // &
-! ! &"+ KIN('Plagioclase') + KIN('Augite')" // &
-! ! &"+ KIN('Pigeonite') + KIN('Magnetite')" // &
-! ! &"+ KIN('BGlass'))" //NEW_LINE('')// &
-! ! &"30 rho_s = rho_s * 1000000.0" //NEW_LINE('')// &
-!
-! ! ! THIS IS THE GOOD ONE
-! ! &"10 rho_s = 1000000.0* ( (EQUI('stilbite')*480.19/2.15) + (EQUI('aragonite')*100.19/2.93)" // &
-! ! &"+ (EQUI('kaolinite')*258.16/2.63) + (EQUI('albite')*263.02/2.62)" // &
-! ! &"+ (EQUI('Saponite-Mg')*480.19/2.3) + (EQUI('celadonite')*429.02/3.0)" // &
-! ! &"+ (EQUI('Clinoptilolite-Ca')*2742.13/2.15) + (EQUI('pyrite')*119.98/5.02)" // &
-! ! &"+ (EQUI('montmor-na')*549.07/2.01) + (EQUI('goethite')*88.85/4.27)" // &
-! ! &"+ (EQUI('dolomite')*180.4/2.84) + (EQUI('Smectite-high-Fe-Mg')*540.46/2.01)" // &
-! ! &"+ (EQUI('saponite-k')*480.19/2.3) + (EQUI('anhydrite')*136.14/2.97)" // &
-! ! &"+ (EQUI('siderite')*115.86/3.96) + (EQUI('calcite')*100.19/2.71)" // &
-! ! &"+ (EQUI('quartz')*60.08/2.65) + (EQUI('k-feldspar')*278.33/2.56)" // &
-! ! &"+ (EQUI('saponite-na')*480.19/2.3) + (EQUI('nontronite-na')*495.9/2.3)" // &
-! ! &"+ (EQUI('nontronite-mg')*495.9/2.3) + (EQUI('nontronite-k')*495.9/2.3)" // &
-! ! &"+ (EQUI('nontronite-h')*495.9/2.3) + (EQUI('nontronite-ca')*495.9/2.3)" // &
-! ! &"+ (EQUI('muscovite')*398.71/2.81) + (EQUI('mesolite')*1164.9/2.29)" // &
-! ! &"+ (EQUI('hematite')*159.69/5.3) + (EQUI('montmor-ca')*549.07/2.01)" // &
-! ! &"+ (EQUI('vermiculite-ca')*504.19/2.5) + (EQUI('analcime')*220.15/2.27)" // &
-! ! &"+ (EQUI('phillipsite')*704.93/2.2) + (EQUI('diopside')*216.55/3.3)" // &
-! ! &"+ (EQUI('epidote')*519.3/3.41) + (EQUI('gismondine')*718.55/2.26)" // &
-! ! &"+ (EQUI('hedenbergite')*248.08/3.56) + (EQUI('chalcedony')*60.08/2.65)" // &
-! ! &"+ (EQUI('vermiculite-mg')*504.19/2.5) + (EQUI('ferrihydrite')*169.7/3.8)" // &
-! ! &"+ (EQUI('natrolite')*380.22/2.23) + (EQUI('talc')*379.27/2.75)" // &
-! ! &"+ (EQUI('smectite-low-fe-mg')*540.46/2.01) + (EQUI('prehnite')*395.38/2.87)" // &
-! ! &"+ (EQUI('chlorite')*67.4/2.468) + (EQUI('scolecite')*392.34/2.27)" // &
-! ! &"+ (EQUI('chamosite-7a')*664.18/3.0) + (EQUI('clinochlore-14a')*595.22/3.0)" // &
-! ! &"+ (EQUI('clinochlore-7a')*595.22/3.0) + (EQUI('saponite-ca')*480.19/2.3)" // &
-! ! &"+ (EQUI('vermiculite-na')*504.19/2.5) + (EQUI('pyrrhotite')*85.12/4.62)" // &
-! ! &"+ (EQUI('magnetite')*231.53/5.15) + (EQUI('lepidocrocite')*88.85/4.08)" // &
-! ! &"+ (EQUI('daphnite-7a')*664.18/3.2) + (EQUI('daphnite-14a')*664.18/3.2)" // &
-! ! &"+ (EQUI('vermiculite-k')*504.19/2.5) + (EQUI('montmor-k')*549.07/2.01)" // &
-! ! &"+ (EQUI('montmor-mg')*549.07/2.01) + (KIN('Bglass')*96.8/2.92) )/" // &
-! ! &"( (EQUI('stilbite')) + (EQUI('aragonite'))" // &
-! ! &"+ (EQUI('kaolinite')) + (EQUI('albite'))" // &
-! ! &"+ (EQUI('Saponite-Mg')) + (EQUI('celadonite'))" // &
-! ! &"+ (EQUI('Clinoptilolite-Ca')) + (EQUI('pyrite'))" // &
-! ! &"+ (EQUI('montmor-na')) + (EQUI('goethite'))" // &
-! ! &"+ (EQUI('dolomite')) + (EQUI('Smectite-high-Fe-Mg'))" // &
-! ! &"+ (EQUI('saponite-k')) + (EQUI('anhydrite'))" // &
-! ! &"+ (EQUI('siderite')) + (EQUI('calcite'))" // &
-! ! &"+ (EQUI('quartz')) + (EQUI('k-feldspar'))" // &
-! ! &"+ (EQUI('saponite-na')) + (EQUI('nontronite-na'))" // &
-! ! &"+ (EQUI('nontronite-mg')) + (EQUI('nontronite-k'))" // &
-! ! &"+ (EQUI('nontronite-h')) + (EQUI('nontronite-ca'))" // &
-! ! &"+ (EQUI('muscovite')) + (EQUI('mesolite'))" // &
-! ! &"+ (EQUI('hematite')) + (EQUI('montmor-ca'))" // &
-! ! &"+ (EQUI('vermiculite-ca')) + (EQUI('analcime'))" // &
-! ! &"+ (EQUI('phillipsite')) + (EQUI('diopside'))" // &
-! ! &"+ (EQUI('epidote')) + (EQUI('gismondine'))" // &
-! ! &"+ (EQUI('hedenbergite')) + (EQUI('chalcedony'))" // &
-! ! &"+ (EQUI('vermiculite-mg')) + (EQUI('ferrihydrite'))" // &
-! ! &"+ (EQUI('natrolite')) + (EQUI('talc'))" // &
-! ! &"+ (EQUI('smectite-low-fe-mg')) + (EQUI('prehnite'))" // &
-! ! &"+ (EQUI('chlorite')) + (EQUI('scolecite'))" // &
-! ! &"+ (EQUI('chamosite-7a')) + (EQUI('clinochlore-14a'))" // &
-! ! &"+ (EQUI('clinochlore-7a')) + (EQUI('saponite-ca'))" // &
-! ! &"+ (EQUI('vermiculite-na')) + (EQUI('pyrrhotite'))" // &
-! ! &"+ (EQUI('magnetite')) + (EQUI('lepidocrocite'))" // &
-! ! &"+ (EQUI('daphnite-7a')) + (EQUI('daphnite-14a'))" // &
-! ! &"+ (EQUI('vermiculite-k')) + (EQUI('montmor-k'))" // &
-! ! &"+ (EQUI('montmor-mg')) + (KIN('BGlass')) )" // &
-!
-!
-! ! don't uncomment this!
-! !&"30 rho_s = rho_s * 1000000.0" //NEW_LINE('')// &
-! &"10 rho_s = 2.93e6" //NEW_LINE('')// &
-! &"" //NEW_LINE('')// &
-! &"100 SAVE rho_s" //NEW_LINE('')// &
-! &"-end" //NEW_LINE('')// &
-! !
-! !
-! &"R(s_sp)" //NEW_LINE('')// &
-! &"-start" //NEW_LINE('')// &
-! !&"10 s_sp = (CALC_VALUE('R(phi)')/(1.0-CALC_VALUE('R(phi)')))*400.0/CALC_VALUE('R(rho_s)')" //&
-! &"10 s_sp = 1.53e-5" //&
-! &"" //NEW_LINE('')// &
-! &"100 SAVE s_sp" //NEW_LINE('')// &
-! &"-end" //NEW_LINE('')// &
-!
-!
-! ! ----------------------------------%%
-! ! DEFINE THE KIND OF OUTPUT
-! ! ----------------------------------%%
-!
-! ! &"DUMP" //NEW_LINE('')// &
-! ! &"    -solution 1" //NEW_LINE('')// &
-! ! &"    -equilibrium_phases" //NEW_LINE('')// &
-!
-!   &"SELECTED_OUTPUT" //NEW_LINE('')// &
-!   &"    -reset false" //NEW_LINE('')// &
-!   &"    -k bglass" //NEW_LINE('')// &
-!   &"    -ph" //NEW_LINE('')// &
-!   &"    -pe false" //NEW_LINE('')// &
-!   &"    -totals C" //NEW_LINE('')// &
-!   &"    -totals Ca Mg Na K Fe S Si Cl Al " //NEW_LINE('')// &
-!   &"    -molalities HCO3-" //NEW_LINE('')// &
-!   &"    -water true" //NEW_LINE('')// &
-!   &"    -alkalinity" //NEW_LINE('')// &
-! &"    -p stilbite aragonite kaolinite albite saponite-mg celadonite Clinoptilolite-Ca" //NEW_LINE('')// &
-! &"    -p pyrite montmor-na goethite dolomite Smectite-high-Fe-Mg saponite-k anhydrite" //NEW_LINE('')// &
-! &"    -p siderite calcite quartz k-feldspar saponite-na nontronite-na nontronite-mg" //NEW_LINE('')// &
-! &"    -p nontronite-k nontronite-h nontronite-ca muscovite mesolite hematite montmor-ca" //NEW_LINE('')// &
-! &"    -p vermiculate-ca analcime phillipsite diopside epidote gismondine hedenbergite" //NEW_LINE('')// &
-! &"    -p chalcedony vermiculite-mg ferrihydrite natrolite talc Smectite-low-Fe-Mg prehnite" //NEW_LINE('')// &
-! &"    -p chlorite scolecite chamosite-7a Clinochlore-14A Clinochlore-7A saponite-ca" //NEW_LINE('')// &
-! &"    -p vermiculite-na pyrrhotite magnetite Lepidocrocite Daphnite-7A Daphnite-14A" //NEW_LINE('')// &
-! &"    -p vermiculite-k montmor-k montmor-mg" //NEW_LINE('')// &
-!
-! &"    -s stilbite aragonite kaolinite albite saponite-mg celadonite Clinoptilolite-Ca" //NEW_LINE('')// &
-! &"    -s pyrite montmor-na goethite dolomite Smectite-high-Fe-Mg saponite-k anhydrite" //NEW_LINE('')// &
-! &"    -s siderite calcite quartz k-feldspar saponite-na nontronite-na nontronite-mg" //NEW_LINE('')// &
-! &"    -s nontronite-k nontronite-h nontronite-ca muscovite mesolite hematite montmor-ca" //NEW_LINE('')// &
-! &"    -s vermiculate-ca analcime phillipsite diopside epidote gismondine hedenbergite" //NEW_LINE('')// &
-! &"    -s chalcedony vermiculite-mg ferrihydrite natrolite talc Smectite-low-Fe-Mg prehnite" //NEW_LINE('')// &
-! &"    -s chlorite scolecite chamosite-7a Clinochlore-14A Clinochlore-7A saponite-ca" //NEW_LINE('')// &
-! &"    -s vermiculite-na pyrrhotite magnetite Lepidocrocite Daphnite-7A Daphnite-14A" //NEW_LINE('')// &
-! &"    -s vermiculite-k montmor-k montmor-mg" //NEW_LINE('')// &
-!   &"    -calculate_values R(phi) R(s_sp)" //NEW_LINE('')// &
-!   &"    -time" //NEW_LINE('')// &
-! &"END"
 
 		inputz0 = "SOLUTION 1 " //NEW_LINE('')// &
 		&"    units   mol/kgw" //NEW_LINE('')// &
@@ -5167,12 +4211,6 @@ write(si_hematite,'(F25.10)') 1.0! -(solute3(1)*2.5) + 30.0
 
 		&"Basalt2 " //NEW_LINE('')// &
 		& trim(param_pyr_string) //NEW_LINE('')// &
-! 		&"-f CaO 1.0 FeO 1.0 SiO2 2.0 " //NEW_LINE('')// & ! hedenbergite
-! 		&"-f CaO 1.0 MgO 1.0 SiO2 2.0 " //NEW_LINE('')// & ! diopside
-! 		&"-f FeO 1.0 MgO 1.0 SiO2 2.0 " //NEW_LINE('')// & ! fer mag
-! 		&"-f MgO 2.0 SiO2 2.0 " //NEW_LINE('')// & ! enstatite
-! 		&"-f FeO 2.0 SiO2 2.0 " //NEW_LINE('')// & ! ferrosilite
-! 		&"-f CaO 2.0 SiO2 2.0 " //NEW_LINE('')// & ! wollastonite
 		&"-m0 " // trim(s_basalt2) //NEW_LINE('')// &
 
 		&"Basalt3 " //NEW_LINE('')// &
@@ -5331,33 +4369,6 @@ IF (RunString(id, inputz0).NE.0) THEN
 	!STOP
 END IF
 
-
-
-! ! !if errror print dump. look for other phases.
-! if ((temp .GT. 35.0) .and. (temp .LT. 40.0)) then
-! 	DO i=1,GetOutputStringLineCount(id)
-! 		call GetOutputStringLine(id, i, line)
-! 		write(*,*) trim(line)
-! 	END DO
-! end if
-  
-! NO MORE DUMPING!!!!!!!!!
-! ! PRINT DUMP/OUTPUT
-! DO i=1,GetOutputStringLineCount(id)
-! 	call GetOutputStringLine(id, i, line)
-! 	write(*,*) trim(line)
-! END DO
-
-
-! NOW KINDA USELESS PRINT STATEMENTS FOR WRITING TO FILES
-!WRITE(*,*) "WRITING TO 2D ARRAY AND OUTPUT FILES"
-!WRITE(*,*) "NUMBER OF LINES:"
-!WRITE(*,*) GetSelectedOutputStringLineCount(id)
-  
-  
-! OPEN FILE (don't need no file) (USEFUL)
-!OPEN(UNIT=12, FILE="testMat.txt", ACTION="write", STATUS="replace") 
-  
 ! WRITE AWAY
 DO i=1,GetSelectedOutputStringLineCount(id)
 	call GetSelectedOutputStringLine(id, i, line)
@@ -5463,18 +4474,13 @@ END IF
 
 			if (alt0(1,2) .lt. 1.0) then
 				medLocal(m,5) = 0.0
-				!solLocal(m,1) = 0.5
 				solLocal(m,:) = (/ solute3(1), solute3(2), solute3(3), solute3(4), solute3(5), &
 				solute3(6), solute3(7), solute3(8), solute3(9), solute3(10), solute3(11), &
 				solute3(12), solute3(13), solute3(14), 0.0/)
 			end if
 
-			! write(*,*) "glass: " , priLocal(m,5)
-					
 			end if ! end if-cell-is-on loop (medLocl 5 == 1)
-			! TRANSPORT ONLY
-			!medLocal(m,5) = 1.0
-			! TRANSPORT ONLY
+
 		end do ! end m = 1,num rows, ran chem for each row and populated local arrays
 
 		!--------------SLAVE PROCESSOR SENDS ALTERED MESSAGE TO MASTER PROCESSOR
@@ -7662,7 +6668,7 @@ solute_next_coarse = sol
 do j = yn/(2*celly),yn/celly-1
 	! do i = 2,xn-1
 	solute_next_coarse(2,j) = sol0(2,j) - qx*uTransport(2,j)*( sol0(2,j) - sol0(1,j) )
-	do i = 3,xn/cellx-2
+	do i = 3,xn/cellx-1
 		if (uTransport(i,j) .gt. 1e-9) then
 	!do i = 3,f_index1-2
 	
@@ -7678,8 +6684,8 @@ do j = yn/(2*celly),yn/celly-1
 				!if (i .gt. 2) then
 					!if (maskP(i-2,j) .ne. 0.0) then
 						!sigma1 = 0.0
-						sigma1a = (sol0(i+1,j) - sol0(i,j))/dx
-						sigma1b = 2.0*(sol0(i,j) - sol0(i-1,j))/dx
+						sigma1a = (sol0(i+1,j) - sol0(i,j))/(dx*cellx)
+						sigma1b = 2.0*(sol0(i,j) - sol0(i-1,j))/(dx*cellx)
 						
 						!if (sigma1a*sigma1b .gt. 0.0) then
 !							sigma1 = minval((/abs(sigma1a), abs(sigma1b)/))
@@ -7891,22 +6897,22 @@ end if ! end mod thing
 end do
 
 
-! sol = solute_next
-!
-!
-!
-! do j = yn/2,yn
-! 	do i = 1,xn
-! 		if ((maskP(i,j) .eq. 25.0)) then
-!
-! 			if (vTransport(i,j+1) .lt. 0.0) then
-! 				sol(i,j+1) = seaw
-! 			else
-! 				sol(i,j+1) = (4.0/3.0)*sol(i,j) - (1.0/3.0)*sol(i,j-1)
-! 			end if
-!
-! 		end if
-!
+sol = solute_next_coarse
+
+
+
+do j = yn/(2*celly),yn/celly
+	do i = 1,xn/cellx
+		if ((coarse_mask(i,j) .eq. 0.0)) then
+
+			if (vTransport(i,j) .lt. 0.0) then
+				sol(i,j+1) = seaw
+			else
+				sol(i,j+1) = (4.0/3.0)*sol(i,j) - (1.0/3.0)*sol(i,j-1)
+			end if
+
+		end if
+
 ! 		if ((maskP(i,j) .eq. 50.0)) then
 !
 ! ! 			if (vTransport(i,j+1) .lt. 0.0) then
@@ -7916,251 +6922,251 @@ end do
 ! ! 			end if
 !
 ! 		end if
-!
-!
+
+
 !
 ! 		if (maskP(i,j) .eq. 100.0) then
 !
 ! 				sol(i,j-1) = (4.0/3.0)*sol(i,j) - (1.0/3.0)*sol(i,j+1)
 !
 ! 		end if
+
+
+	end do
+end do
+
+sol0 = sol
+
+
+
+do j = yn/(2*celly),(yn/celly)-1
+	! do i = 1,xn
+	do i = 1,xn/cellx
+
+			if (vTransport(i,j) .gt. 1.0e-9) then
+				! upwind including bottom value
+				solute_next_coarse(i,j) = sol0(i,j) - qy*vTransport(i,j)*( sol0(i,j) - sol0(i,j-1) )
 !
-!
-! 	end do
-! end do
-!
-! sol0 = sol
-!
-!
-!
-! do j = yn/2,yn-1
-! 	! do i = 1,xn
-! 	do i = 1,f_index1-1
-!
-! 			if (vTransport(i,j) .gt. 1.0e-9) then
-! 				! upwind including bottom value
-! 				solute_next(i,j) = sol0(i,j) - qy*vTransport(i,j)*( sol0(i,j) - sol0(i,j-1) )
-! !
-! 			! correction loop: sort of a mess
-! 				!if (maskP(i,j-2) .ne. 0.0) then
-! 						!sigma1 = 0.0
-! 						sigma1a = (sol0(i,j+1) - sol0(i,j))/dy
-! 						sigma1b = 2.0*(sol0(i,j) - sol0(i,j-1))/dy
-!
-! 						!if (sigma1a*sigma1b .gt. 0.0) then
-! !							sigma1 = minval((/abs(sigma1a), abs(sigma1b)/))
-! ! 							if (sigma1 .eq. abs(sigma1a)) then
-! ! 								sigma1 = sign(1.0,sigma1a)*sigma1
-! ! 							end if
-! ! 							if (sigma1 .eq. abs(sigma1b)) then
-! ! 								sigma1 = sign(1.0,sigma1b)*sigma1
-! ! 							end if
-! ! 							sig_bool_a = th_bool(sigma1 .eq. abs(sigma1a))
-! ! 							sig_bool_b = th_bool(sigma1 .eq. abs(sigma1b))
-! ! 							sigma1 = sig_bool_a*sign(1.0,sigma1a)*sigma1 + sig_bool_b*sign(1.0,sigma1b)*sigma1
-! 							sigma1 = ((minloc((/abs(sigma1a), abs(sigma1b)/),DIM=1)-1.0)*sigma1b) + ((minloc((/abs(sigma1b), abs(sigma1a)/),DIM=1)-1.0)*sigma1a)
-! 							!end if
-!
-! 						!sigma3 = 0.0
-! 						sigma3a = 2.0*(sol0(i,j+1) - sol0(i,j))/dy
-! 						sigma3b = (sol0(i,j) - sol0(i,j-1))/dy
-!
-! 						!if (sigma3a*sigma3b .gt. 0.0) then
-! !						sigma3 = minval((/abs(sigma3a), abs(sigma3b)/))
-! ! 						if (sigma3 .eq. abs(sigma3a)) then
-! ! 							sigma3 = sign(1.0,sigma3a)*sigma3
-! ! 						end if
-! ! 						if (sigma3 .eq. abs(sigma3b)) then
-! ! 							sigma3 = sign(1.0,sigma3b)*sigma3
-! ! 						end if
-! ! 						sig_bool_a = th_bool(sigma3 .eq. abs(sigma3a))
-! ! 						sig_bool_b = th_bool(sigma3 .eq. abs(sigma3b))
-! ! 						sigma3 = sig_bool_a*sign(1.0,sigma3a)*sigma3 + sig_bool_b*sign(1.0,sigma3b)*sigma3
-! 						sigma3 = ((minloc((/abs(sigma3a), abs(sigma3b)/),DIM=1)-1.0)*sigma3b) + ((minloc((/abs(sigma3b), abs(sigma3a)/),DIM=1)-1.0)*sigma3a)
-! 							!end if
-!
-!
-! 						! choosing sigma5
-! 						sigma5 = 0.0
-! 						if (sigma1*sigma3 .gt. 0.0) then
-! 							sigma5 = sign(1.0,sigma1)*maxval((/abs(sigma1), abs(sigma3)/))
+			! correction loop: sort of a mess
+				!if (maskP(i,j-2) .ne. 0.0) then
+						!sigma1 = 0.0
+						sigma1a = (sol0(i,j+1) - sol0(i,j))/(dy*celly)
+						sigma1b = 2.0*(sol0(i,j) - sol0(i,j-1))/(dy*celly)
+
+						!if (sigma1a*sigma1b .gt. 0.0) then
+!							sigma1 = minval((/abs(sigma1a), abs(sigma1b)/))
+! 							if (sigma1 .eq. abs(sigma1a)) then
+! 								sigma1 = sign(1.0,sigma1a)*sigma1
+! 							end if
+! 							if (sigma1 .eq. abs(sigma1b)) then
+! 								sigma1 = sign(1.0,sigma1b)*sigma1
+! 							end if
+! 							sig_bool_a = th_bool(sigma1 .eq. abs(sigma1a))
+! 							sig_bool_b = th_bool(sigma1 .eq. abs(sigma1b))
+! 							sigma1 = sig_bool_a*sign(1.0,sigma1a)*sigma1 + sig_bool_b*sign(1.0,sigma1b)*sigma1
+							sigma1 = ((minloc((/abs(sigma1a), abs(sigma1b)/),DIM=1)-1.0)*sigma1b) + ((minloc((/abs(sigma1b), abs(sigma1a)/),DIM=1)-1.0)*sigma1a)
+							!end if
+
+						!sigma3 = 0.0
+						sigma3a = 2.0*(sol0(i,j+1) - sol0(i,j))/(dy*celly)
+						sigma3b = (sol0(i,j) - sol0(i,j-1))/(dy*celly)
+
+						!if (sigma3a*sigma3b .gt. 0.0) then
+!						sigma3 = minval((/abs(sigma3a), abs(sigma3b)/))
+! 						if (sigma3 .eq. abs(sigma3a)) then
+! 							sigma3 = sign(1.0,sigma3a)*sigma3
 ! 						end if
-!
-!
-!
-!
-!
-! 						!sigma2 = 0.0
-! 						sigma2a = (sol0(i,j) - sol0(i,j-1))/dy
-! 						sigma2b = 2.0*(sol0(i,j-1) - sol0(i,j-2))/dy
-!
-! 						!if (sigma2a*sigma2b .gt. 0.0) then
-! !						sigma2 = minval((/abs(sigma2a), abs(sigma2b)/))
-! ! 						if (sigma2 .eq. abs(sigma2a)) then
-! ! 							sigma2 = sign(1.0,sigma2a)*sigma2
-! ! 						end if
-! ! 						if (sigma2 .eq. abs(sigma2b)) then
-! ! 							sigma2 = sign(1.0,sigma2b)*sigma2
-! ! 						end if
-! ! 						sig_bool_a = th_bool(sigma2 .eq. abs(sigma2a))
-! ! 						sig_bool_b = th_bool(sigma2 .eq. abs(sigma2b))
-! ! 						sigma2 = sig_bool_a*sign(1.0,sigma2a)*sigma2 + sig_bool_b*sign(1.0,sigma2b)*sigma2
-! 						sigma2 = ((minloc((/abs(sigma2a), abs(sigma2b)/),DIM=1)-1.0)*sigma2b) + ((minloc((/abs(sigma2b), abs(sigma2a)/),DIM=1)-1.0)*sigma2a)
-! 							!end if
-!
-! 						!sigma4 = 0.0
-! 						sigma4a = 2.0*(sol0(i,j) - sol0(i,j-1))/dy
-! 						sigma4b = (sol0(i,j-1) - sol0(i,j-2))/dy
-!
-! 						!if (sigma4a*sigma4b .gt. 0.0) then
-! !						sigma4 = minval((/abs(sigma4a), abs(sigma4b)/))
-! ! 						if (sigma4 .eq. abs(sigma4a)) then
-! ! 							sigma4 = sign(1.0,sigma4a)*sigma4
-! ! 						end if
-! ! 						if (sigma4 .eq. abs(sigma4b)) then
-! ! 							sigma4 = sign(1.0,sigma4b)*sigma4
-! ! 						end if
-! ! 						sig_bool_a = th_bool(sigma4 .eq. abs(sigma4a))
-! ! 						sig_bool_b = th_bool(sigma4 .eq. abs(sigma4b))
-! ! 						sigma4 = sig_bool_a*sign(1.0,sigma4a)*sigma4 + sig_bool_b*sign(1.0,sigma4b)*sigma4
-! 						sigma4 = ((minloc((/abs(sigma4a), abs(sigma4b)/),DIM=1)-1.0)*sigma4b) + ((minloc((/abs(sigma4b), abs(sigma4a)/),DIM=1)-1.0)*sigma4a)
-! 							!end if
-!
-!
-! 						! choosing sigma6
-! 						sigma6 = 0.0
-! 						if (sigma2*sigma4 .gt. 0.0) then
-! 							sigma6 = sign(1.0,sigma2)*maxval((/abs(sigma2), abs(sigma4)/))
+! 						if (sigma3 .eq. abs(sigma3b)) then
+! 							sigma3 = sign(1.0,sigma3b)*sigma3
 ! 						end if
-!
-! ! 						write(*,*) "sigma5"
-! ! 						write(*,*) sigma5
-! ! 						write(*,*) "sigma6"
-! ! 						write(*,*) sigma6
-! 						correction = (vTransport(i,j)*qy*0.5) * (sigma5 - sigma6) * (dy - vTransport(i,j)*qy*dy)
-! 						solute_next(i,j) = solute_next(i,j) - correction
-! 				!end if ! end if maskP i,j-2 .ne. 0.0
-! 				! end correction loop
-!
-!
-! 			end if
-!
-! 			if (vTransport(i,j) .lt. -1.0e-9) then
-! 				! upwind including top value
-! 				solute_next(i,j) = sol0(i,j) - qy*vTransport(i,j)*( sol0(i,j+1) - sol0(i,j) )
-!
-! 				! correction loop: sort of a mess
-! 				!if (j .lt. yn-1) then
-! 					if (maskP(i,j+2) .ne. 0.0) then
-! 						!sigma1 = 0.0
-! 						sigma1a = (sol0(i,j+2) - sol0(i,j+1))/dy
-! 						sigma1b = 2.0*(sol0(i,j+1) - sol0(i,j))/dy
-!
-! 						!if (sigma1a*sigma1b .gt. 0.0) then
-! !							sigma1 = minval((/abs(sigma1a), abs(sigma1b)/))
-! ! 							if (sigma1 .eq. abs(sigma1a)) then
-! ! 								sigma1 = sign(1.0,sigma1a)*sigma1
-! ! 							end if
-! ! 							if (sigma1 .eq. abs(sigma1b)) then
-! ! 								sigma1 = sign(1.0,sigma1b)*sigma1
-! ! 							end if
-! ! 							sig_bool_a = th_bool(sigma1 .eq. abs(sigma1a))
-! ! 							sig_bool_b = th_bool(sigma1 .eq. abs(sigma1b))
-! ! 							sigma1 = sig_bool_a*sign(1.0,sigma1a)*sigma1 + sig_bool_b*sign(1.0,sigma1b)*sigma1
-! 							sigma1 = ((minloc((/abs(sigma1a), abs(sigma1b)/),DIM=1)-1.0)*sigma1b) + ((minloc((/abs(sigma1b), abs(sigma1a)/),DIM=1)-1.0)*sigma1a)
-! 							!end if
-!
-! 						!sigma3 = 0.0
-! 						sigma3a = 2.0*(sol0(i,j+2) - sol0(i,j+1))/dy
-! 						sigma3b = (sol0(i,j+1) - sol0(i,j))/dy
-!
-! 						!if (sigma3a*sigma3b .gt. 0.0) then
-! !						sigma3 = minval((/abs(sigma3a), abs(sigma3b)/))
-! ! 						if (sigma3 .eq. abs(sigma3a)) then
-! ! 							sigma3 = sign(1.0,sigma3a)*sigma3
-! ! 						end if
-! ! 						if (sigma3 .eq. abs(sigma3b)) then
-! ! 							sigma3 = sign(1.0,sigma3b)*sigma3
-! ! 						end if
-! ! 						sig_bool_a = th_bool(sigma3 .eq. abs(sigma3a))
-! ! 						sig_bool_b = th_bool(sigma3 .eq. abs(sigma3b))
-! ! 						sigma3 = sig_bool_a*sign(1.0,sigma3a)*sigma3 + sig_bool_b*sign(1.0,sigma3b)*sigma3
-! 						sigma3 = ((minloc((/abs(sigma3a), abs(sigma3b)/),DIM=1)-1.0)*sigma3b) + ((minloc((/abs(sigma3b), abs(sigma3a)/),DIM=1)-1.0)*sigma3a)
-! 							!end if
-!
-!
-! 						! choosing sigma5
-! 						sigma5 = 0.0
-! 						if (sigma1*sigma3 .gt. 0.0) then
-! 							sigma5 = sign(1.0,sigma1)*maxval((/abs(sigma1), abs(sigma3)/))
+! 						sig_bool_a = th_bool(sigma3 .eq. abs(sigma3a))
+! 						sig_bool_b = th_bool(sigma3 .eq. abs(sigma3b))
+! 						sigma3 = sig_bool_a*sign(1.0,sigma3a)*sigma3 + sig_bool_b*sign(1.0,sigma3b)*sigma3
+						sigma3 = ((minloc((/abs(sigma3a), abs(sigma3b)/),DIM=1)-1.0)*sigma3b) + ((minloc((/abs(sigma3b), abs(sigma3a)/),DIM=1)-1.0)*sigma3a)
+							!end if
+
+
+						! choosing sigma5
+						sigma5 = 0.0
+						if (sigma1*sigma3 .gt. 0.0) then
+							sigma5 = sign(1.0,sigma1)*maxval((/abs(sigma1), abs(sigma3)/))
+						end if
+
+
+
+
+
+						!sigma2 = 0.0
+						sigma2a = (sol0(i,j) - sol0(i,j-1))/(dy*celly)
+						sigma2b = 2.0*(sol0(i,j-1) - sol0(i,j-2))/(dy*celly)
+
+						!if (sigma2a*sigma2b .gt. 0.0) then
+!						sigma2 = minval((/abs(sigma2a), abs(sigma2b)/))
+! 						if (sigma2 .eq. abs(sigma2a)) then
+! 							sigma2 = sign(1.0,sigma2a)*sigma2
 ! 						end if
-!
-!
-!
-!
-!
-! 						!sigma2 = 0.0
-! 						sigma2a = (sol0(i,j+1) - sol0(i,j))/dy
-! 						sigma2b = 2.0*(sol0(i,j) - sol0(i,j-1))/dy
-!
-! 						!if (sigma2a*sigma2b .gt. 0.0) then
-! !						sigma2 = minval((/abs(sigma2a), abs(sigma2b)/))
-! ! 						if (sigma2 .eq. abs(sigma2a)) then
-! ! 							sigma2 = sign(1.0,sigma2a)*sigma2
-! ! 						end if
-! ! 						if (sigma2 .eq. abs(sigma2b)) then
-! ! 							sigma2 = sign(1.0,sigma2b)*sigma2
-! ! 						end if
-! ! 						sig_bool_a = th_bool(sigma2 .eq. abs(sigma2a))
-! ! 						sig_bool_b = th_bool(sigma2 .eq. abs(sigma2b))
-! ! 						sigma2 = sig_bool_a*sign(1.0,sigma2a)*sigma2 + sig_bool_b*sign(1.0,sigma2b)*sigma2
-! 						sigma2 = ((minloc((/abs(sigma2a), abs(sigma2b)/),DIM=1)-1.0)*sigma2b) + ((minloc((/abs(sigma2b), abs(sigma2a)/),DIM=1)-1.0)*sigma2a)
-! 							!end if
-!
-! 						!sigma4 = 0.0
-! 						sigma4a = 2.0*(sol0(i,j+1) - sol0(i,j))/dy
-! 						sigma4b = (sol0(i,j) - sol0(i,j-1))/dy
-!
-! 						!if (sigma4a*sigma4b .gt. 0.0) then
-! !						sigma4 = minval((/abs(sigma4a), abs(sigma4b)/))
-! ! 						if (sigma4 .eq. abs(sigma4a)) then
-! ! 							sigma4 = sign(1.0,sigma4a)*sigma4
-! ! 						end if
-! ! 						if (sigma4 .eq. abs(sigma4b)) then
-! ! 							sigma4 = sign(1.0,sigma4b)*sigma4
-! ! 						end if
-! ! 						sig_bool_a = th_bool(sigma4 .eq. abs(sigma4a))
-! ! 						sig_bool_b = th_bool(sigma4 .eq. abs(sigma4b))
-! ! 						sigma4 = sig_bool_a*sign(1.0,sigma4a)*sigma4 + sig_bool_b*sign(1.0,sigma4b)*sigma4
-! 						sigma4 = ((minloc((/abs(sigma4a), abs(sigma4b)/),DIM=1)-1.0)*sigma4b) + ((minloc((/abs(sigma4b), abs(sigma4a)/),DIM=1)-1.0)*sigma4a)
-! 							!end if
-!
-!
-! 						! choosing sigma6
-! 						sigma6 = 0.0
-! 						if (sigma2*sigma4 .gt. 0.0) then
-! 							sigma6 = sign(1.0,sigma2)*maxval((/abs(sigma2), abs(sigma4)/))
+! 						if (sigma2 .eq. abs(sigma2b)) then
+! 							sigma2 = sign(1.0,sigma2b)*sigma2
 ! 						end if
-!
-! ! 						write(*,*) "sigma5"
-! ! 						write(*,*) sigma5
-! ! 						write(*,*) "sigma6"
-! ! 						write(*,*) sigma6
-! 						correction = (vTransport(i,j)*qy*0.5) * (sigma6 - sigma5) * (dy - vTransport(i,j)*qy*dy)
-! 						solute_next(i,j) = solute_next(i,j) - correction
-!
-! 					end if
-! 				!end if ! end if j .lt. yn-1
-! 				! end correction loop
-!
-!
-! 			end if
-!
-!
-! 	end do
-! 	solute_next(i,yn-1) = sol0(i,yn-1) - qy*vTransport(i,yn-1)*( sol0(i,yn) - sol0(i,yn-1) )
-! end do
-!
+! 						sig_bool_a = th_bool(sigma2 .eq. abs(sigma2a))
+! 						sig_bool_b = th_bool(sigma2 .eq. abs(sigma2b))
+! 						sigma2 = sig_bool_a*sign(1.0,sigma2a)*sigma2 + sig_bool_b*sign(1.0,sigma2b)*sigma2
+						sigma2 = ((minloc((/abs(sigma2a), abs(sigma2b)/),DIM=1)-1.0)*sigma2b) + ((minloc((/abs(sigma2b), abs(sigma2a)/),DIM=1)-1.0)*sigma2a)
+							!end if
+
+						!sigma4 = 0.0
+						sigma4a = 2.0*(sol0(i,j) - sol0(i,j-1))/(dy*celly)
+						sigma4b = (sol0(i,j-1) - sol0(i,j-2))/(dy*celly)
+
+						!if (sigma4a*sigma4b .gt. 0.0) then
+!						sigma4 = minval((/abs(sigma4a), abs(sigma4b)/))
+! 						if (sigma4 .eq. abs(sigma4a)) then
+! 							sigma4 = sign(1.0,sigma4a)*sigma4
+! 						end if
+! 						if (sigma4 .eq. abs(sigma4b)) then
+! 							sigma4 = sign(1.0,sigma4b)*sigma4
+! 						end if
+! 						sig_bool_a = th_bool(sigma4 .eq. abs(sigma4a))
+! 						sig_bool_b = th_bool(sigma4 .eq. abs(sigma4b))
+! 						sigma4 = sig_bool_a*sign(1.0,sigma4a)*sigma4 + sig_bool_b*sign(1.0,sigma4b)*sigma4
+						sigma4 = ((minloc((/abs(sigma4a), abs(sigma4b)/),DIM=1)-1.0)*sigma4b) + ((minloc((/abs(sigma4b), abs(sigma4a)/),DIM=1)-1.0)*sigma4a)
+							!end if
+
+
+						! choosing sigma6
+						sigma6 = 0.0
+						if (sigma2*sigma4 .gt. 0.0) then
+							sigma6 = sign(1.0,sigma2)*maxval((/abs(sigma2), abs(sigma4)/))
+						end if
+
+! 						write(*,*) "sigma5"
+! 						write(*,*) sigma5
+! 						write(*,*) "sigma6"
+! 						write(*,*) sigma6
+						correction = (vTransport(i,j)*qy*0.5) * (sigma5 - sigma6) * ((dy*celly) - vTransport(i,j)*qy*(dy*celly))
+						solute_next_coarse(i,j) = solute_next_coarse(i,j) - correction
+				!end if ! end if maskP i,j-2 .ne. 0.0
+				! end correction loop
+
+
+			end if
+
+			if (vTransport(i,j) .lt. -1.0e-9) then
+				! upwind including top value
+				solute_next_coarse(i,j) = sol0(i,j) - qy*vTransport(i,j)*( sol0(i,j+1) - sol0(i,j) )
+
+				! correction loop: sort of a mess
+				!if (j .lt. yn-1) then
+					if (maskP(i,j+2) .ne. 0.0) then
+						!sigma1 = 0.0
+						sigma1a = (sol0(i,j+2) - sol0(i,j+1))/(dy*celly)
+						sigma1b = 2.0*(sol0(i,j+1) - sol0(i,j))/(dy*celly)
+
+						!if (sigma1a*sigma1b .gt. 0.0) then
+!							sigma1 = minval((/abs(sigma1a), abs(sigma1b)/))
+! 							if (sigma1 .eq. abs(sigma1a)) then
+! 								sigma1 = sign(1.0,sigma1a)*sigma1
+! 							end if
+! 							if (sigma1 .eq. abs(sigma1b)) then
+! 								sigma1 = sign(1.0,sigma1b)*sigma1
+! 							end if
+! 							sig_bool_a = th_bool(sigma1 .eq. abs(sigma1a))
+! 							sig_bool_b = th_bool(sigma1 .eq. abs(sigma1b))
+! 							sigma1 = sig_bool_a*sign(1.0,sigma1a)*sigma1 + sig_bool_b*sign(1.0,sigma1b)*sigma1
+							sigma1 = ((minloc((/abs(sigma1a), abs(sigma1b)/),DIM=1)-1.0)*sigma1b) + ((minloc((/abs(sigma1b), abs(sigma1a)/),DIM=1)-1.0)*sigma1a)
+							!end if
+
+						!sigma3 = 0.0
+						sigma3a = 2.0*(sol0(i,j+2) - sol0(i,j+1))/(dy*celly)
+						sigma3b = (sol0(i,j+1) - sol0(i,j))/(dy*celly)
+
+						!if (sigma3a*sigma3b .gt. 0.0) then
+!						sigma3 = minval((/abs(sigma3a), abs(sigma3b)/))
+! 						if (sigma3 .eq. abs(sigma3a)) then
+! 							sigma3 = sign(1.0,sigma3a)*sigma3
+! 						end if
+! 						if (sigma3 .eq. abs(sigma3b)) then
+! 							sigma3 = sign(1.0,sigma3b)*sigma3
+! 						end if
+! 						sig_bool_a = th_bool(sigma3 .eq. abs(sigma3a))
+! 						sig_bool_b = th_bool(sigma3 .eq. abs(sigma3b))
+! 						sigma3 = sig_bool_a*sign(1.0,sigma3a)*sigma3 + sig_bool_b*sign(1.0,sigma3b)*sigma3
+						sigma3 = ((minloc((/abs(sigma3a), abs(sigma3b)/),DIM=1)-1.0)*sigma3b) + ((minloc((/abs(sigma3b), abs(sigma3a)/),DIM=1)-1.0)*sigma3a)
+							!end if
+
+
+						! choosing sigma5
+						sigma5 = 0.0
+						if (sigma1*sigma3 .gt. 0.0) then
+							sigma5 = sign(1.0,sigma1)*maxval((/abs(sigma1), abs(sigma3)/))
+						end if
+
+
+
+
+
+						!sigma2 = 0.0
+						sigma2a = (sol0(i,j+1) - sol0(i,j))/(dy*celly)
+						sigma2b = 2.0*(sol0(i,j) - sol0(i,j-1))/(dy*celly)
+
+						!if (sigma2a*sigma2b .gt. 0.0) then
+!						sigma2 = minval((/abs(sigma2a), abs(sigma2b)/))
+! 						if (sigma2 .eq. abs(sigma2a)) then
+! 							sigma2 = sign(1.0,sigma2a)*sigma2
+! 						end if
+! 						if (sigma2 .eq. abs(sigma2b)) then
+! 							sigma2 = sign(1.0,sigma2b)*sigma2
+! 						end if
+! 						sig_bool_a = th_bool(sigma2 .eq. abs(sigma2a))
+! 						sig_bool_b = th_bool(sigma2 .eq. abs(sigma2b))
+! 						sigma2 = sig_bool_a*sign(1.0,sigma2a)*sigma2 + sig_bool_b*sign(1.0,sigma2b)*sigma2
+						sigma2 = ((minloc((/abs(sigma2a), abs(sigma2b)/),DIM=1)-1.0)*sigma2b) + ((minloc((/abs(sigma2b), abs(sigma2a)/),DIM=1)-1.0)*sigma2a)
+							!end if
+
+						!sigma4 = 0.0
+						sigma4a = 2.0*(sol0(i,j+1) - sol0(i,j))/(dy*celly)
+						sigma4b = (sol0(i,j) - sol0(i,j-1))/(dy*celly)
+
+						!if (sigma4a*sigma4b .gt. 0.0) then
+!						sigma4 = minval((/abs(sigma4a), abs(sigma4b)/))
+! 						if (sigma4 .eq. abs(sigma4a)) then
+! 							sigma4 = sign(1.0,sigma4a)*sigma4
+! 						end if
+! 						if (sigma4 .eq. abs(sigma4b)) then
+! 							sigma4 = sign(1.0,sigma4b)*sigma4
+! 						end if
+! 						sig_bool_a = th_bool(sigma4 .eq. abs(sigma4a))
+! 						sig_bool_b = th_bool(sigma4 .eq. abs(sigma4b))
+! 						sigma4 = sig_bool_a*sign(1.0,sigma4a)*sigma4 + sig_bool_b*sign(1.0,sigma4b)*sigma4
+						sigma4 = ((minloc((/abs(sigma4a), abs(sigma4b)/),DIM=1)-1.0)*sigma4b) + ((minloc((/abs(sigma4b), abs(sigma4a)/),DIM=1)-1.0)*sigma4a)
+							!end if
+
+
+						! choosing sigma6
+						sigma6 = 0.0
+						if (sigma2*sigma4 .gt. 0.0) then
+							sigma6 = sign(1.0,sigma2)*maxval((/abs(sigma2), abs(sigma4)/))
+						end if
+
+! 						write(*,*) "sigma5"
+! 						write(*,*) sigma5
+! 						write(*,*) "sigma6"
+! 						write(*,*) sigma6
+						correction = (vTransport(i,j)*qy*0.5) * (sigma6 - sigma5) * ((dy*celly) - vTransport(i,j)*qy*(dy*celly))
+						solute_next_coarse(i,j) = solute_next_coarse(i,j) - correction
+
+					end if
+				!end if ! end if j .lt. yn-1
+				! end correction loop
+
+
+			end if
+
+
+	end do
+	solute_next_coarse(i,yn/celly-1) = sol0(i,yn/celly-1) - qy*vTransport(i,yn/celly-1)*( sol0(i,yn/celly) - sol0(i,yn/celly-1) )
+end do
+
 
 
 
