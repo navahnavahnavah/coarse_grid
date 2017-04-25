@@ -540,6 +540,10 @@ L5 = "#  $Id: llnl.dat 4023 2010-02-09 21:02:42Z dlpark $" //NEW_LINE('')// &
 &"SOLUTION_SPECIES" //NEW_LINE('')// &
 &"" //NEW_LINE('')// &
 &"" //NEW_LINE('')// &
+
+&"H2O + 0.01e- = H2O-0.01" //NEW_LINE('')// &
+&"	log_k -9" //NEW_LINE('')// &
+
 &"Al+3 =  Al+3 " //NEW_LINE('')// &
 &"	-llnl_gamma	9.0000	" //NEW_LINE('')// &
 &"	log_k 0" //NEW_LINE('')// &
@@ -3901,11 +3905,12 @@ else
 			
 		if (medLocal(m,5) .eq. 1.0) then
 			
-			param_exp_string = '0.01'
-			param_exp1_string = '0.01'
+			param_exp_string = '1.0'
+			param_exp1_string = '1.0'
 
-			param_ol_string ='-f MgO 1.0 FeO 1.0 SiO2 1.0'
+			!param_ol_string ='-f MgO 1.0 FeO 1.0 SiO2 1.0'
 			!param_ol_string ='-f MgO 2.0 SiO2 1.0'
+			param_ol_string ='-f FeO 2.0 SiO2 1.0'
 			param_pyr_string='-f CaO 1.0 MgO 1.0 SiO2 2.0'
 			param_plag_string='-f NaAlSi3O8 0.5 CaAl2Si2O8 0.5'
 			
@@ -3916,21 +3921,21 @@ else
 			! 		&"-f FeO 2.0 SiO2 2.0 " //NEW_LINE('')// & ! ferrosilite
 			! 		&"-f CaO 2.0 SiO2 2.0 " //NEW_LINE('')// & ! wollastonite
 
-			exp_ol1 = "0.01"
-			exp_ol2 = "0.01"
-			exp_ol3 = "0.01"
+			exp_ol1 = "0.1"
+			exp_ol2 = "0.1"
+			exp_ol3 = "0.1"
 
 			exp_ol = exp_ol1
 
-			exp_pyr1 = "0.01"
-			exp_pyr2 = "0.01"
-			exp_pyr3 = "0.01"
+			exp_pyr1 = "0.1"
+			exp_pyr2 = "0.1"
+			exp_pyr3 = "0.1"
 
 			exp_pyr = exp_pyr1
 
-			exp_plag1 = "0.01"
-			exp_plag2 = "0.01"
-			exp_plag3 = "0.01"
+			exp_plag1 = "0.1"
+			exp_plag2 = "0.1"
+			exp_plag3 = "0.1"
 
 			exp_plag = exp_plag1
 
@@ -3942,6 +3947,15 @@ else
 			ol_k3 = ""
 			ol_e3 = ""
 			ol_n3 = ""
+
+! 			ol_k1 = "10.0^(-6.85)"
+! 			ol_e1 = "67.2"
+! 			ol_n1 = "0.470"
+! 			ol_k2 = "10.0^(-10.64)"
+! 			ol_e2 = "79.0"
+! 			ol_k3 = ""
+! 			ol_e3 = ""
+! 			ol_n3 = ""
 
 			pyr_k1 = "10.0^(-6.82)"
 			pyr_e1 = "78.0"
