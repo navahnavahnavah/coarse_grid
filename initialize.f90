@@ -248,23 +248,23 @@ ki=2.0/(1000.0*4186.0)
 ! primary minerals [mol]
 primary(:,:,:) = 0.0
 primary(:,:,1) = 0.0 !1.29600 ! feldspar
-primary(:,:,2) = 0.0 !.69600 ! plag
-primary(:,:,3) = 0.0 !.12600 ! pyr
-primary(:,:,4) = 0.0 !.04000 ! ol
-primary(:,:,5) = 0.95 !9.67700 ! basaltic glass
+primary(:,:,2) = 0.1 !.69600 ! plag
+primary(:,:,3) = 0.1 !.12600 ! pyr
+primary(:,:,4) = 0.1 !.04000 ! ol
+primary(:,:,5) = 1.0 !9.67700 ! basaltic glass
 
 primary_a(:,:,:) = 0.0
 primary_a(:,:,1) = 0.0   ! feldspar
 primary_a(:,:,2) = 0.0   ! plag
 primary_a(:,:,3) = 0.0   ! pyr
 primary_a(:,:,4) = 0.0   ! ol
-primary_a(:,:,5) = 1.05  ! basaltic glass
+primary_a(:,:,5) = 1.00  ! basaltic glass
 
 primary_b(:,:,:) = 0.0
 primary_b(:,:,1) = 0.0  ! feldspar
-primary_b(:,:,2) = 0.0 ! plag
-primary_b(:,:,3) = 0.0 ! pyr
-primary_b(:,:,4) = 0.0 ! ol
+primary_b(:,:,2) = 0.1 ! plag
+primary_b(:,:,3) = 0.1 ! pyr
+primary_b(:,:,4) = 0.1 ! ol
 primary_b(:,:,5) = 0.0  ! basaltic glass
 
 ! ! speed test
@@ -372,6 +372,7 @@ medium(:,:,3) = 0.266       ! water_volume
 vol_i = medium(1,1,3)
 medium(:,:,4) = 0.01        ! reactive fraction now!
 medium(:,:,5) = 1.0         ! rxn toggle
+medium(xn/cellx-2:,:,5) = 0.0
 ! medium(:,:,5) = 0.0         ! rxn toggle
 !medium(xn,yn/cell-3:,5) = 1.0         ! rxn toggle
 medium(:,:,6) = 0.0         ! x-coord
@@ -384,6 +385,7 @@ medium_a(:,:,3) = 0.266       ! water_volume
 vol_i_a = medium_a(1,1,3)
 medium_a(:,:,4) = 0.01        ! reactive fraction now!
 medium_a(:,:,5) = 1.0         ! rxn toggle
+medium_a(xn/cellx-2:,:,5) = 0.0
 !medium_a(xn,yn/cell-3:,5) = 1.0         ! rxn toggle
 medium_a(:,:,6) = 0.0         ! x-coord
 medium_a(:,:,7) = 0.0         ! y-coord
@@ -394,6 +396,7 @@ medium_b(:,:,3) = 0.0266      ! water_volume
 vol_i_b = medium_b(1,1,3)
 medium_b(:,:,4) = 0.01        ! reactive fraction now!
 medium_b(:,:,5) = 1.0         ! rxn toggle
+medium_b(xn/cellx-2:,:,5) = 0.0
 !medium_b(xn,yn/cell-3:,5) = 1.0         ! rxn toggle
 medium_b(:,:,6) = 0.0         ! x-coord
 medium_b(:,:,7) = 0.0         ! y-coord

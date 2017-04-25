@@ -3081,18 +3081,17 @@ end if
 ! 		write(*,*) dt*mstep/(cstep*dy*dy*cell*cell)
 
 !NOT RUNNING TRANSPORT RIGHT NOW, JUST CHEMISTRY
-!medium_b(:,:,5) = 0.0
-if (mod(j,tn/res_factor) .ne. 0) then
-	medium(:,:,2) = 1000.0
-	medium_a(:,:,2) = 1000.0
-	medium_b(:,:,2) = 1000.0
-end if
-
-if (mod(j,tn/res_factor) .eq. 0) then
+! if (mod(j,tn/res_factor) .ne. 0) then
+! 	medium(:,:,2) = 1000.0
+! 	medium_a(:,:,2) = 1000.0
+! 	medium_b(:,:,2) = 1000.0
+! end if
+!
+! if (mod(j,tn/res_factor) .eq. 0) then
 	medium(:,:,2) = 0.0
 	medium_a(:,:,2) = 0.0
 	medium_b(:,:,2) = 0.0
-end if
+! end if
 
 
 ! if (j .gt. mstep) then
@@ -3100,16 +3099,16 @@ end if
 			write(*,*) "STEP" , j , "STUFF"
 			write(*,*) "BEGIN CHAMBER MIXING"
 			
-			n=2 ! alk
-			solute_inter = solute_a(:,:,n)
-			solute_a(:,:,n) = solute_a(:,:,n)*(1.0-mix_ratio) + solute_b(:,:,n)*mix_ratio
-			solute_b(:,:,n) = solute_b(:,:,n)*(1.0-(volume_ratio*mix_ratio)) + solute_inter*volume_ratio*mix_ratio
-
-			do n=4,13 ! solutes
-				solute_inter = solute_a(:,:,n)
-				solute_a(:,:,n) = solute_a(:,:,n)*(1.0-mix_ratio) + solute_b(:,:,n)*mix_ratio
-				solute_b(:,:,n) = solute_b(:,:,n)*(1.0-(volume_ratio*mix_ratio)) + solute_inter*volume_ratio*mix_ratio
-			end do
+! 			n=2 ! alk
+! 			solute_inter = solute_a(:,:,n)
+! 			solute_a(:,:,n) = solute_a(:,:,n)*(1.0-mix_ratio) + solute_b(:,:,n)*mix_ratio
+! 			solute_b(:,:,n) = solute_b(:,:,n)*(1.0-(volume_ratio*mix_ratio)) + solute_inter*volume_ratio*mix_ratio
+!
+! 			do n=4,13 ! solutes
+! 				solute_inter = solute_a(:,:,n)
+! 				solute_a(:,:,n) = solute_a(:,:,n)*(1.0-mix_ratio) + solute_b(:,:,n)*mix_ratio
+! 				solute_b(:,:,n) = solute_b(:,:,n)*(1.0-(volume_ratio*mix_ratio)) + solute_inter*volume_ratio*mix_ratio
+! 			end do
 			
 			write(*,*) "...DONE WITH CHAMBER MIXING"
 
@@ -3905,8 +3904,8 @@ else
 			param_exp_string = '0.01'
 			param_exp1_string = '0.01'
 
-			! param_ol_string ='-f MgO 1.0 FeO 1.0 SiO2 1.0'
-			param_ol_string ='-f MgO 2.0 SiO2 1.0'
+			param_ol_string ='-f MgO 1.0 FeO 1.0 SiO2 1.0'
+			!param_ol_string ='-f MgO 2.0 SiO2 1.0'
 			param_pyr_string='-f CaO 1.0 MgO 1.0 SiO2 2.0'
 			param_plag_string='-f NaAlSi3O8 0.5 CaAl2Si2O8 0.5'
 			
@@ -4109,7 +4108,7 @@ write(si_hematite,'(F25.10)') 1.0! -(solute3(1)*2.5) + 30.0
 		&"    Goethite " // trim(s_precip) // trim(s_goethite) // kinetics //NEW_LINE('')// &
 		&"    Celadonite " // trim(s_precip) // trim(s_celadonite) // kinetics //NEW_LINE('')// & ! mica
 		 !&"    Albite " // trim(s_precip) // trim(s_albite) // kinetics //NEW_LINE('')// & ! plagioclase
-		&"    Calcite " // trim(s_precip) // trim(s_calcite) // kinetics //NEW_LINE('')// & ! .135
+		!&"    Calcite " // trim(s_precip) // trim(s_calcite) // kinetics //NEW_LINE('')// & ! .135
 		&"    Montmor-Na " // trim(s_precip) // trim(s_mont_na) // kinetics //NEW_LINE('')// & ! smectite
 		!&"    Montmor-K " // trim(s_precip) // trim(s_mont_k) // kinetics //NEW_LINE('')// & ! smectite
 		!&"    Montmor-Mg " // trim(s_precip) // trim(s_mont_mg) // kinetics //NEW_LINE('')// & ! smectite
