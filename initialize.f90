@@ -284,7 +284,7 @@ saturation(:,:,:) = 0.0
 ! from elderfield 1999, and other places
 solute(:,:,1) = 8.2      ! ph
 solute(:,:,2) = .00243   ! Alk 1.6e-3
-solute(:,:,3) = .266     ! water mass
+solute(:,:,3) = .266*1.1     ! water mass
 solute(:,:,4) = .002100  ! param_dic , TOTAL C
 solute(:,:,5) = .01028   ! Ca
 !solute(1:xn/(2*cellx),:,5) = .01428
@@ -356,7 +356,7 @@ sol_index = (/2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13/)
 !            alk dic ca mg na k  fe s   si  cl  al
 
 volume_ratio = 10.0
-mix_ratio = 0.01
+mix_ratio = dt*mstep/tb_res
 
 !soluteOcean(5) = 0.011
 !solute_fine(1:xn/4,:,5) = 0.011
@@ -368,7 +368,7 @@ mix_ratio = 0.01
 
 medium(:,:,1) = .1          ! phiCoarse
 medium(:,:,2) = 0.0         ! precip
-medium(:,:,3) = 0.266       ! water_volume
+medium(:,:,3) = 0.266*1.1       ! water_volume
 vol_i = medium(1,1,3)
 medium(:,:,4) = 0.01        ! reactive fraction now!
 medium(:,:,5) = 1.0         ! rxn toggle

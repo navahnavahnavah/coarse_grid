@@ -2094,8 +2094,8 @@ L5 = "#  $Id: llnl.dat 4023 2010-02-09 21:02:42Z dlpark $" //NEW_LINE('')// &
 ! &"#       -Range:  0-300" //NEW_LINE('')// &
 ! &"" //NEW_LINE('')// &
 &"Saponite-Mg" //NEW_LINE('')// &
-&"        #Mg3Ca.165Al.33Si3.67O10(OH)2 +7.3200 H+  =  + 0.3300 Al+++ + .1650 Ca ++ + 3 Mg++ + " //NEW_LINE('')// &
-&"#3.6700 SiO2 + 4.6600 H2O" //NEW_LINE('')// &
+!&"        Mg3Ca.165Al.33Si3.67O10(OH)2 +7.3200 H+  =  + 0.3300 Al+++ + .1650 Ca ++ + 3 Mg++ + 3.6700 SiO2 + 4.6600 H2O" //NEW_LINE('')// &
+!&"" //NEW_LINE('')// &
 &"	Mg3.165Al.33Si3.67O10(OH)2 +7.3200 H+  =  + 0.3300 Al+++ + 3.1650 Mg++ + 3.6700 SiO2 + 4.6600 H2O" //NEW_LINE('')// &
 &"        log_k           26.2523" //NEW_LINE('')// &
 &"	-delta_H	-210.822	kJ/mol	# 	Saponite-Mg" //NEW_LINE('')// &
@@ -3103,17 +3103,19 @@ end if
 			write(*,*) "STEP" , j , "STUFF"
 			write(*,*) "BEGIN CHAMBER MIXING"
 			
-! 			n=2 ! alk
-! 			solute_inter = solute_a(:,:,n)
-! 			solute_a(:,:,n) = solute_a(:,:,n)*(1.0-mix_ratio) + solute_b(:,:,n)*mix_ratio
-! 			solute_b(:,:,n) = solute_b(:,:,n)*(1.0-(volume_ratio*mix_ratio)) + solute_inter*volume_ratio*mix_ratio
-!
-! 			do n=4,13 ! solutes
-! 				solute_inter = solute_a(:,:,n)
-! 				solute_a(:,:,n) = solute_a(:,:,n)*(1.0-mix_ratio) + solute_b(:,:,n)*mix_ratio
-! 				solute_b(:,:,n) = solute_b(:,:,n)*(1.0-(volume_ratio*mix_ratio)) + solute_inter*volume_ratio*mix_ratio
-! 			end do
 			
+
+			n=2 ! alk
+			solute_inter = solute_a(:,:,n)
+			solute_a(:,:,n) = solute_a(:,:,n)*(1.0-mix_ratio/volume_ratio) + solute_b(:,:,n)*mix_ratio/volume_ratio
+			solute_b(:,:,n) = solute_b(:,:,n)*(1.0-mix_ratio) + solute_inter*mix_ratio
+
+			do n=4,13 ! solutes
+				solute_inter = solute_a(:,:,n)
+				solute_a(:,:,n) = solute_a(:,:,n)*(1.0-mix_ratio/volume_ratio) + solute_b(:,:,n)*mix_ratio/volume_ratio
+				solute_b(:,:,n) = solute_b(:,:,n)*(1.0-mix_ratio) + solute_inter*mix_ratio
+			end do
+
 			write(*,*) "...DONE WITH CHAMBER MIXING"
 
 
@@ -3826,11 +3828,11 @@ else
 			! reshape them all
 			sol_coarse_local = reshape(sol_coarse_long_local,(/xn/cellx,yn/celly/))
 			u_coarse_local = reshape(u_coarse_long_local,(/xn/cellx,yn/celly/))
-			write(*,*) maxval(u_coarse_local)
+			!write(*,*) maxval(u_coarse_local)
 			v_coarse_local = reshape(v_coarse_long_local,(/xn/cellx,yn/celly/))
-			write(*,*) maxval(v_coarse_local)
+			!write(*,*) maxval(v_coarse_local)
 			phi_coarse_local = reshape(phi_coarse_long_local,(/xn/cellx,yn/celly/))
-			write(*,*) maxval(phi_coarse_local)
+			!write(*,*) maxval(phi_coarse_local)
 		
 			if (an_id_local .le. 11) then
 				do ii = 1,cstep
