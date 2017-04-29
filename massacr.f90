@@ -391,8 +391,8 @@ real(4) :: medLongBit_b((xn/cellx)*(yn/(2*celly))), medLocalBit_b((xn/cellx)*(yn
 
 
 INTEGER(KIND=4) :: id, all=187
-CHARACTER(LEN=10000) :: line
-character(len=55000) :: inputz0
+CHARACTER(LEN=5000) :: line
+character(len=9000) :: inputz0
 !real(4) :: alter(1,167)
 !real(4), allocatable :: outmat(:,:)
 real(4) :: outmat(4,187)
@@ -440,7 +440,7 @@ character(len=25) :: exp_pyr1, exp_pyr2, exp_pyr3, exp_pyr
 character(len=25) :: exp_plag1, exp_plag2, exp_plag3, exp_plag
 
 
-character(len=59000) :: L5
+character(len=49000) :: L5
 !character(len=6) :: L5
 
 
@@ -1508,13 +1508,13 @@ L5 = "#  $Id: llnl.dat 4023 2010-02-09 21:02:42Z dlpark $" //NEW_LINE('')// &
 ! &"#	Enthalpy of formation:	-1143.31 kcal/mol" //NEW_LINE('')// &
 ! &"        -analytic 1.8353e+001 1.9014e-003 1.8478e+004 -6.6311e+000 -4.0227e+005" //NEW_LINE('')// &
 ! &"#       -Range:  0-300" //NEW_LINE('')// &
-&"Akermanite" //NEW_LINE('')// &
-&"        Ca2MgSi2O7 +6.0000 H+  =  + 1.0000 Mg++ + 2.0000 Ca++ + 2.0000 SiO2 + 3.0000 H2O" //NEW_LINE('')// &
-&"        log_k           45.3190" //NEW_LINE('')// &
-&"	-delta_H	-288.575	kJ/mol	# 	Akermanite" //NEW_LINE('')// &
-&"#	Enthalpy of formation:	-926.497 kcal/mol" //NEW_LINE('')// &
-&"        -analytic -4.8295e+001 -8.5613e-003 2.0880e+004 1.3798e+001 -7.1975e+005" //NEW_LINE('')// &
-&"#       -Range:  0-300" //NEW_LINE('')// &
+! &"Akermanite" //NEW_LINE('')// &
+! &"        Ca2MgSi2O7 +6.0000 H+  =  + 1.0000 Mg++ + 2.0000 Ca++ + 2.0000 SiO2 + 3.0000 H2O" //NEW_LINE('')// &
+! &"        log_k           45.3190" //NEW_LINE('')// &
+! &"	-delta_H	-288.575	kJ/mol	# 	Akermanite" //NEW_LINE('')// &
+! &"#	Enthalpy of formation:	-926.497 kcal/mol" //NEW_LINE('')// &
+! &"        -analytic -4.8295e+001 -8.5613e-003 2.0880e+004 1.3798e+001 -7.1975e+005" //NEW_LINE('')// &
+! &"#       -Range:  0-300" //NEW_LINE('')// &
 &"Al" //NEW_LINE('')// &
 &"       Al +3.0000 H+ +0.7500 O2  =  + 1.0000 Al+++ + 1.5000 H2O" //NEW_LINE('')// &
 &"        log_k           149.9292" //NEW_LINE('')// &
@@ -1523,43 +1523,43 @@ L5 = "#  $Id: llnl.dat 4023 2010-02-09 21:02:42Z dlpark $" //NEW_LINE('')// &
 &"        -analytic -1.8752e+002 -4.6187e-002 5.7127e+004 6.6270e+001 -3.8952e+005" //NEW_LINE('')// &
 &"#       -Range:  0-300" //NEW_LINE('')// &
 &"" //NEW_LINE('')// &
-&"Al2(SO4)3" //NEW_LINE('')// &
-&"       Al2(SO4)3  =  + 2.0000 Al+++ + 3.0000 SO4--" //NEW_LINE('')// &
-&"        log_k           19.0535" //NEW_LINE('')// &
-&"	-delta_H	-364.566	kJ/mol	# 	Al2(SO4)3" //NEW_LINE('')// &
-&"#	Enthalpy of formation:	-3441.04 kJ/mol" //NEW_LINE('')// &
-&"        -analytic -6.1001e+002 -2.4268e-001 2.9194e+004 2.4383e+002 4.5573e+002" //NEW_LINE('')// &
-&"#       -Range:  0-300" //NEW_LINE('')// &
-&"" //NEW_LINE('')// &
-&"Al2(SO4)3:6H2O" //NEW_LINE('')// &
-&"       Al2(SO4)3:6H2O  =  + 2.0000 Al+++ + 3.0000 SO4-- + 6.0000 H2O" //NEW_LINE('')// &
-&"        log_k           1.6849" //NEW_LINE('')// &
-&"	-delta_H	-208.575	kJ/mol	# 	Al2(SO4)3:6H2O" //NEW_LINE('')// &
-&"#	Enthalpy of formation:	-5312.06 kJ/mol" //NEW_LINE('')// &
-&"        -analytic -7.1642e+002 -2.4552e-001 2.6064e+004 2.8441e+002 4.0691e+002" //NEW_LINE('')// &
-&"#       -Range:  0-300" //NEW_LINE('')// &
-&"" //NEW_LINE('')// &
+! &"Al2(SO4)3" //NEW_LINE('')// &
+! &"       Al2(SO4)3  =  + 2.0000 Al+++ + 3.0000 SO4--" //NEW_LINE('')// &
+! &"        log_k           19.0535" //NEW_LINE('')// &
+! &"	-delta_H	-364.566	kJ/mol	# 	Al2(SO4)3" //NEW_LINE('')// &
+! &"#	Enthalpy of formation:	-3441.04 kJ/mol" //NEW_LINE('')// &
+! &"        -analytic -6.1001e+002 -2.4268e-001 2.9194e+004 2.4383e+002 4.5573e+002" //NEW_LINE('')// &
+! &"#       -Range:  0-300" //NEW_LINE('')// &
+! &"" //NEW_LINE('')// &
+! &"Al2(SO4)3:6H2O" //NEW_LINE('')// &
+! &"       Al2(SO4)3:6H2O  =  + 2.0000 Al+++ + 3.0000 SO4-- + 6.0000 H2O" //NEW_LINE('')// &
+! &"        log_k           1.6849" //NEW_LINE('')// &
+! &"	-delta_H	-208.575	kJ/mol	# 	Al2(SO4)3:6H2O" //NEW_LINE('')// &
+! &"#	Enthalpy of formation:	-5312.06 kJ/mol" //NEW_LINE('')// &
+! &"        -analytic -7.1642e+002 -2.4552e-001 2.6064e+004 2.8441e+002 4.0691e+002" //NEW_LINE('')// &
+! &"#       -Range:  0-300" //NEW_LINE('')// &
+! &"" //NEW_LINE('')// &
 ! &"################################" //NEW_LINE('')// &
 ! &"#      ADDITIONS BY NAVAH      #" //NEW_LINE('')// &
 ! &"################################" //NEW_LINE('')// &
 ! &"" //NEW_LINE('')// &
-&"Augite" //NEW_LINE('')// &
-&"        Ca.7Fe.6Mg.7Si2O6 +4.0000 H+  =  2.0 H2O + 2.0 SiO2 + .7Ca+2 + 0.6Fe+2 + 0.7Mg+2" //NEW_LINE('')// &
-&"        log_k           21.00" //NEW_LINE('')// &
-&"	-delta_H	-51.8523	kJ/mol	# 	Augite" //NEW_LINE('')// &
-&"	-analytic 7.84710902e+00   7.21674649e-03   1.25039649e+04  -8.82692820e+00  -8.09786954e+05" //NEW_LINE('')// &
-&"" //NEW_LINE('')// &
-&"Pigeonite" //NEW_LINE('')// &
-&"        Ca1.14Fe.64Mg.22Si2O6 +4.0000 H+  =  2.0 H2O + 2.0 SiO2 + 1.14Ca+2 + 0.64Fe+2 + 0.22Mg+2" //NEW_LINE('')// &
-&"        log_k           21.40" //NEW_LINE('')// &
-&"	-delta_H	-51.8523	kJ/mol	# 	Pigeonite" //NEW_LINE('')// &
-&"	-analytic 3.92773074e+01   1.11617261e-02   1.07613145e+04  -1.98006851e+01  -7.39527557e+05" //NEW_LINE('')// &
-&"" //NEW_LINE('')// &
-&"Plagioclase" //NEW_LINE('')// &
-&"        Ca.5Na.5Al1.5Si2.5O8 +6.0000 H+  =  3.0000 H2O + 2.5 SiO2 + .5 Ca+2 + 1.5 Al+3 + 0.5Na+" //NEW_LINE('')// &
-&"        log_k           14.20" //NEW_LINE('')// &
-&"	-delta_H	-51.8523	kJ/mol	# 	Plagioclase" //NEW_LINE('')// &
-&"	-analytic -3.80343385e+01  -7.37083665e-03   1.59944487e+04   4.95599390e+00  -1.01574822e+06" //NEW_LINE('')// &
+! &"Augite" //NEW_LINE('')// &
+! &"        Ca.7Fe.6Mg.7Si2O6 +4.0000 H+  =  2.0 H2O + 2.0 SiO2 + .7Ca+2 + 0.6Fe+2 + 0.7Mg+2" //NEW_LINE('')// &
+! &"        log_k           21.00" //NEW_LINE('')// &
+! &"	-delta_H	-51.8523	kJ/mol	# 	Augite" //NEW_LINE('')// &
+! &"	-analytic 7.84710902e+00   7.21674649e-03   1.25039649e+04  -8.82692820e+00  -8.09786954e+05" //NEW_LINE('')// &
+! &"" //NEW_LINE('')// &
+! &"Pigeonite" //NEW_LINE('')// &
+! &"        Ca1.14Fe.64Mg.22Si2O6 +4.0000 H+  =  2.0 H2O + 2.0 SiO2 + 1.14Ca+2 + 0.64Fe+2 + 0.22Mg+2" //NEW_LINE('')// &
+! &"        log_k           21.40" //NEW_LINE('')// &
+! &"	-delta_H	-51.8523	kJ/mol	# 	Pigeonite" //NEW_LINE('')// &
+! &"	-analytic 3.92773074e+01   1.11617261e-02   1.07613145e+04  -1.98006851e+01  -7.39527557e+05" //NEW_LINE('')// &
+! &"" //NEW_LINE('')// &
+! &"Plagioclase" //NEW_LINE('')// &
+! &"        Ca.5Na.5Al1.5Si2.5O8 +6.0000 H+  =  3.0000 H2O + 2.5 SiO2 + .5 Ca+2 + 1.5 Al+3 + 0.5Na+" //NEW_LINE('')// &
+! &"        log_k           14.20" //NEW_LINE('')// &
+! &"	-delta_H	-51.8523	kJ/mol	# 	Plagioclase" //NEW_LINE('')// &
+! &"	-analytic -3.80343385e+01  -7.37083665e-03   1.59944487e+04   4.95599390e+00  -1.01574822e+06" //NEW_LINE('')// &
 ! &"" //NEW_LINE('')// &
 ! &"################################" //NEW_LINE('')// &
 ! &"#        END NAVAHBLOCK        #" //NEW_LINE('')// &
@@ -1582,14 +1582,14 @@ L5 = "#  $Id: llnl.dat 4023 2010-02-09 21:02:42Z dlpark $" //NEW_LINE('')// &
 &"        -analytic -6.8694e+000 6.6052e-003 9.8260e+003 -4.8540e+000 -8.8780e+005" //NEW_LINE('')// &
 &"#       -Range:  0-300" //NEW_LINE('')// &
 &"" //NEW_LINE('')// &
-&"Andradite" //NEW_LINE('')// &
-&"        Ca3Fe2(SiO4)3 +12.0000 H+  =  + 2.0000 Fe+++ + 3.0000 Ca++ + 3.0000 SiO2 + 6.0000 H2O" //NEW_LINE('')// &
-&"        log_k           33.3352" //NEW_LINE('')// &
-&"	-delta_H	-301.173	kJ/mol	# 	Andradite" //NEW_LINE('')// &
-&"#	Enthalpy of formation:	-1380.35 kcal/mol" //NEW_LINE('')// &
-&"        -analytic 1.3884e+001 -2.3886e-002 1.5314e+004 -8.1606e+000 -4.2193e+005" //NEW_LINE('')// &
-&"#       -Range:  0-300" //NEW_LINE('')// &
-&"" //NEW_LINE('')// &
+! &"Andradite" //NEW_LINE('')// &
+! &"        Ca3Fe2(SiO4)3 +12.0000 H+  =  + 2.0000 Fe+++ + 3.0000 Ca++ + 3.0000 SiO2 + 6.0000 H2O" //NEW_LINE('')// &
+! &"        log_k           33.3352" //NEW_LINE('')// &
+! &"	-delta_H	-301.173	kJ/mol	# 	Andradite" //NEW_LINE('')// &
+! &"#	Enthalpy of formation:	-1380.35 kcal/mol" //NEW_LINE('')// &
+! &"        -analytic 1.3884e+001 -2.3886e-002 1.5314e+004 -8.1606e+000 -4.2193e+005" //NEW_LINE('')// &
+! &"#       -Range:  0-300" //NEW_LINE('')// &
+! &"" //NEW_LINE('')// &
 &"Saponite-Ca" //NEW_LINE('')// &
 &"        Ca.165Mg3Al.33Si3.67O10(OH)2 +7.3200 H+  =  + 0.1650 Ca++ + 0.3300 Al+++ + 3.0000 Mg++ + 3.6700 SiO2 + 4.6600 H2O" //NEW_LINE('')// &
 &"        log_k           26.2900" //NEW_LINE('')// &
@@ -1665,22 +1665,22 @@ L5 = "#  $Id: llnl.dat 4023 2010-02-09 21:02:42Z dlpark $" //NEW_LINE('')// &
 &"        -analytic -4.4820e+001 5.3696e-002 5.4878e+004 -3.1459e+001 -7.5491e+006" //NEW_LINE('')// &
 &"#       -Range:  0-300" //NEW_LINE('')// &
 &"" //NEW_LINE('')// &
-&"Clinozoisite" //NEW_LINE('')// &
-&"        Ca2Al3Si3O12(OH) +13.0000 H+  =  + 2.0000 Ca++ + 3.0000 Al+++ + 3.0000 SiO2 + 7.0000 H2O" //NEW_LINE('')// &
-&"        log_k           43.2569" //NEW_LINE('')// &
-&"	-delta_H	-457.755	kJ/mol	# 	Clinozoisite" //NEW_LINE('')// &
-&"#	Enthalpy of formation:	-1643.78 kcal/mol" //NEW_LINE('')// &
-&"        -analytic -2.8690e+001 -3.7056e-002 2.2770e+004 3.7880e+000 -2.5834e+005" //NEW_LINE('')// &
-&"#       -Range:  0-300" //NEW_LINE('')// &
-&"" //NEW_LINE('')// &
-&"Cronstedtite-7A" //NEW_LINE('')// &
-&"        Fe2Fe2SiO5(OH)4 +10.0000 H+  =  + 1.0000 SiO2 + 2.0000 Fe++ + 2.0000 Fe+++ + 7.0000 H2O" //NEW_LINE('')// &
-&"        log_k           16.2603" //NEW_LINE('')// &
-&"	-delta_H	-244.266	kJ/mol	# 	Cronstedtite-7A" //NEW_LINE('')// &
-&"#	Enthalpy of formation:	-697.413 kcal/mol" //NEW_LINE('')// &
-&"        -analytic -2.3783e+002 -7.1026e-002 1.7752e+004 8.7147e+001 2.7707e+002" //NEW_LINE('')// &
-&"#       -Range:  0-300" //NEW_LINE('')// &
-&"" //NEW_LINE('')// &
+! &"Clinozoisite" //NEW_LINE('')// &
+! &"        Ca2Al3Si3O12(OH) +13.0000 H+  =  + 2.0000 Ca++ + 3.0000 Al+++ + 3.0000 SiO2 + 7.0000 H2O" //NEW_LINE('')// &
+! &"        log_k           43.2569" //NEW_LINE('')// &
+! &"	-delta_H	-457.755	kJ/mol	# 	Clinozoisite" //NEW_LINE('')// &
+! &"#	Enthalpy of formation:	-1643.78 kcal/mol" //NEW_LINE('')// &
+! &"        -analytic -2.8690e+001 -3.7056e-002 2.2770e+004 3.7880e+000 -2.5834e+005" //NEW_LINE('')// &
+! &"#       -Range:  0-300" //NEW_LINE('')// &
+! &"" //NEW_LINE('')// &
+! &"Cronstedtite-7A" //NEW_LINE('')// &
+! &"        Fe2Fe2SiO5(OH)4 +10.0000 H+  =  + 1.0000 SiO2 + 2.0000 Fe++ + 2.0000 Fe+++ + 7.0000 H2O" //NEW_LINE('')// &
+! &"        log_k           16.2603" //NEW_LINE('')// &
+! &"	-delta_H	-244.266	kJ/mol	# 	Cronstedtite-7A" //NEW_LINE('')// &
+! &"#	Enthalpy of formation:	-697.413 kcal/mol" //NEW_LINE('')// &
+! &"        -analytic -2.3783e+002 -7.1026e-002 1.7752e+004 8.7147e+001 2.7707e+002" //NEW_LINE('')// &
+! &"#       -Range:  0-300" //NEW_LINE('')// &
+! &"" //NEW_LINE('')// &
 &"Daphnite-14A" //NEW_LINE('')// &
 &"        Fe5AlAlSi3O10(OH)8 +16.0000 H+  =  + 2.0000 Al+++ + 3.0000 SiO2 + 5.0000 Fe++ + 12.0000 H2O" //NEW_LINE('')// &
 &"        log_k           52.2821" //NEW_LINE('')// &
@@ -1697,23 +1697,23 @@ L5 = "#  $Id: llnl.dat 4023 2010-02-09 21:02:42Z dlpark $" //NEW_LINE('')// &
 &"        -analytic -1.6430e+002 -6.3160e-002 2.9499e+004 5.6442e+001 4.6035e+002" //NEW_LINE('')// &
 &"#       -Range:  0-300" //NEW_LINE('')// &
 &"" //NEW_LINE('')// &
-&"Dawsonite" //NEW_LINE('')// &
-&"        NaAlCO3(OH)2 +3.0000 H+  =  + 1.0000 Al+++ + 1.0000 HCO3- + 1.0000 Na+ + 2.0000 H2O" //NEW_LINE('')// &
-&"        log_k           4.3464" //NEW_LINE('')// &
-&"	-delta_H	-76.3549	kJ/mol	# 	Dawsonite" //NEW_LINE('')// &
-&"#	Enthalpy of formation:	-1963.96 kJ/mol" //NEW_LINE('')// &
-&"        -analytic -1.1393e+002 -2.3487e-002 7.1758e+003 4.0900e+001 1.2189e+002" //NEW_LINE('')// &
-! &"#       -Range:  0-200" //NEW_LINE('')// &
-&"#       -Range:  0-300" //NEW_LINE('')// &
-&"" //NEW_LINE('')// &
-&"Diaspore" //NEW_LINE('')// &
-&"        AlHO2 +3.0000 H+  =  + 1.0000 Al+++ + 2.0000 H2O" //NEW_LINE('')// &
-&"        log_k           7.1603" //NEW_LINE('')// &
-&"	-delta_H	-110.42	kJ/mol	# 	Diaspore" //NEW_LINE('')// &
-&"#	Enthalpy of formation:	-238.924 kcal/mol" //NEW_LINE('')// &
-&"        -analytic -1.2618e+002 -3.1671e-002 8.8737e+003 4.5669e+001 1.3850e+002" //NEW_LINE('')// &
-&"#       -Range:  0-300" //NEW_LINE('')// &
-&"" //NEW_LINE('')// &
+! &"Dawsonite" //NEW_LINE('')// &
+! &"        NaAlCO3(OH)2 +3.0000 H+  =  + 1.0000 Al+++ + 1.0000 HCO3- + 1.0000 Na+ + 2.0000 H2O" //NEW_LINE('')// &
+! &"        log_k           4.3464" //NEW_LINE('')// &
+! &"	-delta_H	-76.3549	kJ/mol	# 	Dawsonite" //NEW_LINE('')// &
+! &"#	Enthalpy of formation:	-1963.96 kJ/mol" //NEW_LINE('')// &
+! &"        -analytic -1.1393e+002 -2.3487e-002 7.1758e+003 4.0900e+001 1.2189e+002" //NEW_LINE('')// &
+! ! &"#       -Range:  0-200" //NEW_LINE('')// &
+! &"#       -Range:  0-300" //NEW_LINE('')// &
+! &"" //NEW_LINE('')// &
+! &"Diaspore" //NEW_LINE('')// &
+! &"        AlHO2 +3.0000 H+  =  + 1.0000 Al+++ + 2.0000 H2O" //NEW_LINE('')// &
+! &"        log_k           7.1603" //NEW_LINE('')// &
+! &"	-delta_H	-110.42	kJ/mol	# 	Diaspore" //NEW_LINE('')// &
+! &"#	Enthalpy of formation:	-238.924 kcal/mol" //NEW_LINE('')// &
+! &"        -analytic -1.2618e+002 -3.1671e-002 8.8737e+003 4.5669e+001 1.3850e+002" //NEW_LINE('')// &
+! &"#       -Range:  0-300" //NEW_LINE('')// &
+! &"" //NEW_LINE('')// &
 ! &"Dicalcium_silicate" //NEW_LINE('')// &
 ! &"        Ca2SiO4 +4.0000 H+  =  + 1.0000 SiO2 + 2.0000 Ca++ + 2.0000 H2O" //NEW_LINE('')// &
 ! &"        log_k           37.1725" //NEW_LINE('')// &
@@ -1730,14 +1730,14 @@ L5 = "#  $Id: llnl.dat 4023 2010-02-09 21:02:42Z dlpark $" //NEW_LINE('')// &
 &"        -analytic 7.1240e+001 1.5514e-002 8.1437e+003 -3.0672e+001 -5.6880e+005" //NEW_LINE('')// &
 &"#       -Range:  0-300" //NEW_LINE('')// &
 &"" //NEW_LINE('')// &
-&"Dolomite" //NEW_LINE('')// &
-&"        CaMg(CO3)2 +2.0000 H+  =  + 1.0000 Ca++ + 1.0000 Mg++ + 2.0000 HCO3-" //NEW_LINE('')// &
-&"        log_k           2.5135" //NEW_LINE('')// &
-&"	-delta_H	-59.9651	kJ/mol	# 	Dolomite" //NEW_LINE('')// &
-&"#	Enthalpy of formation:	-556.631 kcal/mol" //NEW_LINE('')// &
-&"        -analytic -3.1782e+002 -9.8179e-002 1.0845e+004 1.2657e+002 1.6932e+002" //NEW_LINE('')// &
-&"#       -Range:  0-300" //NEW_LINE('')// &
-&"-Vm 64.5" //NEW_LINE('')// &
+! &"Dolomite" //NEW_LINE('')// &
+! &"        CaMg(CO3)2 +2.0000 H+  =  + 1.0000 Ca++ + 1.0000 Mg++ + 2.0000 HCO3-" //NEW_LINE('')// &
+! &"        log_k           2.5135" //NEW_LINE('')// &
+! &"	-delta_H	-59.9651	kJ/mol	# 	Dolomite" //NEW_LINE('')// &
+! &"#	Enthalpy of formation:	-556.631 kcal/mol" //NEW_LINE('')// &
+! &"        -analytic -3.1782e+002 -9.8179e-002 1.0845e+004 1.2657e+002 1.6932e+002" //NEW_LINE('')// &
+! &"#       -Range:  0-300" //NEW_LINE('')// &
+! &"-Vm 64.5" //NEW_LINE('')// &
 
 &"" //NEW_LINE('')// &
 &"Epidote" //NEW_LINE('')// &
@@ -1773,14 +1773,14 @@ L5 = "#  $Id: llnl.dat 4023 2010-02-09 21:02:42Z dlpark $" //NEW_LINE('')// &
 ! &"        -analytic -2.8472e+002 -7.5870e-002 2.0688e+004 1.0485e+002 3.2289e+002" //NEW_LINE('')// &
 ! &"#       -Range:  0-300" //NEW_LINE('')// &
 ! &"" //NEW_LINE('')// &
-&"Foshagite" //NEW_LINE('')// &
-&"        Ca4Si3O9(OH)2:0.5H2O +8.0000 H+  =  + 3.0000 SiO2 + 4.0000 Ca++ + 5.5000 H2O" //NEW_LINE('')// &
-&"        log_k           65.9210" //NEW_LINE('')// &
-&"	-delta_H	-359.839	kJ/mol	# 	Foshagite" //NEW_LINE('')// &
-&"#	Enthalpy of formation:	-1438.27 kcal/mol" //NEW_LINE('')// &
-&"        -analytic 2.9983e+001 5.5272e-003 2.3427e+004 -1.3879e+001 -8.9461e+005" //NEW_LINE('')// &
-&"#       -Range:  0-300" //NEW_LINE('')// &
-&"" //NEW_LINE('')// &
+! &"Foshagite" //NEW_LINE('')// &
+! &"        Ca4Si3O9(OH)2:0.5H2O +8.0000 H+  =  + 3.0000 SiO2 + 4.0000 Ca++ + 5.5000 H2O" //NEW_LINE('')// &
+! &"        log_k           65.9210" //NEW_LINE('')// &
+! &"	-delta_H	-359.839	kJ/mol	# 	Foshagite" //NEW_LINE('')// &
+! &"#	Enthalpy of formation:	-1438.27 kcal/mol" //NEW_LINE('')// &
+! &"        -analytic 2.9983e+001 5.5272e-003 2.3427e+004 -1.3879e+001 -8.9461e+005" //NEW_LINE('')// &
+! &"#       -Range:  0-300" //NEW_LINE('')// &
+! &"" //NEW_LINE('')// &
 &"Gismondine" //NEW_LINE('')// &
 &"        Ca2Al4Si4O16:9H2O +16.0000 H+  =  + 2.0000 Ca++ + 4.0000 Al+++ + 4.0000 SiO2 + 17.0000 H2O" //NEW_LINE('')// &
 &"        log_k           41.7170" //NEW_LINE('')// &
@@ -1796,22 +1796,22 @@ L5 = "#  $Id: llnl.dat 4023 2010-02-09 21:02:42Z dlpark $" //NEW_LINE('')// &
 ! &"#       -Range:  0-200" //NEW_LINE('')// &
 &"#       -Range:  0-300" //NEW_LINE('')// &
 &"" //NEW_LINE('')// &
-&"Greenalite" //NEW_LINE('')// &
-&"        Fe3Si2O5(OH)4 +6.0000 H+  =  + 2.0000 SiO2 + 3.0000 Fe++ + 5.0000 H2O" //NEW_LINE('')// &
-&"        log_k           22.6701" //NEW_LINE('')// &
-&"	-delta_H	-165.297	kJ/mol	# 	Greenalite" //NEW_LINE('')// &
-&"#	Enthalpy of formation:	-787.778 kcal/mol" //NEW_LINE('')// &
-&"        -analytic -1.4187e+001 -3.8377e-003 1.1710e+004 1.6442e+000 -4.8290e+005" //NEW_LINE('')// &
-&"#       -Range:  0-300" //NEW_LINE('')// &
-&"" //NEW_LINE('')// &
-&"Gyrolite" //NEW_LINE('')// &
-&"        Ca2Si3O7(OH)2:1.5H2O +4.0000 H+  =  + 2.0000 Ca++ + 3.0000 SiO2 + 4.5000 H2O" //NEW_LINE('')// &
-&"        log_k           22.9099" //NEW_LINE('')// &
-&"	-delta_H	-82.862	kJ/mol	# 	Gyrolite" //NEW_LINE('')// &
-&"#	Enthalpy of formation:	-1176.55 kcal/mol" //NEW_LINE('')// &
-&"        -analytic -2.4416e+001 1.4646e-002 1.6181e+004 2.3723e+000 -1.5369e+006" //NEW_LINE('')// &
-&"#       -Range:  0-300" //NEW_LINE('')// &
-&"" //NEW_LINE('')// &
+! &"Greenalite" //NEW_LINE('')// &
+! &"        Fe3Si2O5(OH)4 +6.0000 H+  =  + 2.0000 SiO2 + 3.0000 Fe++ + 5.0000 H2O" //NEW_LINE('')// &
+! &"        log_k           22.6701" //NEW_LINE('')// &
+! &"	-delta_H	-165.297	kJ/mol	# 	Greenalite" //NEW_LINE('')// &
+! &"#	Enthalpy of formation:	-787.778 kcal/mol" //NEW_LINE('')// &
+! &"        -analytic -1.4187e+001 -3.8377e-003 1.1710e+004 1.6442e+000 -4.8290e+005" //NEW_LINE('')// &
+! &"#       -Range:  0-300" //NEW_LINE('')// &
+! &"" //NEW_LINE('')// &
+! &"Gyrolite" //NEW_LINE('')// &
+! &"        Ca2Si3O7(OH)2:1.5H2O +4.0000 H+  =  + 2.0000 Ca++ + 3.0000 SiO2 + 4.5000 H2O" //NEW_LINE('')// &
+! &"        log_k           22.9099" //NEW_LINE('')// &
+! &"	-delta_H	-82.862	kJ/mol	# 	Gyrolite" //NEW_LINE('')// &
+! &"#	Enthalpy of formation:	-1176.55 kcal/mol" //NEW_LINE('')// &
+! &"        -analytic -2.4416e+001 1.4646e-002 1.6181e+004 2.3723e+000 -1.5369e+006" //NEW_LINE('')// &
+! &"#       -Range:  0-300" //NEW_LINE('')// &
+! &"" //NEW_LINE('')// &
 &"Hedenbergite" //NEW_LINE('')// &
 &"        CaFe(SiO3)2 +4.0000 H+  =  + 1.0000 Ca++ + 1.0000 Fe++ + 2.0000 H2O + 2.0000 SiO2" //NEW_LINE('')// &
 &"        log_k           19.6060" //NEW_LINE('')// &
@@ -1860,14 +1860,14 @@ L5 = "#  $Id: llnl.dat 4023 2010-02-09 21:02:42Z dlpark $" //NEW_LINE('')// &
 ! &"        -analytic 2.6900e+001 -2.1833e-003 1.0900e+004 -9.5257e+000 -7.2537e+004" //NEW_LINE('')// &
 ! &"#       -Range:  0-300" //NEW_LINE('')// &
 ! &"" //NEW_LINE('')// &
-&"Laumontite" //NEW_LINE('')// &
-&"        CaAl2Si4O12:4H2O +8.0000 H+  =  + 1.0000 Ca++ + 2.0000 Al+++ + 4.0000 SiO2 + 8.0000 H2O" //NEW_LINE('')// &
-&"        log_k           13.6667" //NEW_LINE('')// &
-&"	-delta_H	-184.657	kJ/mol	# 	Laumontite" //NEW_LINE('')// &
-&"#	Enthalpy of formation:	-1728.66 kcal/mol" //NEW_LINE('')// &
-&"        -analytic 1.1904e+000 8.1763e-003 1.9005e+004 -1.4561e+001 -1.5851e+006" //NEW_LINE('')// &
-&"#       -Range:  0-300" //NEW_LINE('')// &
-&"" //NEW_LINE('')// &
+! &"Laumontite" //NEW_LINE('')// &
+! &"        CaAl2Si4O12:4H2O +8.0000 H+  =  + 1.0000 Ca++ + 2.0000 Al+++ + 4.0000 SiO2 + 8.0000 H2O" //NEW_LINE('')// &
+! &"        log_k           13.6667" //NEW_LINE('')// &
+! &"	-delta_H	-184.657	kJ/mol	# 	Laumontite" //NEW_LINE('')// &
+! &"#	Enthalpy of formation:	-1728.66 kcal/mol" //NEW_LINE('')// &
+! &"        -analytic 1.1904e+000 8.1763e-003 1.9005e+004 -1.4561e+001 -1.5851e+006" //NEW_LINE('')// &
+! &"#       -Range:  0-300" //NEW_LINE('')// &
+! &"" //NEW_LINE('')// &
 ! &"Lawsonite" //NEW_LINE('')// &
 ! &"        CaAl2Si2O7(OH)2:H2O +8.0000 H+  =  + 1.0000 Ca++ + 2.0000 Al+++ + 2.0000 SiO2 + 6.0000 H2O" //NEW_LINE('')// &
 ! &"        log_k           22.2132" //NEW_LINE('')// &
@@ -1877,14 +1877,14 @@ L5 = "#  $Id: llnl.dat 4023 2010-02-09 21:02:42Z dlpark $" //NEW_LINE('')// &
 ! &"#       -Range:  0-300" //NEW_LINE('')// &
 ! &"" //NEW_LINE('')// &
 
-&"Magnesite" //NEW_LINE('')// &
-&"        MgCO3 +1.0000 H+  =  + 1.0000 HCO3- + 1.0000 Mg++" //NEW_LINE('')// &
-&"        log_k           2.2936" //NEW_LINE('')// &
-&"	-delta_H	-44.4968	kJ/mol	# 	Magnesite" //NEW_LINE('')// &
-&"#	Enthalpy of formation:	-265.63 kcal/mol" //NEW_LINE('')// &
-&"        -analytic -1.6665e+002 -4.9469e-002 6.4344e+003 6.5506e+001 1.0045e+002" //NEW_LINE('')// &
-&"#       -Range:  0-300" //NEW_LINE('')// &
-&"" //NEW_LINE('')// &
+! &"Magnesite" //NEW_LINE('')// &
+! &"        MgCO3 +1.0000 H+  =  + 1.0000 HCO3- + 1.0000 Mg++" //NEW_LINE('')// &
+! &"        log_k           2.2936" //NEW_LINE('')// &
+! &"	-delta_H	-44.4968	kJ/mol	# 	Magnesite" //NEW_LINE('')// &
+! &"#	Enthalpy of formation:	-265.63 kcal/mol" //NEW_LINE('')// &
+! &"        -analytic -1.6665e+002 -4.9469e-002 6.4344e+003 6.5506e+001 1.0045e+002" //NEW_LINE('')// &
+! &"#       -Range:  0-300" //NEW_LINE('')// &
+! &"" //NEW_LINE('')// &
 &"Magnetite" //NEW_LINE('')// &
 &"        Fe3O4 +8.0000 H+  =  + 1.0000 Fe++ + 2.0000 Fe+++ + 4.0000 H2O" //NEW_LINE('')// &
 &"        log_k           10.4724" //NEW_LINE('')// &
@@ -1936,14 +1936,14 @@ L5 = "#  $Id: llnl.dat 4023 2010-02-09 21:02:42Z dlpark $" //NEW_LINE('')// &
 
 
 
-&"Montmor-k" //NEW_LINE('')// &
-&"        K.33Mg.33Al1.67Si4O10(OH)2 +6.0000 H+  =  + 0.3300 K+ + 0.3300 Mg++ + 1.6700 Al+++ + 4.0000 H2O + 4.0000 SiO2" //NEW_LINE('')// &
-&"        log_k           2.1423" //NEW_LINE('')// &
-&"	-delta_H	-88.184	kJ/mol	# Calculated enthalpy of reaction	Montmor-K" //NEW_LINE('')// &
-&"#	Enthalpy of formation:	-1362.83 kcal/mol" //NEW_LINE('')// &
-&"        -analytic 8.4757e+000 1.1219e-002 1.5654e+004 -1.6833e+001 -1.8386e+006" //NEW_LINE('')// &
-&"#       -Range:  0-300" //NEW_LINE('')// &
-&"" //NEW_LINE('')// &
+! &"Montmor-k" //NEW_LINE('')// &
+! &"        K.33Mg.33Al1.67Si4O10(OH)2 +6.0000 H+  =  + 0.3300 K+ + 0.3300 Mg++ + 1.6700 Al+++ + 4.0000 H2O + 4.0000 SiO2" //NEW_LINE('')// &
+! &"        log_k           2.1423" //NEW_LINE('')// &
+! &"	-delta_H	-88.184	kJ/mol	# Calculated enthalpy of reaction	Montmor-K" //NEW_LINE('')// &
+! &"#	Enthalpy of formation:	-1362.83 kcal/mol" //NEW_LINE('')// &
+! &"        -analytic 8.4757e+000 1.1219e-002 1.5654e+004 -1.6833e+001 -1.8386e+006" //NEW_LINE('')// &
+! &"#       -Range:  0-300" //NEW_LINE('')// &
+! &"" //NEW_LINE('')// &
 
 &"Montmor-Mg" //NEW_LINE('')// &
 &"        Mg.495Al1.67Si4O10(OH)2 +6.0000 H+  =  + 0.4950 Mg++ + 1.6700 Al+++ + 4.0000 H2O + 4.0000 SiO2" //NEW_LINE('')// &
@@ -2119,22 +2119,22 @@ L5 = "#  $Id: llnl.dat 4023 2010-02-09 21:02:42Z dlpark $" //NEW_LINE('')// &
 &"        -analytic 5.0656e+001 -3.1485e-003 1.0574e+004 -2.5663e+001 -5.2769e+005" //NEW_LINE('')// &
 &"#       -Range:  0-300" //NEW_LINE('')// &
 &"" //NEW_LINE('')// &
-&"SiO2(am)" //NEW_LINE('')// &
-&"       SiO2  =  + 1.0000 SiO2" //NEW_LINE('')// &
-&"        log_k           -2.7136" //NEW_LINE('')// &
-&"	-delta_H	20.0539	kJ/mol	# 	SiO2(am)" //NEW_LINE('')// &
-&"#	Enthalpy of formation:	-214.568 kcal/mol" //NEW_LINE('')// &
-&"        -analytic 1.2109e+000 7.0767e-003 2.3634e+003 -3.4449e+000 -4.8591e+005" //NEW_LINE('')// &
-&"#       -Range:  0-300" //NEW_LINE('')// &
-&"" //NEW_LINE('')// &
-&"Siderite" //NEW_LINE('')// &
-&"        FeCO3 +1.0000 H+  =  + 1.0000 Fe++ + 1.0000 HCO3-" //NEW_LINE('')// &
-&"        log_k           -0.1920" //NEW_LINE('')// &
-&"	-delta_H	-32.5306	kJ/mol	# 	Siderite" //NEW_LINE('')// &
-&"#	Enthalpy of formation:	-179.173 kcal/mol" //NEW_LINE('')// &
-&"        -analytic -1.5990e+002 -4.9361e-002 5.4947e+003 6.3032e+001 8.5787e+001" //NEW_LINE('')// &
-&"#       -Range:  0-300" //NEW_LINE('')// &
-&"-Vm 29.2" //NEW_LINE('')// &
+! &"SiO2(am)" //NEW_LINE('')// &
+! &"       SiO2  =  + 1.0000 SiO2" //NEW_LINE('')// &
+! &"        log_k           -2.7136" //NEW_LINE('')// &
+! &"	-delta_H	20.0539	kJ/mol	# 	SiO2(am)" //NEW_LINE('')// &
+! &"#	Enthalpy of formation:	-214.568 kcal/mol" //NEW_LINE('')// &
+! &"        -analytic 1.2109e+000 7.0767e-003 2.3634e+003 -3.4449e+000 -4.8591e+005" //NEW_LINE('')// &
+! &"#       -Range:  0-300" //NEW_LINE('')// &
+! &"" //NEW_LINE('')// &
+! &"Siderite" //NEW_LINE('')// &
+! &"        FeCO3 +1.0000 H+  =  + 1.0000 Fe++ + 1.0000 HCO3-" //NEW_LINE('')// &
+! &"        log_k           -0.1920" //NEW_LINE('')// &
+! &"	-delta_H	-32.5306	kJ/mol	# 	Siderite" //NEW_LINE('')// &
+! &"#	Enthalpy of formation:	-179.173 kcal/mol" //NEW_LINE('')// &
+! &"        -analytic -1.5990e+002 -4.9361e-002 5.4947e+003 6.3032e+001 8.5787e+001" //NEW_LINE('')// &
+! &"#       -Range:  0-300" //NEW_LINE('')// &
+! &"-Vm 29.2" //NEW_LINE('')// &
 
 &"" //NEW_LINE('')// &
 &"Smectite-high-Fe-Mg" //NEW_LINE('')// &
@@ -2188,10 +2188,10 @@ L5 = "#  $Id: llnl.dat 4023 2010-02-09 21:02:42Z dlpark $" //NEW_LINE('')// &
 &"        log_k	3.191" //NEW_LINE('')// &
 &"	delta_h	-73.374	kJ" //NEW_LINE('')// &
 
-&"Fe3(OH)8" //NEW_LINE('')// &
-&"        Fe3(OH)8 + 8H+ = 2Fe+3 + Fe+2 + 8H2O" //NEW_LINE('')// &
-&"        log_k   20.222" //NEW_LINE('')// &
-&"	delta_h -0      kcal" //NEW_LINE('')// &
+! &"Fe3(OH)8" //NEW_LINE('')// &
+! &"        Fe3(OH)8 + 8H+ = 2Fe+3 + Fe+2 + 8H2O" //NEW_LINE('')// &
+! &"        log_k   20.222" //NEW_LINE('')// &
+! &"	delta_h -0      kcal" //NEW_LINE('')// &
 
 &"Talc" //NEW_LINE('')// &
 &"        Mg3Si4O10(OH)2 +6.0000 H+  =  + 3.0000 Mg++ + 4.0000 H2O + 4.0000 SiO2" //NEW_LINE('')// &
@@ -2208,14 +2208,14 @@ L5 = "#  $Id: llnl.dat 4023 2010-02-09 21:02:42Z dlpark $" //NEW_LINE('')// &
 &"delta_h -151.494 kcal" //NEW_LINE('')// &
 
 &"" //NEW_LINE('')// &
-&"Fe(OH)2" //NEW_LINE('')// &
-&"        Fe(OH)2 +2.0000 H+  =  + 1.0000 Fe++ + 2.0000 H2O" //NEW_LINE('')// &
-&"        log_k           13.9045" //NEW_LINE('')// &
-&"	-delta_H	-95.4089	kJ/mol		Fe(OH)2" //NEW_LINE('')// &
-&"#	Enthalpy of formation:	-568.525 kJ/mol" //NEW_LINE('')// &
-&"        -analytic -8.6666e+001 -1.8440e-002 7.5723e+003 3.2597e+001 1.1818e+002" //NEW_LINE('')// &
-&"#       -Range:  0-300" //NEW_LINE('')// &
-&"" //NEW_LINE('')// &
+! &"Fe(OH)2" //NEW_LINE('')// &
+! &"        Fe(OH)2 +2.0000 H+  =  + 1.0000 Fe++ + 2.0000 H2O" //NEW_LINE('')// &
+! &"        log_k           13.9045" //NEW_LINE('')// &
+! &"	-delta_H	-95.4089	kJ/mol		Fe(OH)2" //NEW_LINE('')// &
+! &"#	Enthalpy of formation:	-568.525 kJ/mol" //NEW_LINE('')// &
+! &"        -analytic -8.6666e+001 -1.8440e-002 7.5723e+003 3.2597e+001 1.1818e+002" //NEW_LINE('')// &
+! &"#       -Range:  0-300" //NEW_LINE('')// &
+! &"" //NEW_LINE('')// &
 
 ! CHLORITE MINERALS
 
@@ -2246,30 +2246,30 @@ L5 = "#  $Id: llnl.dat 4023 2010-02-09 21:02:42Z dlpark $" //NEW_LINE('')// &
 &"#       -Range:  0-300" //NEW_LINE('')// &
 
 
-&"Ripidolite-14A" //NEW_LINE('')// &
-&"        Mg3Fe2Al2Si3O10(OH)8 +16.00 H+  =  + 2.00 Al+++ + 2.00 Fe++ + 3.00 Mg++ + 3.00 SiO2 + 12.00 H2O" //NEW_LINE('')// &
-&"        log_k           60.9638" //NEW_LINE('')// &
-&"-delta_H	-572.472	kJ/mol	# Calculated enthalpy of reaction	Ripidolite-14A" //NEW_LINE('')// &
-&"#	Enthalpy of formation:	-1947.87 kcal/mol" //NEW_LINE('')// &
-&"        -analytic -1.8376e+002 -6.1934e-002 3.2458e+004 6.2290e+001 5.0653e+002" //NEW_LINE('')// &
-&"#       -Range:  0-300" //NEW_LINE('')// &
+! &"Ripidolite-14A" //NEW_LINE('')// &
+! &"        Mg3Fe2Al2Si3O10(OH)8 +16.00 H+  =  + 2.00 Al+++ + 2.00 Fe++ + 3.00 Mg++ + 3.00 SiO2 + 12.00 H2O" //NEW_LINE('')// &
+! &"        log_k           60.9638" //NEW_LINE('')// &
+! &"-delta_H	-572.472	kJ/mol	# Calculated enthalpy of reaction	Ripidolite-14A" //NEW_LINE('')// &
+! &"#	Enthalpy of formation:	-1947.87 kcal/mol" //NEW_LINE('')// &
+! &"        -analytic -1.8376e+002 -6.1934e-002 3.2458e+004 6.2290e+001 5.0653e+002" //NEW_LINE('')// &
+! &"#       -Range:  0-300" //NEW_LINE('')// &
+!
+! &"Ripidolite-7A" //NEW_LINE('')// &
+! &"        Mg3Fe2Al2Si3O10(OH)8 +16.00 H+  =  + 2.00 Al+++ + 2.00 Fe++ + 3.00 Mg++ + 3.00 SiO2 + 12.00 H2O" //NEW_LINE('')// &
+! &"        log_k           64.3371" //NEW_LINE('')// &
+! &"-delta_H	-586.325	kJ/mol	# Calculated enthalpy of reaction	Ripidolite-7A" //NEW_LINE('')// &
+! &"#	Enthalpy of formation:	-1944.56 kcal/mol" //NEW_LINE('')// &
+! &"        -analytic -1.9557e+002 -6.3779e-002 3.3634e+004 6.7057e+001 5.2489e+002" //NEW_LINE('')// &
+! &"#       -Range:  0-300" //NEW_LINE('')// &
 
-&"Ripidolite-7A" //NEW_LINE('')// &
-&"        Mg3Fe2Al2Si3O10(OH)8 +16.00 H+  =  + 2.00 Al+++ + 2.00 Fe++ + 3.00 Mg++ + 3.00 SiO2 + 12.00 H2O" //NEW_LINE('')// &
-&"        log_k           64.3371" //NEW_LINE('')// &
-&"-delta_H	-586.325	kJ/mol	# Calculated enthalpy of reaction	Ripidolite-7A" //NEW_LINE('')// &
-&"#	Enthalpy of formation:	-1944.56 kcal/mol" //NEW_LINE('')// &
-&"        -analytic -1.9557e+002 -6.3779e-002 3.3634e+004 6.7057e+001 5.2489e+002" //NEW_LINE('')// &
-&"#       -Range:  0-300" //NEW_LINE('')// &
-
-&"Fe(OH)3" //NEW_LINE('')// &
-&"        Fe(OH)3 +3.0000 H+  =  + 1.0000 Fe+++ + 3.0000 H2O" //NEW_LINE('')// &
-&"        log_k           5.6556" //NEW_LINE('')// &
-&"	-delta_H	-84.0824	kJ/mol		Fe(OH)3" //NEW_LINE('')// &
-&"#	Enthalpy of formation:	-823.013 kJ/mol" //NEW_LINE('')// &
-&"        -analytic -1.3316e+002 -3.1284e-002 7.9753e+003 4.9052e+001 1.2449e+002" //NEW_LINE('')// &
-&"#       -Range:  0-300" //NEW_LINE('')// &
-&"" //NEW_LINE('')// &
+! &"Fe(OH)3" //NEW_LINE('')// &
+! &"        Fe(OH)3 +3.0000 H+  =  + 1.0000 Fe+++ + 3.0000 H2O" //NEW_LINE('')// &
+! &"        log_k           5.6556" //NEW_LINE('')// &
+! &"	-delta_H	-84.0824	kJ/mol		Fe(OH)3" //NEW_LINE('')// &
+! &"#	Enthalpy of formation:	-823.013 kJ/mol" //NEW_LINE('')// &
+! &"        -analytic -1.3316e+002 -3.1284e-002 7.9753e+003 4.9052e+001 1.2449e+002" //NEW_LINE('')// &
+! &"#       -Range:  0-300" //NEW_LINE('')// &
+! &"" //NEW_LINE('')// &
 
 ! &"Troilite" //NEW_LINE('')// &
 ! &"        FeS +1.0000 H+  =  + 1.0000 Fe++ + 1.0000 HS-" //NEW_LINE('')// &
@@ -2317,12 +2317,12 @@ L5 = "#  $Id: llnl.dat 4023 2010-02-09 21:02:42Z dlpark $" //NEW_LINE('')// &
 &"  log_k  0.75   #98DIA in 98CHI" //NEW_LINE('')// &
 &"  delta_h  -64.26  kJ/mol  #" //NEW_LINE('')// &
 &"  # Enthalpy of formation:    -556.4  kJ/mol  " //NEW_LINE('')// &
-  
-&"Vermiculite-K" //NEW_LINE('')// &
-&"K0.85Mg3Si3.15Al0.85O10(OH)2 = +3.000Mg+2  +0.850K+  +0.850Al+3  -9.400H+  +6.30H2O + 3.15SiO2  -0.600H2O " //NEW_LINE('')// &
-&"  log_k  36.86  #" //NEW_LINE('')// &
-&"  delta_h  -331.639   kJ/mol  #" //NEW_LINE('')// &
-&"  # Enthalpy of formation:    -6172.584  kJ/mol  07VIE" //NEW_LINE('')// &
+!
+! &"Vermiculite-K" //NEW_LINE('')// &
+! &"K0.85Mg3Si3.15Al0.85O10(OH)2 = +3.000Mg+2  +0.850K+  +0.850Al+3  -9.400H+  +6.30H2O + 3.15SiO2  -0.600H2O " //NEW_LINE('')// &
+! &"  log_k  36.86  #" //NEW_LINE('')// &
+! &"  delta_h  -331.639   kJ/mol  #" //NEW_LINE('')// &
+! &"  # Enthalpy of formation:    -6172.584  kJ/mol  07VIE" //NEW_LINE('')// &
 
 &"Saponite-K" //NEW_LINE('')// &
 &"K0.33Mg3Al0.33Si3.67O10(OH)2 = +3.000Mg+2  +0.330K+  +0.330Al+3  -7.320H+  +7.34H2O + 3.67SiO2  -2.680H2O" //NEW_LINE('')// &
@@ -3096,7 +3096,7 @@ end if
 	medium_a(:,:,2) = 0.0
 	medium_b(:,:,2) = 0.0
 ! end if
-
+!
 
 ! if (j .gt. mstep) then
 			write(*,*) " "
@@ -3195,21 +3195,23 @@ end if
 ! 		solute(:,:,3) = vol_i
 ! 		solute_a(:,:,3) = vol_i_a
 ! 		solute_b(:,:,3) = vol_i_b
-		
-		pri_coarse = primary
-		sec_coarse = secondary
-		sol_coarse = solute
-		med_coarse = medium
-		
-		pri_coarse_a = primary_a
-		sec_coarse_a = secondary_a
-		sol_coarse_a = solute_a
-		med_coarse_a = medium_a
-		
-		pri_coarse_b = primary_b
-		sec_coarse_b = secondary_b
-		sol_coarse_b = solute_b
-		med_coarse_b = medium_b
+
+
+!
+! 		pri_coarse = primary
+! 		sec_coarse = secondary
+! 		sol_coarse = solute
+! 		med_coarse = medium
+!
+! 		pri_coarse_a = primary_a
+! 		sec_coarse_a = secondary_a
+! 		sol_coarse_a = solute_a
+! 		med_coarse_a = medium_a
+!
+! 		pri_coarse_b = primary_b
+! 		sec_coarse_b = secondary_b
+! 		sol_coarse_b = solute_b
+! 		med_coarse_b = medium_b
 
 
 		write(*,*) "BEGIN STRETCHING EVERYTHING OUT FOR GEOCHEM"
@@ -3219,44 +3221,44 @@ end if
 		!hLong = reshape(h(1:xn-1:cell,1:yn-1:cell), (/(xn/cell)*(yn/cell)/)) ! for cell > 1
 		hLong = (/ reshape(transpose(h_coarse(:,(yn/(2*celly))+1:yn/celly)), (/(xn/cellx)*(yn/(2*celly))/)), reshape(transpose(h_coarse(:,(yn/(2*celly))+1:yn/celly)), (/(xn/cellx)*(yn/(2*celly))/)), reshape(transpose(h_coarse(:,(yn/(2*celly))+1:yn/celly)), (/(xn/cellx)*(yn/(2*celly))/)) /) ! for cell = 1
 		do i = 1,g_pri
-			bit_thing = reshape(pri_coarse(:,(yn/(2*celly))+1:yn/celly,i),(/xn/cellx, yn/(2*celly)/))
+			bit_thing = reshape(primary(:,(yn/(2*celly))+1:yn/celly,i),(/xn/cellx, yn/(2*celly)/))
 			priLong(:,i) = reshape(transpose(bit_thing), (/(xn/cellx)*(yn/(2*celly))/))
-			bit_thing = reshape(pri_coarse_a(:,(yn/(2*celly))+1:yn/celly,i),(/xn/cellx, yn/(2*celly)/))
+			bit_thing = reshape(primary_a(:,(yn/(2*celly))+1:yn/celly,i),(/xn/cellx, yn/(2*celly)/))
 			priLong_a(:,i) = reshape(transpose(bit_thing), (/(xn/cellx)*(yn/(2*celly))/))
-			bit_thing = reshape(pri_coarse_b(:,(yn/(2*celly))+1:yn/celly,i),(/xn/cellx, yn/(2*celly)/))
+			bit_thing = reshape(primary_b(:,(yn/(2*celly))+1:yn/celly,i),(/xn/cellx, yn/(2*celly)/))
 			priLong_b(:,i) = reshape(transpose(bit_thing), (/(xn/cellx)*(yn/(2*celly))/))
 		end do
 		
 		do i = 1,g_sec/2
-			bit_thing = reshape(sec_coarse(:,(yn/(2*celly))+1:yn/celly,i),(/xn/cellx, yn/(2*celly)/))
+			bit_thing = reshape(secondary(:,(yn/(2*celly))+1:yn/celly,i),(/xn/cellx, yn/(2*celly)/))
 			secLong(:,i) = reshape(transpose(bit_thing), (/(xn/cellx)*(yn/(2*celly))/))
-			bit_thing = reshape(sec_coarse_a(:,(yn/(2*celly))+1:yn/celly,i),(/xn/cellx, yn/(2*celly)/))
+			bit_thing = reshape(secondary_a(:,(yn/(2*celly))+1:yn/celly,i),(/xn/cellx, yn/(2*celly)/))
 			secLong_a(:,i) = reshape(transpose(bit_thing), (/(xn/cellx)*(yn/(2*celly))/))
-			bit_thing = reshape(sec_coarse_b(:,(yn/(2*celly))+1:yn/celly,i),(/xn/cellx, yn/(2*celly)/))
+			bit_thing = reshape(secondary_b(:,(yn/(2*celly))+1:yn/celly,i),(/xn/cellx, yn/(2*celly)/))
 			secLong_b(:,i) = reshape(transpose(bit_thing), (/(xn/cellx)*(yn/(2*celly))/))
 		end do
 		
 		do i = 1,g_sol
-			bit_thing = reshape(sol_coarse(:,(yn/(2*celly))+1:yn/celly,i),(/xn/cellx, yn/(2*celly)/))
+			bit_thing = reshape(solute(:,(yn/(2*celly))+1:yn/celly,i),(/xn/cellx, yn/(2*celly)/))
 			solLong(:,i) = reshape(transpose(bit_thing), (/(xn/cellx)*(yn/(2*celly))/))
-			bit_thing = reshape(sol_coarse_a(:,(yn/(2*celly))+1:yn/celly,i),(/xn/cellx, yn/(2*celly)/))
+			bit_thing = reshape(solute_a(:,(yn/(2*celly))+1:yn/celly,i),(/xn/cellx, yn/(2*celly)/))
 			solLong_a(:,i) = reshape(transpose(bit_thing), (/(xn/cellx)*(yn/(2*celly))/))
-			bit_thing = reshape(sol_coarse_b(:,(yn/(2*celly))+1:yn/celly,i),(/xn/cellx, yn/(2*celly)/))
+			bit_thing = reshape(solute_b(:,(yn/(2*celly))+1:yn/celly,i),(/xn/cellx, yn/(2*celly)/))
 			solLong_b(:,i) = reshape(transpose(bit_thing), (/(xn/cellx)*(yn/(2*celly))/))
 		end do
 		
 		do i = 1,g_med
-			bit_thing = reshape(med_coarse(:,(yn/(2*celly))+1:yn/celly,i),(/xn/cellx, yn/(2*celly)/))
+			bit_thing = reshape(medium:,(yn/(2*celly))+1:yn/celly,i),(/xn/cellx, yn/(2*celly)/))
 			medLong(:,i) = reshape(transpose(bit_thing), (/(xn/cellx)*(yn/(2*celly))/))
-			bit_thing = reshape(med_coarse_a(:,(yn/(2*celly))+1:yn/celly,i),(/xn/cellx, yn/(2*celly)/))
+			bit_thing = reshape(medium_a(:,(yn/(2*celly))+1:yn/celly,i),(/xn/cellx, yn/(2*celly)/))
 			medLong_a(:,i) = reshape(transpose(bit_thing), (/(xn/cellx)*(yn/(2*celly))/))
-			bit_thing = reshape(med_coarse_b(:,(yn/(2*celly))+1:yn/celly,i),(/xn/cellx, yn/(2*celly)/))
+			bit_thing = reshape(medium_b(:,(yn/(2*celly))+1:yn/celly,i),(/xn/cellx, yn/(2*celly)/))
 			medLong_b(:,i) = reshape(transpose(bit_thing), (/(xn/cellx)*(yn/(2*celly))/))
 		end do
 		
-		write(*,*) "...DONE STRETCHING OUT FOR GEOCHEM"
+!		write(*,*) "...DONE STRETCHING OUT FOR GEOCHEM"
 
-		write(*,*) "BEGIN SENDING GEOCHEM TO ALL PROCESSORS"
+!		write(*,*) "BEGIN SENDING GEOCHEM TO ALL PROCESSORS"
 	
 		!--------------MESSAGE DISTRIBUTING FROM MASTER TO SLAVES
 		do an_id = 1, num_procs - 1
@@ -3314,11 +3316,11 @@ end if
 
 		end do
 		
-		write(*,*) "...DONE SENDING GEOCHEM TO ALL PROCESSORS"
+!		write(*,*) "...DONE SENDING GEOCHEM TO ALL PROCESSORS"
 
 		!--------------MESSAGE RECEIVING FROM SLAVE PROCESSORS
 		
-		write(*,*) "BEGIN RECEIVING GEOCHEM FROM ALL PROCESSORS"
+!		write(*,*) "BEGIN RECEIVING GEOCHEM FROM ALL PROCESSORS"
 		
 		do an_id = 1, num_procs - 1
 		
@@ -3370,9 +3372,9 @@ end if
 		
 		end do
 		
-		write(*,*) "...DONE RECEIVING GEOCHEM FROM ALL PROCESSORS"
+!		write(*,*) "...DONE RECEIVING GEOCHEM FROM ALL PROCESSORS"
 		
-		write(*,*) "BEGIN STRETCHING REACTED CELLS"
+!		write(*,*) "BEGIN STRETCHING REACTED CELLS"
 		
 		!--------------MASTER PROCESSOR SAVES OUTPUT TO BE WRITTEN TO FILE
 
@@ -3469,7 +3471,7 @@ end if
 ! 		solute_a(:,:,3) = vol_i_a
 ! 		solute_b(:,:,3) = vol_i_b
 
-		write(*,*) "...DONE STRETCHING REACTED CELLS"
+!		write(*,*) "...DONE STRETCHING REACTED CELLS"
 
 
 		! add timestep's output to output arrays
@@ -3907,12 +3909,12 @@ else
 			
 		if (medLocal(m,5) .eq. 1.0) then
 			
-			param_exp_string = '1.0'
-			param_exp1_string = '1.0'
+			param_exp_string = '0.1'
+			param_exp1_string = '0.1'
 
-			!param_ol_string ='-f MgO 1.0 FeO 1.0 SiO2 1.0'
+			param_ol_string ='-f MgO 1.0 FeO 1.0 SiO2 1.0'
 			!param_ol_string ='-f MgO 2.0 SiO2 1.0'
-			param_ol_string ='-f FeO 2.0 SiO2 1.0'
+			!param_ol_string ='-f FeO 2.0 SiO2 1.0'
 			param_pyr_string='-f CaO 1.0 MgO 1.0 SiO2 2.0'
 			param_plag_string='-f NaAlSi3O8 0.5 CaAl2Si2O8 0.5'
 			
@@ -4123,6 +4125,7 @@ write(si_hematite,'(F25.10)') 1.0! -(solute3(1)*2.5) + 30.0
 		&"    Kaolinite " // trim(s_precip) // trim(s_kaolinite) // kinetics //NEW_LINE('')// & ! clay
 		&"    Goethite " // trim(s_precip) // trim(s_goethite) // kinetics //NEW_LINE('')// &
 		&"    Celadonite " // trim(s_precip) // trim(s_celadonite) // kinetics //NEW_LINE('')// & ! mica
+		!&"    Celadonite -5.0 " // trim(s_celadonite) // kinetics //NEW_LINE('')// & ! mica
 		 !&"    Albite " // trim(s_precip) // trim(s_albite) // kinetics //NEW_LINE('')// & ! plagioclase
 		!&"    Calcite " // trim(s_precip) // trim(s_calcite) // kinetics //NEW_LINE('')// & ! .135
 		&"    Montmor-Na " // trim(s_precip) // trim(s_mont_na) // kinetics //NEW_LINE('')// & ! smectite
@@ -4138,14 +4141,14 @@ write(si_hematite,'(F25.10)') 1.0! -(solute3(1)*2.5) + 30.0
 		&"    Saponite-Na " // trim(s_precip) // trim(s_saponite_na) // kinetics //NEW_LINE('')// & ! smectite
 		&"    Nontronite-Na " // trim(s_precip) // trim(s_nont_na) // kinetics //NEW_LINE('')// & ! smectite
 		&"    Nontronite-Mg " // trim(s_precip) // trim(s_nont_mg) // kinetics //NEW_LINE('')// & ! smectite
-		&"    Nontronite-K " // trim(s_precip) // trim(s_nont_k) // kinetics //NEW_LINE('')// & ! smectite
+		!&"    Nontronite-K " // trim(s_precip) // trim(s_nont_k) // kinetics //NEW_LINE('')// & ! smectite
 		  &"    Fe-Celadonite " // trim(s_precip) // trim(s_fe_celadonite) // kinetics //NEW_LINE('')// & ! mica
 		&"    Nontronite-Ca " // trim(s_precip) // trim(s_nont_ca) // kinetics //NEW_LINE('')// & ! smectite
-		 !&"    Muscovite " // trim(s_precip) // trim(s_muscovite) // kinetics //NEW_LINE('')// & ! mica
+		 &"    Muscovite " // trim(s_precip) // trim(s_muscovite) // kinetics //NEW_LINE('')// & ! mica
 		&"    Mesolite " // trim(s_precip) // trim(s_mesolite) // kinetics //NEW_LINE('')// & ! zeolite
 		&"    Anhydrite " // trim(s_precip) // trim(s_anhydrite) // kinetics //NEW_LINE('')// & ! formerly magnesite
 		&"    Smectite-high-Fe-Mg " // trim(s_precip) // trim(s_smectite) // kinetics //NEW_LINE('')// & ! smectite
-		&"    Saponite-K " // trim(s_precip) // trim(s_saponite_k) // kinetics //NEW_LINE('')// & ! smectite
+		!&"    Saponite-K " // trim(s_precip) // trim(s_saponite_k) // kinetics //NEW_LINE('')// & ! smectite
 		   &"    Vermiculite-Na " // trim(s_precip) // trim(s_verm_na) // kinetics //NEW_LINE('')// &
 		!&"    Hematite " // trim(s_precip) // trim(s_hematite) // kinetics //NEW_LINE('')// &
 		! &"    Hematite " // trim(si_hematite) // trim(s_hematite) // kinetics //NEW_LINE('')// &
@@ -4153,10 +4156,10 @@ write(si_hematite,'(F25.10)') 1.0! -(solute3(1)*2.5) + 30.0
 		&"    Analcime " // trim(s_precip) // trim(s_analcime) // kinetics //NEW_LINE('')// & ! zeolite
 		&"    Phillipsite " // trim(s_precip) // trim(s_phillipsite) // kinetics //NEW_LINE('')// & ! zeolite
 		!&"    Diopside " // trim(s_precip) // trim(s_diopside) // kinetics //NEW_LINE('')// & ! pyroxene
-		    &"    Epidote  " // trim(s_precip) // trim(s_epidote) // kinetics //NEW_LINE('')// &
+		    !&"    Epidote  " // trim(s_precip) // trim(s_epidote) // kinetics //NEW_LINE('')// &
 		   &"    Gismondine " // trim(s_precip) // trim(s_gismondine) // kinetics //NEW_LINE('')// & ! zeolite
 		!&"    Hedenbergite " // trim(s_precip) // trim(s_hedenbergite) // kinetics //NEW_LINE('')// & ! pyroxene
-		   &"    Chalcedony " // trim(s_precip) // trim(s_chalcedony) // kinetics //NEW_LINE('')// & ! quartz
+		   !&"    Chalcedony " // trim(s_precip) // trim(s_chalcedony) // kinetics //NEW_LINE('')// & ! quartz
 		   &"    Vermiculite-Mg " // trim(s_precip) // trim(s_verm_mg) // kinetics //NEW_LINE('')// &
 		&"    Ferrihydrite " // trim(s_precip) // trim(s_ferrihydrite) // kinetics //NEW_LINE('')// & ! iron oxyhydroxide
 		&"    Natrolite " // trim(s_precip) // trim(s_natrolite) // kinetics //NEW_LINE('')// & ! zeolite

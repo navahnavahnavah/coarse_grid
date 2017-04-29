@@ -345,7 +345,7 @@ soluteOcean_a = (/ solute_a(1,1,1), solute_a(1,1,2), solute_a(1,1,3), solute_a(1
 soluteOcean_b = (/ solute_b(1,1,1), solute_b(1,1,2), solute_b(1,1,3), solute_b(1,1,4), solute_b(1,1,5), & 
 		  & solute_b(1,1,6), solute_b(1,1,7), solute_b(1,1,8), solute_b(1,1,9), solute_b(1,1,10), &
 		  & solute_b(1,1,11), solute_b(1,1,12), solute_b(1,1,13), solute_b(1,1,14), solute_b(1,1,15) /)			  
-			  
+			     
 do g=1,g_sol
 	solute_fine(:,:,g) = soluteOcean(g)
 	solute_fine_a(:,:,g) = soluteOcean_a(g)

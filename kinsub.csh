@@ -10,7 +10,7 @@
 # you want to run.
 #
 # set the name of the job
-#PBS -N cor_5
+#PBS -N cor_32
 #
 # set the output and error files
 #PBS -o /home/navah/coarse_grid/mOutG.txt
@@ -19,31 +19,9 @@
 # set the number of nodes to use, and number of processors
 # to use per node
 
-#PBS -l nodes=compute-0-0:ppn=10+compute-0-1:ppn=10+compute-0-2:ppn=10+compute-0-3:ppn=10+compute-0-4:ppn=10+compute-1-0:ppn=10+compute-1-2:ppn=10+compute-1-3:ppn=10
-##PBS -l nodes=compute-1-4:ppn=10+compute-1-5:ppn=10+compute-1-6:ppn=10+compute-1-7:ppn=10+compute-1-8:ppn=10
-##PBS -l nodes=compute-1-9:ppn=11+compute-1-10:ppn=11+compute-1-8:ppn=10+compute-1-7:ppn=10
 
+#PBS -l nodes=compute-0-0:ppn=11+compute-0-1:ppn=11+compute-0-2:ppn=11+compute-0-3:ppn=11+compute-0-4:ppn=11+compute-1-0:ppn=11+compute-1-1:ppn=11+compute-1-2:ppn=11+compute-1-3:ppn=11+compute-1-4:ppn=11
 
-
-####+compute-1-1:ppn=10
-
-
-
-##PBS -l nodes=compute-0-1:ppn=10+compute-0-2:ppn=10+compute-0-3:ppn=10+compute-1-7:ppn=10+compute-0-0:ppn=10+compute-1-0:ppn=10+compute-0-4:ppn=10+compute-1-8:ppn=10
-##PBS -l nodes=compute-1-1:ppn=10+compute-1-2:ppn=10+compute-1-3:ppn=10+compute-1-9:ppn=10
-##PBS -l nodes=compute-1-4:ppn=10+compute-1-5:ppn=10+compute-1-6:ppn=10+compute-1-10:ppn=10
-
-
-
-
-##PBS -l nodes=3:ppn=10
-
-##PBS -l nodes=compute-0-0:ppn=12+compute-0-1:ppn=12+compute-0-2:ppn=12+compute-0-3:ppn=12+compute-0-4:ppn=12+compute-1-1:ppn=12+compute-1-2:ppn=12+compute-1-3:ppn=12+compute-1-4:ppn=12+compute-1-5:ppn=12+compute-1-6:ppn=12+compute-1-7:ppn=12+compute-1-8:ppn=12+compute-1-9:ppn=12+compute-1-0:ppn=12
-
-
-##PBS -l nodes=compute-0-1:ppn=10+compute-0-2:ppn=10+compute-0-3:ppn=10+compute-0-4:ppn=10+compute-0-0:ppn=10
-##PBS -l nodes=compute-1-1:ppn=10+compute-1-2:ppn=10+compute-1-3:ppn=10+compute-1-4:ppn=10+compute-1-0:ppn=10
-##PBS -l nodes=compute-1-5:ppn=10+compute-1-6:ppn=10+compute-1-7:ppn=10+compute-1-8:ppn=10+compute-1-9:ppn=10
 
 # or, if using only one node, you can do it this way too
 ##PBS -l ncpus=5
@@ -94,8 +72,8 @@ set PARAM_F_POR = '6e-4'
 
 
 
-set PARAM_PATH='/home/navah/coarse_grid/output/cor_5/'
-set PARAM_ISO_PATH='/home/navah/coarse_grid/output/cor_5/'
+set PARAM_PATH='/home/navah/coarse_grid/output/cor_32/'
+set PARAM_ISO_PATH='/home/navah/coarse_grid/output/cor_32/'
 
  
 echo $PARAM_PATH
