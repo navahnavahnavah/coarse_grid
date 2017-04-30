@@ -71,7 +71,7 @@ real(4) :: h_coarse(xn/cellx,yn/(2*celly))
 ! real(4) :: sol_coarse_b(xn/cellx,yn/celly,g_sol)
 ! real(4) :: med_coarse_b(xn/cellx,yn/celly,g_med)
 
-real(4) :: coarse_mask(xn/cellx,yn/(2*celly))
+real(4) :: coarse_mask(xn/cellx,yn/(2*celly)), coarse_mask_long((xn/cellx)*(yn/(2*celly)))
 
 real(4) :: volume_ratio, mix_ratio, volume_ratio_i
 real(4) :: vol_i, vol_i_a, vol_i_b
@@ -918,7 +918,7 @@ sed3 = sed1 - (param_h)
 	! coarse mask 2
 	do gg=1,yn/(2*celly)
 		do g =1,xn/cellx
-			if (minval(permeability((g-1)*cellx+1:g*cellx,(gg-1)*celly+1+yn/(2*celly):(gg*celly)+yn/(2*celly))) .lt. param_paq) then
+			if (maxval(permeability((g-1)*cellx+1:g*cellx,(gg-1)*celly+1+yn/(2*celly):(gg*celly)+yn/(2*celly))) .lt. param_paq) then
 				coarse_mask(g,gg) = 0.0
 			end if
 			if (coarse_mask(g,gg) .eq. 0.0) then
@@ -939,6 +939,8 @@ sed3 = sed1 - (param_h)
 			end if
 		end do
 	end do
+	
+	coarse_mask_long = reshape(coarse_mask,(/(xn/cellx)*(yn/(2*celly))/))
 
 	! high lambda in deep basalt
 	do gg=1,yn

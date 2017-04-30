@@ -360,7 +360,7 @@ real(4) :: sol_coarse_long_local((xn/cellx)*(yn/(2*celly))) !, sol_coarse_long_l
 real(4) :: sol_coarse_local(xn/cellx,yn/(2*celly)) !, sol_coarse_local_a(xn/cellx,yn/celly)
 real(4) :: u_coarse_long((xn/cellx)*(yn/(2*celly))), v_coarse_long((xn/cellx)*(yn/(2*celly))), phi_coarse_long((xn/cellx)*(yn/(2*celly)))
 real(4) :: u_coarse_local(xn/cellx,yn/(2*celly)), v_coarse_local(xn/cellx,yn/(2*celly)), phi_coarse_local(xn/cellx,yn/(2*celly))
-real(4) :: u_coarse_long_local(xn/cellx,yn/(2*celly)), v_coarse_long_local(xn/cellx,yn/(2*celly)), phi_coarse_long_local(xn/cellx,yn/(2*celly))
+real(4) :: u_coarse_long_local((xn/cellx)*(yn/(2*celly))), v_coarse_long_local((xn/cellx)*(yn/(2*celly))), phi_coarse_long_local((xn/cellx)*(yn/(2*celly)))
 integer :: an_id_local
 
 real(4) :: priLongBitFull(3*(xn/cellx)*(yn/(2*celly)),g_pri)
@@ -2397,13 +2397,13 @@ phi0 = phi
 
 ! fill coordinate arrays
 do i = 1,(xn/cellx)
-	do ii = 1,(yn/celly)
+	do ii = 1,(yn/(2*celly))
 		medium(i,ii,6) = x(i*cellx) 
-		medium(i,ii,7) = y(ii*celly)
+		medium(i,ii,7) = y(ii*celly+yn/(2*cell)) 
 		medium_a(i,ii,6) = x(i*cellx) 
-		medium_a(i,ii,7) = y(ii*celly)
+		medium_a(i,ii,7) = y(ii*celly+yn/(2*cell))
 		medium_b(i,ii,6) = x(i*cellx) 
-		medium_b(i,ii,7) = y(ii*celly)
+		medium_b(i,ii,7) = y(ii*celly+yn/(2*cell))
 	end do
 end do
 
@@ -2989,7 +2989,7 @@ end if ! end if restart .ne. 1
 
 if (j .eq. 5) then
 	
-			len = (yn/(2*celly))*(xn/cellx)
+			leng = (yn/(2*celly))*(xn/cellx)
 
 			! get velocities from streamfunction
 			
@@ -3000,7 +3000,7 @@ if (j .eq. 5) then
 				end do
 			end do
 			
-			hLong = (/ reshape(transpose(h_coarse), (/ len /)), reshape(transpose(h_coarse), (/ len /)), reshape(transpose(h_coarse), (/ len /)) /) ! for cell = 1
+			hLong = (/ reshape(transpose(h_coarse), (/ leng /)), reshape(transpose(h_coarse), (/ leng /)), reshape(transpose(h_coarse), (/ leng /)) /) ! for cell = 1
 			
 			psi_coarse(xn/cellx,:) = 0.0
 			psi_coarse(xn/cellx-1,:) = 0.0
@@ -3022,9 +3022,9 @@ if (j .eq. 5) then
 			u = phi*velocities0(1:xn,1:yn)/(rho_fluid)
 			v = phi*velocities0(1:xn,yn+1:2*yn)/(rho_fluid)
 
-			u_coarse_long = reshape(u_coarse, (/(xn/cellx)*(yn/(2*celly))/))
-			v_coarse_long = reshape(v_coarse, (/(xn/cellx)*(yn/(2*celly))/))
-			phi_coarse_long = reshape(phi_coarse, (/(xn/cellx)*(yn/(2*celly))/))
+			u_coarse_long = reshape(u_coarse, (/ leng /))
+			v_coarse_long = reshape(v_coarse, (/ leng /))
+			phi_coarse_long = reshape(phi_coarse, (/ leng /))
 
 ! 			u(f_index1-1:,:) = 0.0
 ! 			v(f_index1-1:,:) = 0.0
@@ -3037,39 +3037,39 @@ if (j .eq. 5) then
 			! stretch everything out
 			!hLong = reshape(h(1:xn-1:cell,1:yn-1:cell), (/(xn/cell)*(yn/cell)/)) ! for cell > 1
 			do i = 1,g_pri
-				bit_thing = reshape(primary(:,:,i),(/xn/cellx, yn/(2*celly)/))
-				bit_thing_a = reshape(primary_a(:,:,i),(/xn/cellx, yn/(2*celly)/))
-				bit_thing_b = reshape(primary_b(:,:,i),(/xn/cellx, yn/(2*celly)/))
-				priLongBitFull(:len,i) = reshape(transpose(bit_thing), (/ len /))
-				priLongBitFull(len+1:2*len,i) = reshape(transpose(bit_thing_a), (/ len /))
-				priLongBitFull(2*len+1:,i) = reshape(transpose(bit_thing_b), (/ len /))
+! 				bit_thing = reshape(primary(:,:,i),(/xn/cellx, yn/(2*celly)/))
+! 				bit_thing_a = reshape(primary_a(:,:,i),(/xn/cellx, yn/(2*celly)/))
+! 				bit_thing_b = reshape(primary_b(:,:,i),(/xn/cellx, yn/(2*celly)/))
+				priLongBitFull(:leng,i) = reshape(transpose(primary(:,:,i)), (/ leng /))
+				priLongBitFull(leng+1:2*leng,i) = reshape(transpose(primary_a(:,:,i)), (/ leng /))
+				priLongBitFull(2*leng+1:,i) = reshape(transpose(primary_b(:,:,i)), (/ leng /))
 			end do
 
 			do i = 1,g_sec/2
-				bit_thing = reshape(secondary(:,:,i),(/xn/cellx, yn/(2*celly)/))
-				bit_thing_a = reshape(secondary_a(:,:,i),(/xn/cellx, yn/(2*celly)/))
-				bit_thing_b = reshape(secondary_b(:,:,i),(/xn/cellx, yn/(2*celly)/))
-				secLongBitFull(:len,i) = reshape(transpose(bit_thing), (/ len /))
-				secLongBitFull(len+1:2*len,i) = reshape(transpose(bit_thing_a), (/ len /))
-				secLongBitFull(2*len+1:,i) = reshape(transpose(bit_thing_b), (/ len /))
+! 				bit_thing = reshape(secondary(:,:,i),(/xn/cellx, yn/(2*celly)/))
+! 				bit_thing_a = reshape(secondary_a(:,:,i),(/xn/cellx, yn/(2*celly)/))
+! 				bit_thing_b = reshape(secondary_b(:,:,i),(/xn/cellx, yn/(2*celly)/))
+				secLongBitFull(:leng,i) = reshape(transpose(secondary(:,:,i)), (/ leng /))
+				secLongBitFull(leng+1:2*leng,i) = reshape(transpose(secondary_a(:,:,i)), (/ leng /))
+				secLongBitFull(2*leng+1:,i) = reshape(transpose(secondary_b(:,:,i)), (/ leng /))
 			end do
 
 			do i = 1,g_sol
-				bit_thing = reshape(solute(:,:,i),(/xn/cellx, yn/(2*celly)/))
-				bit_thing_a = reshape(solute_a(:,:,i),(/xn/cellx, yn/(2*celly)/))
-				bit_thing_b = reshape(solute_b(:,:,i),(/xn/cellx, yn/(2*celly)/))
-				solLongBitFull(:len,i) = reshape(transpose(bit_thing), (/ len /))
-				solLongBitFull(len+1:2*len,i) = reshape(transpose(bit_thing_a), (/ len /))
-				solLongBitFull(2*len+1:,i) = reshape(transpose(bit_thing_b), (/ len /))
+! 				bit_thing = reshape(solute(:,:,i),(/xn/cellx, yn/(2*celly)/))
+! 				bit_thing_a = reshape(solute_a(:,:,i),(/xn/cellx, yn/(2*celly)/))
+! 				bit_thing_b = reshape(solute_b(:,:,i),(/xn/cellx, yn/(2*celly)/))
+				solLongBitFull(:leng,i) = reshape(transpose(solute(:,:,i)), (/ leng /))
+				solLongBitFull(leng+1:2*leng,i) = reshape(transpose(solute_a(:,:,i)), (/ leng /))
+				solLongBitFull(2*leng+1:,i) = reshape(transpose(solute_b(:,:,i)), (/ leng /))
 			end do
 
 			do i = 1,g_med
-				bit_thing = reshape(medium(:,:,i),(/xn/cellx, yn/(2*celly)/))
-				bit_thing_a = reshape(medium_a(:,:,i),(/xn/cellx, yn/(2*celly)/))
-				bit_thing_b = reshape(medium_b(:,:,i),(/xn/cellx, yn/(2*celly)/))
-				medLongBitFull(:len,i) = reshape(transpose(bit_thing), (/ len /))
-				medLongBitFull(len+1:2*len,i) = reshape(transpose(bit_thing_a), (/ len /))
-				medLongBitFull(2*len+1:,i) = reshape(transpose(bit_thing_b), (/ len /))
+! 				bit_thing = reshape(medium(:,:,i),(/xn/cellx, yn/(2*celly)/))
+! 				bit_thing_a = reshape(medium_a(:,:,i),(/xn/cellx, yn/(2*celly)/))
+! 				bit_thing_b = reshape(medium_b(:,:,i),(/xn/cellx, yn/(2*celly)/))
+				medLongBitFull(:leng,i) = reshape(transpose(medium(:,:,i)), (/ leng /))
+				medLongBitFull(leng+1:2*leng,i) = reshape(transpose(medium_a(:,:,i)), (/ leng /))
+				medLongBitFull(2*leng+1:,i) = reshape(transpose(medium_b(:,:,i)), (/ leng /))
 			end do
 
 
@@ -3170,22 +3170,22 @@ end if ! if j == 5
 			
 			
 
-			n=2 ! alk
-			solute_inter_long = solLongBitFull(len+1:2*len,n)
-			solLongBitFull(len+1:2*len,n) = solLongBitFull(len+1:2*len,n)*(1.0-mix_ratio/volume_ratio) + solLongBitFull(2*len+1:,n)*mix_ratio/volume_ratio ! a mix
-			solLongBitFull(2*len+1:,n) = solLongBitFull(2*len+1:,n)*(1.0-mix_ratio) + solute_inter_long*mix_ratio
+! 			n=2 ! alk
+! 			solute_inter_long = solLongBitFull(len+1:2*len,n)
+! 			solLongBitFull(len+1:2*len,n) = solLongBitFull(len+1:2*len,n)*(1.0-mix_ratio/volume_ratio) + solLongBitFull(2*len+1:,n)*mix_ratio/volume_ratio ! a mix
+! 			solLongBitFull(2*len+1:,n) = solLongBitFull(2*len+1:,n)*(1.0-mix_ratio) + solute_inter_long*mix_ratio
+!
+! 			do n=4,13 ! solutes
+! 				solute_inter_long = solLongBitFull(len+1:2*len,n)
+! 				solLongBitFull(len+1:2*len,n) = solLongBitFull(len+1:2*len,n)*(1.0-mix_ratio/volume_ratio) + solLongBitFull(2*len+1:,n)*mix_ratio/volume_ratio ! a mix
+! 				solLongBitFull(2*len+1:,n) = solLongBitFull(2*len+1:,n)*(1.0-mix_ratio) + solute_inter_long*mix_ratio
+! 			end do
 
-			do n=4,13 ! solutes
-				solute_inter_long = solLongBitFull(len+1:2*len,n)
-				solLongBitFull(len+1:2*len,n) = solLongBitFull(len+1:2*len,n)*(1.0-mix_ratio/volume_ratio) + solLongBitFull(2*len+1:,n)*mix_ratio/volume_ratio ! a mix
-				solLongBitFull(2*len+1:,n) = solLongBitFull(2*len+1:,n)*(1.0-mix_ratio) + solute_inter_long*mix_ratio
-			end do
-
-! 			write(*,*) "...DONE WITH CHAMBER MIXING"
+			write(*,*) "...DONE WITH CHAMBER MIXING"
 !
 !
 !
-! 		write(*,*) "BEGIN SENDING SOLUTES TO PROCESSORS FOR ADVECTION"
+ 		write(*,*) "BEGIN SENDING SOLUTES TO PROCESSORS FOR ADVECTION"
 		
 		
 		!--------------FROM MASTER TO SLAVES FOR ADVECTION
@@ -3193,11 +3193,25 @@ end if ! if j == 5
 		do an_id = 1, 22
 
 			if (an_id .le. 11) then
-				sol_coarse_long = solLongBitFull(:len,sol_index(an_id)) !reshape(solute(:,:,sol_index(an_id)), (/(xn/cellx)*(yn/celly)/))
+				
+! 				do i=1,len
+! 					if (coarse_mask_long(i) .eq. 0.0) then
+! 						solLongBitFull(i,sol_index(an_id)) = sea(sol_index(an_id))
+! 					end if
+! 				end do
+				
+				sol_coarse_long = solLongBitFull(:leng,sol_index(an_id)) !reshape(solute(:,:,sol_index(an_id)), (/(xn/cellx)*(yn/celly)/))
 			end if
 	
 			if (an_id .gt. 11) then
-				sol_coarse_long = solLongBitFull(len+1:2*len,sol_index(an_id-11)) !sol_coarse_long = reshape(solute_a(:,:,sol_index(an_id-11)), (/(xn/cellx)*(yn/celly)/))
+				
+! 				do i=1,len
+! 					if (coarse_mask_long(i) .eq. 0.0) then
+! 						solLongBitFull(len+1+i,sol_index(an_id-11)) = sea(sol_index(an_id-11))
+! 					end if
+! 				end do
+				
+				sol_coarse_long = solLongBitFull(leng+1:2*leng,sol_index(an_id-11)) !sol_coarse_long = reshape(solute_a(:,:,sol_index(an_id-11)), (/(xn/cellx)*(yn/celly)/))
 			end if
 	
 			! send an_id name
@@ -3205,47 +3219,48 @@ end if ! if j == 5
 			an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 	
 			! send long sol coarse
-			call MPI_SEND( sol_coarse_long, (xn/cellx)*(yn/(2*celly)), MPI_DOUBLE_PRECISION, &
+			call MPI_SEND( sol_coarse_long, leng, MPI_DOUBLE_PRECISION, &
 			an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 	
 			! send long u coarse
-			call MPI_SEND( u_coarse_long, (xn/cellx)*(yn/(2*celly)), MPI_DOUBLE_PRECISION, &
+			call MPI_SEND( u_coarse_long, leng, MPI_DOUBLE_PRECISION, &
 			an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 	
 			! send long v coarse
-			call MPI_SEND( v_coarse_long, (xn/cellx)*(yn/(2*celly)), MPI_DOUBLE_PRECISION, &
+			call MPI_SEND( v_coarse_long, leng, MPI_DOUBLE_PRECISION, &
 			an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 	
 			! send long phi coarse
-			call MPI_SEND( phi_coarse_long, (xn/cellx)*(yn/(2*celly)), MPI_DOUBLE_PRECISION, &
+			call MPI_SEND( phi_coarse_long, leng, MPI_DOUBLE_PRECISION, &
 			an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 
 		!write(*,*) "DONE SENDING SOLUTE TO PROCESSOR", an_id	
 
 		end do
 		
-		!write(*,*) "...DONE SENDING SOLUTES TO ALL PROCESSORS"
+		write(*,*) "...DONE SENDING SOLUTES TO ALL PROCESSORS"
 		
 		!--------------MESSAGE RECEIVING FROM SLAVE PROCESSORS
 		
-		!write(*,*) "BEGIN RECEIVING ADVECTED SOLUTES"
+		write(*,*) "BEGIN RECEIVING ADVECTED SOLUTES"
 		
 		do an_id = 1, 22
 			
-			call MPI_RECV( sol_coarse_long, (xn/cellx)*(yn/(2*celly)), MPI_DOUBLE_PRECISION, &
+			
+			call MPI_RECV( sol_coarse_long, leng, MPI_DOUBLE_PRECISION, &
 			an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
 
 			if (an_id .le. 11) then
-				solLongBitFull(:len,sol_index(an_id)) = sol_coarse_long
+				solLongBitFull(:leng,sol_index(an_id)) = sol_coarse_long
 			end if
 
 			if (an_id .gt. 11) then
-				solLongBitFull(len+1:2*len,sol_index(an_id-11)) = sol_coarse_long
+				solLongBitFull(leng+1:2*leng,sol_index(an_id-11)) = sol_coarse_long
 			end if
 			
 		end do
 		
-! 		write(*,*) "...DONE RECEIVING ADVECTED SOLUTES"
+ 		write(*,*) "...DONE RECEIVING ADVECTED SOLUTES"
 !
 !
 !
@@ -3319,11 +3334,11 @@ end if ! if j == 5
 
 		end do
 		
-! 		write(*,*) "...DONE SENDING GEOCHEM TO ALL PROCESSORS"
+ 		write(*,*) "...DONE SENDING GEOCHEM TO ALL PROCESSORS"
 !
 ! 		!--------------MESSAGE RECEIVING FROM SLAVE PROCESSORS
 !
-! 		write(*,*) "BEGIN RECEIVING GEOCHEM FROM ALL PROCESSORS"
+ 		write(*,*) "BEGIN RECEIVING GEOCHEM FROM ALL PROCESSORS"
 !
 		do an_id = 1, num_procs - 1
 		
@@ -3399,58 +3414,58 @@ end if ! if j == 5
 			
 			
 			
-			len = (yn/(2*celly))*(xn/cellx)
+			leng = (yn/(2*celly))*(xn/cellx)
 		
 			do i = 1,g_pri
-				bit_thing_t = reshape(priLongBitFull(1:len,i),(/yn/(2*celly), xn/cellx/))
-				bit_thing = transpose(bit_thing_t)
-				bit_thing_t1 = reshape(bit_thing,(/xn/cellx,yn/(2*celly)/))
+! 				bit_thing_t = reshape(priLongBitFull(1:leng,i),(/yn/(2*celly), xn/cellx/))
+! 				bit_thing = transpose(bit_thing_t)
+				bit_thing_t1 = transpose(reshape(priLongBitFull(1:leng,i),(/yn/(2*celly), xn/cellx/)))
 				primary(:,:,i) = bit_thing_t1
 			
-				bit_thing_t = reshape(priLongBitFull(len+1:2*len,i),(/yn/(2*celly), xn/cellx/))
-				bit_thing = transpose(bit_thing_t)
-				bit_thing_t1 = reshape(bit_thing,(/xn/cellx,yn/(2*celly)/))
+! 				bit_thing_t = reshape(priLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), xn/cellx/))
+! 				bit_thing = transpose(bit_thing_t)
+				bit_thing_t1 = transpose(reshape(priLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), xn/cellx/)))
 				primary_a(:,:,i) = bit_thing_t1
 			
-				bit_thing_t = reshape(priLongBitFull(2*len+1:,i),(/yn/(2*celly), xn/cellx/))
-				bit_thing = transpose(bit_thing_t)
-				bit_thing_t1 = reshape(bit_thing,(/xn/cellx,yn/(2*celly)/))
+! 				bit_thing_t = reshape(priLongBitFull(2*leng+1:,i),(/yn/(2*celly), xn/cellx/))
+! 				bit_thing = transpose(bit_thing_t)
+				bit_thing_t1 = transpose(reshape(priLongBitFull(2*leng+1:,i),(/yn/(2*celly), xn/cellx/)))
 				primary_b(:,:,i) = bit_thing_t1
 			end do
 		
 			if (maxval(medium(:,:,2)) .eq. 0.0) then
 				do i = 1,g_sec
-					bit_thing_t = reshape(secLongBitFull(1:len,i),(/yn/(2*celly), xn/cellx/))
-					bit_thing = transpose(bit_thing_t)
-					bit_thing_t1 = reshape(bit_thing,(/xn/cellx,yn/(2*celly)/))
+! 					bit_thing_t = reshape(secLongBitFull(1:leng,i),(/yn/(2*celly), xn/cellx/))
+! 					bit_thing = transpose(bit_thing_t)
+					bit_thing_t1 = transpose(reshape(secLongBitFull(1:leng,i),(/yn/(2*celly), xn/cellx/)))
 					secondary(:,:,i) = bit_thing_t1
 			
-					bit_thing_t = reshape(secLongBitFull(len+1:2*len,i),(/yn/(2*celly), xn/cellx/))
-					bit_thing = transpose(bit_thing_t)
-					bit_thing_t1 = reshape(bit_thing,(/xn/cellx,yn/(2*celly)/))
+! 					bit_thing_t = reshape(secLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), xn/cellx/))
+! 					bit_thing = transpose(bit_thing_t)
+					bit_thing_t1 = transpose(reshape(secLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), xn/cellx/)))
 					secondary_a(:,:,i) = bit_thing_t1
 			
-					bit_thing_t = reshape(secLongBitFull(2*len+1:,i),(/yn/(2*celly), xn/cellx/))
-					bit_thing = transpose(bit_thing_t)
-					bit_thing_t1 = reshape(bit_thing,(/xn/cellx,yn/(2*celly)/))
+! 					bit_thing_t = reshape(secLongBitFull(2*leng+1:,i),(/yn/(2*celly), xn/cellx/))
+! 					bit_thing = transpose(bit_thing_t)
+					bit_thing_t1 = transpose(reshape(secLongBitFull(2*leng+1:,i),(/yn/(2*celly), xn/cellx/)))
 					secondary_b(:,:,i) = bit_thing_t1
 				end do
 			end if
 		
 			do i = 1,g_sol
-				bit_thing_t = reshape(solLongBitFull(1:len,i),(/yn/(2*celly), xn/cellx/))
-				bit_thing = transpose(bit_thing_t)
-				bit_thing_t1 = reshape(bit_thing,(/xn/cellx,yn/(2*celly)/))
+! 				bit_thing_t = reshape(solLongBitFull(1:leng,i),(/yn/(2*celly), xn/cellx/))
+! 				bit_thing = transpose(bit_thing_t)
+				bit_thing_t1 = transpose(reshape(solLongBitFull(1:leng,i),(/yn/(2*celly), xn/cellx/)))
 				solute(:,:,i) = bit_thing_t1
 			
-				bit_thing_t = reshape(solLongBitFull(len+1:2*len,i),(/yn/(2*celly), xn/cellx/))
-				bit_thing = transpose(bit_thing_t)
-				bit_thing_t1 = reshape(bit_thing,(/xn/cellx,yn/(2*celly)/))
+! 				bit_thing_t = reshape(solLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), xn/cellx/))
+! 				bit_thing = transpose(bit_thing_t)
+				bit_thing_t1 = transpose(reshape(solLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), xn/cellx/)))
 				solute_a(:,:,i) = bit_thing_t1
 			
-				bit_thing_t = reshape(solLongBitFull(2*len+1:,i),(/yn/(2*celly), xn/cellx/))
-				bit_thing = transpose(bit_thing_t)
-				bit_thing_t1 = reshape(bit_thing,(/xn/cellx,yn/(2*celly)/))
+! 				bit_thing_t = reshape(solLongBitFull(2*leng+1:,i),(/yn/(2*celly), xn/cellx/))
+! 				bit_thing = transpose(bit_thing_t)
+				bit_thing_t1 = transpose(reshape(solLongBitFull(2*leng+1:,i),(/yn/(2*celly), xn/cellx/)))
 				solute_b(:,:,i) = bit_thing_t1
 			end do
 		
@@ -3467,19 +3482,19 @@ end if ! if j == 5
 
 		
 			do i = 1,g_med
-				bit_thing_t = reshape(medLongBitFull(1:len,i),(/yn/(2*celly), xn/cellx/))
-				bit_thing = transpose(bit_thing_t)
-				bit_thing_t1 = reshape(bit_thing,(/xn/cellx,yn/(2*celly)/))
+! 				bit_thing_t = reshape(medLongBitFull(1:leng,i),(/yn/(2*celly), xn/cellx/))
+! 				bit_thing = transpose(bit_thing_t)
+				bit_thing_t1 = transpose(reshape(medLongBitFull(1:leng,i),(/yn/(2*celly), xn/cellx/)))
 				medium(:,:,i) = bit_thing_t1
 			
-				bit_thing_t = reshape(medLongBitFull(len+1:2*len,i),(/yn/(2*celly), xn/cellx/))
-				bit_thing = transpose(bit_thing_t)
-				bit_thing_t1 = reshape(bit_thing,(/xn/cellx,yn/(2*celly)/))
+! 				bit_thing_t = reshape(medLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), xn/cellx/))
+! 				bit_thing = transpose(bit_thing_t)
+				bit_thing_t1 = transpose(reshape(medLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), xn/cellx/)))
 				medium_a(:,:,i) = bit_thing_t1
 			
-				bit_thing_t = reshape(medLongBitFull(2*len+1:,i),(/yn/(2*celly), xn/cellx/))
-				bit_thing = transpose(bit_thing_t)
-				bit_thing_t1 = reshape(bit_thing,(/xn/cellx,yn/(2*celly)/))
+! 				bit_thing_t = reshape(medLongBitFull(2*leng+1:,i),(/yn/(2*celly), xn/cellx/))
+! 				bit_thing = transpose(bit_thing_t)
+				bit_thing_t1 = transpose(reshape(medLongBitFull(2*leng+1:,i),(/yn/(2*celly), xn/cellx/)))
 				medium_b(:,:,i) = bit_thing_t1
 			end do
 		
@@ -3552,7 +3567,7 @@ end if ! if j == 5
 ! write(*,*) "written big step to file"
 
 	! only write to file 5 times total
-	if (mod(j,mstep*ar) .eq. 0) then
+	if (mod(j,tn/write_factor) .eq. 0) then
 
 		write(*,*) "BEGIN WRITING TO FILE"
 
@@ -3816,6 +3831,8 @@ else
 	
 	!--------------SLAVE PROCESSOR RECEIVES MESSAGE
 	call init_mini()
+	
+	leng = (yn/(2*celly))*(xn/cellx)
 	! message receiving has to happen every mth step
 	
 			param_exp_string = '0.1'
@@ -3918,7 +3935,7 @@ else
 			root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
 		
 			! reshape them all
-			sol_coarse_local = reshape(sol_coarse_long_local,(/xn/cellx,yn/(2*celly)/))
+			sol_coarse_local = transpose(reshape(sol_coarse_long_local,(/yn/(2*celly),xn/cellx/)))
 			u_coarse_local = reshape(u_coarse_long_local,(/xn/cellx,yn/(2*celly)/))
 			!write(*,*) maxval(u_coarse_local)
 			v_coarse_local = reshape(v_coarse_long_local,(/xn/cellx,yn/(2*celly)/))
@@ -3926,19 +3943,19 @@ else
 			phi_coarse_local = reshape(phi_coarse_long_local,(/xn/cellx,yn/(2*celly)/))
 			!write(*,*) maxval(phi_coarse_local)
 		
-! 			if (an_id_local .le. 11) then
-! 				do ii = 1,cstep
-! 					sol_coarse_local = solute_next_coarse(sol_coarse_local,u_coarse_local/phi_coarse_local,v_coarse_local/phi_coarse_local,sea(sol_index(an_id_local)))
-! 				end do
-! 			end if
-!
-! 			if (an_id_local .gt. 11) then
-! 				do ii = 1,cstep
-! 					sol_coarse_local = solute_next_coarse(sol_coarse_local,u_coarse_local/phi_coarse_local,v_coarse_local/phi_coarse_local,sea(sol_index(an_id_local-11)))
-! 				end do
-! 			end if
+			if (an_id_local .le. 11) then
+				do ii = 1,cstep
+					sol_coarse_local = solute_next_coarse(sol_coarse_local,u_coarse_local/phi_coarse_local,v_coarse_local/phi_coarse_local,sea(sol_index(an_id_local)))
+				end do
+			end if
 
-			sol_coarse_long_local = reshape(sol_coarse_local,(/(xn/cellx)*(yn/(2*celly))/))
+			if (an_id_local .gt. 11) then
+				do ii = 1,cstep
+					sol_coarse_local = solute_next_coarse(sol_coarse_local,u_coarse_local/phi_coarse_local,v_coarse_local/phi_coarse_local,sea(sol_index(an_id_local-11)))
+				end do
+			end if
+
+			sol_coarse_long_local = reshape(transpose(sol_coarse_local),(/(xn/cellx)*(yn/(2*celly))/))
 		
 			! send advected solutes back :)
 			call MPI_SEND( sol_coarse_long_local, (xn/cellx)*(yn/(2*celly)), MPI_DOUBLE_PRECISION, root_process, &
@@ -4487,9 +4504,9 @@ IF (DestroyIPhreeqc(id).NE.IPQ_OK) THEN
 	STOP
 END IF
 
-! 				solLocal(m,:) = (/ alt0(1,2), alt0(1,3), alt0(1,4), alt0(1,5), alt0(1,6), &
-! 				alt0(1,7), alt0(1,8), alt0(1,9), alt0(1,10), alt0(1,11), alt0(1,12), &
-! 				alt0(1,13), alt0(1,14), alt0(1,15), 0.0/)
+				solLocal(m,:) = (/ alt0(1,2), alt0(1,3), alt0(1,4), alt0(1,5), alt0(1,6), &
+				alt0(1,7), alt0(1,8), alt0(1,9), alt0(1,10), alt0(1,11), alt0(1,12), &
+				alt0(1,13), alt0(1,14), alt0(1,15), 0.0/)
 !
 ! 				!write(*,*) solLocal(m,13)
 !
@@ -4525,12 +4542,12 @@ END IF
 				! medLocal(m,1:3) = (/ alt0(1,187), alt0(1,187), alt0(1,4)/)
 				medLocal(m,3) = alt0(1,4)
 
-! 			if (alt0(1,2) .lt. 1.0) then
-! 				medLocal(m,5) = 0.0
-! 				solLocal(m,:) = (/ solute3(1), solute3(2), solute3(3), solute3(4), solute3(5), &
-! 				solute3(6), solute3(7), solute3(8), solute3(9), solute3(10), solute3(11), &
-! 				solute3(12), solute3(13), solute3(14), 0.0/)
-! 			end if
+			if (alt0(1,2) .lt. 1.0) then
+				medLocal(m,5) = 0.0
+				solLocal(m,:) = (/ solute3(1), solute3(2), solute3(3), solute3(4), solute3(5), &
+				solute3(6), solute3(7), solute3(8), solute3(9), solute3(10), solute3(11), &
+				solute3(12), solute3(13), solute3(14), 0.0/)
+			end if
 
 ! 			if (alt0(1,2) .lt. 1.0) then
 ! 				medLocal(m,5) = 0.0
@@ -4543,80 +4560,83 @@ END IF
 
 		end do ! end m = 1,num rows, ran chem for each row and populated local arrays
 		
-		solLocal = 0.0
-		solLocal(:,1) = alt_mat(:,2)
-		solLocal(:,2) = alt_mat(:,3)
-		solLocal(:,3) = alt_mat(:,4)
-		solLocal(:,4) = alt_mat(:,5)
-		solLocal(:,5) = alt_mat(:,6)
-		solLocal(:,6) = alt_mat(:,7)
-		solLocal(:,7) = alt_mat(:,8)
-		solLocal(:,8) = alt_mat(:,9)
-		solLocal(:,9) = alt_mat(:,10)
-		solLocal(:,10) = alt_mat(:,11)
-		solLocal(:,11) = alt_mat(:,12)
-		solLocal(:,12) = alt_mat(:,13)
-		solLocal(:,13) = alt_mat(:,14)
-		solLocal(:,14) = alt_mat(:,15)
+! 		solLocal = 0.0
+! 		solLocal(:,1) = alt_mat(:,2)
+! 		solLocal(:,2) = alt_mat(:,3)
+! 		solLocal(:,3) = alt_mat(:,4)
+! 		solLocal(:,4) = alt_mat(:,5)
+! 		solLocal(:,5) = alt_mat(:,6)
+! 		solLocal(:,6) = alt_mat(:,7)
+! 		solLocal(:,7) = alt_mat(:,8)
+! 		solLocal(:,8) = alt_mat(:,9)
+! 		solLocal(:,9) = alt_mat(:,10)
+! 		solLocal(:,10) = alt_mat(:,11)
+! 		solLocal(:,11) = alt_mat(:,12)
+! 		solLocal(:,12) = alt_mat(:,13)
+! 		solLocal(:,13) = alt_mat(:,14)
+! 		solLocal(:,14) = alt_mat(:,15)
 		
 		secLocal = 0.0
-		secLocal(:,1) = alt_mat(:,16)
-		secLocal(:,2) = alt_mat(:,18)
-		secLocal(:,3) = alt_mat(:,20)
-		secLocal(:,4) = alt_mat(:,22)
-		secLocal(:,5) = alt_mat(:,24)
-		secLocal(:,6) = alt_mat(:,26)
-		secLocal(:,7) = alt_mat(:,28)
-		secLocal(:,8) = alt_mat(:,30)
-		secLocal(:,9) = alt_mat(:,32)
-		secLocal(:,10) = alt_mat(:,34)
-		secLocal(:,11) = alt_mat(:,36)
-		secLocal(:,12) = alt_mat(:,38)
-		secLocal(:,13) = alt_mat(:,40)
-		secLocal(:,14) = alt_mat(:,42)
-		secLocal(:,15) = alt_mat(:,44)
-		secLocal(:,16) = alt_mat(:,46)
-		secLocal(:,17) = alt_mat(:,48)
-		secLocal(:,18) = alt_mat(:,50)
-		secLocal(:,19) = alt_mat(:,52)
-		secLocal(:,20) = alt_mat(:,54)
-		secLocal(:,21) = alt_mat(:,56)
-		secLocal(:,22) = alt_mat(:,58)
-		secLocal(:,23) = alt_mat(:,60)
-		secLocal(:,24) = alt_mat(:,62)
-		secLocal(:,25) = alt_mat(:,64)
-		secLocal(:,26) = alt_mat(:,66)
-		secLocal(:,27) = alt_mat(:,68)
-		secLocal(:,28) = alt_mat(:,70)
-		secLocal(:,29) = alt_mat(:,72)
-		secLocal(:,30) = alt_mat(:,74)
-		
-		secLocal(:,31) = alt_mat(:,76)
-		secLocal(:,32) = alt_mat(:,70)
-		secLocal(:,33) = alt_mat(:,80)
-		secLocal(:,34) = alt_mat(:,82)
-		secLocal(:,35) = alt_mat(:,84)
-		secLocal(:,36) = alt_mat(:,86)
-		secLocal(:,37) = alt_mat(:,88)
-		secLocal(:,38) = alt_mat(:,90)
-		secLocal(:,39) = alt_mat(:,92)
-		
-		secLocal(:,40) = alt_mat(:,94)
-		secLocal(:,41) = alt_mat(:,96)
-		secLocal(:,42) = alt_mat(:,98)
-		secLocal(:,43) = alt_mat(:,100)
-		secLocal(:,44) = alt_mat(:,102)
-		secLocal(:,45) = alt_mat(:,104)
-		secLocal(:,46) = alt_mat(:,106)
-		secLocal(:,47) = alt_mat(:,108)
-		secLocal(:,48) = alt_mat(:,110)
-		secLocal(:,49) = alt_mat(:,112)
-		secLocal(:,50) = alt_mat(:,114)
-		
-		secLocal(:,51) = alt_mat(:,116)
-		secLocal(:,52) = alt_mat(:,118)
-		secLocal(:,53) = alt_mat(:,120)
-		secLocal(:,54) = alt_mat(:,122)
+		do m=1,g_sec/2
+			secLocal(:,m) = alt_mat(:,2*m+14)
+		end do
+! 		secLocal(:,1) = alt_mat(:,16)
+! 		secLocal(:,2) = alt_mat(:,18)
+! 		secLocal(:,3) = alt_mat(:,20)
+! 		secLocal(:,4) = alt_mat(:,22)
+! 		secLocal(:,5) = alt_mat(:,24)
+! 		secLocal(:,6) = alt_mat(:,26)
+! 		secLocal(:,7) = alt_mat(:,28)
+! 		secLocal(:,8) = alt_mat(:,30)
+! 		secLocal(:,9) = alt_mat(:,32)
+! 		secLocal(:,10) = alt_mat(:,34)
+! 		secLocal(:,11) = alt_mat(:,36)
+! 		secLocal(:,12) = alt_mat(:,38)
+! 		secLocal(:,13) = alt_mat(:,40)
+! 		secLocal(:,14) = alt_mat(:,42)
+! 		secLocal(:,15) = alt_mat(:,44)
+! 		secLocal(:,16) = alt_mat(:,46)
+! 		secLocal(:,17) = alt_mat(:,48)
+! 		secLocal(:,18) = alt_mat(:,50)
+! 		secLocal(:,19) = alt_mat(:,52)
+! 		secLocal(:,20) = alt_mat(:,54)
+! 		secLocal(:,21) = alt_mat(:,56)
+! 		secLocal(:,22) = alt_mat(:,58)
+! 		secLocal(:,23) = alt_mat(:,60)
+! 		secLocal(:,24) = alt_mat(:,62)
+! 		secLocal(:,25) = alt_mat(:,64)
+! 		secLocal(:,26) = alt_mat(:,66)
+! 		secLocal(:,27) = alt_mat(:,68)
+! 		secLocal(:,28) = alt_mat(:,70)
+! 		secLocal(:,29) = alt_mat(:,72)
+! 		secLocal(:,30) = alt_mat(:,74)
+!
+! 		secLocal(:,31) = alt_mat(:,76)
+! 		secLocal(:,32) = alt_mat(:,70)
+! 		secLocal(:,33) = alt_mat(:,80)
+! 		secLocal(:,34) = alt_mat(:,82)
+! 		secLocal(:,35) = alt_mat(:,84)
+! 		secLocal(:,36) = alt_mat(:,86)
+! 		secLocal(:,37) = alt_mat(:,88)
+! 		secLocal(:,38) = alt_mat(:,90)
+! 		secLocal(:,39) = alt_mat(:,92)
+!
+! 		secLocal(:,40) = alt_mat(:,94)
+! 		secLocal(:,41) = alt_mat(:,96)
+! 		secLocal(:,42) = alt_mat(:,98)
+! 		secLocal(:,43) = alt_mat(:,100)
+! 		secLocal(:,44) = alt_mat(:,102)
+! 		secLocal(:,45) = alt_mat(:,104)
+! 		secLocal(:,46) = alt_mat(:,106)
+! 		secLocal(:,47) = alt_mat(:,108)
+! 		secLocal(:,48) = alt_mat(:,110)
+! 		secLocal(:,49) = alt_mat(:,112)
+! 		secLocal(:,50) = alt_mat(:,114)
+!
+! 		secLocal(:,51) = alt_mat(:,116)
+! 		secLocal(:,52) = alt_mat(:,118)
+! 		secLocal(:,53) = alt_mat(:,120)
+! 		secLocal(:,54) = alt_mat(:,122)
 		
 		
 ! 		solLocal(:,:) = (/ alt_mat(:,2), alt_mat(:,3), alt_mat(:,4), alt_mat(:,5), alt_mat(:,6), &
@@ -6824,16 +6844,16 @@ do i = 1,xn/cellx
 ! 			sol(i,j) = seaw
 ! 		end if
 		
-		if ((coarse_mask(i,j) .eq. 5.0)) then
-			
-			if (uTransport(i,j) .lt. 0.0) then
-				sol(i+1,j) = seaw
-				uTransport(i+1,j) = uTransport(i,j)
-			else
-				sol(i+1,j) = (4.0/3.0)*sol(i,j) - (1.0/3.0)*sol(i-1,j)
-			end if
-			
-		end if
+! 		if ((coarse_mask(i,j) .eq. 5.0)) then
+!
+! 			if (uTransport(i,j) .lt. 0.0) then
+! 				sol(i+1,j) = seaw
+! 				uTransport(i+1,j) = uTransport(i,j)
+! 			else
+! 				sol(i+1,j) = (4.0/3.0)*sol(i,j) - (1.0/3.0)*sol(i-1,j)
+! 			end if
+!
+! 		end if
 		
 
 ! 		if ((maskP(i,j) .eq. 10.0) .or. (maskP(i,j) .eq. 170.5)) then
@@ -7085,272 +7105,278 @@ end do
 sol = solute_next_coarse
 
 
-
-do j = 1,yn/(2*celly)
-	do i = 1,xn/cellx
-		if ((coarse_mask(i,j) .eq. 0.0)) then
-
-			if (vTransport(i,j) .lt. 0.0) then
-				sol(i,j+1) = seaw
-			else
-				sol(i,j+1) = (4.0/3.0)*sol(i,j) - (1.0/3.0)*sol(i,j-1)
-			end if
-
-		end if
-
-! 		if ((maskP(i,j) .eq. 50.0)) then
 !
-! ! 			if (vTransport(i,j+1) .lt. 0.0) then
-! 				sol(i,j+1) = seaw
+! do j = 1,yn/(2*celly)
+! 	do i = 1,xn/cellx
+! ! 		if ((coarse_mask(i,j) .eq. 0.0)) then
+! !
+! ! 			if (vTransport(i,j) .lt. 0.0) then
+! ! 				sol(i,j+1) = seaw
 ! ! 			else
 ! ! 				sol(i,j+1) = (4.0/3.0)*sol(i,j) - (1.0/3.0)*sol(i,j-1)
 ! ! 			end if
+! !
+! ! 		end if
 !
-! 		end if
-
-
 !
-! 		if (maskP(i,j) .eq. 100.0) then
 !
-! 				sol(i,j-1) = (4.0/3.0)*sol(i,j) - (1.0/3.0)*sol(i,j+1)
 !
-! 		end if
-
-
-	end do
-end do
-
-sol0 = sol
-
-
-
-do j = 1,(yn/(2*celly))-1
-	! do i = 1,xn
-	do i = 1,xn/cellx
-
-			if (vTransport(i,j) .gt. 1.0e-9) then
-				! upwind including bottom value
-				solute_next_coarse(i,j) = sol0(i,j) - qy*vTransport(i,j)*( sol0(i,j) - sol0(i,j-1) )
 !
-			! correction loop: sort of a mess
-				!if (maskP(i,j-2) .ne. 0.0) then
-						!sigma1 = 0.0
-						sigma1a = (sol0(i,j+1) - sol0(i,j))/(dy*celly)
-						sigma1b = 2.0*(sol0(i,j) - sol0(i,j-1))/(dy*celly)
-
-						!if (sigma1a*sigma1b .gt. 0.0) then
-!							sigma1 = minval((/abs(sigma1a), abs(sigma1b)/))
-! 							if (sigma1 .eq. abs(sigma1a)) then
-! 								sigma1 = sign(1.0,sigma1a)*sigma1
-! 							end if
-! 							if (sigma1 .eq. abs(sigma1b)) then
-! 								sigma1 = sign(1.0,sigma1b)*sigma1
-! 							end if
-! 							sig_bool_a = th_bool(sigma1 .eq. abs(sigma1a))
-! 							sig_bool_b = th_bool(sigma1 .eq. abs(sigma1b))
-! 							sigma1 = sig_bool_a*sign(1.0,sigma1a)*sigma1 + sig_bool_b*sign(1.0,sigma1b)*sigma1
-							sigma1 = ((minloc((/abs(sigma1a), abs(sigma1b)/),DIM=1)-1.0)*sigma1b) + ((minloc((/abs(sigma1b), abs(sigma1a)/),DIM=1)-1.0)*sigma1a)
-							!end if
-
-						!sigma3 = 0.0
-						sigma3a = 2.0*(sol0(i,j+1) - sol0(i,j))/(dy*celly)
-						sigma3b = (sol0(i,j) - sol0(i,j-1))/(dy*celly)
-
-						!if (sigma3a*sigma3b .gt. 0.0) then
-!						sigma3 = minval((/abs(sigma3a), abs(sigma3b)/))
-! 						if (sigma3 .eq. abs(sigma3a)) then
-! 							sigma3 = sign(1.0,sigma3a)*sigma3
+!
+!
+! ! 		if ((maskP(i,j) .eq. 50.0)) then
+! !
+! ! ! 			if (vTransport(i,j+1) .lt. 0.0) then
+! ! 				sol(i,j+1) = seaw
+! ! ! 			else
+! ! ! 				sol(i,j+1) = (4.0/3.0)*sol(i,j) - (1.0/3.0)*sol(i,j-1)
+! ! ! 			end if
+! !
+! ! 		end if
+!
+!
+! !
+! ! 		if (maskP(i,j) .eq. 100.0) then
+! !
+! ! 				sol(i,j-1) = (4.0/3.0)*sol(i,j) - (1.0/3.0)*sol(i,j+1)
+! !
+! ! 		end if
+!
+!
+! 	end do
+! end do
+!
+! sol0 = sol
+!
+!
+!
+! do j = 1,(yn/(2*celly))-1
+! 	! do i = 1,xn
+! 	do i = 1,xn/cellx
+!
+! 			if (vTransport(i,j) .gt. 1.0e-9) then
+! 				! upwind including bottom value
+! 				solute_next_coarse(i,j) = sol0(i,j) - qy*vTransport(i,j)*( sol0(i,j) - sol0(i,j-1) )
+! !
+! 			! correction loop: sort of a mess
+! 				!if (maskP(i,j-2) .ne. 0.0) then
+! 						!sigma1 = 0.0
+! 						sigma1a = (sol0(i,j+1) - sol0(i,j))/(dy*celly)
+! 						sigma1b = 2.0*(sol0(i,j) - sol0(i,j-1))/(dy*celly)
+!
+! 						!if (sigma1a*sigma1b .gt. 0.0) then
+! !							sigma1 = minval((/abs(sigma1a), abs(sigma1b)/))
+! ! 							if (sigma1 .eq. abs(sigma1a)) then
+! ! 								sigma1 = sign(1.0,sigma1a)*sigma1
+! ! 							end if
+! ! 							if (sigma1 .eq. abs(sigma1b)) then
+! ! 								sigma1 = sign(1.0,sigma1b)*sigma1
+! ! 							end if
+! ! 							sig_bool_a = th_bool(sigma1 .eq. abs(sigma1a))
+! ! 							sig_bool_b = th_bool(sigma1 .eq. abs(sigma1b))
+! ! 							sigma1 = sig_bool_a*sign(1.0,sigma1a)*sigma1 + sig_bool_b*sign(1.0,sigma1b)*sigma1
+! 							sigma1 = ((minloc((/abs(sigma1a), abs(sigma1b)/),DIM=1)-1.0)*sigma1b) + ((minloc((/abs(sigma1b), abs(sigma1a)/),DIM=1)-1.0)*sigma1a)
+! 							!end if
+!
+! 						!sigma3 = 0.0
+! 						sigma3a = 2.0*(sol0(i,j+1) - sol0(i,j))/(dy*celly)
+! 						sigma3b = (sol0(i,j) - sol0(i,j-1))/(dy*celly)
+!
+! 						!if (sigma3a*sigma3b .gt. 0.0) then
+! !						sigma3 = minval((/abs(sigma3a), abs(sigma3b)/))
+! ! 						if (sigma3 .eq. abs(sigma3a)) then
+! ! 							sigma3 = sign(1.0,sigma3a)*sigma3
+! ! 						end if
+! ! 						if (sigma3 .eq. abs(sigma3b)) then
+! ! 							sigma3 = sign(1.0,sigma3b)*sigma3
+! ! 						end if
+! ! 						sig_bool_a = th_bool(sigma3 .eq. abs(sigma3a))
+! ! 						sig_bool_b = th_bool(sigma3 .eq. abs(sigma3b))
+! ! 						sigma3 = sig_bool_a*sign(1.0,sigma3a)*sigma3 + sig_bool_b*sign(1.0,sigma3b)*sigma3
+! 						sigma3 = ((minloc((/abs(sigma3a), abs(sigma3b)/),DIM=1)-1.0)*sigma3b) + ((minloc((/abs(sigma3b), abs(sigma3a)/),DIM=1)-1.0)*sigma3a)
+! 							!end if
+!
+!
+! 						! choosing sigma5
+! 						sigma5 = 0.0
+! 						if (sigma1*sigma3 .gt. 0.0) then
+! 							sigma5 = sign(1.0,sigma1)*maxval((/abs(sigma1), abs(sigma3)/))
 ! 						end if
-! 						if (sigma3 .eq. abs(sigma3b)) then
-! 							sigma3 = sign(1.0,sigma3b)*sigma3
+!
+!
+!
+!
+!
+! 						!sigma2 = 0.0
+! 						sigma2a = (sol0(i,j) - sol0(i,j-1))/(dy*celly)
+! 						sigma2b = 2.0*(sol0(i,j-1) - sol0(i,j-2))/(dy*celly)
+!
+! 						!if (sigma2a*sigma2b .gt. 0.0) then
+! !						sigma2 = minval((/abs(sigma2a), abs(sigma2b)/))
+! ! 						if (sigma2 .eq. abs(sigma2a)) then
+! ! 							sigma2 = sign(1.0,sigma2a)*sigma2
+! ! 						end if
+! ! 						if (sigma2 .eq. abs(sigma2b)) then
+! ! 							sigma2 = sign(1.0,sigma2b)*sigma2
+! ! 						end if
+! ! 						sig_bool_a = th_bool(sigma2 .eq. abs(sigma2a))
+! ! 						sig_bool_b = th_bool(sigma2 .eq. abs(sigma2b))
+! ! 						sigma2 = sig_bool_a*sign(1.0,sigma2a)*sigma2 + sig_bool_b*sign(1.0,sigma2b)*sigma2
+! 						sigma2 = ((minloc((/abs(sigma2a), abs(sigma2b)/),DIM=1)-1.0)*sigma2b) + ((minloc((/abs(sigma2b), abs(sigma2a)/),DIM=1)-1.0)*sigma2a)
+! 							!end if
+!
+! 						!sigma4 = 0.0
+! 						sigma4a = 2.0*(sol0(i,j) - sol0(i,j-1))/(dy*celly)
+! 						sigma4b = (sol0(i,j-1) - sol0(i,j-2))/(dy*celly)
+!
+! 						!if (sigma4a*sigma4b .gt. 0.0) then
+! !						sigma4 = minval((/abs(sigma4a), abs(sigma4b)/))
+! ! 						if (sigma4 .eq. abs(sigma4a)) then
+! ! 							sigma4 = sign(1.0,sigma4a)*sigma4
+! ! 						end if
+! ! 						if (sigma4 .eq. abs(sigma4b)) then
+! ! 							sigma4 = sign(1.0,sigma4b)*sigma4
+! ! 						end if
+! ! 						sig_bool_a = th_bool(sigma4 .eq. abs(sigma4a))
+! ! 						sig_bool_b = th_bool(sigma4 .eq. abs(sigma4b))
+! ! 						sigma4 = sig_bool_a*sign(1.0,sigma4a)*sigma4 + sig_bool_b*sign(1.0,sigma4b)*sigma4
+! 						sigma4 = ((minloc((/abs(sigma4a), abs(sigma4b)/),DIM=1)-1.0)*sigma4b) + ((minloc((/abs(sigma4b), abs(sigma4a)/),DIM=1)-1.0)*sigma4a)
+! 							!end if
+!
+!
+! 						! choosing sigma6
+! 						sigma6 = 0.0
+! 						if (sigma2*sigma4 .gt. 0.0) then
+! 							sigma6 = sign(1.0,sigma2)*maxval((/abs(sigma2), abs(sigma4)/))
 ! 						end if
-! 						sig_bool_a = th_bool(sigma3 .eq. abs(sigma3a))
-! 						sig_bool_b = th_bool(sigma3 .eq. abs(sigma3b))
-! 						sigma3 = sig_bool_a*sign(1.0,sigma3a)*sigma3 + sig_bool_b*sign(1.0,sigma3b)*sigma3
-						sigma3 = ((minloc((/abs(sigma3a), abs(sigma3b)/),DIM=1)-1.0)*sigma3b) + ((minloc((/abs(sigma3b), abs(sigma3a)/),DIM=1)-1.0)*sigma3a)
-							!end if
-
-
-						! choosing sigma5
-						sigma5 = 0.0
-						if (sigma1*sigma3 .gt. 0.0) then
-							sigma5 = sign(1.0,sigma1)*maxval((/abs(sigma1), abs(sigma3)/))
-						end if
-
-
-
-
-
-						!sigma2 = 0.0
-						sigma2a = (sol0(i,j) - sol0(i,j-1))/(dy*celly)
-						sigma2b = 2.0*(sol0(i,j-1) - sol0(i,j-2))/(dy*celly)
-
-						!if (sigma2a*sigma2b .gt. 0.0) then
-!						sigma2 = minval((/abs(sigma2a), abs(sigma2b)/))
-! 						if (sigma2 .eq. abs(sigma2a)) then
-! 							sigma2 = sign(1.0,sigma2a)*sigma2
+!
+! ! 						write(*,*) "sigma5"
+! ! 						write(*,*) sigma5
+! ! 						write(*,*) "sigma6"
+! ! 						write(*,*) sigma6
+! 						correction = (vTransport(i,j)*qy*0.5) * (sigma5 - sigma6) * ((dy*celly) - vTransport(i,j)*qy*(dy*celly))
+! 						solute_next_coarse(i,j) = solute_next_coarse(i,j) - correction
+! 				!end if ! end if maskP i,j-2 .ne. 0.0
+! 				! end correction loop
+!
+!
+! 			end if
+!
+! 			if (vTransport(i,j) .lt. -1.0e-9) then
+! 				! upwind including top value
+! 				solute_next_coarse(i,j) = sol0(i,j) - qy*vTransport(i,j)*( sol0(i,j+1) - sol0(i,j) )
+!
+! 				! correction loop: sort of a mess
+! 				!if (j .lt. yn-1) then
+! 					!if (maskP(i,j+2) .ne. 0.0) then
+! 						!sigma1 = 0.0
+! 						sigma1a = (sol0(i,j+2) - sol0(i,j+1))/(dy*celly)
+! 						sigma1b = 2.0*(sol0(i,j+1) - sol0(i,j))/(dy*celly)
+!
+! 						!if (sigma1a*sigma1b .gt. 0.0) then
+! !							sigma1 = minval((/abs(sigma1a), abs(sigma1b)/))
+! ! 							if (sigma1 .eq. abs(sigma1a)) then
+! ! 								sigma1 = sign(1.0,sigma1a)*sigma1
+! ! 							end if
+! ! 							if (sigma1 .eq. abs(sigma1b)) then
+! ! 								sigma1 = sign(1.0,sigma1b)*sigma1
+! ! 							end if
+! ! 							sig_bool_a = th_bool(sigma1 .eq. abs(sigma1a))
+! ! 							sig_bool_b = th_bool(sigma1 .eq. abs(sigma1b))
+! ! 							sigma1 = sig_bool_a*sign(1.0,sigma1a)*sigma1 + sig_bool_b*sign(1.0,sigma1b)*sigma1
+! 							sigma1 = ((minloc((/abs(sigma1a), abs(sigma1b)/),DIM=1)-1.0)*sigma1b) + ((minloc((/abs(sigma1b), abs(sigma1a)/),DIM=1)-1.0)*sigma1a)
+! 							!end if
+!
+! 						!sigma3 = 0.0
+! 						sigma3a = 2.0*(sol0(i,j+2) - sol0(i,j+1))/(dy*celly)
+! 						sigma3b = (sol0(i,j+1) - sol0(i,j))/(dy*celly)
+!
+! 						!if (sigma3a*sigma3b .gt. 0.0) then
+! !						sigma3 = minval((/abs(sigma3a), abs(sigma3b)/))
+! ! 						if (sigma3 .eq. abs(sigma3a)) then
+! ! 							sigma3 = sign(1.0,sigma3a)*sigma3
+! ! 						end if
+! ! 						if (sigma3 .eq. abs(sigma3b)) then
+! ! 							sigma3 = sign(1.0,sigma3b)*sigma3
+! ! 						end if
+! ! 						sig_bool_a = th_bool(sigma3 .eq. abs(sigma3a))
+! ! 						sig_bool_b = th_bool(sigma3 .eq. abs(sigma3b))
+! ! 						sigma3 = sig_bool_a*sign(1.0,sigma3a)*sigma3 + sig_bool_b*sign(1.0,sigma3b)*sigma3
+! 						sigma3 = ((minloc((/abs(sigma3a), abs(sigma3b)/),DIM=1)-1.0)*sigma3b) + ((minloc((/abs(sigma3b), abs(sigma3a)/),DIM=1)-1.0)*sigma3a)
+! 							!end if
+!
+!
+! 						! choosing sigma5
+! 						sigma5 = 0.0
+! 						if (sigma1*sigma3 .gt. 0.0) then
+! 							sigma5 = sign(1.0,sigma1)*maxval((/abs(sigma1), abs(sigma3)/))
 ! 						end if
-! 						if (sigma2 .eq. abs(sigma2b)) then
-! 							sigma2 = sign(1.0,sigma2b)*sigma2
+!
+!
+!
+!
+!
+! 						!sigma2 = 0.0
+! 						sigma2a = (sol0(i,j+1) - sol0(i,j))/(dy*celly)
+! 						sigma2b = 2.0*(sol0(i,j) - sol0(i,j-1))/(dy*celly)
+!
+! 						!if (sigma2a*sigma2b .gt. 0.0) then
+! !						sigma2 = minval((/abs(sigma2a), abs(sigma2b)/))
+! ! 						if (sigma2 .eq. abs(sigma2a)) then
+! ! 							sigma2 = sign(1.0,sigma2a)*sigma2
+! ! 						end if
+! ! 						if (sigma2 .eq. abs(sigma2b)) then
+! ! 							sigma2 = sign(1.0,sigma2b)*sigma2
+! ! 						end if
+! ! 						sig_bool_a = th_bool(sigma2 .eq. abs(sigma2a))
+! ! 						sig_bool_b = th_bool(sigma2 .eq. abs(sigma2b))
+! ! 						sigma2 = sig_bool_a*sign(1.0,sigma2a)*sigma2 + sig_bool_b*sign(1.0,sigma2b)*sigma2
+! 						sigma2 = ((minloc((/abs(sigma2a), abs(sigma2b)/),DIM=1)-1.0)*sigma2b) + ((minloc((/abs(sigma2b), abs(sigma2a)/),DIM=1)-1.0)*sigma2a)
+! 							!end if
+!
+! 						!sigma4 = 0.0
+! 						sigma4a = 2.0*(sol0(i,j+1) - sol0(i,j))/(dy*celly)
+! 						sigma4b = (sol0(i,j) - sol0(i,j-1))/(dy*celly)
+!
+! 						!if (sigma4a*sigma4b .gt. 0.0) then
+! !						sigma4 = minval((/abs(sigma4a), abs(sigma4b)/))
+! ! 						if (sigma4 .eq. abs(sigma4a)) then
+! ! 							sigma4 = sign(1.0,sigma4a)*sigma4
+! ! 						end if
+! ! 						if (sigma4 .eq. abs(sigma4b)) then
+! ! 							sigma4 = sign(1.0,sigma4b)*sigma4
+! ! 						end if
+! ! 						sig_bool_a = th_bool(sigma4 .eq. abs(sigma4a))
+! ! 						sig_bool_b = th_bool(sigma4 .eq. abs(sigma4b))
+! ! 						sigma4 = sig_bool_a*sign(1.0,sigma4a)*sigma4 + sig_bool_b*sign(1.0,sigma4b)*sigma4
+! 						sigma4 = ((minloc((/abs(sigma4a), abs(sigma4b)/),DIM=1)-1.0)*sigma4b) + ((minloc((/abs(sigma4b), abs(sigma4a)/),DIM=1)-1.0)*sigma4a)
+! 							!end if
+!
+!
+! 						! choosing sigma6
+! 						sigma6 = 0.0
+! 						if (sigma2*sigma4 .gt. 0.0) then
+! 							sigma6 = sign(1.0,sigma2)*maxval((/abs(sigma2), abs(sigma4)/))
 ! 						end if
-! 						sig_bool_a = th_bool(sigma2 .eq. abs(sigma2a))
-! 						sig_bool_b = th_bool(sigma2 .eq. abs(sigma2b))
-! 						sigma2 = sig_bool_a*sign(1.0,sigma2a)*sigma2 + sig_bool_b*sign(1.0,sigma2b)*sigma2
-						sigma2 = ((minloc((/abs(sigma2a), abs(sigma2b)/),DIM=1)-1.0)*sigma2b) + ((minloc((/abs(sigma2b), abs(sigma2a)/),DIM=1)-1.0)*sigma2a)
-							!end if
-
-						!sigma4 = 0.0
-						sigma4a = 2.0*(sol0(i,j) - sol0(i,j-1))/(dy*celly)
-						sigma4b = (sol0(i,j-1) - sol0(i,j-2))/(dy*celly)
-
-						!if (sigma4a*sigma4b .gt. 0.0) then
-!						sigma4 = minval((/abs(sigma4a), abs(sigma4b)/))
-! 						if (sigma4 .eq. abs(sigma4a)) then
-! 							sigma4 = sign(1.0,sigma4a)*sigma4
-! 						end if
-! 						if (sigma4 .eq. abs(sigma4b)) then
-! 							sigma4 = sign(1.0,sigma4b)*sigma4
-! 						end if
-! 						sig_bool_a = th_bool(sigma4 .eq. abs(sigma4a))
-! 						sig_bool_b = th_bool(sigma4 .eq. abs(sigma4b))
-! 						sigma4 = sig_bool_a*sign(1.0,sigma4a)*sigma4 + sig_bool_b*sign(1.0,sigma4b)*sigma4
-						sigma4 = ((minloc((/abs(sigma4a), abs(sigma4b)/),DIM=1)-1.0)*sigma4b) + ((minloc((/abs(sigma4b), abs(sigma4a)/),DIM=1)-1.0)*sigma4a)
-							!end if
-
-
-						! choosing sigma6
-						sigma6 = 0.0
-						if (sigma2*sigma4 .gt. 0.0) then
-							sigma6 = sign(1.0,sigma2)*maxval((/abs(sigma2), abs(sigma4)/))
-						end if
-
-! 						write(*,*) "sigma5"
-! 						write(*,*) sigma5
-! 						write(*,*) "sigma6"
-! 						write(*,*) sigma6
-						correction = (vTransport(i,j)*qy*0.5) * (sigma5 - sigma6) * ((dy*celly) - vTransport(i,j)*qy*(dy*celly))
-						solute_next_coarse(i,j) = solute_next_coarse(i,j) - correction
-				!end if ! end if maskP i,j-2 .ne. 0.0
-				! end correction loop
-
-
-			end if
-
-			if (vTransport(i,j) .lt. -1.0e-9) then
-				! upwind including top value
-				solute_next_coarse(i,j) = sol0(i,j) - qy*vTransport(i,j)*( sol0(i,j+1) - sol0(i,j) )
-
-				! correction loop: sort of a mess
-				!if (j .lt. yn-1) then
-					if (maskP(i,j+2) .ne. 0.0) then
-						!sigma1 = 0.0
-						sigma1a = (sol0(i,j+2) - sol0(i,j+1))/(dy*celly)
-						sigma1b = 2.0*(sol0(i,j+1) - sol0(i,j))/(dy*celly)
-
-						!if (sigma1a*sigma1b .gt. 0.0) then
-!							sigma1 = minval((/abs(sigma1a), abs(sigma1b)/))
-! 							if (sigma1 .eq. abs(sigma1a)) then
-! 								sigma1 = sign(1.0,sigma1a)*sigma1
-! 							end if
-! 							if (sigma1 .eq. abs(sigma1b)) then
-! 								sigma1 = sign(1.0,sigma1b)*sigma1
-! 							end if
-! 							sig_bool_a = th_bool(sigma1 .eq. abs(sigma1a))
-! 							sig_bool_b = th_bool(sigma1 .eq. abs(sigma1b))
-! 							sigma1 = sig_bool_a*sign(1.0,sigma1a)*sigma1 + sig_bool_b*sign(1.0,sigma1b)*sigma1
-							sigma1 = ((minloc((/abs(sigma1a), abs(sigma1b)/),DIM=1)-1.0)*sigma1b) + ((minloc((/abs(sigma1b), abs(sigma1a)/),DIM=1)-1.0)*sigma1a)
-							!end if
-
-						!sigma3 = 0.0
-						sigma3a = 2.0*(sol0(i,j+2) - sol0(i,j+1))/(dy*celly)
-						sigma3b = (sol0(i,j+1) - sol0(i,j))/(dy*celly)
-
-						!if (sigma3a*sigma3b .gt. 0.0) then
-!						sigma3 = minval((/abs(sigma3a), abs(sigma3b)/))
-! 						if (sigma3 .eq. abs(sigma3a)) then
-! 							sigma3 = sign(1.0,sigma3a)*sigma3
-! 						end if
-! 						if (sigma3 .eq. abs(sigma3b)) then
-! 							sigma3 = sign(1.0,sigma3b)*sigma3
-! 						end if
-! 						sig_bool_a = th_bool(sigma3 .eq. abs(sigma3a))
-! 						sig_bool_b = th_bool(sigma3 .eq. abs(sigma3b))
-! 						sigma3 = sig_bool_a*sign(1.0,sigma3a)*sigma3 + sig_bool_b*sign(1.0,sigma3b)*sigma3
-						sigma3 = ((minloc((/abs(sigma3a), abs(sigma3b)/),DIM=1)-1.0)*sigma3b) + ((minloc((/abs(sigma3b), abs(sigma3a)/),DIM=1)-1.0)*sigma3a)
-							!end if
-
-
-						! choosing sigma5
-						sigma5 = 0.0
-						if (sigma1*sigma3 .gt. 0.0) then
-							sigma5 = sign(1.0,sigma1)*maxval((/abs(sigma1), abs(sigma3)/))
-						end if
-
-
-
-
-
-						!sigma2 = 0.0
-						sigma2a = (sol0(i,j+1) - sol0(i,j))/(dy*celly)
-						sigma2b = 2.0*(sol0(i,j) - sol0(i,j-1))/(dy*celly)
-
-						!if (sigma2a*sigma2b .gt. 0.0) then
-!						sigma2 = minval((/abs(sigma2a), abs(sigma2b)/))
-! 						if (sigma2 .eq. abs(sigma2a)) then
-! 							sigma2 = sign(1.0,sigma2a)*sigma2
-! 						end if
-! 						if (sigma2 .eq. abs(sigma2b)) then
-! 							sigma2 = sign(1.0,sigma2b)*sigma2
-! 						end if
-! 						sig_bool_a = th_bool(sigma2 .eq. abs(sigma2a))
-! 						sig_bool_b = th_bool(sigma2 .eq. abs(sigma2b))
-! 						sigma2 = sig_bool_a*sign(1.0,sigma2a)*sigma2 + sig_bool_b*sign(1.0,sigma2b)*sigma2
-						sigma2 = ((minloc((/abs(sigma2a), abs(sigma2b)/),DIM=1)-1.0)*sigma2b) + ((minloc((/abs(sigma2b), abs(sigma2a)/),DIM=1)-1.0)*sigma2a)
-							!end if
-
-						!sigma4 = 0.0
-						sigma4a = 2.0*(sol0(i,j+1) - sol0(i,j))/(dy*celly)
-						sigma4b = (sol0(i,j) - sol0(i,j-1))/(dy*celly)
-
-						!if (sigma4a*sigma4b .gt. 0.0) then
-!						sigma4 = minval((/abs(sigma4a), abs(sigma4b)/))
-! 						if (sigma4 .eq. abs(sigma4a)) then
-! 							sigma4 = sign(1.0,sigma4a)*sigma4
-! 						end if
-! 						if (sigma4 .eq. abs(sigma4b)) then
-! 							sigma4 = sign(1.0,sigma4b)*sigma4
-! 						end if
-! 						sig_bool_a = th_bool(sigma4 .eq. abs(sigma4a))
-! 						sig_bool_b = th_bool(sigma4 .eq. abs(sigma4b))
-! 						sigma4 = sig_bool_a*sign(1.0,sigma4a)*sigma4 + sig_bool_b*sign(1.0,sigma4b)*sigma4
-						sigma4 = ((minloc((/abs(sigma4a), abs(sigma4b)/),DIM=1)-1.0)*sigma4b) + ((minloc((/abs(sigma4b), abs(sigma4a)/),DIM=1)-1.0)*sigma4a)
-							!end if
-
-
-						! choosing sigma6
-						sigma6 = 0.0
-						if (sigma2*sigma4 .gt. 0.0) then
-							sigma6 = sign(1.0,sigma2)*maxval((/abs(sigma2), abs(sigma4)/))
-						end if
-
-! 						write(*,*) "sigma5"
-! 						write(*,*) sigma5
-! 						write(*,*) "sigma6"
-! 						write(*,*) sigma6
-						correction = (vTransport(i,j)*qy*0.5) * (sigma6 - sigma5) * ((dy*celly) - vTransport(i,j)*qy*(dy*celly))
-						solute_next_coarse(i,j) = solute_next_coarse(i,j) - correction
-
-					end if
-				!end if ! end if j .lt. yn-1
-				! end correction loop
-
-
-			end if
-
-
-	end do
-	solute_next_coarse(i,yn/(2*celly)-1) = sol0(i,yn/(2*celly)-1) - qy*vTransport(i,yn/(2*celly)-1)*( sol0(i,yn/(2*celly)) - sol0(i,yn/(2*celly)-1) )
-end do
+!
+! ! 						write(*,*) "sigma5"
+! ! 						write(*,*) sigma5
+! ! 						write(*,*) "sigma6"
+! ! 						write(*,*) sigma6
+! 						correction = (vTransport(i,j)*qy*0.5) * (sigma6 - sigma5) * ((dy*celly) - vTransport(i,j)*qy*(dy*celly))
+! 						solute_next_coarse(i,j) = solute_next_coarse(i,j) - correction
+!
+! 					!end if
+! 				!end if ! end if j .lt. yn-1
+! 				! end correction loop
+!
+!
+! 			end if
+!
+!
+! 	end do
+! 	solute_next_coarse(i,yn/(2*celly)-1) = sol0(i,yn/(2*celly)-1) - qy*vTransport(i,yn/(2*celly)-1)*( sol0(i,yn/(2*celly)) - sol0(i,yn/(2*celly)-1) )
+! end do
 
 
 
