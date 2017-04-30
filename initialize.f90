@@ -24,52 +24,54 @@ real(4) :: stretch(xn,yn), stretchLong((xn-2)*(yn-2)), stretchT(xn,yn), stretchL
 real(4) :: u_inter(xn,yn), v_inter(xn,yn), u_step_coarse(xn/cellx,yn/celly), v_step_coarse(xn/cellx,yn/celly)
 
 ! 05/06 INPUT STUFF
-real(4) :: primary(xn/cellx,yn/celly,g_pri), primaryMat(xn*tn/(cellx*(mstep*ar)),yn/celly,g_pri)
-real(4) :: secondary(xn/cellx,yn/celly,g_sec), secondaryMat(xn*tn/(cellx*(mstep*ar)),yn/celly,g_sec)
-real(4) :: solute(xn/cellx,yn/celly,g_sol), soluteMat(xn*tn/(cellx*(mstep*ar)),yn/celly,g_sol)
-real(4) :: solute_inter(xn/cellx,yn/celly)
-real(4) :: medium(xn/cellx,yn/celly,g_med), mediumMat(xn*tn/(cellx*(mstep*ar)),yn/celly,g_med)
-real(4) :: saturation(xn/cellx,yn/celly,g_sec/2), saturationMat(xn*tn/(cellx*(mstep*ar)),yn/celly,g_sec/2)
-real(4) :: checkMat(xn*tn/(cellx*(mstep*ar)),yn/celly), checkMatF(xn*tn/(cellx*(mstep*ar)),yn/celly)
+real(4) :: primary(xn/cellx,yn/(2*celly),g_pri), primaryMat(xn*tn/(cellx*(mstep*ar)),yn/(2*celly),g_pri)
+real(4) :: secondary(xn/cellx,yn/(2*celly),g_sec), secondaryMat(xn*tn/(cellx*(mstep*ar)),yn/(2*celly),g_sec)
+real(4) :: solute(xn/cellx,yn/(2*celly),g_sol), soluteMat(xn*tn/(cellx*(mstep*ar)),yn/(2*celly),g_sol)
+real(4) :: solute_inter(xn/cellx,yn/(2*celly)), solute_inter_long((xn/cellx)*(yn/(2*celly)))
+real(4) :: medium(xn/cellx,yn/(2*celly),g_med), mediumMat(xn*tn/(cellx*(mstep*ar)),yn/(2*celly),g_med)
+real(4) :: saturation(xn/cellx,yn/(2*celly),g_sec/2), saturationMat(xn*tn/(cellx*(mstep*ar)),yn/(2*celly),g_sec/2)
+real(4) :: checkMat(xn*tn/(cellx*(mstep*ar)),yn/(2*celly)), checkMatF(xn*tn/(cellx*(mstep*ar)),yn/(2*celly))
 real(4) :: soluteOcean(g_sol), soluteOcean_a(g_sol), soluteOcean_b(g_sol), sea(g_sol)
 real(4) :: inter, slope, inter2, slope2, boundary, buffer, edge, edge2
 real(4) :: bit_thing(xn/cellx,yn/(2*celly)), bit_thing_t(yn/(2*celly),xn/cellx), bit_thing_t1(xn/cellx,yn/(2*celly))
 real(4) :: solute_fine(xn,yn,g_sol), solute_fine_a(xn,yn,g_sol), solute_fine_b(xn,yn,g_sol)
+! trial 04/29
+real(4) :: bit_thing_a(xn/cellx,yn/(2*celly)), bit_thing_b(xn/cellx,yn/(2*celly))
 
 ! CHAMBER INPUT STUFF
-real(4) :: primary_a(xn/cellx,yn/celly,g_pri), primaryMat_a(xn*tn/(cellx*(mstep*ar)),yn/celly,g_pri)
-real(4) :: secondary_a(xn/cellx,yn/celly,g_sec), secondaryMat_a(xn*tn/(cellx*(mstep*ar)),yn/celly,g_sec)
-real(4) :: solute_a(xn/cellx,yn/celly,g_sol), soluteMat_a(xn*tn/(cellx*(mstep*ar)),yn/celly,g_sol)
-real(4) :: medium_a(xn/cellx,yn/celly,g_med), mediumMat_a(xn*tn/(cellx*(mstep*ar)),yn/celly,g_med)
+real(4) :: primary_a(xn/cellx,yn/(2*celly),g_pri), primaryMat_a(xn*tn/(cellx*(mstep*ar)),yn/(2*celly),g_pri)
+real(4) :: secondary_a(xn/cellx,yn/(2*celly),g_sec), secondaryMat_a(xn*tn/(cellx*(mstep*ar)),yn/(2*celly),g_sec)
+real(4) :: solute_a(xn/cellx,yn/(2*celly),g_sol), soluteMat_a(xn*tn/(cellx*(mstep*ar)),yn/(2*celly),g_sol)
+real(4) :: medium_a(xn/cellx,yn/(2*celly),g_med), mediumMat_a(xn*tn/(cellx*(mstep*ar)),yn/(2*celly),g_med)
 
-real(4) :: primary_b(xn/cellx,yn/celly,g_pri), primaryMat_b(xn*tn/(cellx*(mstep*ar)),yn/celly,g_pri)
-real(4) :: secondary_b(xn/cellx,yn/celly,g_sec), secondaryMat_b(xn*tn/(cellx*(mstep*ar)),yn/celly,g_sec)
-real(4) :: solute_b(xn/cellx,yn/celly,g_sol), soluteMat_b(xn*tn/(cellx*(mstep*ar)),yn/celly,g_sol)
-real(4) :: medium_b(xn/cellx,yn/celly,g_med), mediumMat_b(xn*tn/(cellx*(mstep*ar)),yn/celly,g_med)
+real(4) :: primary_b(xn/cellx,yn/(2*celly),g_pri), primaryMat_b(xn*tn/(cellx*(mstep*ar)),yn/(2*celly),g_pri)
+real(4) :: secondary_b(xn/cellx,yn/(2*celly),g_sec), secondaryMat_b(xn*tn/(cellx*(mstep*ar)),yn/(2*celly),g_sec)
+real(4) :: solute_b(xn/cellx,yn/(2*celly),g_sol), soluteMat_b(xn*tn/(cellx*(mstep*ar)),yn/(2*celly),g_sol)
+real(4) :: medium_b(xn/cellx,yn/(2*celly),g_med), mediumMat_b(xn*tn/(cellx*(mstep*ar)),yn/(2*celly),g_med)
 
-real(4) :: primaryMat_d(xn*tn/(cellx*(mstep*ar)),yn/celly,g_pri)
-real(4) :: secondaryMat_d(xn*tn/(cellx*(mstep*ar)),yn/celly,g_sec)
-real(4) :: soluteMat_d(xn*tn/(cellx*(mstep*ar)),yn/celly,g_sol)
-real(4) :: mediumMat_d(xn*tn/(cellx*(mstep*ar)),yn/celly,g_med)
+real(4) :: primaryMat_d(xn*tn/(cellx*(mstep*ar)),yn/(2*celly),g_pri)
+real(4) :: secondaryMat_d(xn*tn/(cellx*(mstep*ar)),yn/(2*celly),g_sec)
+real(4) :: soluteMat_d(xn*tn/(cellx*(mstep*ar)),yn/(2*celly),g_sol)
+real(4) :: mediumMat_d(xn*tn/(cellx*(mstep*ar)),yn/(2*celly),g_med)
 
-! coarse/mean arrays added for super duper coarse grid 03/25/17
-real(4) :: h_coarse(xn/cellx,yn/celly)
-real(4) :: pri_coarse(xn/cellx,yn/celly,g_pri)
-real(4) :: sec_coarse(xn/cellx,yn/celly,g_sec)
-real(4) :: sol_coarse(xn/cellx,yn/celly,g_sol)
-real(4) :: med_coarse(xn/cellx,yn/celly,g_med)
+! ! coarse/mean arrays added for super duper coarse grid 03/25/17
+real(4) :: h_coarse(xn/cellx,yn/(2*celly))
+! real(4) :: pri_coarse(xn/cellx,yn/celly,g_pri)
+! real(4) :: sec_coarse(xn/cellx,yn/celly,g_sec)
+! real(4) :: sol_coarse(xn/cellx,yn/celly,g_sol)
+! real(4) :: med_coarse(xn/cellx,yn/celly,g_med)
+!
+! real(4) :: pri_coarse_a(xn/cellx,yn/celly,g_pri)
+! real(4) :: sec_coarse_a(xn/cellx,yn/celly,g_sec)
+! real(4) :: sol_coarse_a(xn/cellx,yn/celly,g_sol)
+! real(4) :: med_coarse_a(xn/cellx,yn/celly,g_med)
+!
+! real(4) :: pri_coarse_b(xn/cellx,yn/celly,g_pri)
+! real(4) :: sec_coarse_b(xn/cellx,yn/celly,g_sec)
+! real(4) :: sol_coarse_b(xn/cellx,yn/celly,g_sol)
+! real(4) :: med_coarse_b(xn/cellx,yn/celly,g_med)
 
-real(4) :: pri_coarse_a(xn/cellx,yn/celly,g_pri)
-real(4) :: sec_coarse_a(xn/cellx,yn/celly,g_sec)
-real(4) :: sol_coarse_a(xn/cellx,yn/celly,g_sol)
-real(4) :: med_coarse_a(xn/cellx,yn/celly,g_med)
-
-real(4) :: pri_coarse_b(xn/cellx,yn/celly,g_pri)
-real(4) :: sec_coarse_b(xn/cellx,yn/celly,g_sec)
-real(4) :: sol_coarse_b(xn/cellx,yn/celly,g_sol)
-real(4) :: med_coarse_b(xn/cellx,yn/celly,g_med)
-
-real(4) :: coarse_mask(xn/cellx,yn/celly)
+real(4) :: coarse_mask(xn/cellx,yn/(2*celly))
 
 real(4) :: volume_ratio, mix_ratio, volume_ratio_i
 real(4) :: vol_i, vol_i_a, vol_i_b
@@ -781,9 +783,9 @@ sed3 = sed1 - (param_h)
 
 	! coarse mask
 	coarse_mask = 0.0
-	do gg=1,yn/celly
+	do gg=1,yn/(2*celly)
 		do g =1,xn/cellx
-			if (maxval(maskP((g-1)*cellx+1:g*cellx,(gg-1)*celly+1:gg*celly)) .gt. 0.0) then
+			if (maxval(maskP((g-1)*cellx+1:g*cellx,   (gg-1)*celly+1+yn/(2*celly):(gg*celly)+yn/(2*celly)  )) .gt. 0.0) then
 				coarse_mask(g,gg) = 1.0
 			end if
 			if (coarse_mask(g,gg) .eq. 0.0) then
@@ -912,11 +914,11 @@ sed3 = sed1 - (param_h)
 	end do
 	
 	
-	
+!
 	! coarse mask 2
-	do gg=1,yn/celly
+	do gg=1,yn/(2*celly)
 		do g =1,xn/cellx
-			if (minval(permeability((g-1)*cellx+1:g*cellx,(gg-1)*celly+1:gg*celly)) .lt. param_paq) then
+			if (minval(permeability((g-1)*cellx+1:g*cellx,(gg-1)*celly+1+yn/(2*celly):(gg*celly)+yn/(2*celly))) .lt. param_paq) then
 				coarse_mask(g,gg) = 0.0
 			end if
 			if (coarse_mask(g,gg) .eq. 0.0) then
@@ -924,12 +926,12 @@ sed3 = sed1 - (param_h)
 				primary(g,gg,:) = 0.0   ! basaltic glass
 				solute(g,gg,3) = 0.0    ! solute water
 				medium(g,gg,3) = 0.0    ! medium water
-			
+
 				medium_a(g,gg,5) = 0.0    ! cell toggle
 				primary_a(g,gg,:) = 0.0   ! basaltic glass
 				solute_a(g,gg,3) = 0.0    ! solute water
 				medium_a(g,gg,3) = 0.0    ! medium water
-			
+
 				medium_b(g,gg,5) = 0.0    ! cell toggle
 				primary_b(g,gg,:) = 0.0   ! basaltic glass
 				solute_b(g,gg,3) = 0.0    ! solute water

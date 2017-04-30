@@ -153,15 +153,15 @@ interface
 		! integers
 		integer :: i, j, ii, n, m
 		! inputs
-		real(4) :: sol(xn/cellx,yn/celly), sol0(xn/cellx,yn/celly)
-		real(4) :: uTransport(xn/cellx,yn/celly), vTransport(xn/cellx,yn/celly)
+		real(4) :: sol(xn/cellx,yn/(2*celly)), sol0(xn/cellx,yn/(2*celly))
+		real(4) :: uTransport(xn/cellx,yn/(2*celly)), vTransport(xn/cellx,yn/(2*celly))
 		! solver stuff
-		real(4) :: uLong(((xn/cellx)-2)*((yn/celly)-0)), vLong(((xn/cellx)-0)*((yn/celly)-2))
-		real(4) :: aBand(((xn/cellx)-2)*((yn/celly)-0),5), bBand(((xn/cellx)-0)*((yn/celly)-2),5)
-		real(4) :: qx, qy, solute_next_coarse(xn/cellx,yn/celly), vec(((xn/cellx)-2)*((yn/celly)-0))
-		real(4) :: sol_nextRow(((xn/cellx)-2)*((yn/celly)-0)), sol_nextRowB(((xn/cellx)-0)*((yn/celly)-2))
+		real(4) :: uLong(((xn/cellx)-2)*((yn/(2*celly))-0)), vLong(((xn/cellx)-0)*((yn/(2*celly))-2))
+		real(4) :: aBand(((xn/cellx)-2)*((yn/(2*celly))-0),5), bBand(((xn/cellx)-0)*((yn/(2*celly))-2),5)
+		real(4) :: qx, qy, solute_next_coarse(xn/cellx,yn/(2*celly)), vec(((xn/cellx)-2)*((yn/(2*celly))-0))
+		real(4) :: sol_nextRow(((xn/cellx)-2)*((yn/(2*celly))-0)), sol_nextRowB(((xn/cellx)-0)*((yn/(2*celly))-2))
 		real(4) :: seaw
-		real(4) :: bm1(xn/cellx,yn/celly), b0(xn/cellx,yn/celly), bp1(xn/cellx,yn/celly), correction, sigma1, sigma2, sigma1a, sigma1b, sigma2a, sigma2b
+		real(4) :: bm1(xn/cellx,yn/(2*celly)), b0(xn/cellx,yn/(2*celly)), bp1(xn/cellx,yn/(2*celly)), correction, sigma1, sigma2, sigma1a, sigma1b, sigma2a, sigma2b
 		real(4) :: sigma3, sigma4, sigma3a, sigma3b, sigma4a, sigma4b, sigma5, sigma6
 	end function solute_next_coarse
 	
@@ -207,8 +207,8 @@ interface
 		use globals
 		use initialize
 		implicit none
-		real(4) :: velocities_coarse(xn/cellx,2*yn/celly), psi_coarse(xn/cellx,yn/celly)
-		real(4) :: u0(xn/cellx,yn/celly), v0(xn/cellx,yn/celly)
+		real(4) :: velocities_coarse(xn/cellx,yn/celly), psi_coarse(xn/cellx,yn/(2*celly))
+		real(4) :: u0(xn/cellx,yn/(2*celly)), v0(xn/cellx,yn/(2*celly))
 	end function velocities_coarse
 
 	! calculates partial derivative of any 1D or 2D array
@@ -293,7 +293,7 @@ real :: timeBit
 real(4) :: rho(xn,yn), visc(xn,yn)
 real(4) :: rhs0(xn,yn)
 integer :: unit
-real(4) :: phi_coarse(xn/cellx,yn/celly)
+real(4) :: phi_coarse(xn/cellx,yn/(2*celly))
 real(4) :: phi0(xn,yn), phi(xn,yn)
 
 ! netCDF & output stuff
@@ -310,15 +310,15 @@ real(4) :: yep
 real(4) :: nusseltLocalv(xn,1), nuBar
 
 ! geochemical alteration stuff
-real(4) :: alt0(1,altnum)
+real(4) :: alt0(1,altnum), alt_mat(3*(xn/cellx)*(yn/(2*celly))/22,altnum)
 
 real(4) :: primaryShift(xn/cellx,yn/celly,g_pri), secondaryShift(xn/cellx,yn/celly,g_sec)
 
 
 ! solute transport stuff
 real(4) :: uTransport(xn/cellx,yn/celly), vTransport(xn/cellx,yn/celly)
-real(4) :: u_coarse(xn/cellx,yn/celly), v_coarse(xn/cellx,yn/celly)
-real(4) :: psi_coarse(xn/cellx,yn/celly), velocities_coarse0(xn/cellx,2*yn/celly)
+real(4) :: u_coarse(xn/cellx,yn/(2*celly)), v_coarse(xn/cellx,yn/(2*celly))
+real(4) :: psi_coarse(xn/cellx,yn/(2*celly)), velocities_coarse0(xn/cellx,yn/celly)
 real(4) :: permeability0(xn,yn)
 
 ! message passing stuff
@@ -337,30 +337,30 @@ integer :: order
 
 ! formatted message passing arrays
 real(4) :: hLong(3*(xn/cellx)*(yn/(2*celly)))
-real(4) :: priLong((xn/cellx)*(yn/(2*celly)),g_pri), priLocal(3*(xn/cellx)*(yn/(2*celly)),g_pri)
-real(4) :: secLong((xn/cellx)*(yn/(2*celly)),g_sec), secLocal(3*(xn/cellx)*(yn/(2*celly)),g_sec)
-real(4) :: solLong((xn/cellx)*(yn/(2*celly)),g_sol), solLocal(3*(xn/cellx)*(yn/(2*celly)),g_sol)
-real(4) :: medLong((xn/cellx)*(yn/(2*celly)),g_med), medLocal(3*(xn/cellx)*(yn/(2*celly)),g_med)
+real(4) :: priLong((xn/cellx)*(yn/(2*celly)),g_pri), priLocal(3*(xn/cellx)*(yn/(2*celly))/22,g_pri)
+real(4) :: secLong((xn/cellx)*(yn/(2*celly)),g_sec), secLocal(3*(xn/cellx)*(yn/(2*celly))/22,g_sec)
+real(4) :: solLong((xn/cellx)*(yn/(2*celly)),g_sol), solLocal(3*(xn/cellx)*(yn/(2*celly))/22,g_sol)
+real(4) :: medLong((xn/cellx)*(yn/(2*celly)),g_med), medLocal(3*(xn/cellx)*(yn/(2*celly))/22,g_med)
 ! real(4) :: medLong(xn*(yn/2),g_med), medLocal(xn*(yn/2),g_med) used to be this shape
-real(4) :: priLongBit(3*(xn/cellx)*(yn/(2*celly))), priLocalBit(3*(xn/cellx)*(yn/(2*celly)))
-real(4) :: secLongBit(3*(xn/cellx)*(yn/(2*celly))), secLocalBit(3*(xn/cellx)*(yn/(2*celly)))
-real(4) :: solLongBit(3*(xn/cellx)*(yn/(2*celly))), solLocalBit(3*(xn/cellx)*(yn/(2*celly)))
-real(4) :: medLongBit(3*(xn/cellx)*(yn/(2*celly))), medLocalBit(3*(xn/cellx)*(yn/(2*celly)))
+real(4) :: priLongBit(3*(xn/cellx)*(yn/(2*celly))) !, priLocalBit(3*(xn/cellx)*(yn/(2*celly)))
+real(4) :: secLongBit(3*(xn/cellx)*(yn/(2*celly))) !, secLocalBit(3*(xn/cellx)*(yn/(2*celly)))
+real(4) :: solLongBit(3*(xn/cellx)*(yn/(2*celly))) !, solLocalBit(3*(xn/cellx)*(yn/(2*celly)))
+real(4) :: medLongBit(3*(xn/cellx)*(yn/(2*celly))) !, medLocalBit(3*(xn/cellx)*(yn/(2*celly)))
 
-! advection distribution
-real(4) :: solFineLong(xn*yn), solFineLong_a(xn*yn)
-real(4) :: solFineLongLocal(xn*yn), solFineLongLocal_a(xn*yn)
-real(4) :: solFineLocal(xn,yn), solFineLocal_a(xn,yn)
-real(4) :: uFineLong(xn*yn), vFineLong(xn*yn), phiFineLong(xn*yn)
-real(4) :: uFineLongLocal(xn*yn), vFineLongLocal(xn*yn), phiFineLongLocal(xn*yn)
-real(4) :: uFineLocal(xn,yn), vFineLocal(xn,yn), phiFineLocal(xn,yn)
+! ! advection distribution
+! real(4) :: solFineLong(xn*yn), solFineLong_a(xn*yn)
+! real(4) :: solFineLongLocal(xn*yn), solFineLongLocal_a(xn*yn)
+! real(4) :: solFineLocal(xn,yn), solFineLocal_a(xn,yn)
+! real(4) :: uFineLong(xn*yn), vFineLong(xn*yn), phiFineLong(xn*yn)
+! real(4) :: uFineLongLocal(xn*yn), vFineLongLocal(xn*yn), phiFineLongLocal(xn*yn)
+! real(4) :: uFineLocal(xn,yn), vFineLocal(xn,yn), phiFineLocal(xn,yn)
 
-real(4) :: sol_coarse_long((xn/cellx)*(yn/celly)), sol_coarse_long_a((xn/cellx)*(yn/celly))
-real(4) :: sol_coarse_long_local((xn/cellx)*(yn/celly)), sol_coarse_long_local_a((xn/cellx)*(yn/celly))
-real(4) :: sol_coarse_local(xn/cellx,yn/celly), sol_coarse_local_a(xn/cellx,yn/celly)
-real(4) :: u_coarse_long((xn/cellx)*(yn/celly)), v_coarse_long((xn/cellx)*(yn/celly)), phi_coarse_long((xn/cellx)*(yn/celly))
-real(4) :: u_coarse_local(xn/cellx,yn/celly), v_coarse_local(xn/cellx,yn/celly), phi_coarse_local(xn/cellx,yn/celly)
-real(4) :: u_coarse_long_local(xn/cellx,yn/celly), v_coarse_long_local(xn/cellx,yn/celly), phi_coarse_long_local(xn/cellx,yn/celly)
+real(4) :: sol_coarse_long((xn/cellx)*(yn/(2*celly))) !, sol_coarse_long_a((xn/cellx)*(yn/celly))
+real(4) :: sol_coarse_long_local((xn/cellx)*(yn/(2*celly))) !, sol_coarse_long_local_a((xn/cellx)*(yn/celly))
+real(4) :: sol_coarse_local(xn/cellx,yn/(2*celly)) !, sol_coarse_local_a(xn/cellx,yn/celly)
+real(4) :: u_coarse_long((xn/cellx)*(yn/(2*celly))), v_coarse_long((xn/cellx)*(yn/(2*celly))), phi_coarse_long((xn/cellx)*(yn/(2*celly)))
+real(4) :: u_coarse_local(xn/cellx,yn/(2*celly)), v_coarse_local(xn/cellx,yn/(2*celly)), phi_coarse_local(xn/cellx,yn/(2*celly))
+real(4) :: u_coarse_long_local(xn/cellx,yn/(2*celly)), v_coarse_long_local(xn/cellx,yn/(2*celly)), phi_coarse_long_local(xn/cellx,yn/(2*celly))
 integer :: an_id_local
 
 real(4) :: priLongBitFull(3*(xn/cellx)*(yn/(2*celly)),g_pri)
@@ -371,23 +371,23 @@ real(4) :: medLongBitFull(3*(xn/cellx)*(yn/(2*celly)),g_med)
 
 ! CHAMBERS :)
 
-real(4) :: priLong_a((xn/cellx)*(yn/(2*celly)),g_pri), priLocal_a((xn/cellx)*(yn/(2*celly)),g_pri)
-real(4) :: secLong_a((xn/cellx)*(yn/(2*celly)),g_sec), secLocal_a((xn/cellx)*(yn/(2*celly)),g_sec)
-real(4) :: solLong_a((xn/cellx)*(yn/(2*celly)),g_sol), solLocal_a((xn/cellx)*(yn/(2*celly)),g_sol)
-real(4) :: medLong_a((xn/cellx)*(yn/(2*celly)),g_med), medLocal_a((xn/cellx)*(yn/(2*celly)),g_med)
-real(4) :: priLongBit_a((xn/cellx)*(yn/(2*celly))), priLocalBit_a((xn/cellx)*(yn/(2*celly)))
-real(4) :: secLongBit_a((xn/cellx)*(yn/(2*celly))), secLocalBit_a((xn/cellx)*(yn/(2*celly)))
-real(4) :: solLongBit_a((xn/cellx)*(yn/(2*celly))), solLocalBit_a((xn/cellx)*(yn/(2*celly)))
-real(4) :: medLongBit_a((xn/cellx)*(yn/(2*celly))), medLocalBit_a((xn/cellx)*(yn/(2*celly)))
+real(4) :: priLong_a((xn/cellx)*(yn/(2*celly)),g_pri) !, priLocal_a((xn/cellx)*(yn/(2*celly)),g_pri)
+real(4) :: secLong_a((xn/cellx)*(yn/(2*celly)),g_sec) !, secLocal_a((xn/cellx)*(yn/(2*celly)),g_sec)
+real(4) :: solLong_a((xn/cellx)*(yn/(2*celly)),g_sol) !, solLocal_a((xn/cellx)*(yn/(2*celly)),g_sol)
+real(4) :: medLong_a((xn/cellx)*(yn/(2*celly)),g_med) !, medLocal_a((xn/cellx)*(yn/(2*celly)),g_med)
+! real(4) :: priLongBit_a((xn/cellx)*(yn/(2*celly))) !, priLocalBit_a((xn/cellx)*(yn/(2*celly)))
+! real(4) :: secLongBit_a((xn/cellx)*(yn/(2*celly))) !, secLocalBit_a((xn/cellx)*(yn/(2*celly)))
+! real(4) :: solLongBit_a((xn/cellx)*(yn/(2*celly))) !, solLocalBit_a((xn/cellx)*(yn/(2*celly)))
+! real(4) :: medLongBit_a((xn/cellx)*(yn/(2*celly))) !, medLocalBit_a((xn/cellx)*(yn/(2*celly)))
 
-real(4) :: priLong_b((xn/cellx)*(yn/(2*celly)),g_pri), priLocal_b((xn/cellx)*(yn/(2*celly)),g_pri)
-real(4) :: secLong_b((xn/cellx)*(yn/(2*celly)),g_sec), secLocal_b((xn/cellx)*(yn/(2*celly)),g_sec)
-real(4) :: solLong_b((xn/cellx)*(yn/(2*celly)),g_sol), solLocal_b((xn/cellx)*(yn/(2*celly)),g_sol)
-real(4) :: medLong_b((xn/cellx)*(yn/(2*celly)),g_med), medLocal_b((xn/cellx)*(yn/(2*celly)),g_med)
-real(4) :: priLongBit_b((xn/cellx)*(yn/(2*celly))), priLocalBit_b((xn/cellx)*(yn/(2*celly)))
-real(4) :: secLongBit_b((xn/cellx)*(yn/(2*celly))), secLocalBit_b((xn/cellx)*(yn/(2*celly)))
-real(4) :: solLongBit_b((xn/cellx)*(yn/(2*celly))), solLocalBit_b((xn/cellx)*(yn/(2*celly)))
-real(4) :: medLongBit_b((xn/cellx)*(yn/(2*celly))), medLocalBit_b((xn/cellx)*(yn/(2*celly)))
+real(4) :: priLong_b((xn/cellx)*(yn/(2*celly)),g_pri) !, priLocal_b((xn/cellx)*(yn/(2*celly)),g_pri)
+real(4) :: secLong_b((xn/cellx)*(yn/(2*celly)),g_sec) !, secLocal_b((xn/cellx)*(yn/(2*celly)),g_sec)
+real(4) :: solLong_b((xn/cellx)*(yn/(2*celly)),g_sol) !, solLocal_b((xn/cellx)*(yn/(2*celly)),g_sol)
+real(4) :: medLong_b((xn/cellx)*(yn/(2*celly)),g_med) !, medLocal_b((xn/cellx)*(yn/(2*celly)),g_med)
+! real(4) :: priLongBit_b((xn/cellx)*(yn/(2*celly))) !, priLocalBit_b((xn/cellx)*(yn/(2*celly)))
+! real(4) :: secLongBit_b((xn/cellx)*(yn/(2*celly))) !, secLocalBit_b((xn/cellx)*(yn/(2*celly)))
+! real(4) :: solLongBit_b((xn/cellx)*(yn/(2*celly))) !, solLocalBit_b((xn/cellx)*(yn/(2*celly)))
+! real(4) :: medLongBit_b((xn/cellx)*(yn/(2*celly))) !, medLocalBit_b((xn/cellx)*(yn/(2*celly)))
 
 
 INTEGER(KIND=4) :: id, all=187
@@ -2706,7 +2706,8 @@ if (mod(j,mstep) .eq. 0) then
 	write(*,*) " "
 	OPEN(UNIT=8, status = 'replace', FILE=trim(path_final) // 'dynamicStep.txt')
 	write(*,*) "opened"
-	write(8,*) j/mstep
+	write(8,*) "j/mstep:" , j/mstep 
+	write(8,*) "j:" , j
 	close ( 8 )
 	!velocitiesCoarse0 = 0.0
 end if
@@ -2987,68 +2988,96 @@ if (restart .ne. 1) then
 end if ! end if restart .ne. 1
 
 if (j .eq. 5) then
+	
+			len = (yn/(2*celly))*(xn/cellx)
 
 			! get velocities from streamfunction
 			
-			do ii = 1,yn/celly
+			do ii = yn/(2*celly)+1,yn/(celly)
 				do i = 1,xn/cellx
-					h_coarse(i,ii) = sum(h((i-1)*cellx+1:i*cellx,(ii-1)*celly+1:ii*celly))/(cellx*celly)
-					psi_coarse(i,ii) = psi(i*cellx,ii*celly)
+					h_coarse(i,ii-yn/(2*celly)) = sum(h((i-1)*cellx+1:i*cellx,(ii-1)*celly+1:ii*celly))/(cellx*celly)
+					psi_coarse(i,ii-yn/(2*celly)) = psi(i*cellx,ii*celly)
 				end do
 			end do
+			
+			hLong = (/ reshape(transpose(h_coarse), (/ len /)), reshape(transpose(h_coarse), (/ len /)), reshape(transpose(h_coarse), (/ len /)) /) ! for cell = 1
+			
 			psi_coarse(xn/cellx,:) = 0.0
 			psi_coarse(xn/cellx-1,:) = 0.0
 			psi_coarse(xn/cellx-2,:) = 0.0
 			
 			velocities_coarse0 = velocities_coarse(psi_coarse)
-			u_coarse = phi_coarse*velocities_coarse0(1:xn/cellx,1:yn/celly)/(rho_fluid)
-			v_coarse = phi_coarse*velocities_coarse0(1:xn/cellx,yn/celly+1:2*yn/celly)/(rho_fluid)
-			u_step_coarse = u_coarse
-			v_step_coarse = v_coarse
+			u_coarse = phi_coarse*velocities_coarse0(1:xn/cellx,1:yn/(2*celly))/(rho_fluid)
+			v_coarse = phi_coarse*velocities_coarse0(1:xn/cellx,yn/(2*celly)+1:2*yn/(2*celly))/(rho_fluid)
+			
+! 			write(*,*) "u coarse"
+! 			write(*,*) maxval(u_coarse)
+!
+! 			write(*,*) "v coarse"
+! 			write(*,*) v_coarse
+! 			u_step_coarse = u_coarse
+! 			v_step_coarse = v_coarse
 			
 			velocities0 = velocities(psi)
 			u = phi*velocities0(1:xn,1:yn)/(rho_fluid)
 			v = phi*velocities0(1:xn,yn+1:2*yn)/(rho_fluid)
-			u_inter = u
-			v_inter = v
-			
 
-			do ii = 1,yn/celly
-				do i = 1,xn/cellx
-					u((i-1)*cellx+1:i*cellx,(ii-1)*celly+1:ii*celly) = sum(u_inter((i-1)*cellx+1:i*cellx,(ii-1)*celly+1:ii*celly))/(cellx*celly)
-					v((i-1)*cellx+1:i*cellx,(ii-1)*celly+1:ii*celly) = sum(v_inter((i-1)*cellx+1:i*cellx,(ii-1)*celly+1:ii*celly))/(cellx*celly)
-				end do
-			end do
-			
-			do ii = 1,yn/celly
-				u(:,(ii-1)*celly+1:ii*celly) = sum(u(:,(ii-1)*celly+1:ii*celly))/(xn*celly)
-			end do
-			
-			uFineLong = reshape(u, (/xn*yn/))
-			vFineLong = reshape(v, (/xn*yn/))
-			phiFineLong = reshape(phi, (/xn*yn/))
-			
-			
-			u_coarse_long = reshape(u_coarse, (/(xn/cellx)*(yn/celly)/))
-			v_coarse_long = reshape(v_coarse, (/(xn/cellx)*(yn/celly)/))
-			phi_coarse_long = reshape(phi_coarse, (/(xn/cellx)*(yn/celly)/))
-!
-! 						do ii = 1,yn/cell
-! 							u_coarse(:,ii) = sum(u_coarse(:,ii))/(yn/celly)
-! 						end do
-			
-			
-			
-!
+			u_coarse_long = reshape(u_coarse, (/(xn/cellx)*(yn/(2*celly))/))
+			v_coarse_long = reshape(v_coarse, (/(xn/cellx)*(yn/(2*celly))/))
+			phi_coarse_long = reshape(phi_coarse, (/(xn/cellx)*(yn/(2*celly))/))
+
 ! 			u(f_index1-1:,:) = 0.0
 ! 			v(f_index1-1:,:) = 0.0
 			
 			
 			
+			write(*,*) "BEGIN INITIAL STRETCHING EVERYTHING OUT FOR GEOCHEM"
+
+
+			! stretch everything out
+			!hLong = reshape(h(1:xn-1:cell,1:yn-1:cell), (/(xn/cell)*(yn/cell)/)) ! for cell > 1
+			do i = 1,g_pri
+				bit_thing = reshape(primary(:,:,i),(/xn/cellx, yn/(2*celly)/))
+				bit_thing_a = reshape(primary_a(:,:,i),(/xn/cellx, yn/(2*celly)/))
+				bit_thing_b = reshape(primary_b(:,:,i),(/xn/cellx, yn/(2*celly)/))
+				priLongBitFull(:len,i) = reshape(transpose(bit_thing), (/ len /))
+				priLongBitFull(len+1:2*len,i) = reshape(transpose(bit_thing_a), (/ len /))
+				priLongBitFull(2*len+1:,i) = reshape(transpose(bit_thing_b), (/ len /))
+			end do
+
+			do i = 1,g_sec/2
+				bit_thing = reshape(secondary(:,:,i),(/xn/cellx, yn/(2*celly)/))
+				bit_thing_a = reshape(secondary_a(:,:,i),(/xn/cellx, yn/(2*celly)/))
+				bit_thing_b = reshape(secondary_b(:,:,i),(/xn/cellx, yn/(2*celly)/))
+				secLongBitFull(:len,i) = reshape(transpose(bit_thing), (/ len /))
+				secLongBitFull(len+1:2*len,i) = reshape(transpose(bit_thing_a), (/ len /))
+				secLongBitFull(2*len+1:,i) = reshape(transpose(bit_thing_b), (/ len /))
+			end do
+
+			do i = 1,g_sol
+				bit_thing = reshape(solute(:,:,i),(/xn/cellx, yn/(2*celly)/))
+				bit_thing_a = reshape(solute_a(:,:,i),(/xn/cellx, yn/(2*celly)/))
+				bit_thing_b = reshape(solute_b(:,:,i),(/xn/cellx, yn/(2*celly)/))
+				solLongBitFull(:len,i) = reshape(transpose(bit_thing), (/ len /))
+				solLongBitFull(len+1:2*len,i) = reshape(transpose(bit_thing_a), (/ len /))
+				solLongBitFull(2*len+1:,i) = reshape(transpose(bit_thing_b), (/ len /))
+			end do
+
+			do i = 1,g_med
+				bit_thing = reshape(medium(:,:,i),(/xn/cellx, yn/(2*celly)/))
+				bit_thing_a = reshape(medium_a(:,:,i),(/xn/cellx, yn/(2*celly)/))
+				bit_thing_b = reshape(medium_b(:,:,i),(/xn/cellx, yn/(2*celly)/))
+				medLongBitFull(:len,i) = reshape(transpose(bit_thing), (/ len /))
+				medLongBitFull(len+1:2*len,i) = reshape(transpose(bit_thing_a), (/ len /))
+				medLongBitFull(2*len+1:,i) = reshape(transpose(bit_thing_b), (/ len /))
+			end do
+
+
+
 			
 
 			
-end if
+end if ! if j == 5
 			
 ! 			do ii=1,yn
 ! 				do i=2,xn-2
@@ -3064,6 +3093,8 @@ end if
 	! things only done every mth timestep go here
 	if (mod(j,mstep) .eq. 0) then
 		
+		write(*,*) " "
+		write(*,*) "STEP" , j , "STUFF"
 		
 
 		
@@ -3099,28 +3130,62 @@ end if
 !
 
 ! if (j .gt. mstep) then
-			write(*,*) " "
-			write(*,*) "STEP" , j , "STUFF"
-			write(*,*) "BEGIN CHAMBER MIXING"
+! 			write(*,*) " "
+! 			write(*,*) "STEP" , j , "STUFF"
+! 			write(*,*) "BEGIN CHAMBER MIXING"
+!
+!	
+			
+! 			do i = 1,g_sol
+! 				bit_thing_t = reshape(solLongBitFull(1:len,i),(/yn/(2*celly), xn/cellx/))
+! 				bit_thing = transpose(bit_thing_t)
+! 				bit_thing_t1 = reshape(bit_thing,(/xn/cellx,yn/(2*celly)/))
+! 				solute(:,(yn/(2*celly))+1:,i) = bit_thing_t1
+!
+! 				bit_thing_t = reshape(solLongBitFull(len+1:2*len,i),(/yn/(2*celly), xn/cellx/))
+! 				bit_thing = transpose(bit_thing_t)
+! 				bit_thing_t1 = reshape(bit_thing,(/xn/cellx,yn/(2*celly)/))
+! 				solute_a(:,(yn/(2*celly))+1:,i) = bit_thing_t1
+!
+! 				bit_thing_t = reshape(solLongBitFull(2*len+1:,i),(/yn/(2*celly), xn/cellx/))
+! 				bit_thing = transpose(bit_thing_t)
+! 				bit_thing_t1 = reshape(bit_thing,(/xn/cellx,yn/(2*celly)/))
+! 				solute_b(:,(yn/(2*celly))+1:,i) = bit_thing_t1
+! 			end do
+!
+			
+			
+!
+!
+! 			n=2 ! alk
+! 			solute_inter = solute_a(:,:,n)
+! 			solute_a(:,:,n) = solute_a(:,:,n)*(1.0-mix_ratio/volume_ratio) + solute_b(:,:,n)*mix_ratio/volume_ratio
+! 			solute_b(:,:,n) = solute_b(:,:,n)*(1.0-mix_ratio) + solute_inter*mix_ratio
+!
+! 			do n=4,13 ! solutes
+! 				solute_inter = solute_a(:,:,n)
+! 				solute_a(:,:,n) = solute_a(:,:,n)*(1.0-mix_ratio/volume_ratio) + solute_b(:,:,n)*mix_ratio/volume_ratio
+! 				solute_b(:,:,n) = solute_b(:,:,n)*(1.0-mix_ratio) + solute_inter*mix_ratio
+! 			end do
 			
 			
 
 			n=2 ! alk
-			solute_inter = solute_a(:,:,n)
-			solute_a(:,:,n) = solute_a(:,:,n)*(1.0-mix_ratio/volume_ratio) + solute_b(:,:,n)*mix_ratio/volume_ratio
-			solute_b(:,:,n) = solute_b(:,:,n)*(1.0-mix_ratio) + solute_inter*mix_ratio
+			solute_inter_long = solLongBitFull(len+1:2*len,n)
+			solLongBitFull(len+1:2*len,n) = solLongBitFull(len+1:2*len,n)*(1.0-mix_ratio/volume_ratio) + solLongBitFull(2*len+1:,n)*mix_ratio/volume_ratio ! a mix
+			solLongBitFull(2*len+1:,n) = solLongBitFull(2*len+1:,n)*(1.0-mix_ratio) + solute_inter_long*mix_ratio
 
 			do n=4,13 ! solutes
-				solute_inter = solute_a(:,:,n)
-				solute_a(:,:,n) = solute_a(:,:,n)*(1.0-mix_ratio/volume_ratio) + solute_b(:,:,n)*mix_ratio/volume_ratio
-				solute_b(:,:,n) = solute_b(:,:,n)*(1.0-mix_ratio) + solute_inter*mix_ratio
+				solute_inter_long = solLongBitFull(len+1:2*len,n)
+				solLongBitFull(len+1:2*len,n) = solLongBitFull(len+1:2*len,n)*(1.0-mix_ratio/volume_ratio) + solLongBitFull(2*len+1:,n)*mix_ratio/volume_ratio ! a mix
+				solLongBitFull(2*len+1:,n) = solLongBitFull(2*len+1:,n)*(1.0-mix_ratio) + solute_inter_long*mix_ratio
 			end do
 
-			write(*,*) "...DONE WITH CHAMBER MIXING"
-
-
-		
-		write(*,*) "BEGIN SENDING SOLUTES TO PROCESSORS FOR ADVECTION"
+! 			write(*,*) "...DONE WITH CHAMBER MIXING"
+!
+!
+!
+! 		write(*,*) "BEGIN SENDING SOLUTES TO PROCESSORS FOR ADVECTION"
 		
 		
 		!--------------FROM MASTER TO SLAVES FOR ADVECTION
@@ -3128,11 +3193,11 @@ end if
 		do an_id = 1, 22
 
 			if (an_id .le. 11) then
-				sol_coarse_long = reshape(solute(:,:,sol_index(an_id)), (/(xn/cellx)*(yn/celly)/))
+				sol_coarse_long = solLongBitFull(:len,sol_index(an_id)) !reshape(solute(:,:,sol_index(an_id)), (/(xn/cellx)*(yn/celly)/))
 			end if
 	
 			if (an_id .gt. 11) then
-				sol_coarse_long = reshape(solute_a(:,:,sol_index(an_id-11)), (/(xn/cellx)*(yn/celly)/))
+				sol_coarse_long = solLongBitFull(len+1:2*len,sol_index(an_id-11)) !sol_coarse_long = reshape(solute_a(:,:,sol_index(an_id-11)), (/(xn/cellx)*(yn/celly)/))
 			end if
 	
 			! send an_id name
@@ -3140,126 +3205,65 @@ end if
 			an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 	
 			! send long sol coarse
-			call MPI_SEND( sol_coarse_long, (xn/cellx)*(yn/celly), MPI_DOUBLE_PRECISION, &
+			call MPI_SEND( sol_coarse_long, (xn/cellx)*(yn/(2*celly)), MPI_DOUBLE_PRECISION, &
 			an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 	
 			! send long u coarse
-			call MPI_SEND( u_coarse_long, (xn/cellx)*(yn/celly), MPI_DOUBLE_PRECISION, &
+			call MPI_SEND( u_coarse_long, (xn/cellx)*(yn/(2*celly)), MPI_DOUBLE_PRECISION, &
 			an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 	
 			! send long v coarse
-			call MPI_SEND( v_coarse_long, (xn/cellx)*(yn/celly), MPI_DOUBLE_PRECISION, &
+			call MPI_SEND( v_coarse_long, (xn/cellx)*(yn/(2*celly)), MPI_DOUBLE_PRECISION, &
 			an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 	
 			! send long phi coarse
-			call MPI_SEND( phi_coarse_long, (xn/cellx)*(yn/celly), MPI_DOUBLE_PRECISION, &
+			call MPI_SEND( phi_coarse_long, (xn/cellx)*(yn/(2*celly)), MPI_DOUBLE_PRECISION, &
 			an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 
 		!write(*,*) "DONE SENDING SOLUTE TO PROCESSOR", an_id	
 
 		end do
 		
-		write(*,*) "...DONE SENDING SOLUTES TO ALL PROCESSORS"
+		!write(*,*) "...DONE SENDING SOLUTES TO ALL PROCESSORS"
 		
 		!--------------MESSAGE RECEIVING FROM SLAVE PROCESSORS
 		
-		write(*,*) "BEGIN RECEIVING ADVECTED SOLUTES"
+		!write(*,*) "BEGIN RECEIVING ADVECTED SOLUTES"
 		
 		do an_id = 1, 22
 			
-			call MPI_RECV( sol_coarse_long, (xn/cellx)*(yn/celly), MPI_DOUBLE_PRECISION, &
+			call MPI_RECV( sol_coarse_long, (xn/cellx)*(yn/(2*celly)), MPI_DOUBLE_PRECISION, &
 			an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
 
 			if (an_id .le. 11) then
-				solute(:,:,sol_index(an_id)) = reshape(sol_coarse_long, (/xn/cellx,yn/celly/))
+				solLongBitFull(:len,sol_index(an_id)) = sol_coarse_long
 			end if
 
 			if (an_id .gt. 11) then
-				solute_a(:,:,sol_index(an_id-11)) = reshape(sol_coarse_long, (/xn/cellx,yn/celly/))
+				solLongBitFull(len+1:2*len,sol_index(an_id-11)) = sol_coarse_long
 			end if
 			
 		end do
 		
-		write(*,*) "...DONE RECEIVING ADVECTED SOLUTES"
-
-	
+! 		write(*,*) "...DONE RECEIVING ADVECTED SOLUTES"
+!
+!
+!
+! 		do i = 1,g_sol
+! 			bit_thing = reshape(solute(:,(yn/(2*celly))+1:yn/celly,i),(/xn/cellx, yn/(2*celly)/))
+! 			bit_thing_a = reshape(solute_a(:,(yn/(2*celly))+1:yn/celly,i),(/xn/cellx, yn/(2*celly)/))
+! 			bit_thing_b = reshape(solute_b(:,(yn/(2*celly))+1:yn/celly,i),(/xn/cellx, yn/(2*celly)/))
+! 			solLongBitFull(:(xn/cellx)*(yn/(2*celly)),i) = reshape(transpose(bit_thing), (/(xn/cellx)*(yn/(2*celly))/))
+! 			solLongBitFull((xn/cellx)*(yn/(2*celly))+1:(2*xn/cellx)*(yn/(2*celly)),i) = reshape(transpose(bit_thing_a), (/(xn/cellx)*(yn/(2*celly))/))
+! 			solLongBitFull((2*xn/cellx)*(yn/(2*celly))+1:,i) = reshape(transpose(bit_thing_b), (/(xn/cellx)*(yn/(2*celly))/))
+! 		end do
+!
 				
 		!end if	! end if j > mstep
 		
-
-
-! 		medium(:,:,3) = vol_i
-! 		medium_a(:,:,3) = vol_i_a
-! 		medium_b(:,:,3) = vol_i_b
 !
-! 		solute(:,:,3) = vol_i
-! 		solute_a(:,:,3) = vol_i_a
-! 		solute_b(:,:,3) = vol_i_b
-
-
+! 		write(*,*) "BEGIN SENDING GEOCHEM TO ALL PROCESSORS"
 !
-! 		pri_coarse = primary
-! 		sec_coarse = secondary
-! 		sol_coarse = solute
-! 		med_coarse = medium
-!
-! 		pri_coarse_a = primary_a
-! 		sec_coarse_a = secondary_a
-! 		sol_coarse_a = solute_a
-! 		med_coarse_a = medium_a
-!
-! 		pri_coarse_b = primary_b
-! 		sec_coarse_b = secondary_b
-! 		sol_coarse_b = solute_b
-! 		med_coarse_b = medium_b
-
-
-		write(*,*) "BEGIN STRETCHING EVERYTHING OUT FOR GEOCHEM"
-
-
-		! stretch everything out
-		!hLong = reshape(h(1:xn-1:cell,1:yn-1:cell), (/(xn/cell)*(yn/cell)/)) ! for cell > 1
-		hLong = (/ reshape(transpose(h_coarse(:,(yn/(2*celly))+1:yn/celly)), (/(xn/cellx)*(yn/(2*celly))/)), reshape(transpose(h_coarse(:,(yn/(2*celly))+1:yn/celly)), (/(xn/cellx)*(yn/(2*celly))/)), reshape(transpose(h_coarse(:,(yn/(2*celly))+1:yn/celly)), (/(xn/cellx)*(yn/(2*celly))/)) /) ! for cell = 1
-		do i = 1,g_pri
-			bit_thing = reshape(primary(:,(yn/(2*celly))+1:yn/celly,i),(/xn/cellx, yn/(2*celly)/))
-			priLong(:,i) = reshape(transpose(bit_thing), (/(xn/cellx)*(yn/(2*celly))/))
-			bit_thing = reshape(primary_a(:,(yn/(2*celly))+1:yn/celly,i),(/xn/cellx, yn/(2*celly)/))
-			priLong_a(:,i) = reshape(transpose(bit_thing), (/(xn/cellx)*(yn/(2*celly))/))
-			bit_thing = reshape(primary_b(:,(yn/(2*celly))+1:yn/celly,i),(/xn/cellx, yn/(2*celly)/))
-			priLong_b(:,i) = reshape(transpose(bit_thing), (/(xn/cellx)*(yn/(2*celly))/))
-		end do
-		
-		do i = 1,g_sec/2
-			bit_thing = reshape(secondary(:,(yn/(2*celly))+1:yn/celly,i),(/xn/cellx, yn/(2*celly)/))
-			secLong(:,i) = reshape(transpose(bit_thing), (/(xn/cellx)*(yn/(2*celly))/))
-			bit_thing = reshape(secondary_a(:,(yn/(2*celly))+1:yn/celly,i),(/xn/cellx, yn/(2*celly)/))
-			secLong_a(:,i) = reshape(transpose(bit_thing), (/(xn/cellx)*(yn/(2*celly))/))
-			bit_thing = reshape(secondary_b(:,(yn/(2*celly))+1:yn/celly,i),(/xn/cellx, yn/(2*celly)/))
-			secLong_b(:,i) = reshape(transpose(bit_thing), (/(xn/cellx)*(yn/(2*celly))/))
-		end do
-		
-		do i = 1,g_sol
-			bit_thing = reshape(solute(:,(yn/(2*celly))+1:yn/celly,i),(/xn/cellx, yn/(2*celly)/))
-			solLong(:,i) = reshape(transpose(bit_thing), (/(xn/cellx)*(yn/(2*celly))/))
-			bit_thing = reshape(solute_a(:,(yn/(2*celly))+1:yn/celly,i),(/xn/cellx, yn/(2*celly)/))
-			solLong_a(:,i) = reshape(transpose(bit_thing), (/(xn/cellx)*(yn/(2*celly))/))
-			bit_thing = reshape(solute_b(:,(yn/(2*celly))+1:yn/celly,i),(/xn/cellx, yn/(2*celly)/))
-			solLong_b(:,i) = reshape(transpose(bit_thing), (/(xn/cellx)*(yn/(2*celly))/))
-		end do
-		
-		do i = 1,g_med
-			bit_thing = reshape(medium:,(yn/(2*celly))+1:yn/celly,i),(/xn/cellx, yn/(2*celly)/))
-			medLong(:,i) = reshape(transpose(bit_thing), (/(xn/cellx)*(yn/(2*celly))/))
-			bit_thing = reshape(medium_a(:,(yn/(2*celly))+1:yn/celly,i),(/xn/cellx, yn/(2*celly)/))
-			medLong_a(:,i) = reshape(transpose(bit_thing), (/(xn/cellx)*(yn/(2*celly))/))
-			bit_thing = reshape(medium_b(:,(yn/(2*celly))+1:yn/celly,i),(/xn/cellx, yn/(2*celly)/))
-			medLong_b(:,i) = reshape(transpose(bit_thing), (/(xn/cellx)*(yn/(2*celly))/))
-		end do
-		
-!		write(*,*) "...DONE STRETCHING OUT FOR GEOCHEM"
-
-!		write(*,*) "BEGIN SENDING GEOCHEM TO ALL PROCESSORS"
-	
 		!--------------MESSAGE DISTRIBUTING FROM MASTER TO SLAVES
 		do an_id = 1, num_procs - 1
 		
@@ -3279,36 +3283,35 @@ end if
 	        call MPI_SEND( dt, 1, MPI_DOUBLE_PRECISION, &
 			an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 	
-		
 			! send temperature array chunk to processor an_id
 	        call MPI_SEND( hLong(start_row), num_rows_to_send, MPI_DOUBLE_PRECISION, &
 			an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 		
 			! send primary array chunk to processor an_id
 			do ii = 1,g_pri
-				priLongBit = (/ priLong(:,ii), priLong_a(:,ii), priLong_b(:,ii) /)
-	        	call MPI_SEND( priLongBit(start_row), num_rows_to_send, MPI_DOUBLE_PRECISION, &
+				!priLongBit = (/ priLong(:,ii), priLong_a(:,ii), priLong_b(:,ii) /)
+	        	call MPI_SEND( priLongBitFull(start_row,ii), num_rows_to_send, MPI_DOUBLE_PRECISION, &
 				an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 			end do
 		
 			!-send secondary array chunk to processor an_id
 			do ii = 1,g_sec
-				secLongBit = (/ secLong(:,ii), secLong_a(:,ii), secLong_b(:,ii) /)
-	        	call MPI_SEND( secLongBit(start_row), num_rows_to_send, MPI_DOUBLE_PRECISION, &
+				!secLongBit = (/ secLong(:,ii), secLong_a(:,ii), secLong_b(:,ii) /)
+	        	call MPI_SEND( secLongBitFull(start_row,ii), num_rows_to_send, MPI_DOUBLE_PRECISION, &
 				an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 			end do
 		
 			! send solute array chunk to processor an_id
 			do ii = 1,g_sol
-				solLongBit = (/ solLong(:,ii), solLong_a(:,ii), solLong_b(:,ii) /)
-	        	call MPI_SEND( solLongBit(start_row), num_rows_to_send, MPI_DOUBLE_PRECISION, &
+				!solLongBit = (/ solLong(:,ii), solLong_a(:,ii), solLong_b(:,ii) /)
+	        	call MPI_SEND( solLongBitFull(start_row,ii), num_rows_to_send, MPI_DOUBLE_PRECISION, &
 				an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 			end do
 
 			! send medium array chunk to processor an_id
 			do ii = 1,g_med
-				medLongBit = (/ medLong(:,ii), medLong_a(:,ii), medLong_b(:,ii) /)
-	        	call MPI_SEND( medLongBit(start_row), num_rows_to_send, MPI_DOUBLE_PRECISION, &
+				!medLongBit = (/ medLong(:,ii), medLong_a(:,ii), medLong_b(:,ii) /)
+	        	call MPI_SEND( medLongBitFull(start_row,ii), num_rows_to_send, MPI_DOUBLE_PRECISION, &
 				an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 			end do
 			
@@ -3316,12 +3319,12 @@ end if
 
 		end do
 		
-!		write(*,*) "...DONE SENDING GEOCHEM TO ALL PROCESSORS"
-
-		!--------------MESSAGE RECEIVING FROM SLAVE PROCESSORS
-		
-!		write(*,*) "BEGIN RECEIVING GEOCHEM FROM ALL PROCESSORS"
-		
+! 		write(*,*) "...DONE SENDING GEOCHEM TO ALL PROCESSORS"
+!
+! 		!--------------MESSAGE RECEIVING FROM SLAVE PROCESSORS
+!
+! 		write(*,*) "BEGIN RECEIVING GEOCHEM FROM ALL PROCESSORS"
+!
 		do an_id = 1, num_procs - 1
 		
 			! get the size of each chunk again
@@ -3372,96 +3375,13 @@ end if
 		
 		end do
 		
-!		write(*,*) "...DONE RECEIVING GEOCHEM FROM ALL PROCESSORS"
+		write(*,*) "...DONE RECEIVING GEOCHEM FROM ALL PROCESSORS"
 		
 !		write(*,*) "BEGIN STRETCHING REACTED CELLS"
 		
 		!--------------MASTER PROCESSOR SAVES OUTPUT TO BE WRITTEN TO FILE
 
-		len = (yn/(2*celly))*(xn/cellx)
-		
-		do i = 1,g_pri
-			bit_thing_t = reshape(priLongBitFull(1:len,i),(/yn/(2*celly), xn/cellx/))
-			bit_thing = transpose(bit_thing_t)
-			bit_thing_t1 = reshape(bit_thing,(/xn/cellx,yn/(2*celly)/))
-			primary(:,(yn/(2*celly))+1:,i) = bit_thing_t1
-			
-			bit_thing_t = reshape(priLongBitFull(len+1:2*len,i),(/yn/(2*celly), xn/cellx/))
-			bit_thing = transpose(bit_thing_t)
-			bit_thing_t1 = reshape(bit_thing,(/xn/cellx,yn/(2*celly)/))
-			primary_a(:,(yn/(2*celly))+1:,i) = bit_thing_t1
-			
-			bit_thing_t = reshape(priLongBitFull(2*len+1:,i),(/yn/(2*celly), xn/cellx/))
-			bit_thing = transpose(bit_thing_t)
-			bit_thing_t1 = reshape(bit_thing,(/xn/cellx,yn/(2*celly)/))
-			primary_b(:,(yn/(2*celly))+1:,i) = bit_thing_t1
-		end do
-		
-		if (maxval(medium(:,:,2)) .eq. 0.0) then
-			do i = 1,g_sec
-				bit_thing_t = reshape(secLongBitFull(1:len,i),(/yn/(2*celly), xn/cellx/))
-				bit_thing = transpose(bit_thing_t)
-				bit_thing_t1 = reshape(bit_thing,(/xn/cellx,yn/(2*celly)/))
-				secondary(:,(yn/(2*celly))+1:,i) = bit_thing_t1
-			
-				bit_thing_t = reshape(secLongBitFull(len+1:2*len,i),(/yn/(2*celly), xn/cellx/))
-				bit_thing = transpose(bit_thing_t)
-				bit_thing_t1 = reshape(bit_thing,(/xn/cellx,yn/(2*celly)/))
-				secondary_a(:,(yn/(2*celly))+1:,i) = bit_thing_t1
-			
-				bit_thing_t = reshape(secLongBitFull(2*len+1:,i),(/yn/(2*celly), xn/cellx/))
-				bit_thing = transpose(bit_thing_t)
-				bit_thing_t1 = reshape(bit_thing,(/xn/cellx,yn/(2*celly)/))
-				secondary_b(:,(yn/(2*celly))+1:,i) = bit_thing_t1
-			end do
-		end if
-		
-		do i = 1,g_sol
-			bit_thing_t = reshape(solLongBitFull(1:len,i),(/yn/(2*celly), xn/cellx/))
-			bit_thing = transpose(bit_thing_t)
-			bit_thing_t1 = reshape(bit_thing,(/xn/cellx,yn/(2*celly)/))
-			solute(:,(yn/(2*celly))+1:,i) = bit_thing_t1
-			
-			bit_thing_t = reshape(solLongBitFull(len+1:2*len,i),(/yn/(2*celly), xn/cellx/))
-			bit_thing = transpose(bit_thing_t)
-			bit_thing_t1 = reshape(bit_thing,(/xn/cellx,yn/(2*celly)/))
-			solute_a(:,(yn/(2*celly))+1:,i) = bit_thing_t1
-			
-			bit_thing_t = reshape(solLongBitFull(2*len+1:,i),(/yn/(2*celly), xn/cellx/))
-			bit_thing = transpose(bit_thing_t)
-			bit_thing_t1 = reshape(bit_thing,(/xn/cellx,yn/(2*celly)/))
-			solute_b(:,(yn/(2*celly))+1:,i) = bit_thing_t1
-		end do
-		
-! 		i=2
-! 		solute(:,:,i) = solute(:,:,i)*solute(:,:,3)/vol_i
-! 		solute_a(:,:,i) = solute_a(:,:,i)*solute_a(:,:,3)/vol_i_a
-! 		solute_b(:,:,i) = solute_b(:,:,i)*solute_b(:,:,3)/vol_i_b
-!
-! 		do i=4,13
-! 			solute(:,:,i) = solute(:,:,i)*solute(:,:,3)/vol_i
-! 			solute_a(:,:,i) = solute_a(:,:,i)*solute_a(:,:,3)/vol_i_a
-! 			solute_b(:,:,i) = solute_b(:,:,i)*solute_b(:,:,3)/vol_i_b
-! 		end do
 
-		
-		do i = 1,g_med
-			bit_thing_t = reshape(medLongBitFull(1:len,i),(/yn/(2*celly), xn/cellx/))
-			bit_thing = transpose(bit_thing_t)
-			bit_thing_t1 = reshape(bit_thing,(/xn/cellx,yn/(2*celly)/))
-			medium(:,(yn/(2*celly))+1:,i) = bit_thing_t1
-			
-			bit_thing_t = reshape(medLongBitFull(len+1:2*len,i),(/yn/(2*celly), xn/cellx/))
-			bit_thing = transpose(bit_thing_t)
-			bit_thing_t1 = reshape(bit_thing,(/xn/cellx,yn/(2*celly)/))
-			medium_a(:,(yn/(2*celly))+1:,i) = bit_thing_t1
-			
-			bit_thing_t = reshape(medLongBitFull(2*len+1:,i),(/yn/(2*celly), xn/cellx/))
-			bit_thing = transpose(bit_thing_t)
-			bit_thing_t1 = reshape(bit_thing,(/xn/cellx,yn/(2*celly)/))
-			medium_b(:,(yn/(2*celly))+1:,i) = bit_thing_t1
-		end do
-		
 
 ! 		medium(:,:,3) = vol_i
 ! 		medium_a(:,:,3) = vol_i_a
@@ -3477,6 +3397,99 @@ end if
 		! add timestep's output to output arrays
 		if (mod(j,mstep*ar) .eq. 0) then
 			
+			
+			
+			len = (yn/(2*celly))*(xn/cellx)
+		
+			do i = 1,g_pri
+				bit_thing_t = reshape(priLongBitFull(1:len,i),(/yn/(2*celly), xn/cellx/))
+				bit_thing = transpose(bit_thing_t)
+				bit_thing_t1 = reshape(bit_thing,(/xn/cellx,yn/(2*celly)/))
+				primary(:,:,i) = bit_thing_t1
+			
+				bit_thing_t = reshape(priLongBitFull(len+1:2*len,i),(/yn/(2*celly), xn/cellx/))
+				bit_thing = transpose(bit_thing_t)
+				bit_thing_t1 = reshape(bit_thing,(/xn/cellx,yn/(2*celly)/))
+				primary_a(:,:,i) = bit_thing_t1
+			
+				bit_thing_t = reshape(priLongBitFull(2*len+1:,i),(/yn/(2*celly), xn/cellx/))
+				bit_thing = transpose(bit_thing_t)
+				bit_thing_t1 = reshape(bit_thing,(/xn/cellx,yn/(2*celly)/))
+				primary_b(:,:,i) = bit_thing_t1
+			end do
+		
+			if (maxval(medium(:,:,2)) .eq. 0.0) then
+				do i = 1,g_sec
+					bit_thing_t = reshape(secLongBitFull(1:len,i),(/yn/(2*celly), xn/cellx/))
+					bit_thing = transpose(bit_thing_t)
+					bit_thing_t1 = reshape(bit_thing,(/xn/cellx,yn/(2*celly)/))
+					secondary(:,:,i) = bit_thing_t1
+			
+					bit_thing_t = reshape(secLongBitFull(len+1:2*len,i),(/yn/(2*celly), xn/cellx/))
+					bit_thing = transpose(bit_thing_t)
+					bit_thing_t1 = reshape(bit_thing,(/xn/cellx,yn/(2*celly)/))
+					secondary_a(:,:,i) = bit_thing_t1
+			
+					bit_thing_t = reshape(secLongBitFull(2*len+1:,i),(/yn/(2*celly), xn/cellx/))
+					bit_thing = transpose(bit_thing_t)
+					bit_thing_t1 = reshape(bit_thing,(/xn/cellx,yn/(2*celly)/))
+					secondary_b(:,:,i) = bit_thing_t1
+				end do
+			end if
+		
+			do i = 1,g_sol
+				bit_thing_t = reshape(solLongBitFull(1:len,i),(/yn/(2*celly), xn/cellx/))
+				bit_thing = transpose(bit_thing_t)
+				bit_thing_t1 = reshape(bit_thing,(/xn/cellx,yn/(2*celly)/))
+				solute(:,:,i) = bit_thing_t1
+			
+				bit_thing_t = reshape(solLongBitFull(len+1:2*len,i),(/yn/(2*celly), xn/cellx/))
+				bit_thing = transpose(bit_thing_t)
+				bit_thing_t1 = reshape(bit_thing,(/xn/cellx,yn/(2*celly)/))
+				solute_a(:,:,i) = bit_thing_t1
+			
+				bit_thing_t = reshape(solLongBitFull(2*len+1:,i),(/yn/(2*celly), xn/cellx/))
+				bit_thing = transpose(bit_thing_t)
+				bit_thing_t1 = reshape(bit_thing,(/xn/cellx,yn/(2*celly)/))
+				solute_b(:,:,i) = bit_thing_t1
+			end do
+		
+	! 		i=2
+	! 		solute(:,:,i) = solute(:,:,i)*solute(:,:,3)/vol_i
+	! 		solute_a(:,:,i) = solute_a(:,:,i)*solute_a(:,:,3)/vol_i_a
+	! 		solute_b(:,:,i) = solute_b(:,:,i)*solute_b(:,:,3)/vol_i_b
+	!
+	! 		do i=4,13
+	! 			solute(:,:,i) = solute(:,:,i)*solute(:,:,3)/vol_i
+	! 			solute_a(:,:,i) = solute_a(:,:,i)*solute_a(:,:,3)/vol_i_a
+	! 			solute_b(:,:,i) = solute_b(:,:,i)*solute_b(:,:,3)/vol_i_b
+	! 		end do
+
+		
+			do i = 1,g_med
+				bit_thing_t = reshape(medLongBitFull(1:len,i),(/yn/(2*celly), xn/cellx/))
+				bit_thing = transpose(bit_thing_t)
+				bit_thing_t1 = reshape(bit_thing,(/xn/cellx,yn/(2*celly)/))
+				medium(:,:,i) = bit_thing_t1
+			
+				bit_thing_t = reshape(medLongBitFull(len+1:2*len,i),(/yn/(2*celly), xn/cellx/))
+				bit_thing = transpose(bit_thing_t)
+				bit_thing_t1 = reshape(bit_thing,(/xn/cellx,yn/(2*celly)/))
+				medium_a(:,:,i) = bit_thing_t1
+			
+				bit_thing_t = reshape(medLongBitFull(2*len+1:,i),(/yn/(2*celly), xn/cellx/))
+				bit_thing = transpose(bit_thing_t)
+				bit_thing_t1 = reshape(bit_thing,(/xn/cellx,yn/(2*celly)/))
+				medium_b(:,:,i) = bit_thing_t1
+			end do
+		
+			
+			
+			
+			
+			
+			
+			
 			 write(*,*) "BEGIN UPDATING _MAT ARRAYS"
 			 rhsmat(1+xn*(j/(mstep*ar)-1):xn*(j/(mstep*ar)),1:yn) = rhs0
 			 rhomat(1+xn*(j/(mstep*ar)-1):xn*(j/(mstep*ar)),1:yn) = rho
@@ -3489,28 +3502,28 @@ end if
 			 permyMat(1+xn*(j/(mstep*ar)-1):xn*(j/(mstep*ar)),1:yn) = permy
 
 			 
-			 psiCoarseMat(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/celly) = psi_coarse
-			 uCoarseMat(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/celly) = uTransport
-			 vCoarseMat(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/celly) = vTransport
+			 psiCoarseMat(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/(2*celly)) = psi_coarse
+! 			 uCoarseMat(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/(2*celly)) = uTransport
+! 			 vCoarseMat(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/(2*celly)) = vTransport
 	 		! reset coarse grid velocities for next timestep
 	 		uTransport = 0.0
 	 		vTransport = 0.0
 			 
-			 primaryMat(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/celly,:) = primary
-			 secondaryMat(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/celly,:)= secondary
-			 soluteMat(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/celly,:) = solute
-			 mediumMat(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/celly,:) = medium
-			 saturationMat(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/celly,:) = saturation
+			 primaryMat(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/(2*celly),:) = primary
+			 secondaryMat(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/(2*celly),:)= secondary
+			 soluteMat(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/(2*celly),:) = solute
+			 mediumMat(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/(2*celly),:) = medium
+			 saturationMat(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/(2*celly),:) = saturation
 			 
-			 primaryMat_a(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/celly,:) = primary_a
-			 secondaryMat_a(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/celly,:)= secondary_a
-			 soluteMat_a(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/celly,:) = solute_a
-			 mediumMat_a(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/celly,:) = medium_a
+			 primaryMat_a(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/(2*celly),:) = primary_a
+			 secondaryMat_a(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/(2*celly),:)= secondary_a
+			 soluteMat_a(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/(2*celly),:) = solute_a
+			 mediumMat_a(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/(2*celly),:) = medium_a
 			 
-			 primaryMat_b(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/celly,:) = primary_b
-			 secondaryMat_b(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/celly,:)= secondary_b
-			 soluteMat_b(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/celly,:) = solute_b
-			 mediumMat_b(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/celly,:) = medium_b
+			 primaryMat_b(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/(2*celly),:) = primary_b
+			 secondaryMat_b(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/(2*celly),:)= secondary_b
+			 soluteMat_b(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/(2*celly),:) = solute_b
+			 mediumMat_b(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/(2*celly),:) = medium_b
 			 
 			 primaryMat_d = primaryMat_a + primaryMat_b
 			 secondaryMat_d = secondaryMat_a + secondaryMat_b
@@ -3539,7 +3552,7 @@ end if
 ! write(*,*) "written big step to file"
 
 	! only write to file 5 times total
-	if (mod(j,tn/write_factor) .eq. 0) then
+	if (mod(j,mstep*ar) .eq. 0) then
 
 		write(*,*) "BEGIN WRITING TO FILE"
 
@@ -3551,16 +3564,17 @@ end if
 		yep = write_matrix ( xn, yn, real(u,kind=4), trim(path) // 'u.txt' )
 		yep = write_matrix ( xn, yn, real(v,kind=4), trim(path) // 'v.txt' )
 
-		yep = write_matrix ( xn/cellx, yn/celly, real(u_coarse,kind=4), trim(path) // 'u_coarse.txt' )
-		yep = write_matrix ( xn/cellx, yn/celly, real(v_coarse,kind=4), trim(path) // 'v_coarse.txt' )
-		yep = write_matrix ( xn/cellx, yn/celly, real(psi_coarse,kind=4), trim(path) // 'psi_coarse.txt' )
+		yep = write_matrix ( xn/cellx, yn/(2*celly), real(h_coarse,kind=4), trim(path) // 'h_coarse.txt' )
+		yep = write_matrix ( xn/cellx, yn/(2*celly), real(u_coarse,kind=4), trim(path) // 'u_coarse.txt' )
+		yep = write_matrix ( xn/cellx, yn/(2*celly), real(v_coarse,kind=4), trim(path) // 'v_coarse.txt' )
+		yep = write_matrix ( xn/cellx, yn/(2*celly), real(psi_coarse,kind=4), trim(path) // 'psi_coarse.txt' )
 
 		yep = write_matrix ( xn, yn/2,real(permeability(:,(yn/2)+1:),kind=4), trim(path) // 'permeability.txt' )
 		yep = write_vec ( xn, real(x,kind=4), trim(path) // 'x.txt' )
 		yep = write_vec ( yn/2, real(y(yn/2:),kind=4), trim(path) // 'y.txt' )
 		yep = write_matrix ( xn, yn/2, real(mask(:,(yn/2)+1:), kind = 4), trim(path) // 'mask.txt' )
 		yep = write_matrix ( xn, yn/2, real(maskP(:,(yn/2)+1:), kind = 4), trim(path) // 'maskP.txt' )
-		yep = write_matrix ( xn/(cellx), yn/(celly), real(coarse_mask,kind=4), trim(path) // 'mask_coarse.txt' )
+		yep = write_matrix ( xn/(cellx), yn/(2*celly), real(coarse_mask,kind=4), trim(path) // 'mask_coarse.txt' )
 		
 
 		if (restart .ne. 1) then
@@ -3580,66 +3594,66 @@ end if
 		
 
 		! solute concentrations
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat(:,(yn/(2*celly))+1:,1),kind=4), trim(path) // 'ch_s/z_sol_ph.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat(:,(yn/(2*celly))+1:,3),kind=4), trim(path) // 'ch_s/z_sol_w.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat(:,(yn/(2*celly))+1:,2),kind=4), trim(path) // 'ch_s/z_sol_alk.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat(:,(yn/(2*celly))+1:,4),kind=4), trim(path) // 'ch_s/z_sol_c.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat(:,(yn/(2*celly))+1:,5),kind=4), trim(path) // 'ch_s/z_sol_ca.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat(:,(yn/(2*celly))+1:,6),kind=4), trim(path) // 'ch_s/z_sol_mg.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat(:,(yn/(2*celly))+1:,7),kind=4), trim(path) // 'ch_s/z_sol_na.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat(:,(yn/(2*celly))+1:,8),kind=4), trim(path) // 'ch_s/z_sol_k.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat(:,(yn/(2*celly))+1:,9),kind=4), trim(path) // 'ch_s/z_sol_fe.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat(:,(yn/(2*celly))+1:,10),kind=4), trim(path) // 'ch_s/z_sol_s.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat(:,(yn/(2*celly))+1:,11),kind=4), trim(path) // 'ch_s/z_sol_si.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat(:,(yn/(2*celly))+1:,12),kind=4), trim(path) // 'ch_s/z_sol_cl.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat(:,(yn/(2*celly))+1:,13),kind=4), trim(path) // 'ch_s/z_sol_al.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat(:,(yn/(2*celly))+1:,14),kind=4), trim(path) // 'ch_s/z_sol_inert.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat(:,:,1),kind=4), trim(path) // 'ch_s/z_sol_ph.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat(:,:,3),kind=4), trim(path) // 'ch_s/z_sol_w.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat(:,:,2),kind=4), trim(path) // 'ch_s/z_sol_alk.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat(:,:,4),kind=4), trim(path) // 'ch_s/z_sol_c.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat(:,:,5),kind=4), trim(path) // 'ch_s/z_sol_ca.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat(:,:,6),kind=4), trim(path) // 'ch_s/z_sol_mg.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat(:,:,7),kind=4), trim(path) // 'ch_s/z_sol_na.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat(:,:,8),kind=4), trim(path) // 'ch_s/z_sol_k.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat(:,:,9),kind=4), trim(path) // 'ch_s/z_sol_fe.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat(:,:,10),kind=4), trim(path) // 'ch_s/z_sol_s.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat(:,:,11),kind=4), trim(path) // 'ch_s/z_sol_si.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat(:,:,12),kind=4), trim(path) // 'ch_s/z_sol_cl.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat(:,:,13),kind=4), trim(path) // 'ch_s/z_sol_al.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat(:,:,14),kind=4), trim(path) // 'ch_s/z_sol_inert.txt' )
 
 		! primary minerals
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat(:,(yn/(2*celly))+1:,2),kind=4), trim(path) // 'ch_s/z_pri_plag.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat(:,(yn/(2*celly))+1:,3),kind=4), trim(path) // 'ch_s/z_pri_pyr.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat(:,(yn/(2*celly))+1:,4),kind=4), trim(path) // 'ch_s/z_pri_ol.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat(:,(yn/(2*celly))+1:,5),kind=4), trim(path) // 'ch_s/z_pri_glass.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat(:,:,2),kind=4), trim(path) // 'ch_s/z_pri_plag.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat(:,:,3),kind=4), trim(path) // 'ch_s/z_pri_pyr.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat(:,:,4),kind=4), trim(path) // 'ch_s/z_pri_ol.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat(:,:,5),kind=4), trim(path) // 'ch_s/z_pri_glass.txt' )
 
 		! medium properties
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat(:,(yn/(2*celly))+1:,1),kind=4), trim(path) // 'ch_s/z_med_phi.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat(:,(yn/(2*celly))+1:,2),kind=4), trim(path) // 'ch_s/z_med_precip.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat(:,(yn/(2*celly))+1:,3),kind=4), trim(path) // 'ch_s/z_med_v_water.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat(:,(yn/(2*celly))+1:,4),kind=4), trim(path) // 'ch_s/z_med_reactive.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat(:,(yn/(2*celly))+1:,5),kind=4), trim(path) // 'ch_s/z_med_cell_toggle.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat(:,:,1),kind=4), trim(path) // 'ch_s/z_med_phi.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat(:,:,2),kind=4), trim(path) // 'ch_s/z_med_precip.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat(:,:,3),kind=4), trim(path) // 'ch_s/z_med_v_water.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat(:,:,4),kind=4), trim(path) // 'ch_s/z_med_reactive.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat(:,:,5),kind=4), trim(path) // 'ch_s/z_med_cell_toggle.txt' )
 
 
 
 
 
 		! solute concentrations
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_a(:,(yn/(2*celly))+1:,1),kind=4), trim(path) // 'ch_a/z_sol_ph.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_a(:,(yn/(2*celly))+1:,3),kind=4), trim(path) // 'ch_a/z_sol_w.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_a(:,(yn/(2*celly))+1:,2),kind=4), trim(path) // 'ch_a/z_sol_alk.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_a(:,(yn/(2*celly))+1:,4),kind=4), trim(path) // 'ch_a/z_sol_c.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_a(:,(yn/(2*celly))+1:,5),kind=4), trim(path) // 'ch_a/z_sol_ca.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_a(:,(yn/(2*celly))+1:,6),kind=4), trim(path) // 'ch_a/z_sol_mg.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_a(:,(yn/(2*celly))+1:,7),kind=4), trim(path) // 'ch_a/z_sol_na.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_a(:,(yn/(2*celly))+1:,8),kind=4), trim(path) // 'ch_a/z_sol_k.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_a(:,(yn/(2*celly))+1:,9),kind=4), trim(path) // 'ch_a/z_sol_fe.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_a(:,(yn/(2*celly))+1:,10),kind=4), trim(path) // 'ch_a/z_sol_s.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_a(:,(yn/(2*celly))+1:,11),kind=4), trim(path) // 'ch_a/z_sol_si.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_a(:,(yn/(2*celly))+1:,12),kind=4), trim(path) // 'ch_a/z_sol_cl.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_a(:,(yn/(2*celly))+1:,13),kind=4), trim(path) // 'ch_a/z_sol_al.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_a(:,(yn/(2*celly))+1:,14),kind=4), trim(path) // 'ch_a/z_sol_inert.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_a(:,:,1),kind=4), trim(path) // 'ch_a/z_sol_ph.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_a(:,:,3),kind=4), trim(path) // 'ch_a/z_sol_w.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_a(:,:,2),kind=4), trim(path) // 'ch_a/z_sol_alk.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_a(:,:,4),kind=4), trim(path) // 'ch_a/z_sol_c.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_a(:,:,5),kind=4), trim(path) // 'ch_a/z_sol_ca.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_a(:,:,6),kind=4), trim(path) // 'ch_a/z_sol_mg.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_a(:,:,7),kind=4), trim(path) // 'ch_a/z_sol_na.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_a(:,:,8),kind=4), trim(path) // 'ch_a/z_sol_k.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_a(:,:,9),kind=4), trim(path) // 'ch_a/z_sol_fe.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_a(:,:,10),kind=4), trim(path) // 'ch_a/z_sol_s.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_a(:,:,11),kind=4), trim(path) // 'ch_a/z_sol_si.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_a(:,:,12),kind=4), trim(path) // 'ch_a/z_sol_cl.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_a(:,:,13),kind=4), trim(path) // 'ch_a/z_sol_al.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_a(:,:,14),kind=4), trim(path) // 'ch_a/z_sol_inert.txt' )
 
 		! primary minerals
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat_a(:,(yn/(2*celly))+1:,2),kind=4), trim(path) // 'ch_a/z_pri_plag.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat_a(:,(yn/(2*celly))+1:,3),kind=4), trim(path) // 'ch_a/z_pri_pyr.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat_a(:,(yn/(2*celly))+1:,4),kind=4), trim(path) // 'ch_a/z_pri_ol.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat_a(:,(yn/(2*celly))+1:,5),kind=4), trim(path) // 'ch_a/z_pri_glass.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat_a(:,:,2),kind=4), trim(path) // 'ch_a/z_pri_plag.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat_a(:,:,3),kind=4), trim(path) // 'ch_a/z_pri_pyr.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat_a(:,:,4),kind=4), trim(path) // 'ch_a/z_pri_ol.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat_a(:,:,5),kind=4), trim(path) // 'ch_a/z_pri_glass.txt' )
 
 		! medium properties
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat_a(:,(yn/(2*celly))+1:,1),kind=4), trim(path) // 'ch_a/z_med_phi.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat_a(:,(yn/(2*celly))+1:,2),kind=4), trim(path) // 'ch_a/z_med_precip.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat_a(:,(yn/(2*celly))+1:,3),kind=4), trim(path) // 'ch_a/z_med_v_water.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat_a(:,(yn/(2*celly))+1:,4),kind=4), trim(path) // 'ch_a/z_med_reactive.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat_a(:,(yn/(2*celly))+1:,5),kind=4), trim(path) // 'ch_a/z_med_cell_toggle.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat_a(:,:,1),kind=4), trim(path) // 'ch_a/z_med_phi.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat_a(:,:,2),kind=4), trim(path) // 'ch_a/z_med_precip.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat_a(:,:,3),kind=4), trim(path) // 'ch_a/z_med_v_water.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat_a(:,:,4),kind=4), trim(path) // 'ch_a/z_med_reactive.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat_a(:,:,5),kind=4), trim(path) // 'ch_a/z_med_cell_toggle.txt' )
 
 
 
@@ -3649,33 +3663,33 @@ end if
 
 
 		! solute concentrations
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_b(:,(yn/(2*celly))+1:,1),kind=4), trim(path) // 'ch_b/z_sol_ph.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_b(:,(yn/(2*celly))+1:,3),kind=4), trim(path) // 'ch_b/z_sol_w.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_b(:,(yn/(2*celly))+1:,2),kind=4), trim(path) // 'ch_b/z_sol_alk.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_b(:,(yn/(2*celly))+1:,4),kind=4), trim(path) // 'ch_b/z_sol_c.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_b(:,(yn/(2*celly))+1:,5),kind=4), trim(path) // 'ch_b/z_sol_ca.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_b(:,(yn/(2*celly))+1:,6),kind=4), trim(path) // 'ch_b/z_sol_mg.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_b(:,(yn/(2*celly))+1:,7),kind=4), trim(path) // 'ch_b/z_sol_na.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_b(:,(yn/(2*celly))+1:,8),kind=4), trim(path) // 'ch_b/z_sol_k.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_b(:,(yn/(2*celly))+1:,9),kind=4), trim(path) // 'ch_b/z_sol_fe.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_b(:,(yn/(2*celly))+1:,10),kind=4), trim(path) // 'ch_b/z_sol_s.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_b(:,(yn/(2*celly))+1:,11),kind=4), trim(path) // 'ch_b/z_sol_si.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_b(:,(yn/(2*celly))+1:,12),kind=4), trim(path) // 'ch_b/z_sol_cl.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_b(:,(yn/(2*celly))+1:,13),kind=4), trim(path) // 'ch_b/z_sol_al.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_b(:,(yn/(2*celly))+1:,14),kind=4), trim(path) // 'ch_b/z_sol_inert.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_b(:,:,1),kind=4), trim(path) // 'ch_b/z_sol_ph.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_b(:,:,3),kind=4), trim(path) // 'ch_b/z_sol_w.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_b(:,:,2),kind=4), trim(path) // 'ch_b/z_sol_alk.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_b(:,:,4),kind=4), trim(path) // 'ch_b/z_sol_c.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_b(:,:,5),kind=4), trim(path) // 'ch_b/z_sol_ca.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_b(:,:,6),kind=4), trim(path) // 'ch_b/z_sol_mg.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_b(:,:,7),kind=4), trim(path) // 'ch_b/z_sol_na.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_b(:,:,8),kind=4), trim(path) // 'ch_b/z_sol_k.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_b(:,:,9),kind=4), trim(path) // 'ch_b/z_sol_fe.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_b(:,:,10),kind=4), trim(path) // 'ch_b/z_sol_s.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_b(:,:,11),kind=4), trim(path) // 'ch_b/z_sol_si.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_b(:,:,12),kind=4), trim(path) // 'ch_b/z_sol_cl.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_b(:,:,13),kind=4), trim(path) // 'ch_b/z_sol_al.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_b(:,:,14),kind=4), trim(path) // 'ch_b/z_sol_inert.txt' )
 
 		! primary minerals
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat_b(:,(yn/(2*celly))+1:,2),kind=4), trim(path) // 'ch_b/z_pri_plag.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat_b(:,(yn/(2*celly))+1:,3),kind=4), trim(path) // 'ch_b/z_pri_pyr.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat_b(:,(yn/(2*celly))+1:,4),kind=4), trim(path) // 'ch_b/z_pri_ol.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat_b(:,(yn/(2*celly))+1:,5),kind=4), trim(path) // 'ch_b/z_pri_glass.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat_b(:,:,2),kind=4), trim(path) // 'ch_b/z_pri_plag.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat_b(:,:,3),kind=4), trim(path) // 'ch_b/z_pri_pyr.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat_b(:,:,4),kind=4), trim(path) // 'ch_b/z_pri_ol.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat_b(:,:,5),kind=4), trim(path) // 'ch_b/z_pri_glass.txt' )
 
 		! medium properties
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat_b(:,(yn/(2*celly))+1:,1),kind=4), trim(path) // 'ch_b/z_med_phi.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat_b(:,(yn/(2*celly))+1:,2),kind=4), trim(path) // 'ch_b/z_med_precip.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat_b(:,(yn/(2*celly))+1:,3),kind=4), trim(path) // 'ch_b/z_med_v_water.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat_b(:,(yn/(2*celly))+1:,4),kind=4), trim(path) // 'ch_b/z_med_reactive.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat_b(:,(yn/(2*celly))+1:,5),kind=4), trim(path) // 'ch_b/z_med_cell_toggle.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat_b(:,:,1),kind=4), trim(path) // 'ch_b/z_med_phi.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat_b(:,:,2),kind=4), trim(path) // 'ch_b/z_med_precip.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat_b(:,:,3),kind=4), trim(path) // 'ch_b/z_med_v_water.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat_b(:,:,4),kind=4), trim(path) // 'ch_b/z_med_reactive.txt' )
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat_b(:,:,5),kind=4), trim(path) // 'ch_b/z_med_cell_toggle.txt' )
 
 
 
@@ -3688,26 +3702,26 @@ end if
 		 end do
  
  
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_d(:,(yn/(2*celly))+1:,1),kind=4), trim(path) // 'ch_d/z_sol_ph.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_d(:,(yn/(2*celly))+1:,3),kind=4), trim(path) // 'ch_d/z_sol_w.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_d(:,(yn/(2*celly))+1:,2),kind=4), trim(path) // 'ch_d/z_sol_alk.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_d(:,(yn/(2*celly))+1:,4),kind=4), trim(path) // 'ch_d/z_sol_c.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_d(:,(yn/(2*celly))+1:,5),kind=4), trim(path) // 'ch_d/z_sol_ca.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_d(:,(yn/(2*celly))+1:,6),kind=4), trim(path) // 'ch_d/z_sol_mg.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_d(:,(yn/(2*celly))+1:,7),kind=4), trim(path) // 'ch_d/z_sol_na.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_d(:,(yn/(2*celly))+1:,8),kind=4), trim(path) // 'ch_d/z_sol_k.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_d(:,(yn/(2*celly))+1:,9),kind=4), trim(path) // 'ch_d/z_sol_fe.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_d(:,(yn/(2*celly))+1:,10),kind=4), trim(path) // 'ch_d/z_sol_s.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_d(:,(yn/(2*celly))+1:,11),kind=4), trim(path) // 'ch_d/z_sol_si.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_d(:,(yn/(2*celly))+1:,12),kind=4), trim(path) // 'ch_d/z_sol_cl.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_d(:,(yn/(2*celly))+1:,13),kind=4), trim(path) // 'ch_d/z_sol_al.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_d(:,(yn/(2*celly))+1:,14),kind=4), trim(path) // 'ch_d/z_sol_inert.txt' )
+ 		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_d(:,:,1),kind=4), trim(path) // 'ch_d/z_sol_ph.txt' )
+ 		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_d(:,:,3),kind=4), trim(path) // 'ch_d/z_sol_w.txt' )
+ 		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_d(:,:,2),kind=4), trim(path) // 'ch_d/z_sol_alk.txt' )
+ 		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_d(:,:,4),kind=4), trim(path) // 'ch_d/z_sol_c.txt' )
+ 		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_d(:,:,5),kind=4), trim(path) // 'ch_d/z_sol_ca.txt' )
+ 		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_d(:,:,6),kind=4), trim(path) // 'ch_d/z_sol_mg.txt' )
+ 		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_d(:,:,7),kind=4), trim(path) // 'ch_d/z_sol_na.txt' )
+ 		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_d(:,:,8),kind=4), trim(path) // 'ch_d/z_sol_k.txt' )
+ 		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_d(:,:,9),kind=4), trim(path) // 'ch_d/z_sol_fe.txt' )
+ 		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_d(:,:,10),kind=4), trim(path) // 'ch_d/z_sol_s.txt' )
+ 		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_d(:,:,11),kind=4), trim(path) // 'ch_d/z_sol_si.txt' )
+ 		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_d(:,:,12),kind=4), trim(path) // 'ch_d/z_sol_cl.txt' )
+ 		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_d(:,:,13),kind=4), trim(path) // 'ch_d/z_sol_al.txt' )
+ 		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_d(:,:,14),kind=4), trim(path) // 'ch_d/z_sol_inert.txt' )
 
-		! primary minerals
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat_d(:,(yn/(2*celly))+1:,2),kind=4), trim(path) // 'ch_d/z_pri_plag.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat_d(:,(yn/(2*celly))+1:,3),kind=4), trim(path) // 'ch_d/z_pri_pyr.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat_d(:,(yn/(2*celly))+1:,4),kind=4), trim(path) // 'ch_d/z_pri_ol.txt' )
-		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat_d(:,(yn/(2*celly))+1:,5),kind=4), trim(path) // 'ch_d/z_pri_glass.txt' )
+ 		! primary minerals
+ 		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat_d(:,:,2),kind=4), trim(path) // 'ch_d/z_pri_plag.txt' )
+ 		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat_d(:,:,3),kind=4), trim(path) // 'ch_d/z_pri_pyr.txt' )
+ 		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat_d(:,:,4),kind=4), trim(path) // 'ch_d/z_pri_ol.txt' )
+ 		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(primaryMat_d(:,:,5),kind=4), trim(path) // 'ch_d/z_pri_glass.txt' )
 
 
 
@@ -3727,7 +3741,7 @@ end if
 		        else
 					write(s_i,'(i2)') i
 		        end if
-				yep = write_matrix(xn*tn/(cellx*mstep*ar),yn/(2*celly),real(secondaryMat(:,(yn/(2*celly))+1:,i),kind=4),trim(path)//'ch_s/z_sec'//trim(s_i)//'.txt')
+				yep = write_matrix(xn*tn/(cellx*mstep*ar),yn/(2*celly),real(secondaryMat(:,:,i),kind=4),trim(path)//'ch_s/z_sec'//trim(s_i)//'.txt')
 			end if
 	
 			if (maxval(secondaryMat_a(:,:,i)) .gt. 0.0) then
@@ -3738,7 +3752,7 @@ end if
 		        else
 					write(s_i,'(i2)') i
 		        end if
-				yep = write_matrix(xn*tn/(cellx*mstep*ar),yn/(2*celly),real(secondaryMat_a(:,(yn/(2*celly))+1:,i),kind=4),trim(path)//'ch_a/z_sec'//trim(s_i)//'.txt')
+				yep = write_matrix(xn*tn/(cellx*mstep*ar),yn/(2*celly),real(secondaryMat_a(:,:,i),kind=4),trim(path)//'ch_a/z_sec'//trim(s_i)//'.txt')
 			end if
 	
 			if (maxval(secondaryMat_b(:,:,i)) .gt. 0.0) then
@@ -3749,7 +3763,7 @@ end if
 		        else
 					write(s_i,'(i2)') i
 		        end if
-				yep = write_matrix(xn*tn/(cellx*mstep*ar),yn/(2*celly),real(secondaryMat_b(:,(yn/(2*celly))+1:,i),kind=4),trim(path)//'ch_b/z_sec'//trim(s_i)//'.txt')
+				yep = write_matrix(xn*tn/(cellx*mstep*ar),yn/(2*celly),real(secondaryMat_b(:,:,i),kind=4),trim(path)//'ch_b/z_sec'//trim(s_i)//'.txt')
 			end if
 	
 			if (maxval(secondaryMat_d(:,:,i)) .gt. 0.0) then
@@ -3760,7 +3774,7 @@ end if
 		        else
 					write(s_i,'(i2)') i
 		        end if
-				yep = write_matrix(xn*tn/(cellx*mstep*ar),yn/(2*celly),real(secondaryMat_d(:,(yn/(2*celly))+1:,i),kind=4),trim(path)//'ch_d/z_sec'//trim(s_i)//'.txt')
+				yep = write_matrix(xn*tn/(cellx*mstep*ar),yn/(2*celly),real(secondaryMat_d(:,:,i),kind=4),trim(path)//'ch_d/z_sec'//trim(s_i)//'.txt')
 			end if
 	
 		end do
@@ -3803,112 +3817,7 @@ else
 	!--------------SLAVE PROCESSOR RECEIVES MESSAGE
 	call init_mini()
 	! message receiving has to happen every mth step
-	do jj = 1, tn/mstep
-		
-		if (my_id .le. 22) then
-
-			! receive an_id
-			call MPI_RECV ( an_id_local, 1 , MPI_INTEGER, &
-			root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
-		
-			! receive solute long for advection
-			call MPI_RECV ( sol_coarse_long_local, (xn/cellx)*(yn/celly), MPI_DOUBLE_PRECISION, &
-			root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
-		
-			! receive u long for advection
-			call MPI_RECV ( u_coarse_long_local, (xn/cellx)*(yn/celly), MPI_DOUBLE_PRECISION, &
-			root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
-		
-			! receive v long for advection
-			call MPI_RECV ( v_coarse_long_local, (xn/cellx)*(yn/celly), MPI_DOUBLE_PRECISION, &
-			root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
-		
-			! receive phi long for advection
-			call MPI_RECV ( phi_coarse_long_local, (xn/cellx)*(yn/celly), MPI_DOUBLE_PRECISION, &
-			root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
-		
-			! reshape them all
-			sol_coarse_local = reshape(sol_coarse_long_local,(/xn/cellx,yn/celly/))
-			u_coarse_local = reshape(u_coarse_long_local,(/xn/cellx,yn/celly/))
-			!write(*,*) maxval(u_coarse_local)
-			v_coarse_local = reshape(v_coarse_long_local,(/xn/cellx,yn/celly/))
-			!write(*,*) maxval(v_coarse_local)
-			phi_coarse_local = reshape(phi_coarse_long_local,(/xn/cellx,yn/celly/))
-			!write(*,*) maxval(phi_coarse_local)
-		
-			if (an_id_local .le. 11) then
-				do ii = 1,cstep
-					sol_coarse_local = solute_next_coarse(sol_coarse_local,u_coarse_local/phi_coarse_local,v_coarse_local/phi_coarse_local,sea(sol_index(an_id_local)))
-				end do
-			end if
-
-			if (an_id_local .gt. 11) then
-				do ii = 1,cstep
-					sol_coarse_local = solute_next_coarse(sol_coarse_local,u_coarse_local/phi_coarse_local,v_coarse_local/phi_coarse_local,sea(sol_index(an_id_local-11)))
-				end do
-			end if
-
-			sol_coarse_long_local = reshape(sol_coarse_local,(/(xn/cellx)*(yn/celly)/))
-		
-			! send advected solutes back :)
-			call MPI_SEND( sol_coarse_long_local, (xn/cellx)*(yn/celly), MPI_DOUBLE_PRECISION, root_process, &
-			return_data_tag, MPI_COMM_WORLD, ierr)
-		
-		end if ! end if my_id .le. 22
-		
-		
 	
-		! receive size of temperature array chunk
-		call MPI_RECV ( num_rows_to_receive, 1 , MPI_INTEGER, &
-		root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
-		
-		! receive timestep size
-		call MPI_RECV ( dt_local, 1 , MPI_DOUBLE_PRECISION, &
-		root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
-		
-		! receive temperature array chunk, save in local hLocal
-		call MPI_RECV ( hLocal, num_rows_to_receive, MPI_DOUBLE_PRECISION, &
-		root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
-		num_rows_received = num_rows_to_receive
-
-		! receive primary array chunk, save in local priLocal
-		do ii = 1,g_pri
-			call MPI_RECV ( priLocalBit, num_rows_to_receive, MPI_DOUBLE_PRECISION, &
-			root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
-			priLocal(:,ii) = priLocalBit
-		end do
-	
-		!-receive secondary array chunk, save in local secLocal
-		do ii = 1,g_sec
-			call MPI_RECV ( secLocalBit, num_rows_to_receive, MPI_DOUBLE_PRECISION, &
-			root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
-			secLocal(:,ii) = secLocalBit
-		end do
-	
-		! receive solute chunk, save in local solLocal
-		do ii = 1,g_sol
-			call MPI_RECV ( solLocalBit, num_rows_to_receive, MPI_DOUBLE_PRECISION, &
-			root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
-			solLocal(:,ii) = solLocalBit
-		end do
-
-		! receive medium chunk, save in local solLocal
-		do ii = 1,g_med
-			call MPI_RECV ( medLocalBit, num_rows_to_receive, MPI_DOUBLE_PRECISION, &
-			root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
-			medLocal(:,ii) = medLocalBit
-		end do
-		
-		
-
-	
-		!--------------SLAVE PROCESSOR RUNS GEOCHEMICAL MODEL
-
-		! slave processor loops through each coarse cell
-		do m=1,num_rows_to_receive
-			
-		if (medLocal(m,5) .eq. 1.0) then
-			
 			param_exp_string = '0.1'
 			param_exp1_string = '0.1'
 
@@ -3978,6 +3887,131 @@ else
 			plag_k3 = ""
 			plag_e3 = ""
 			plag_n3 = ""
+			
+			
+			kinetics = " precipitate_only"
+			!kinetics = " "
+	
+	
+	do jj = 1, tn/mstep
+		
+		if (my_id .le. 22) then
+
+			! receive an_id
+			call MPI_RECV ( an_id_local, 1 , MPI_INTEGER, &
+			root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+		
+			! receive solute long for advection
+			call MPI_RECV ( sol_coarse_long_local, (xn/cellx)*(yn/(2*celly)), MPI_DOUBLE_PRECISION, &
+			root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+		
+			! receive u long for advection
+			call MPI_RECV ( u_coarse_long_local, (xn/cellx)*(yn/(2*celly)), MPI_DOUBLE_PRECISION, &
+			root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+		
+			! receive v long for advection
+			call MPI_RECV ( v_coarse_long_local, (xn/cellx)*(yn/(2*celly)), MPI_DOUBLE_PRECISION, &
+			root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+		
+			! receive phi long for advection
+			call MPI_RECV ( phi_coarse_long_local, (xn/cellx)*(yn/(2*celly)), MPI_DOUBLE_PRECISION, &
+			root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+		
+			! reshape them all
+			sol_coarse_local = reshape(sol_coarse_long_local,(/xn/cellx,yn/(2*celly)/))
+			u_coarse_local = reshape(u_coarse_long_local,(/xn/cellx,yn/(2*celly)/))
+			!write(*,*) maxval(u_coarse_local)
+			v_coarse_local = reshape(v_coarse_long_local,(/xn/cellx,yn/(2*celly)/))
+			!write(*,*) maxval(v_coarse_local)
+			phi_coarse_local = reshape(phi_coarse_long_local,(/xn/cellx,yn/(2*celly)/))
+			!write(*,*) maxval(phi_coarse_local)
+		
+! 			if (an_id_local .le. 11) then
+! 				do ii = 1,cstep
+! 					sol_coarse_local = solute_next_coarse(sol_coarse_local,u_coarse_local/phi_coarse_local,v_coarse_local/phi_coarse_local,sea(sol_index(an_id_local)))
+! 				end do
+! 			end if
+!
+! 			if (an_id_local .gt. 11) then
+! 				do ii = 1,cstep
+! 					sol_coarse_local = solute_next_coarse(sol_coarse_local,u_coarse_local/phi_coarse_local,v_coarse_local/phi_coarse_local,sea(sol_index(an_id_local-11)))
+! 				end do
+! 			end if
+
+			sol_coarse_long_local = reshape(sol_coarse_local,(/(xn/cellx)*(yn/(2*celly))/))
+		
+			! send advected solutes back :)
+			call MPI_SEND( sol_coarse_long_local, (xn/cellx)*(yn/(2*celly)), MPI_DOUBLE_PRECISION, root_process, &
+			return_data_tag, MPI_COMM_WORLD, ierr)
+		
+		end if ! end if my_id .le. 22
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	
+		! receive size of temperature array chunk
+		call MPI_RECV ( num_rows_to_receive, 1 , MPI_INTEGER, &
+		root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+		
+		! receive timestep size
+		call MPI_RECV ( dt_local, 1 , MPI_DOUBLE_PRECISION, &
+		root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+		
+		! receive temperature array chunk, save in local hLocal
+		call MPI_RECV ( hLocal, num_rows_to_receive, MPI_DOUBLE_PRECISION, &
+		root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+		num_rows_received = num_rows_to_receive
+
+		! receive primary array chunk, save in local priLocal
+		do ii = 1,g_pri
+			call MPI_RECV ( priLocal(:,ii), num_rows_to_receive, MPI_DOUBLE_PRECISION, &
+			root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+! 			priLocal(:,ii) = priLocalBit
+		end do
+	
+		!-receive secondary array chunk, save in local secLocal
+		do ii = 1,g_sec
+			call MPI_RECV ( secLocal(:,ii), num_rows_to_receive, MPI_DOUBLE_PRECISION, &
+			root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+! 			secLocal(:,ii) = secLocalBit
+		end do
+	
+		! receive solute chunk, save in local solLocal
+		do ii = 1,g_sol
+			call MPI_RECV ( solLocal(:,ii), num_rows_to_receive, MPI_DOUBLE_PRECISION, &
+			root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+! 			solLocal(:,ii) = solLocalBit
+		end do
+
+		! receive medium chunk, save in local solLocal
+		do ii = 1,g_med
+			call MPI_RECV ( medLocal(:,ii), num_rows_to_receive, MPI_DOUBLE_PRECISION, &
+			root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+! 			medLocal(:,ii) = medLocalBit
+		end do
+		
+		
+
+	
+		!--------------SLAVE PROCESSOR RUNS GEOCHEMICAL MODEL
+
+		timestep3 = dt_local*mstep!/10.0
+		write(s_timestep,'(F25.10)') timestep3
+
+		! slave processor loops through each coarse cell
+		do m=1,num_rows_to_receive
+			
+		if (medLocal(m,5) .eq. 1.0) then
+			
+
 
 !--------------GEOCHEM START
 
@@ -3985,7 +4019,6 @@ primary3 = priLocal(m,:)
 secondary3 = secLocal(m,:)
 solute3 = solLocal(m,:)
 medium3 = medLocal(m,:)
-timestep3 = dt_local*mstep!/10.0
 temp3 = hLocal(m)-273.0
 if (temp3 .ge. 300.0) then
 	temp3 = 299.0
@@ -4011,7 +4044,7 @@ write(s_co3,'(F25.10)') solute3(15)
 ! MEDIUM TO STRINGS
 write(s_w,'(F25.10)') medium3(3) !solute3(3)
 
-solute3(15) = (10.0**(-1.0*solute3(1)))**3
+! solute3(15) = (10.0**(-1.0*solute3(1)))**3
 
 write(s_basalt3,'(F25.10)') primary3(2)
 write(s_basalt2,'(F25.10)') primary3(3)
@@ -4081,7 +4114,6 @@ write(s_daphnite_14a,'(F25.10)') secondary3(54) !!!
 
 ! OTHER INFORMATION TO STRINGS
 write(s_temp,'(F25.10)') temp3
-write(s_timestep,'(F25.10)') timestep3
 write(s_precip,'(F25.10)') medium3(2)
 write(s_reactive,'(F25.10)') medium3(4)
 
@@ -4089,10 +4121,9 @@ write(s_reactive,'(F25.10)') medium3(4)
 ! INITIAL AQUEOUS PHASE CONSITUENTS
 ! ----------------------------------%%
 
-kinetics = " precipitate_only"
-!kinetics = " "
-write(s_pressure,'(F25.10)') 250.0 - (medium3(7)/5.0)
-write(si_hematite,'(F25.10)') 1.0! -(solute3(1)*2.5) + 30.0
+
+! write(s_pressure,'(F25.10)') 250.0 - (medium3(7)/5.0)
+! write(si_hematite,'(F25.10)') 1.0! -(solute3(1)*2.5) + 30.0
 
 
 		inputz0 = "SOLUTION 1 " //NEW_LINE('')// &
@@ -4254,16 +4285,16 @@ write(si_hematite,'(F25.10)') 1.0! -(solute3(1)*2.5) + 30.0
 		&"-end" //NEW_LINE('')// &
 
 
-		!
-		&"R(phi)" //NEW_LINE('')// &
-		&"-start" //NEW_LINE('')// &
-		!&"10 phi = 1.0-(CALC_VALUE('R(sum)')/(CALC_VALUE('R(sum)')+(TOT('water')*1000.0)))" //&
-		! &"10 phi = ((  (ACT('H+')^3) / (ACT('Al+3')) )^.33333)" //&
-		! &"10 phi = ACT('Al+3')" //&
-		&"10 phi = 1.0" //&
-		&"" //NEW_LINE('')// &
-		&"100 SAVE phi" //NEW_LINE('')// &
-		&"-end" //NEW_LINE('')// &
+! 		!
+! 		&"R(phi)" //NEW_LINE('')// &
+! 		&"-start" //NEW_LINE('')// &
+! 		!&"10 phi = 1.0-(CALC_VALUE('R(sum)')/(CALC_VALUE('R(sum)')+(TOT('water')*1000.0)))" //&
+! 		! &"10 phi = ((  (ACT('H+')^3) / (ACT('Al+3')) )^.33333)" //&
+! 		! &"10 phi = ACT('Al+3')" //&
+! 		&"10 phi = 1.0" //&
+! 		&"" //NEW_LINE('')// &
+! 		&"100 SAVE phi" //NEW_LINE('')// &
+! 		&"-end" //NEW_LINE('')// &
 
 		!
 		&"R(s_sp)" //NEW_LINE('')// &
@@ -4326,10 +4357,10 @@ id = CreateIPhreeqc()
 
 !--------------GEOCHEM TO VARIABLES
 
-IF (id.LT.0) THEN
-	write(*,*) "weird stop?"
-	STOP
-END IF
+! IF (id.LT.0) THEN
+! 	write(*,*) "weird stop?"
+! 	STOP
+! END IF
 
 
 IF (SetSelectedOutputStringOn(id, .TRUE.).NE.IPQ_OK) THEN
@@ -4347,14 +4378,14 @@ IF (SetSelectedOutputStringOn(id, .TRUE.).NE.IPQ_OK) THEN
 	!STOP
 END IF
 
-! IF (SetOutputStringOn(id, .TRUE.).NE.IPQ_OK) THEN
-! 	CALL OutputErrorString(id)
-! 	!STOP
-! END IF
+IF (SetOutputStringOn(id, .TRUE.).NE.IPQ_OK) THEN
+	CALL OutputErrorString(id)
+	!STOP
+END IF
 
 ! write(*,*) "we here"
 !IF (LoadDatabase(id, 'l5.dat').NE.0) THEN
-IF (LoadDatabaseString(id, L5).NE.0) THEN
+IF (LoadDatabaseString(id, trim(L5)).NE.0) THEN
 	CALL OutputErrorString(id)
 	write(*,*) "primary"
 	write(*,*) primary3
@@ -4370,8 +4401,8 @@ IF (LoadDatabaseString(id, L5).NE.0) THEN
 END IF
 
 ! RUN INPUT
-IF (RunString(id, inputz0).NE.0) THEN
-	write(*,*) "issue is:" , RunString(id, inputz0)
+IF (RunString(id, trim(inputz0)).NE.0) THEN
+	write(*,*) "issue is:" , RunString(id, trim(inputz0))
 	CALL OutputErrorString(id)
 	write(*,*) "primary"
 	write(*,*) primary3
@@ -4383,7 +4414,7 @@ IF (RunString(id, inputz0).NE.0) THEN
 	write(*,*) medium3
 	write(*,*) "temp"
 	write(*,*) temp3
-	IF (RunString(id, inputz0).NE.0) THEN
+	IF (RunString(id, trim(inputz0)).NE.0) THEN
 		write(*,*) "another chance 2"
 		CALL OutputErrorString(id)
 	END IF
@@ -4419,6 +4450,7 @@ END DO
 ! OUTPUT TO THE MAIN MASSACR METHOD
 alt0(1,:) = outmat(3,:)
 alt0(1,124:177) = outmat(2,124:177)
+alt_mat(m,:) = alt0(1,:)
 
 !write(*,*) "an output alt0: ", alt0
 
@@ -4455,54 +4487,186 @@ IF (DestroyIPhreeqc(id).NE.IPQ_OK) THEN
 	STOP
 END IF
 
-				solLocal(m,:) = (/ alt0(1,2), alt0(1,3), alt0(1,4), alt0(1,5), alt0(1,6), &
-				alt0(1,7), alt0(1,8), alt0(1,9), alt0(1,10), alt0(1,11), alt0(1,12), &
-				alt0(1,13), alt0(1,14), alt0(1,15), 0.0/)
-				
-				!write(*,*) solLocal(m,13)
-
-				secLocal(m,:) = (/ alt0(1,16), alt0(1,18), alt0(1,20), alt0(1,22), alt0(1,24), alt0(1,26), alt0(1,28), &
-				alt0(1,30), alt0(1,32), alt0(1,34), alt0(1,36), alt0(1,38), alt0(1,40), alt0(1,42), &
-				alt0(1,44), alt0(1,46), alt0(1,48), alt0(1,50), alt0(1,52), alt0(1,54), alt0(1,56), &
-				alt0(1,58), alt0(1,60), alt0(1,62), alt0(1,64), alt0(1,66), alt0(1,68), alt0(1,70), &
-				alt0(1,72), alt0(1,74), alt0(1,76), alt0(1,78), alt0(1,80), alt0(1,82), alt0(1,84), &
-				alt0(1,86), alt0(1,88), alt0(1,90), alt0(1,92), alt0(1,94), alt0(1,96), alt0(1,98), &
-				alt0(1,100), alt0(1,102), alt0(1,104), alt0(1,106), alt0(1,108), alt0(1,110), alt0(1,112), &
-				alt0(1,114), alt0(1,116), alt0(1,118), alt0(1,120), alt0(1,122), & ! 54
-				!alt0(1,126), alt0(1,128), &
-				
-				alt0(1,124), alt0(1,125), &
-				alt0(1,126), alt0(1,127), &
-				alt0(1,128), alt0(1,129), &
-				alt0(1,130), alt0(1,131), alt0(1,132), alt0(1,133), alt0(1,134), alt0(1,135), alt0(1,136), &
-				alt0(1,137), alt0(1,138), alt0(1,139), alt0(1,140), &
-				alt0(1,141), alt0(1,142), alt0(1,143), alt0(1,144), alt0(1,145), alt0(1,146), &
-				alt0(1,147), alt0(1,148), alt0(1,149), alt0(1,150), alt0(1,151), alt0(1,152), &
-				alt0(1,153), alt0(1,154), alt0(1,155), alt0(1,156), alt0(1,157), alt0(1,158), &
-				alt0(1,159), alt0(1,160), alt0(1,161), alt0(1,162), alt0(1,163), alt0(1,164), &
-				alt0(1,165), alt0(1,166), alt0(1,167), alt0(1,168), alt0(1,169), alt0(1,170), &
-				alt0(1,171), alt0(1,172), alt0(1,173), alt0(1,174), alt0(1,175), alt0(1,176), &
-				alt0(1,177)/) ! 108
-				!alt0(1,177), alt0(1,178), alt0(1,179), alt0(1,180), alt0(1,181), alt0(1,182), &
-				!alt0(1,183), alt0(1,184), alt0(1,185), alt0(1,186)/)
-				!alt0(1,183)/)
+! 				solLocal(m,:) = (/ alt0(1,2), alt0(1,3), alt0(1,4), alt0(1,5), alt0(1,6), &
+! 				alt0(1,7), alt0(1,8), alt0(1,9), alt0(1,10), alt0(1,11), alt0(1,12), &
+! 				alt0(1,13), alt0(1,14), alt0(1,15), 0.0/)
+!
+! 				!write(*,*) solLocal(m,13)
+!
+! 				secLocal(m,:) = (/ alt0(1,16), alt0(1,18), alt0(1,20), alt0(1,22), alt0(1,24), alt0(1,26), alt0(1,28), &
+! 				alt0(1,30), alt0(1,32), alt0(1,34), alt0(1,36), alt0(1,38), alt0(1,40), alt0(1,42), &
+! 				alt0(1,44), alt0(1,46), alt0(1,48), alt0(1,50), alt0(1,52), alt0(1,54), alt0(1,56), &
+! 				alt0(1,58), alt0(1,60), alt0(1,62), alt0(1,64), alt0(1,66), alt0(1,68), alt0(1,70), &
+! 				alt0(1,72), alt0(1,74), alt0(1,76), alt0(1,78), alt0(1,80), alt0(1,82), alt0(1,84), &
+! 				alt0(1,86), alt0(1,88), alt0(1,90), alt0(1,92), alt0(1,94), alt0(1,96), alt0(1,98), &
+! 				alt0(1,100), alt0(1,102), alt0(1,104), alt0(1,106), alt0(1,108), alt0(1,110), alt0(1,112), &
+! 				alt0(1,114), alt0(1,116), alt0(1,118), alt0(1,120), alt0(1,122), & ! 54
+! 				!alt0(1,126), alt0(1,128), &
+!
+! 				alt0(1,124), alt0(1,125), &
+! 				alt0(1,126), alt0(1,127), &
+! 				alt0(1,128), alt0(1,129), &
+! 				alt0(1,130), alt0(1,131), alt0(1,132), alt0(1,133), alt0(1,134), alt0(1,135), alt0(1,136), &
+! 				alt0(1,137), alt0(1,138), alt0(1,139), alt0(1,140), &
+! 				alt0(1,141), alt0(1,142), alt0(1,143), alt0(1,144), alt0(1,145), alt0(1,146), &
+! 				alt0(1,147), alt0(1,148), alt0(1,149), alt0(1,150), alt0(1,151), alt0(1,152), &
+! 				alt0(1,153), alt0(1,154), alt0(1,155), alt0(1,156), alt0(1,157), alt0(1,158), &
+! 				alt0(1,159), alt0(1,160), alt0(1,161), alt0(1,162), alt0(1,163), alt0(1,164), &
+! 				alt0(1,165), alt0(1,166), alt0(1,167), alt0(1,168), alt0(1,169), alt0(1,170), &
+! 				alt0(1,171), alt0(1,172), alt0(1,173), alt0(1,174), alt0(1,175), alt0(1,176), &
+! 				alt0(1,177)/) ! 108
+! 				!alt0(1,177), alt0(1,178), alt0(1,179), alt0(1,180), alt0(1,181), alt0(1,182), &
+! 				!alt0(1,183), alt0(1,184), alt0(1,185), alt0(1,186)/)
+! 				!alt0(1,183)/)
 				priLocal(m,:) = (/ 0.0*alt0(1,187), alt0(1,178), alt0(1,180), alt0(1,182), alt0(1,184)/)
-				
+
 				!write(*,*) priLocal(m,5)
-				
+
 				! medLocal(m,1:3) = (/ alt0(1,187), alt0(1,187), alt0(1,4)/)
 				medLocal(m,3) = alt0(1,4)
 
-			if (alt0(1,2) .lt. 1.0) then
-				medLocal(m,5) = 0.0
-				solLocal(m,:) = (/ solute3(1), solute3(2), solute3(3), solute3(4), solute3(5), &
-				solute3(6), solute3(7), solute3(8), solute3(9), solute3(10), solute3(11), &
-				solute3(12), solute3(13), solute3(14), 0.0/)
-			end if
+! 			if (alt0(1,2) .lt. 1.0) then
+! 				medLocal(m,5) = 0.0
+! 				solLocal(m,:) = (/ solute3(1), solute3(2), solute3(3), solute3(4), solute3(5), &
+! 				solute3(6), solute3(7), solute3(8), solute3(9), solute3(10), solute3(11), &
+! 				solute3(12), solute3(13), solute3(14), 0.0/)
+! 			end if
+
+! 			if (alt0(1,2) .lt. 1.0) then
+! 				medLocal(m,5) = 0.0
+! 				solLocal(m,:) = (/ solute3(1), solute3(2), solute3(3), solute3(4), solute3(5), &
+! 				solute3(6), solute3(7), solute3(8), solute3(9), solute3(10), solute3(11), &
+! 				solute3(12), solute3(13), solute3(14), 0.0/)
+! 			end if
 
 			end if ! end if-cell-is-on loop (medLocl 5 == 1)
 
 		end do ! end m = 1,num rows, ran chem for each row and populated local arrays
+		
+		solLocal = 0.0
+		solLocal(:,1) = alt_mat(:,2)
+		solLocal(:,2) = alt_mat(:,3)
+		solLocal(:,3) = alt_mat(:,4)
+		solLocal(:,4) = alt_mat(:,5)
+		solLocal(:,5) = alt_mat(:,6)
+		solLocal(:,6) = alt_mat(:,7)
+		solLocal(:,7) = alt_mat(:,8)
+		solLocal(:,8) = alt_mat(:,9)
+		solLocal(:,9) = alt_mat(:,10)
+		solLocal(:,10) = alt_mat(:,11)
+		solLocal(:,11) = alt_mat(:,12)
+		solLocal(:,12) = alt_mat(:,13)
+		solLocal(:,13) = alt_mat(:,14)
+		solLocal(:,14) = alt_mat(:,15)
+		
+		secLocal = 0.0
+		secLocal(:,1) = alt_mat(:,16)
+		secLocal(:,2) = alt_mat(:,18)
+		secLocal(:,3) = alt_mat(:,20)
+		secLocal(:,4) = alt_mat(:,22)
+		secLocal(:,5) = alt_mat(:,24)
+		secLocal(:,6) = alt_mat(:,26)
+		secLocal(:,7) = alt_mat(:,28)
+		secLocal(:,8) = alt_mat(:,30)
+		secLocal(:,9) = alt_mat(:,32)
+		secLocal(:,10) = alt_mat(:,34)
+		secLocal(:,11) = alt_mat(:,36)
+		secLocal(:,12) = alt_mat(:,38)
+		secLocal(:,13) = alt_mat(:,40)
+		secLocal(:,14) = alt_mat(:,42)
+		secLocal(:,15) = alt_mat(:,44)
+		secLocal(:,16) = alt_mat(:,46)
+		secLocal(:,17) = alt_mat(:,48)
+		secLocal(:,18) = alt_mat(:,50)
+		secLocal(:,19) = alt_mat(:,52)
+		secLocal(:,20) = alt_mat(:,54)
+		secLocal(:,21) = alt_mat(:,56)
+		secLocal(:,22) = alt_mat(:,58)
+		secLocal(:,23) = alt_mat(:,60)
+		secLocal(:,24) = alt_mat(:,62)
+		secLocal(:,25) = alt_mat(:,64)
+		secLocal(:,26) = alt_mat(:,66)
+		secLocal(:,27) = alt_mat(:,68)
+		secLocal(:,28) = alt_mat(:,70)
+		secLocal(:,29) = alt_mat(:,72)
+		secLocal(:,30) = alt_mat(:,74)
+		
+		secLocal(:,31) = alt_mat(:,76)
+		secLocal(:,32) = alt_mat(:,70)
+		secLocal(:,33) = alt_mat(:,80)
+		secLocal(:,34) = alt_mat(:,82)
+		secLocal(:,35) = alt_mat(:,84)
+		secLocal(:,36) = alt_mat(:,86)
+		secLocal(:,37) = alt_mat(:,88)
+		secLocal(:,38) = alt_mat(:,90)
+		secLocal(:,39) = alt_mat(:,92)
+		
+		secLocal(:,40) = alt_mat(:,94)
+		secLocal(:,41) = alt_mat(:,96)
+		secLocal(:,42) = alt_mat(:,98)
+		secLocal(:,43) = alt_mat(:,100)
+		secLocal(:,44) = alt_mat(:,102)
+		secLocal(:,45) = alt_mat(:,104)
+		secLocal(:,46) = alt_mat(:,106)
+		secLocal(:,47) = alt_mat(:,108)
+		secLocal(:,48) = alt_mat(:,110)
+		secLocal(:,49) = alt_mat(:,112)
+		secLocal(:,50) = alt_mat(:,114)
+		
+		secLocal(:,51) = alt_mat(:,116)
+		secLocal(:,52) = alt_mat(:,118)
+		secLocal(:,53) = alt_mat(:,120)
+		secLocal(:,54) = alt_mat(:,122)
+		
+		
+! 		solLocal(:,:) = (/ alt_mat(:,2), alt_mat(:,3), alt_mat(:,4), alt_mat(:,5), alt_mat(:,6), &
+! 		alt_mat(:,7), alt_mat(:,8), alt_mat(:,9), alt_mat(:,10), alt_mat(:,11), alt_mat(:,12), &
+! 		alt_mat(:,13), alt_mat(:,14), alt_mat(:,15), 0.0/)
+!
+		!write(*,*) solLocal(m,13)
+!
+! 		secLocal(m,:) = (/ alt0(1,16), alt0(1,18), alt0(1,20), alt0(1,22), alt0(1,24), alt0(1,26), alt0(1,28), &
+! 		alt0(1,30), alt0(1,32), alt0(1,34), alt0(1,36), alt0(1,38), alt0(1,40), alt0(1,42), &
+! 		alt0(1,44), alt0(1,46), alt0(1,48), alt0(1,50), alt0(1,52), alt0(1,54), alt0(1,56), &
+! 		alt0(1,58), alt0(1,60), alt0(1,62), alt0(1,64), alt0(1,66), alt0(1,68), alt0(1,70), &
+! 		alt0(1,72), alt0(1,74), alt0(1,76), alt0(1,78), alt0(1,80), alt0(1,82), alt0(1,84), &
+! 		alt0(1,86), alt0(1,88), alt0(1,90), alt0(1,92), alt0(1,94), alt0(1,96), alt0(1,98), &
+! 		alt0(1,100), alt0(1,102), alt0(1,104), alt0(1,106), alt0(1,108), alt0(1,110), alt0(1,112), &
+! 		alt0(1,114), alt0(1,116), alt0(1,118), alt0(1,120), alt0(1,122), & ! 54
+! 		!alt0(1,126), alt0(1,128), &
+!
+! 		alt0(1,124), alt0(1,125), &
+! 		alt0(1,126), alt0(1,127), &
+! 		alt0(1,128), alt0(1,129), &
+! 		alt0(1,130), alt0(1,131), alt0(1,132), alt0(1,133), alt0(1,134), alt0(1,135), alt0(1,136), &
+! 		alt0(1,137), alt0(1,138), alt0(1,139), alt0(1,140), &
+! 		alt0(1,141), alt0(1,142), alt0(1,143), alt0(1,144), alt0(1,145), alt0(1,146), &
+! 		alt0(1,147), alt0(1,148), alt0(1,149), alt0(1,150), alt0(1,151), alt0(1,152), &
+! 		alt0(1,153), alt0(1,154), alt0(1,155), alt0(1,156), alt0(1,157), alt0(1,158), &
+! 		alt0(1,159), alt0(1,160), alt0(1,161), alt0(1,162), alt0(1,163), alt0(1,164), &
+! 		alt0(1,165), alt0(1,166), alt0(1,167), alt0(1,168), alt0(1,169), alt0(1,170), &
+! 		alt0(1,171), alt0(1,172), alt0(1,173), alt0(1,174), alt0(1,175), alt0(1,176), &
+! 		alt0(1,177)/) ! 108
+! 		!alt0(1,177), alt0(1,178), alt0(1,179), alt0(1,180), alt0(1,181), alt0(1,182), &
+! 		!alt0(1,183), alt0(1,184), alt0(1,185), alt0(1,186)/)
+! 		!alt0(1,183)/)
+! 		priLocal(m,:) = (/ 0.0*alt0(1,187), alt0(1,178), alt0(1,180), alt0(1,182), alt0(1,184)/)
+!
+! 		!write(*,*) priLocal(m,5)
+!
+! 		! medLocal(m,1:3) = (/ alt0(1,187), alt0(1,187), alt0(1,4)/)
+! 		medLocal(m,3) = alt0(1,4)
+!
+! 	if (alt0(1,2) .lt. 1.0) then
+! 		medLocal(m,5) = 0.0
+! 		solLocal(m,:) = (/ solute3(1), solute3(2), solute3(3), solute3(4), solute3(5), &
+! 		solute3(6), solute3(7), solute3(8), solute3(9), solute3(10), solute3(11), &
+! 		solute3(12), solute3(13), solute3(14), 0.0/)
+! 	end if
+
+
+
+
 
 		!--------------SLAVE PROCESSOR SENDS ALTERED MESSAGE TO MASTER PROCESSOR
 	
@@ -6599,15 +6763,15 @@ implicit none
 ! integers
 integer :: i, j, ii, n, m
 ! inputs
-real(4) :: sol(xn/cellx,yn/celly), sol0(xn/cellx,yn/celly)
-real(4) :: uTransport(xn/cellx,yn/celly), vTransport(xn/cellx,yn/celly)
+real(4) :: sol(xn/cellx,yn/(2*celly)), sol0(xn/cellx,yn/(2*celly))
+real(4) :: uTransport(xn/cellx,yn/(2*celly)), vTransport(xn/cellx,yn/(2*celly))
 ! solver stuff
-real(4) :: uLong(((xn/cellx)-2)*((yn/celly)-0)), vLong(((xn/cellx)-0)*((yn/celly)-2))
-real(4) :: aBand(((xn/cellx)-2)*((yn/celly)-0),5), bBand(((xn/cellx)-0)*((yn/celly)-2),5)
-real(4) :: qx, qy, solute_next_coarse(xn/cellx,yn/celly), vec(((xn/cellx)-2)*((yn/celly)-0))
-real(4) :: sol_nextRow(((xn/cellx)-2)*((yn/celly)-0)), sol_nextRowB(((xn/cellx)-0)*((yn/celly)-2))
+real(4) :: uLong(((xn/cellx)-2)*((yn/(2*celly))-0)), vLong(((xn/cellx)-0)*((yn/(2*celly))-2))
+real(4) :: aBand(((xn/cellx)-2)*((yn/(2*celly))-0),5), bBand(((xn/cellx)-0)*((yn/(2*celly))-2),5)
+real(4) :: qx, qy, solute_next_coarse(xn/cellx,yn/(2*celly)), vec(((xn/cellx)-2)*((yn/(2*celly))-0))
+real(4) :: sol_nextRow(((xn/cellx)-2)*((yn/(2*celly))-0)), sol_nextRowB(((xn/cellx)-0)*((yn/(2*celly))-2))
 real(4) :: seaw
-real(4) :: bm1(xn/cellx,yn/celly), b0(xn/cellx,yn/celly), bp1(xn/cellx,yn/celly), correction, sigma1, sigma2, sigma1a, sigma1b, sigma2a, sigma2b
+real(4) :: bm1(xn/cellx,yn/(2*celly)), b0(xn/cellx,yn/(2*celly)), bp1(xn/cellx,yn/(2*celly)), correction, sigma1, sigma2, sigma1a, sigma1b, sigma2a, sigma2b
 real(4) :: sigma3, sigma4, sigma3a, sigma3b, sigma4a, sigma4b, sigma5, sigma6
 
 ! call init_mini()
@@ -6654,7 +6818,7 @@ do i = 1,xn/cellx
 !
 ! 	end if
 	
-	do j = yn/(2*celly),yn/celly
+	do j = 1,yn/(2*celly)
 		
 ! 		if ((maskP(i,j) .eq. 0.0)) then
 ! 			sol(i,j) = seaw
@@ -6686,7 +6850,7 @@ end do
 sol0 = sol
 solute_next_coarse = sol
 
-do j = yn/(2*celly),yn/celly-1
+do j = 1,yn/(2*celly)
 	! do i = 2,xn-1
 	solute_next_coarse(2,j) = sol0(2,j) - qx*uTransport(2,j)*( sol0(2,j) - sol0(1,j) )
 	do i = 3,xn/cellx-1
@@ -6922,7 +7086,7 @@ sol = solute_next_coarse
 
 
 
-do j = yn/(2*celly),yn/celly
+do j = 1,yn/(2*celly)
 	do i = 1,xn/cellx
 		if ((coarse_mask(i,j) .eq. 0.0)) then
 
@@ -6960,7 +7124,7 @@ sol0 = sol
 
 
 
-do j = yn/(2*celly),(yn/celly)-1
+do j = 1,(yn/(2*celly))-1
 	! do i = 1,xn
 	do i = 1,xn/cellx
 
@@ -7185,7 +7349,7 @@ do j = yn/(2*celly),(yn/celly)-1
 
 
 	end do
-	solute_next_coarse(i,yn/celly-1) = sol0(i,yn/celly-1) - qy*vTransport(i,yn/celly-1)*( sol0(i,yn/celly) - sol0(i,yn/celly-1) )
+	solute_next_coarse(i,yn/(2*celly)-1) = sol0(i,yn/(2*celly)-1) - qy*vTransport(i,yn/(2*celly)-1)*( sol0(i,yn/(2*celly)) - sol0(i,yn/(2*celly)-1) )
 end do
 
 
@@ -7945,8 +8109,8 @@ function velocities_coarse(psi_coarse)
 	use initialize
 	implicit none
 	integer :: i,ii
-	real(4) :: velocities_coarse(xn/cellx,2*yn/celly), psi_coarse(xn/cellx,yn/celly)
-	real(4) :: u0(xn/cellx,yn/celly), v0(xn/cellx,yn/celly)
+	real(4) :: velocities_coarse(xn/cellx,yn/celly), psi_coarse(xn/cellx,yn/(2*celly))
+	real(4) :: u0(xn/cellx,yn/(2*celly)), v0(xn/cellx,yn/(2*celly))
 
 interface
 
@@ -7961,8 +8125,8 @@ interface
 
 end interface
 
-u0 = partial_coarse(psi_coarse,xn/cellx,yn/celly,dx*cellx,dy*celly,2)
-v0 = -partial_coarse(psi_coarse,xn/cellx,yn/celly,dx*cellx,dy*celly,1)
+u0 = partial_coarse(psi_coarse,xn/cellx,yn/(2*celly),dx*cellx,dy*celly,2)
+v0 = -partial_coarse(psi_coarse,xn/cellx,yn/(2*celly),dx*cellx,dy*celly,1)
 
 ! do i =1,xn
 ! 	do ii = 1,yn
@@ -7972,8 +8136,8 @@ v0 = -partial_coarse(psi_coarse,xn/cellx,yn/celly,dx*cellx,dy*celly,1)
 ! 	end do
 ! end do
 
-velocities_coarse(1:xn/cellx,1:yn/celly) = u0
-velocities_coarse(1:xn/cellx,yn/celly+1:2*yn/celly) = v0
+velocities_coarse(1:xn/cellx,1:yn/(2*celly)) = u0
+velocities_coarse(1:xn/cellx,yn/(2*celly)+1:yn/celly) = v0
 
 return
 end function velocities_coarse
