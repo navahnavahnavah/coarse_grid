@@ -128,7 +128,7 @@ dt = ( t_max - t_min ) / real ( tn - 1, kind = 4 )
 t = linspace ( tn, t_min, t_max)
 
 
-sea = (/8.2, 0.00243, 0.0, 0.0021, 0.01428, 0.0528, 0.460, 0.00995, 0.0, 0.028, 0.0, 0.540, 0.0, 0.00245, 0.0/)
+sea = (/8.2, 0.00243, 0.0, 0.0021, 0.01028, 0.0528, 0.460, 0.00995, 0.0, 0.028, 0.0, 0.540, 0.0, 0.00245, 0.0/)
 !         1    2       3     4         5      6       7       8      9     10    11   12      13      14      15
 
 sol_index = (/2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13/)
@@ -289,7 +289,7 @@ solute(:,:,2) = .00243   ! Alk 1.6e-3
 solute(:,:,3) = .266*1.1     ! water mass
 solute(:,:,4) = .002100  ! param_dic , TOTAL C
 solute(:,:,5) = .01028   ! Ca
-solute(1:xn/(4*cellx),:,5) = .01428
+! solute(1:xn/(4*cellx),:,5) = .01428
 solute(:,:,6) = .0528    ! Mg
 solute(:,:,7) = .460     ! Na
 solute(:,:,8) = .00995   ! K
@@ -306,7 +306,7 @@ solute_a(:,:,2) = .00243   ! Alk 1.6e-3
 solute_a(:,:,3) = .266     ! water mass
 solute_a(:,:,4) = .002100  ! param_dic , TOTAL C
 solute_a(:,:,5) = .01028   ! Ca
-solute_a(1:xn/(4*cellx),:,5) = .01428
+! solute_a(1:xn/(4*cellx),:,5) = .01428
 solute_a(:,:,6) = .0528    ! Mg
 solute_a(:,:,7) = .460     ! Na
 solute_a(:,:,8) = .00995   ! K
@@ -323,7 +323,7 @@ solute_b(:,:,2) = .00243   ! Alk 1.6e-3
 solute_b(:,:,3) = 0.0266   ! water mass
 solute_b(:,:,4) = .002100  ! param_dic , TOTAL C
 solute_b(:,:,5) = .01028   ! Ca
-solute_b(1:xn/(4*cellx),:,5) = .01428
+! solute_b(1:xn/(4*cellx),:,5) = .01428
 solute_b(:,:,6) = .0528    ! Mg
 solute_b(:,:,7) = .460     ! Na
 solute_b(:,:,8) = .00995   ! K
@@ -336,15 +336,15 @@ solute_b(:,:,14) = .00245  ! inert
 solute_b(:,:,15) = 0.0     ! CO3-2
 
 ! seawater solute concentrations [mol/kgw]
-soluteOcean = (/ solute(1,1,1), solute(1,1,2), solute(1,1,3), solute(1,1,4), 0.01428, & 
+soluteOcean = (/ solute(1,1,1), solute(1,1,2), solute(1,1,3), solute(1,1,4), solute(1,1,5), & 
 			  & solute(1,1,6), solute(1,1,7), solute(1,1,8), solute(1,1,9), solute(1,1,10), &
 			  & solute(1,1,11), solute(1,1,12), solute(1,1,13), solute(1,1,14), solute(1,1,15) /)
 
-soluteOcean_a = (/ solute_a(1,1,1), solute_a(1,1,2), solute_a(1,1,3), solute_a(1,1,4), 0.01428, & 
+soluteOcean_a = (/ solute_a(1,1,1), solute_a(1,1,2), solute_a(1,1,3), solute_a(1,1,4), solute_a(1,1,5), & 
 		  & solute_a(1,1,6), solute_a(1,1,7), solute_a(1,1,8), solute_a(1,1,9), solute_a(1,1,10), &
 		  & solute_a(1,1,11), solute_a(1,1,12), solute_a(1,1,13), solute_a(1,1,14), solute_a(1,1,15) /)		
 		  	  
-soluteOcean_b = (/ solute_b(1,1,1), solute_b(1,1,2), solute_b(1,1,3), solute_b(1,1,4), 0.01428, & 
+soluteOcean_b = (/ solute_b(1,1,1), solute_b(1,1,2), solute_b(1,1,3), solute_b(1,1,4), solute_b(1,1,5), & 
 		  & solute_b(1,1,6), solute_b(1,1,7), solute_b(1,1,8), solute_b(1,1,9), solute_b(1,1,10), &
 		  & solute_b(1,1,11), solute_b(1,1,12), solute_b(1,1,13), solute_b(1,1,14), solute_b(1,1,15) /)			  
 			     
@@ -373,10 +373,10 @@ medium(:,:,2) = 0.0         ! precip
 medium(:,:,3) = 0.266*1.1       ! water_volume
 vol_i = medium(1,1,3)
 medium(:,:,4) = 0.01        ! reactive fraction now!
+! medium(:,:,5) = 1.0         ! rxn toggle
 medium(:,:,5) = 1.0         ! rxn toggle
 medium(xn/cellx-2:,:,5) = 0.0
-medium(:,:,5) = 0.0         ! rxn toggle
-medium(xn,yn/celly-3:,5) = 1.0         ! rxn toggle
+! medium(xn,yn/celly-3:,5) = 1.0         ! rxn toggle
 medium(:,:,6) = 0.0         ! x-coord
 medium(:,:,7) = 0.0         ! y-coord
 
@@ -386,8 +386,9 @@ medium_a(:,:,2) = 0.0         ! precip toggle
 medium_a(:,:,3) = 0.266       ! water_volume
 vol_i_a = medium_a(1,1,3)
 medium_a(:,:,4) = 0.01        ! reactive fraction now!
-medium_a(:,:,5) = 0.0         ! rxn toggle
-medium_a(xn,yn/celly-3:,5) = 1.0
+medium_a(:,:,5) = 1.0         ! rxn toggle
+medium_a(xn/cellx-2:,:,5) = 0.0
+! medium_a(xn,yn/celly-3:,5) = 1.0
 !medium_a(xn,yn/cell-3:,5) = 1.0         ! rxn toggle
 medium_a(:,:,6) = 0.0         ! x-coord
 medium_a(:,:,7) = 0.0         ! y-coord
@@ -397,8 +398,9 @@ medium_b(:,:,2) = 0.0         ! precip toggle
 medium_b(:,:,3) = 0.0266      ! water_volume
 vol_i_b = medium_b(1,1,3)
 medium_b(:,:,4) = 0.01        ! reactive fraction now!
-medium_b(:,:,5) = 0.0         ! rxn toggle
-medium_b(xn,yn/celly-3:,5) = 1.0
+medium_b(:,:,5) = 1.0         ! rxn toggle
+medium_b(xn/cellx-2:,:,5) = 0.0
+! medium_b(xn,yn/celly-3:,5) = 1.0
 !medium_b(xn,yn/cell-3:,5) = 1.0         ! rxn toggle
 medium_b(:,:,6) = 0.0         ! x-coord
 medium_b(:,:,7) = 0.0         ! y-coord
