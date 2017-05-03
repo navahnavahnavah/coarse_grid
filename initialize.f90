@@ -103,7 +103,7 @@ real(4) :: perm2 = 1e-12
 
 
 real(4) :: frac6(yn,2), frac6_last(yn,2), temp6(yn,2), temp6_last(yn,2), temp6_mid(yn,2)
-integer :: f_index1 = xn-5, iter = 0, spinup = 20!50000
+integer :: f_index1 = xn-60, iter = 0, spinup = 20!50000
 
 
 real(4) :: temp6_a(yn), temp6_b(yn), temp6_c(yn), temp6_rhs(yn)
@@ -267,7 +267,7 @@ primary_b(:,:,1) = 0.0  ! feldspar
 primary_b(:,:,2) = 0.1 ! plag
 primary_b(:,:,3) = 0.1 ! pyr
 primary_b(:,:,4) = 0.1 ! ol
-primary_b(:,:,5) = 0.0  ! basaltic glass
+primary_b(:,:,5) = 0.1  ! basaltic glass
 
 ! ! speed test
 ! primary(:,:,:) = 0.0
@@ -293,11 +293,11 @@ solute(:,:,5) = .01028   ! Ca
 solute(:,:,6) = .0528    ! Mg
 solute(:,:,7) = .460     ! Na
 solute(:,:,8) = .00995   ! K
-solute(:,:,9) = 0.0      ! Fe
+solute(:,:,9) = 1.0e-10!0.0      ! Fe
 solute(:,:,10) = .028    ! S(6)
-solute(:,:,11) = 0.0     ! Si
+solute(:,:,11) = 1.0e-10!0.0     ! Si
 solute(:,:,12) = .540    ! Cl
-solute(:,:,13) =  0.0 ! Al
+solute(:,:,13) =  1.0e-10!0.0 ! Al
 solute(:,:,14) = .00245  ! inert
 solute(:,:,15) = 0.0     ! CO3-2
 
@@ -310,11 +310,11 @@ solute_a(:,:,5) = .01028   ! Ca
 solute_a(:,:,6) = .0528    ! Mg
 solute_a(:,:,7) = .460     ! Na
 solute_a(:,:,8) = .00995   ! K
-solute_a(:,:,9) = 0.0      ! Fe
+solute_a(:,:,9) = 1.0e-10!0.0      ! Fe
 solute_a(:,:,10) = .028    ! S(6)
-solute_a(:,:,11) = 0.0     ! Si
+solute_a(:,:,11) = 1.0e-10!0.0     ! Si
 solute_a(:,:,12) = .540    ! Cl
-solute_a(:,:,13) =  0.0 ! Al
+solute_a(:,:,13) =  1.0e-10!0.0 ! Al
 solute_a(:,:,14) = .00245  ! inert
 solute_a(:,:,15) = 0.0     ! CO3-2
 
@@ -327,11 +327,11 @@ solute_b(:,:,5) = .01028   ! Ca
 solute_b(:,:,6) = .0528    ! Mg
 solute_b(:,:,7) = .460     ! Na
 solute_b(:,:,8) = .00995   ! K
-solute_b(:,:,9) = 0.0      ! Fe
+solute_b(:,:,9) = 1.0e-10!      ! Fe
 solute_b(:,:,10) = .028    ! S(6)
-solute_b(:,:,11) = 0.0     ! Si
+solute_b(:,:,11) = 1.0e-10!     ! Si
 solute_b(:,:,12) = .540    ! Cl
-solute_b(:,:,13) =  0.0 ! Al
+solute_b(:,:,13) =  1.0e-10! ! Al
 solute_b(:,:,14) = .00245  ! inert
 solute_b(:,:,15) = 0.0     ! CO3-2
 

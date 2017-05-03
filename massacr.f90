@@ -390,14 +390,14 @@ real(4) :: medLong_b((xn/cellx)*(yn/(2*celly)),g_med) !, medLocal_b((xn/cellx)*(
 ! real(4) :: medLongBit_b((xn/cellx)*(yn/(2*celly))) !, medLocalBit_b((xn/cellx)*(yn/(2*celly)))
 
 
-INTEGER(KIND=4) :: id, all=187
+INTEGER(KIND=4) :: id, all=134
 CHARACTER(LEN=5000) :: line
-character(len=9000) :: inputz0
+character(len=7000) :: inputz0
 !real(4) :: alter(1,167)
 !real(4), allocatable :: outmat(:,:)
-real(4) :: outmat(4,187)
+real(4) :: outmat(4,134)
 ! REAL GRABS
-real(4) :: temp3, timestep3, primary3(5), secondary3(108), solute3(15), medium3(7) ! important information
+real(4) :: temp3, timestep3, primary3(5), secondary3(74), solute3(15), medium3(7) ! important information
 real(4) :: water
 
 ! MIGRATING ALTERATION STUFF
@@ -1566,14 +1566,14 @@ L5 = "#  $Id: llnl.dat 4023 2010-02-09 21:02:42Z dlpark $" //NEW_LINE('')// &
 ! &"################################" //NEW_LINE('')// &
 ! &"" //NEW_LINE('')// &
 &"" //NEW_LINE('')// &
-&"Albite" //NEW_LINE('')// &
-&"        NaAlSi3O8 +4.0000 H+  =  + 1.0000 Al+++ + 1.0000 Na+ + 2.0000 H2O + 3.0000 SiO2" //NEW_LINE('')// &
-&"        log_k           2.7645" //NEW_LINE('')// &
-&"	-delta_H	-51.8523	kJ/mol	# 	Albite" //NEW_LINE('')// &
-&"#	Enthalpy of formation:	-939.68 kcal/mol" //NEW_LINE('')// &
-&"        -analytic -1.1694e+001 1.4429e-002 1.3784e+004 -7.2866e+000 -1.6136e+006" //NEW_LINE('')// &
-&"#       -Range:  0-300" //NEW_LINE('')// &
-&"" //NEW_LINE('')// &
+! &"Albite" //NEW_LINE('')// &
+! &"        NaAlSi3O8 +4.0000 H+  =  + 1.0000 Al+++ + 1.0000 Na+ + 2.0000 H2O + 3.0000 SiO2" //NEW_LINE('')// &
+! &"        log_k           2.7645" //NEW_LINE('')// &
+! &"	-delta_H	-51.8523	kJ/mol	# 	Albite" //NEW_LINE('')// &
+! &"#	Enthalpy of formation:	-939.68 kcal/mol" //NEW_LINE('')// &
+! &"        -analytic -1.1694e+001 1.4429e-002 1.3784e+004 -7.2866e+000 -1.6136e+006" //NEW_LINE('')// &
+! &"#       -Range:  0-300" //NEW_LINE('')// &
+! &"" //NEW_LINE('')// &
 &"Analcime" //NEW_LINE('')// &
 &"        Na.96Al.96Si2.04O6:H2O +3.8400 H+  =  + 0.9600 Al+++ + 0.9600 Na+ + 2.0400 SiO2 + 2.9200 H2O" //NEW_LINE('')// &
 &"        log_k           6.1396" //NEW_LINE('')// &
@@ -1598,14 +1598,14 @@ L5 = "#  $Id: llnl.dat 4023 2010-02-09 21:02:42Z dlpark $" //NEW_LINE('')// &
 &"        -analytic -4.6904e+001 6.2555e-003 2.2572e+004 5.3198e+000 -1.5725e+006" //NEW_LINE('')// &
 &"#       -Range:  0-300" //NEW_LINE('')// &
 &"" //NEW_LINE('')// &
-&"Anhydrite" //NEW_LINE('')// &
-&"        CaSO4  =  + 1.0000 Ca++ + 1.0000 SO4--" //NEW_LINE('')// &
-&"        log_k           -4.3064" //NEW_LINE('')// &
-&"	-delta_H	-18.577	kJ/mol	# 	Anhydrite" //NEW_LINE('')// &
-&"#	Enthalpy of formation:	-342.76 kcal/mol" //NEW_LINE('')// &
-&"        -analytic -2.0986e+002 -7.8823e-002 5.0969e+003 8.5642e+001 7.9594e+001" //NEW_LINE('')// &
-&"#       -Range:  0-300" //NEW_LINE('')// &
-&"-Vm 46.1 # 136.14 / 2.95" //NEW_LINE('')// &
+! &"Anhydrite" //NEW_LINE('')// &
+! &"        CaSO4  =  + 1.0000 Ca++ + 1.0000 SO4--" //NEW_LINE('')// &
+! &"        log_k           -4.3064" //NEW_LINE('')// &
+! &"	-delta_H	-18.577	kJ/mol	# 	Anhydrite" //NEW_LINE('')// &
+! &"#	Enthalpy of formation:	-342.76 kcal/mol" //NEW_LINE('')// &
+! &"        -analytic -2.0986e+002 -7.8823e-002 5.0969e+003 8.5642e+001 7.9594e+001" //NEW_LINE('')// &
+! &"#       -Range:  0-300" //NEW_LINE('')// &
+! &"-Vm 46.1 # 136.14 / 2.95" //NEW_LINE('')// &
 
 &"" //NEW_LINE('')// &
 &"Phillipsite" //NEW_LINE('')// &
@@ -1614,14 +1614,14 @@ L5 = "#  $Id: llnl.dat 4023 2010-02-09 21:02:42Z dlpark $" //NEW_LINE('')// &
 &"        log_k           -19.874" //NEW_LINE('')// &
 &"" //NEW_LINE('')// &
 
-&"Aragonite" //NEW_LINE('')// &
-&"        CaCO3 +1.0000 H+  =  + 1.0000 Ca++ + 1.0000 HCO3-" //NEW_LINE('')// &
-&"        log_k           1.9931" //NEW_LINE('')// &
-&"	-delta_H	-25.8027	kJ/mol	# 	Aragonite" //NEW_LINE('')// &
-&"#	Enthalpy of formation:	-288.531 kcal/mol" //NEW_LINE('')// &
-&"        -analytic -1.4934e+002 -4.8043e-002 4.9089e+003 6.0284e+001 7.6644e+001" //NEW_LINE('')// &
-&"#       -Range:  0-300" //NEW_LINE('')// &
-!&"-Vm 34.04" //NEW_LINE('')// &
+! &"Aragonite" //NEW_LINE('')// &
+! &"        CaCO3 +1.0000 H+  =  + 1.0000 Ca++ + 1.0000 HCO3-" //NEW_LINE('')// &
+! &"        log_k           1.9931" //NEW_LINE('')// &
+! &"	-delta_H	-25.8027	kJ/mol	# 	Aragonite" //NEW_LINE('')// &
+! &"#	Enthalpy of formation:	-288.531 kcal/mol" //NEW_LINE('')// &
+! &"        -analytic -1.4934e+002 -4.8043e-002 4.9089e+003 6.0284e+001 7.6644e+001" //NEW_LINE('')// &
+! &"#       -Range:  0-300" //NEW_LINE('')// &
+! !&"-Vm 34.04" //NEW_LINE('')// &
 
 &"" //NEW_LINE('')// &
 &"Calcite" //NEW_LINE('')// &
@@ -1739,15 +1739,15 @@ L5 = "#  $Id: llnl.dat 4023 2010-02-09 21:02:42Z dlpark $" //NEW_LINE('')// &
 ! &"#       -Range:  0-300" //NEW_LINE('')// &
 ! &"-Vm 64.5" //NEW_LINE('')// &
 
-&"" //NEW_LINE('')// &
-&"Epidote" //NEW_LINE('')// &
-&"        Ca2FeAl2Si3O12OH +13.0000 H+  =  + 1.0000 Fe+++ + 2.0000 Al+++ + 2.0000 Ca++ + 3.0000 SiO2 + 7.0000 H2O" //NEW_LINE('')// &
-&"        log_k           32.9296" //NEW_LINE('')// &
-&"	-delta_H	-386.451	kJ/mol	# 	Epidote" //NEW_LINE('')// &
-&"#	Enthalpy of formation:	-1543.99 kcal/mol" //NEW_LINE('')// &
-&"        -analytic -2.6187e+001 -3.6436e-002 1.9351e+004 3.3671e+000 -3.0319e+005" //NEW_LINE('')// &
-&"#       -Range:  0-300" //NEW_LINE('')// &
-&"" //NEW_LINE('')// &
+! &"" //NEW_LINE('')// &
+! &"Epidote" //NEW_LINE('')// &
+! &"        Ca2FeAl2Si3O12OH +13.0000 H+  =  + 1.0000 Fe+++ + 2.0000 Al+++ + 2.0000 Ca++ + 3.0000 SiO2 + 7.0000 H2O" //NEW_LINE('')// &
+! &"        log_k           32.9296" //NEW_LINE('')// &
+! &"	-delta_H	-386.451	kJ/mol	# 	Epidote" //NEW_LINE('')// &
+! &"#	Enthalpy of formation:	-1543.99 kcal/mol" //NEW_LINE('')// &
+! &"        -analytic -2.6187e+001 -3.6436e-002 1.9351e+004 3.3671e+000 -3.0319e+005" //NEW_LINE('')// &
+! &"#       -Range:  0-300" //NEW_LINE('')// &
+! &"" //NEW_LINE('')// &
 ! &"Ettringite" //NEW_LINE('')// &
 ! &"        Ca6Al2(SO4)3(OH)12:26H2O +12.0000 H+  =  + 2.0000 Al+++ + 3.0000 SO4-- + 6.0000 Ca++ + 38.0000 H2O" //NEW_LINE('')// &
 ! &"        log_k           62.5362" //NEW_LINE('')// &
@@ -1781,12 +1781,12 @@ L5 = "#  $Id: llnl.dat 4023 2010-02-09 21:02:42Z dlpark $" //NEW_LINE('')// &
 ! &"        -analytic 2.9983e+001 5.5272e-003 2.3427e+004 -1.3879e+001 -8.9461e+005" //NEW_LINE('')// &
 ! &"#       -Range:  0-300" //NEW_LINE('')// &
 ! &"" //NEW_LINE('')// &
-&"Gismondine" //NEW_LINE('')// &
-&"        Ca2Al4Si4O16:9H2O +16.0000 H+  =  + 2.0000 Ca++ + 4.0000 Al+++ + 4.0000 SiO2 + 17.0000 H2O" //NEW_LINE('')// &
-&"        log_k           41.7170" //NEW_LINE('')// &
-&"	-delta_H	0	      	# Not possible to calculate enthalpy of reaction	Gismondine" //NEW_LINE('')// &
-&"#	Enthalpy of formation:	0 kcal/mol" //NEW_LINE('')// &
-&"" //NEW_LINE('')// &
+! &"Gismondine" //NEW_LINE('')// &
+! &"        Ca2Al4Si4O16:9H2O +16.0000 H+  =  + 2.0000 Ca++ + 4.0000 Al+++ + 4.0000 SiO2 + 17.0000 H2O" //NEW_LINE('')// &
+! &"        log_k           41.7170" //NEW_LINE('')// &
+! &"	-delta_H	0	      	# Not possible to calculate enthalpy of reaction	Gismondine" //NEW_LINE('')// &
+! &"#	Enthalpy of formation:	0 kcal/mol" //NEW_LINE('')// &
+! &"" //NEW_LINE('')// &
 &"Goethite" //NEW_LINE('')// &
 &"        FeOOH +3.0000 H+  =  + 1.0000 Fe+++ + 2.0000 H2O" //NEW_LINE('')// &
 &"        log_k           0.5345" //NEW_LINE('')// &
@@ -1812,14 +1812,14 @@ L5 = "#  $Id: llnl.dat 4023 2010-02-09 21:02:42Z dlpark $" //NEW_LINE('')// &
 ! &"        -analytic -2.4416e+001 1.4646e-002 1.6181e+004 2.3723e+000 -1.5369e+006" //NEW_LINE('')// &
 ! &"#       -Range:  0-300" //NEW_LINE('')// &
 ! &"" //NEW_LINE('')// &
-&"Hedenbergite" //NEW_LINE('')// &
-&"        CaFe(SiO3)2 +4.0000 H+  =  + 1.0000 Ca++ + 1.0000 Fe++ + 2.0000 H2O + 2.0000 SiO2" //NEW_LINE('')// &
-&"        log_k           19.6060" //NEW_LINE('')// &
-&"	-delta_H	-124.507	kJ/mol	# 	Hedenbergite" //NEW_LINE('')// &
-&"#	Enthalpy of formation:	-678.276 kcal/mol" //NEW_LINE('')// &
-&"        -analytic -1.9473e+001 1.5288e-003 1.2910e+004 2.1729e+000 -9.0058e+005" //NEW_LINE('')// &
-&"#       -Range:  0-300" //NEW_LINE('')// &
-&"" //NEW_LINE('')// &
+! &"Hedenbergite" //NEW_LINE('')// &
+! &"        CaFe(SiO3)2 +4.0000 H+  =  + 1.0000 Ca++ + 1.0000 Fe++ + 2.0000 H2O + 2.0000 SiO2" //NEW_LINE('')// &
+! &"        log_k           19.6060" //NEW_LINE('')// &
+! &"	-delta_H	-124.507	kJ/mol	# 	Hedenbergite" //NEW_LINE('')// &
+! &"#	Enthalpy of formation:	-678.276 kcal/mol" //NEW_LINE('')// &
+! &"        -analytic -1.9473e+001 1.5288e-003 1.2910e+004 2.1729e+000 -9.0058e+005" //NEW_LINE('')// &
+! &"#       -Range:  0-300" //NEW_LINE('')// &
+! &"" //NEW_LINE('')// &
 &"Hematite" //NEW_LINE('')// &
 &"        Fe2O3 +6.0000 H+  =  + 2.0000 Fe+++ + 3.0000 H2O" //NEW_LINE('')// &
 &"        log_k           0.1086" //NEW_LINE('')// &
@@ -1885,14 +1885,14 @@ L5 = "#  $Id: llnl.dat 4023 2010-02-09 21:02:42Z dlpark $" //NEW_LINE('')// &
 ! &"        -analytic -1.6665e+002 -4.9469e-002 6.4344e+003 6.5506e+001 1.0045e+002" //NEW_LINE('')// &
 ! &"#       -Range:  0-300" //NEW_LINE('')// &
 ! &"" //NEW_LINE('')// &
-&"Magnetite" //NEW_LINE('')// &
-&"        Fe3O4 +8.0000 H+  =  + 1.0000 Fe++ + 2.0000 Fe+++ + 4.0000 H2O" //NEW_LINE('')// &
-&"        log_k           10.4724" //NEW_LINE('')// &
-&"	-delta_H	-216.597	kJ/mol	# 	Magnetite" //NEW_LINE('')// &
-&"#	Enthalpy of formation:	-267.25 kcal/mol" //NEW_LINE('')// &
-&"        -analytic -3.0510e+002 -7.9919e-002 1.8709e+004 1.1178e+002 2.9203e+002" //NEW_LINE('')// &
-&"#       -Range:  0-300" //NEW_LINE('')// &
-&"" //NEW_LINE('')// &
+! &"Magnetite" //NEW_LINE('')// &
+! &"        Fe3O4 +8.0000 H+  =  + 1.0000 Fe++ + 2.0000 Fe+++ + 4.0000 H2O" //NEW_LINE('')// &
+! &"        log_k           10.4724" //NEW_LINE('')// &
+! &"	-delta_H	-216.597	kJ/mol	# 	Magnetite" //NEW_LINE('')// &
+! &"#	Enthalpy of formation:	-267.25 kcal/mol" //NEW_LINE('')// &
+! &"        -analytic -3.0510e+002 -7.9919e-002 1.8709e+004 1.1178e+002 2.9203e+002" //NEW_LINE('')// &
+! &"#       -Range:  0-300" //NEW_LINE('')// &
+! &"" //NEW_LINE('')// &
 ! &"Merwinite" //NEW_LINE('')// &
 ! &"        MgCa3(SiO4)2 +8.0000 H+  =  + 1.0000 Mg++ + 2.0000 SiO2 + 3.0000 Ca++ + 4.0000 H2O" //NEW_LINE('')// &
 ! &"        log_k           68.5140" //NEW_LINE('')// &
@@ -1965,14 +1965,14 @@ L5 = "#  $Id: llnl.dat 4023 2010-02-09 21:02:42Z dlpark $" //NEW_LINE('')// &
 
 
 
-&"Muscovite" //NEW_LINE('')// &
-&"        KAl3Si3O10(OH)2 +10.0000 H+  =  + 1.0000 K+ + 3.0000 Al+++ + 3.0000 SiO2 + 6.0000 H2O" //NEW_LINE('')// &
-&"        log_k           13.5858" //NEW_LINE('')// &
-&"	-delta_H	-243.224	kJ/mol	# 	Muscovite" //NEW_LINE('')// &
-&"#	Enthalpy of formation:	-1427.41 kcal/mol" //NEW_LINE('')// &
-&"        -analytic 3.3085e+001 -1.2425e-002 1.2477e+004 -2.0865e+001 -5.4692e+005" //NEW_LINE('')// &
-&"#       -Range:  0-300" //NEW_LINE('')// &
-&"" //NEW_LINE('')// &
+! &"Muscovite" //NEW_LINE('')// &
+! &"        KAl3Si3O10(OH)2 +10.0000 H+  =  + 1.0000 K+ + 3.0000 Al+++ + 3.0000 SiO2 + 6.0000 H2O" //NEW_LINE('')// &
+! &"        log_k           13.5858" //NEW_LINE('')// &
+! &"	-delta_H	-243.224	kJ/mol	# 	Muscovite" //NEW_LINE('')// &
+! &"#	Enthalpy of formation:	-1427.41 kcal/mol" //NEW_LINE('')// &
+! &"        -analytic 3.3085e+001 -1.2425e-002 1.2477e+004 -2.0865e+001 -5.4692e+005" //NEW_LINE('')// &
+! &"#       -Range:  0-300" //NEW_LINE('')// &
+! &"" //NEW_LINE('')// &
 &"Natrolite" //NEW_LINE('')// &
 &"        Na2Al2Si3O10:2H2O +8.0000 H+  =  + 2.0000 Al+++ + 2.0000 Na+ + 3.0000 SiO2 + 6.0000 H2O" //NEW_LINE('')// &
 &"        log_k           18.5204" //NEW_LINE('')// &
@@ -2075,14 +2075,14 @@ L5 = "#  $Id: llnl.dat 4023 2010-02-09 21:02:42Z dlpark $" //NEW_LINE('')// &
 &"        -analytic -1.5785e+002 -5.2258e-002 3.9711e+003 6.3195e+001 6.2012e+001" //NEW_LINE('')// &
 &"#       -Range:  0-300" //NEW_LINE('')// &
 &"" //NEW_LINE('')// &
-&"Quartz" //NEW_LINE('')// &
-&"        SiO2  =  + 1.0000 SiO2" //NEW_LINE('')// &
-&"        log_k           -3.9993" //NEW_LINE('')// &
-&"	-delta_H	32.949	kJ/mol	# 	Quartz" //NEW_LINE('')// &
-&"#	Enthalpy of formation:	-217.65 kcal/mol" //NEW_LINE('')// &
-&"        -analytic 7.7698e-002 1.0612e-002 3.4651e+003 -4.3551e+000 -7.2138e+005" //NEW_LINE('')// &
-&"#       -Range:  0-300" //NEW_LINE('')// &
-&"-Vm 22.67" //NEW_LINE('')// &
+! &"Quartz" //NEW_LINE('')// &
+! &"        SiO2  =  + 1.0000 SiO2" //NEW_LINE('')// &
+! &"        log_k           -3.9993" //NEW_LINE('')// &
+! &"	-delta_H	32.949	kJ/mol	# 	Quartz" //NEW_LINE('')// &
+! &"#	Enthalpy of formation:	-217.65 kcal/mol" //NEW_LINE('')// &
+! &"        -analytic 7.7698e-002 1.0612e-002 3.4651e+003 -4.3551e+000 -7.2138e+005" //NEW_LINE('')// &
+! &"#       -Range:  0-300" //NEW_LINE('')// &
+! &"-Vm 22.67" //NEW_LINE('')// &
 
 &"" //NEW_LINE('')// &
 ! &"Rankinite" //NEW_LINE('')// &
@@ -2148,15 +2148,15 @@ L5 = "#  $Id: llnl.dat 4023 2010-02-09 21:02:42Z dlpark $" //NEW_LINE('')// &
 &"        -analytic -9.6102e+000 1.2551e-003 1.8157e+004 -7.9862e+000 -1.3005e+006" //NEW_LINE('')// &
 &"#       -Range:  0-300" //NEW_LINE('')// &
 &"" //NEW_LINE('')// &
-&"Stilbite" //NEW_LINE('')// &
-&"        Ca1.019Na.136K.006Al2.18Si6.82O18:7.33H2O +8.7200 H+  =  + 0.0060 K+ + 0.1360 Na+ " //&
-&"+ 1.0190 Ca++ + 2.1800 Al+++ + 6.8200 SiO2 + 11.6900 H2O" //NEW_LINE('')// &
-&"        log_k           1.0545" //NEW_LINE('')// &
-&"	-delta_H	-83.0019	kJ/mol	# 	Stilbite" //NEW_LINE('')// &
-&"#	Enthalpy of formation:	-11005.7 kJ/mol" //NEW_LINE('')// &
-&"        -analytic -2.4483e+001 3.0987e-002 2.8013e+004 -1.5802e+001 -3.4491e+006" //NEW_LINE('')// &
-&"#       -Range:  0-300" //NEW_LINE('')// &
-&"" //NEW_LINE('')// &
+! &"Stilbite" //NEW_LINE('')// &
+! &"        Ca1.019Na.136K.006Al2.18Si6.82O18:7.33H2O +8.7200 H+  =  + 0.0060 K+ + 0.1360 Na+ " //&
+! &"+ 1.0190 Ca++ + 2.1800 Al+++ + 6.8200 SiO2 + 11.6900 H2O" //NEW_LINE('')// &
+! &"        log_k           1.0545" //NEW_LINE('')// &
+! &"	-delta_H	-83.0019	kJ/mol	# 	Stilbite" //NEW_LINE('')// &
+! &"#	Enthalpy of formation:	-11005.7 kJ/mol" //NEW_LINE('')// &
+! &"        -analytic -2.4483e+001 3.0987e-002 2.8013e+004 -1.5802e+001 -3.4491e+006" //NEW_LINE('')// &
+! &"#       -Range:  0-300" //NEW_LINE('')// &
+! &"" //NEW_LINE('')// &
 ! &"Tobermorite-9A" //NEW_LINE('')// &
 ! &"        Ca5Si6H6O20 +10.0000 H+  =  + 5.0000 Ca++ + 6.0000 SiO2 + 8.0000 H2O" //NEW_LINE('')// &
 ! &"        log_k           69.0798" //NEW_LINE('')// &
@@ -2183,10 +2183,10 @@ L5 = "#  $Id: llnl.dat 4023 2010-02-09 21:02:42Z dlpark $" //NEW_LINE('')// &
 ! &"#       -Range:  0-300" //NEW_LINE('')// &
 
 
-&"Ferrihydrite" //NEW_LINE('')// &
-&"        Fe(OH)3 + 3H+ = Fe+3 + 3H2O" //NEW_LINE('')// &
-&"        log_k	3.191" //NEW_LINE('')// &
-&"	delta_h	-73.374	kJ" //NEW_LINE('')// &
+! &"Ferrihydrite" //NEW_LINE('')// &
+! &"        Fe(OH)3 + 3H+ = Fe+3 + 3H2O" //NEW_LINE('')// &
+! &"        log_k	3.191" //NEW_LINE('')// &
+! &"	delta_h	-73.374	kJ" //NEW_LINE('')// &
 
 ! &"Fe3(OH)8" //NEW_LINE('')// &
 ! &"        Fe3(OH)8 + 8H+ = 2Fe+3 + Fe+2 + 8H2O" //NEW_LINE('')// &
@@ -2218,14 +2218,14 @@ L5 = "#  $Id: llnl.dat 4023 2010-02-09 21:02:42Z dlpark $" //NEW_LINE('')// &
 ! &"" //NEW_LINE('')// &
 
 ! CHLORITE MINERALS
-
-&"Chamosite-7A" //NEW_LINE('')// &
-&"        Fe2Al2SiO5(OH)4 +10.0000 H+  =  + 1.0000 SiO2 + 2.0000 Al+++ + 2.0000 Fe++ + 7.0000 H2O" //NEW_LINE('')// &
-&"        log_k           32.8416" //NEW_LINE('')// &
-&"-delta_H	-364.213	kJ/mol	# Calculated enthalpy of reaction	Chamosite-7A" //NEW_LINE('')// &
-&"#	Enthalpy of formation:	-902.407 kcal/mol" //NEW_LINE('')// &
-&"        -analytic -2.5581e+002 -7.0890e-002 2.4619e+004 9.1789e+001 3.8424e+002" //NEW_LINE('')// &
-&"#       -Range:  0-300" //NEW_LINE('')// &
+!
+! &"Chamosite-7A" //NEW_LINE('')// &
+! &"        Fe2Al2SiO5(OH)4 +10.0000 H+  =  + 1.0000 SiO2 + 2.0000 Al+++ + 2.0000 Fe++ + 7.0000 H2O" //NEW_LINE('')// &
+! &"        log_k           32.8416" //NEW_LINE('')// &
+! &"-delta_H	-364.213	kJ/mol	# Calculated enthalpy of reaction	Chamosite-7A" //NEW_LINE('')// &
+! &"#	Enthalpy of formation:	-902.407 kcal/mol" //NEW_LINE('')// &
+! &"        -analytic -2.5581e+002 -7.0890e-002 2.4619e+004 9.1789e+001 3.8424e+002" //NEW_LINE('')// &
+! &"#       -Range:  0-300" //NEW_LINE('')// &
 
 
 &"Clinochlore-14A" //NEW_LINE('')// &
@@ -2311,25 +2311,25 @@ L5 = "#  $Id: llnl.dat 4023 2010-02-09 21:02:42Z dlpark $" //NEW_LINE('')// &
 &"  delta_h  -354.987   kJ/mol  #" //NEW_LINE('')// &
 &"  # Enthalpy of formation:    -6139.206  kJ/mol  07VIE" //NEW_LINE('')// &
   
-  
-&"Lepidocrocite" //NEW_LINE('')// &
-&"FeOOH = +1.000Fe+3  -3.000H+  +2.000H2O  " //NEW_LINE('')// &
-&"  log_k  0.75   #98DIA in 98CHI" //NEW_LINE('')// &
-&"  delta_h  -64.26  kJ/mol  #" //NEW_LINE('')// &
-&"  # Enthalpy of formation:    -556.4  kJ/mol  " //NEW_LINE('')// &
 !
+! &"Lepidocrocite" //NEW_LINE('')// &
+! &"FeOOH = +1.000Fe+3  -3.000H+  +2.000H2O  " //NEW_LINE('')// &
+! &"  log_k  0.75   #98DIA in 98CHI" //NEW_LINE('')// &
+! &"  delta_h  -64.26  kJ/mol  #" //NEW_LINE('')// &
+! &"  # Enthalpy of formation:    -556.4  kJ/mol  " //NEW_LINE('')// &
+! !
 ! &"Vermiculite-K" //NEW_LINE('')// &
 ! &"K0.85Mg3Si3.15Al0.85O10(OH)2 = +3.000Mg+2  +0.850K+  +0.850Al+3  -9.400H+  +6.30H2O + 3.15SiO2  -0.600H2O " //NEW_LINE('')// &
 ! &"  log_k  36.86  #" //NEW_LINE('')// &
 ! &"  delta_h  -331.639   kJ/mol  #" //NEW_LINE('')// &
 ! &"  # Enthalpy of formation:    -6172.584  kJ/mol  07VIE" //NEW_LINE('')// &
-
-&"Saponite-K" //NEW_LINE('')// &
-&"K0.33Mg3Al0.33Si3.67O10(OH)2 = +3.000Mg+2  +0.330K+  +0.330Al+3  -7.320H+  +7.34H2O + 3.67SiO2  -2.680H2O" //NEW_LINE('')// &
-&"  log_k  28.1   #" //NEW_LINE('')// &
-&"  delta_h  -252.497   kJ/mol  #" //NEW_LINE('')// &
-&"  # Enthalpy of formation:    -6005.94   kJ/mol  07VIE" //NEW_LINE('')// &
-  
+!
+! &"Saponite-K" //NEW_LINE('')// &
+! &"K0.33Mg3Al0.33Si3.67O10(OH)2 = +3.000Mg+2  +0.330K+  +0.330Al+3  -7.320H+  +7.34H2O + 3.67SiO2  -2.680H2O" //NEW_LINE('')// &
+! &"  log_k  28.1   #" //NEW_LINE('')// &
+! &"  delta_h  -252.497   kJ/mol  #" //NEW_LINE('')// &
+! &"  # Enthalpy of formation:    -6005.94   kJ/mol  07VIE" //NEW_LINE('')// &
+!
 &"Vermiculite-Ca" //NEW_LINE('')// &
 &"Ca0.43Mg3Si3.14Al0.86O10(OH)2 = +0.430Ca+2  +3.000Mg+2  +0.860Al+3  -9.440H+  +6.28H2O + 3.14SiO2  -0.560H2O" //NEW_LINE('')// &
 &"  log_k  40.68  #" //NEW_LINE('')// &
@@ -2343,17 +2343,17 @@ L5 = "#  $Id: llnl.dat 4023 2010-02-09 21:02:42Z dlpark $" //NEW_LINE('')// &
 &"  delta_h  -377.469   kJ/mol  #" //NEW_LINE('')// &
 &"  # Enthalpy of formation:    -6115.45   kJ/mol  07VIE" //NEW_LINE('')// &
 
-&"Chalcedony" //NEW_LINE('')// &
-&"        SiO2  =  + 1.0000 SiO2" //NEW_LINE('')// &
-&"        log_k           -3.7281" //NEW_LINE('')// &
-&"	-delta_H	31.4093	kJ/mol	# Calculated enthalpy of reaction	Chalcedony" //NEW_LINE('')// &
-&"#	Enthalpy of formation:	-217.282 kcal/mol" //NEW_LINE('')// &
-&"        -analytic -9.0068e+000 9.3241e-003 4.0535e+003 -1.0830e+000 -7.5077e+005" //NEW_LINE('')// &
-&"#       -Range:  0-300" //NEW_LINE('')// &
+! &"Chalcedony" //NEW_LINE('')// &
+! &"        SiO2  =  + 1.0000 SiO2" //NEW_LINE('')// &
+! &"        log_k           -3.7281" //NEW_LINE('')// &
+! &"	-delta_H	31.4093	kJ/mol	# Calculated enthalpy of reaction	Chalcedony" //NEW_LINE('')// &
+! &"#	Enthalpy of formation:	-217.282 kcal/mol" //NEW_LINE('')// &
+! &"        -analytic -9.0068e+000 9.3241e-003 4.0535e+003 -1.0830e+000 -7.5077e+005" //NEW_LINE('')// &
+! &"#       -Range:  0-300" //NEW_LINE('')// &
 
 
 &""! //NEW_LINE('')// &
-
+ 
 
 
 write(*,*) "testing..."
@@ -4046,7 +4046,7 @@ else
 			
 		if (medLocal(m,5) .eq. 1.0) then
 
-if (my_id .eq. 40) then	
+if (my_id .eq. 2) then	
 	call system_clock(counti, count_rate, count_max)
 	write(*,*) "	PROC 40 START LOADING"
 end if
@@ -4091,65 +4091,104 @@ write(s_basalt1,'(F25.10)') primary3(4)
 write(s_glass,'(F25.10)') primary3(5)
 
 ! SECONDARIES TO STRINGS
-write(s_stilbite,'(F25.10)') secondary3(1)
-write(s_aragonite,'(F25.10)') secondary3(2)
-write(s_kaolinite,'(F25.10)') secondary3(3)
-write(s_albite,'(F25.10)') secondary3(4)
-write(s_saponite,'(F25.10)') secondary3(5)
-write(s_celadonite,'(F25.10)') secondary3(6)
-write(s_clinoptilolite,'(F25.10)') secondary3(7)
-write(s_pyrite,'(F25.10)') secondary3(8)
-write(s_mont_na,'(F25.10)') secondary3(9)
-write(s_goethite,'(F25.10)') secondary3(10)
-write(s_dolomite,'(F25.10)') secondary3(11)
-write(s_smectite,'(F25.10)') secondary3(12)
-write(s_saponite_k,'(F25.10)') secondary3(13)
-write(s_anhydrite,'(F25.10)') secondary3(14)
-write(s_siderite,'(F25.10)') secondary3(15)
-write(s_calcite,'(F25.10)') secondary3(16)
-write(s_quartz,'(F25.10)') secondary3(17)
-write(s_kspar,'(F25.10)') secondary3(18)
-write(s_saponite_na,'(F25.10)') secondary3(19) !!!!
-write(s_nont_na,'(F25.10)') secondary3(20)
-write(s_nont_mg,'(F25.10)') secondary3(21)
-write(s_nont_k,'(F25.10)') secondary3(22)
-write(s_fe_celadonite,'(F25.10)') secondary3(23)
-write(s_nont_ca,'(F25.10)') secondary3(24)
-write(s_muscovite,'(F25.10)') secondary3(25)
-write(s_mesolite,'(F25.10)') secondary3(26)
-write(s_hematite,'(F25.10)') secondary3(27)
-write(s_mont_ca,'(F25.10)') secondary3(28)
-! MINERALS ADDED 10/18/2104
-write(s_verm_ca,'(F25.10)') secondary3(29)
-write(s_analcime,'(F25.10)') secondary3(30) 
-write(s_phillipsite,'(F25.10)') secondary3(31)
-write(s_diopside,'(F25.10)') secondary3(32)
-write(s_epidote,'(F25.10)') secondary3(33)
-write(s_gismondine,'(F25.10)') secondary3(34)
-write(s_hedenbergite,'(F25.10)') secondary3(35)
-write(s_chalcedony,'(F25.10)') secondary3(36)
-write(s_verm_mg,'(F25.10)') secondary3(37)
-write(s_ferrihydrite,'(F25.10)') secondary3(38)
-write(s_natrolite,'(F25.10)') secondary3(39)
-write(s_talc,'(F25.10)') secondary3(40) !!!!!!!!!
-write(s_smectite_low,'(F25.10)') secondary3(41)
-write(s_prehnite,'(F25.10)') secondary3(42)
-write(s_chlorite,'(F25.10)') secondary3(43) !!!!!!!!
-write(s_scolecite,'(F25.10)') secondary3(44)
-write(s_chamosite7a,'(F25.10)') secondary3(45)
-write(s_clinochlore14a,'(F25.10)') secondary3(46)
-write(s_clinochlore7a,'(F25.10)') secondary3(47)
-!! NEXT ROUND
-write(s_saponite_ca,'(F25.10)') secondary3(48)
-write(s_verm_na,'(F25.10)') secondary3(49)
-write(s_pyrrhotite,'(F25.10)') secondary3(50)
-write(s_magnetite,'(F25.10)') secondary3(51)
-write(s_lepidocrocite,'(F25.10)') secondary3(52)
-write(s_daphnite_7a,'(F25.10)') secondary3(53) !!!
-write(s_daphnite_14a,'(F25.10)') secondary3(54) !!!
-! write(s_verm_k,'(F25.10)') secondary3(55)
-! write(s_mont_k,'(F25.10)') secondary3(56)
-! write(s_mont_mg,'(F25.10)') secondary3(57)
+! ! write(s_stilbite,'(F25.10)') secondary3(1)
+! ! write(s_aragonite,'(F25.10)') secondary3(2)
+! write(s_kaolinite,'(F25.10)') secondary3(3)
+! ! write(s_albite,'(F25.10)') secondary3(4)
+! write(s_saponite,'(F25.10)') secondary3(5)
+! write(s_celadonite,'(F25.10)') secondary3(6)
+! write(s_clinoptilolite,'(F25.10)') secondary3(7)
+! write(s_pyrite,'(F25.10)') secondary3(8)
+! write(s_mont_na,'(F25.10)') secondary3(9)
+! write(s_goethite,'(F25.10)') secondary3(10)
+! ! write(s_dolomite,'(F25.10)') secondary3(11)
+! write(s_smectite,'(F25.10)') secondary3(12)
+! ! write(s_saponite_k,'(F25.10)') secondary3(13)
+! ! write(s_anhydrite,'(F25.10)') secondary3(14)
+! ! write(s_siderite,'(F25.10)') secondary3(15)
+! write(s_calcite,'(F25.10)') secondary3(16)
+! ! write(s_quartz,'(F25.10)') secondary3(17)
+! write(s_kspar,'(F25.10)') secondary3(18)
+! write(s_saponite_na,'(F25.10)') secondary3(19) !!!!
+! write(s_nont_na,'(F25.10)') secondary3(20)
+! write(s_nont_mg,'(F25.10)') secondary3(21)
+! ! write(s_nont_k,'(F25.10)') secondary3(22)
+! write(s_fe_celadonite,'(F25.10)') secondary3(23)
+! write(s_nont_ca,'(F25.10)') secondary3(24)
+! ! write(s_muscovite,'(F25.10)') secondary3(25)
+! write(s_mesolite,'(F25.10)') secondary3(26)
+! write(s_hematite,'(F25.10)') secondary3(27)
+! write(s_mont_ca,'(F25.10)') secondary3(28)
+! ! MINERALS ADDED 10/18/2104
+! write(s_verm_ca,'(F25.10)') secondary3(29)
+! write(s_analcime,'(F25.10)') secondary3(30)
+! write(s_phillipsite,'(F25.10)') secondary3(31)
+! write(s_diopside,'(F25.10)') secondary3(32)
+! ! write(s_epidote,'(F25.10)') secondary3(33)
+! write(s_gismondine,'(F25.10)') secondary3(34)
+! ! write(s_hedenbergite,'(F25.10)') secondary3(35)
+! ! write(s_chalcedony,'(F25.10)') secondary3(36)
+! write(s_verm_mg,'(F25.10)') secondary3(37)
+! ! write(s_ferrihydrite,'(F25.10)') secondary3(38)
+! write(s_natrolite,'(F25.10)') secondary3(39)
+! write(s_talc,'(F25.10)') secondary3(40) !!!!!!!!!
+! write(s_smectite_low,'(F25.10)') secondary3(41)
+! write(s_prehnite,'(F25.10)') secondary3(42)
+! write(s_chlorite,'(F25.10)') secondary3(43) !!!!!!!!
+! write(s_scolecite,'(F25.10)') secondary3(44)
+! ! write(s_chamosite7a,'(F25.10)') secondary3(45)
+! write(s_clinochlore14a,'(F25.10)') secondary3(46)
+! write(s_clinochlore7a,'(F25.10)') secondary3(47)
+! !! NEXT ROUND
+! write(s_saponite_ca,'(F25.10)') secondary3(48)
+! write(s_verm_na,'(F25.10)') secondary3(49)
+! write(s_pyrrhotite,'(F25.10)') secondary3(50)
+! ! write(s_magnetite,'(F25.10)') secondary3(51)
+! ! write(s_lepidocrocite,'(F25.10)') secondary3(52)
+! write(s_daphnite_7a,'(F25.10)') secondary3(53) !!!
+! write(s_daphnite_14a,'(F25.10)') secondary3(54) !!!
+! ! write(s_verm_k,'(F25.10)') secondary3(55)
+! ! write(s_mont_k,'(F25.10)') secondary3(56)
+! ! write(s_mont_mg,'(F25.10)') secondary3(57)
+
+
+write(s_kaolinite,'(F25.10)') secondary3(1)
+write(s_saponite,'(F25.10)') secondary3(2)
+write(s_celadonite,'(F25.10)') secondary3(3)
+write(s_clinoptilolite,'(F25.10)') secondary3(4)
+write(s_pyrite,'(F25.10)') secondary3(5)
+write(s_mont_na,'(F25.10)') secondary3(6)
+write(s_goethite,'(F25.10)') secondary3(7)
+write(s_smectite,'(F25.10)') secondary3(8)
+write(s_calcite,'(F25.10)') secondary3(9)
+write(s_kspar,'(F25.10)') secondary3(10)
+write(s_saponite_na,'(F25.10)') secondary3(11) !!!!
+write(s_nont_na,'(F25.10)') secondary3(12)
+write(s_nont_mg,'(F25.10)') secondary3(13)
+write(s_fe_celadonite,'(F25.10)') secondary3(14)
+write(s_nont_ca,'(F25.10)') secondary3(15)
+write(s_mesolite,'(F25.10)') secondary3(16)
+write(s_hematite,'(F25.10)') secondary3(17)
+write(s_mont_ca,'(F25.10)') secondary3(18)
+write(s_verm_ca,'(F25.10)') secondary3(19)
+write(s_analcime,'(F25.10)') secondary3(20) 
+write(s_phillipsite,'(F25.10)') secondary3(21)
+write(s_diopside,'(F25.10)') secondary3(22)
+write(s_gismondine,'(F25.10)') secondary3(23)
+write(s_verm_mg,'(F25.10)') secondary3(24)
+write(s_natrolite,'(F25.10)') secondary3(25)
+write(s_talc,'(F25.10)') secondary3(26) !!!!!!!!!
+write(s_smectite_low,'(F25.10)') secondary3(27)
+write(s_prehnite,'(F25.10)') secondary3(28)
+write(s_chlorite,'(F25.10)') secondary3(29) !!!!!!!!
+write(s_scolecite,'(F25.10)') secondary3(30)
+write(s_clinochlore14a,'(F25.10)') secondary3(31)
+write(s_clinochlore7a,'(F25.10)') secondary3(32)
+write(s_saponite_ca,'(F25.10)') secondary3(33)
+write(s_verm_na,'(F25.10)') secondary3(34)
+write(s_pyrrhotite,'(F25.10)') secondary3(35)
+write(s_daphnite_7a,'(F25.10)') secondary3(36) !!!
+write(s_daphnite_14a,'(F25.10)') secondary3(37) !!!
 
 ! OTHER INFORMATION TO STRINGS
 write(s_temp,'(F25.10)') temp3
@@ -4204,60 +4243,46 @@ write(s_reactive,'(F25.10)') medium3(4)
 		&"    Goethite " // trim(s_precip) // trim(s_goethite) // kinetics //NEW_LINE('')// &
 		&"    Celadonite " // trim(s_precip) // trim(s_celadonite) // kinetics //NEW_LINE('')// & ! mica
 ! 		!&"    Celadonite -5.0 " // trim(s_celadonite) // kinetics //NEW_LINE('')// & ! mica
-! 		 !&"    Albite " // trim(s_precip) // trim(s_albite) // kinetics //NEW_LINE('')// & ! plagioclase
 ! 		!&"    Calcite " // trim(s_precip) // trim(s_calcite) // kinetics //NEW_LINE('')// & ! .135
 ! ! 		&"    Montmor-Na " // trim(s_precip) // trim(s_mont_na) // kinetics //NEW_LINE('')// & ! smectite
-! 		!&"    Montmor-K " // trim(s_precip) // trim(s_mont_k) // kinetics //NEW_LINE('')// & ! smectite
 ! 		!&"    Montmor-Mg " // trim(s_precip) // trim(s_mont_mg) // kinetics //NEW_LINE('')// & ! smectite
 ! 		&"    Montmor-Ca " // trim(s_precip) // trim(s_mont_ca) // kinetics //NEW_LINE('')// & ! smectite
- 		&"    Saponite-Mg " // trim(s_precip) // trim(s_saponite) // kinetics //NEW_LINE('')// & ! smectite
-! ! 		&"    Stilbite " // trim(s_precip) // trim(s_stilbite) // kinetics //NEW_LINE('')// & ! zeolite
+! 		&"    Saponite-Mg " // trim(s_precip) // trim(s_saponite) // kinetics //NEW_LINE('')// & ! smectite
 ! ! 		&"    Clinoptilolite-Ca " // trim(s_precip) // trim(s_clinoptilolite) // kinetics //NEW_LINE('')// & ! zeolite
 		&"    Pyrite " // trim(s_precip) // trim(s_pyrite) // kinetics //NEW_LINE('')// &
-! 		! &"    Quartz " // trim(s_precip) // trim(s_quartz) // kinetics //NEW_LINE('')// &
 ! ! 		&"    K-Feldspar " // trim(s_precip) // trim(s_kspar) // kinetics //NEW_LINE('')// &
- 		&"    Saponite-Na " // trim(s_precip) // trim(s_saponite_na) // kinetics //NEW_LINE('')// & ! smectite
+! 		&"    Saponite-Na " // trim(s_precip) // trim(s_saponite_na) // kinetics //NEW_LINE('')// & ! smectite
 ! 		&"    Nontronite-Na " // trim(s_precip) // trim(s_nont_na) // kinetics //NEW_LINE('')// & ! smectite
 ! 		&"    Nontronite-Mg " // trim(s_precip) // trim(s_nont_mg) // kinetics //NEW_LINE('')// & ! smectite
-! 		!&"    Nontronite-K " // trim(s_precip) // trim(s_nont_k) // kinetics //NEW_LINE('')// & ! smectite
 ! 		  &"    Fe-Celadonite " // trim(s_precip) // trim(s_fe_celadonite) // kinetics //NEW_LINE('')// & ! mica
 ! 		&"    Nontronite-Ca " // trim(s_precip) // trim(s_nont_ca) // kinetics //NEW_LINE('')// & ! smectite
-! ! 		 &"    Muscovite " // trim(s_precip) // trim(s_muscovite) // kinetics //NEW_LINE('')// & ! mica
 ! 		&"    Mesolite " // trim(s_precip) // trim(s_mesolite) // kinetics //NEW_LINE('')// & ! zeolite
-! ! 		&"    Anhydrite " // trim(s_precip) // trim(s_anhydrite) // kinetics //NEW_LINE('')// & ! formerly magnesite
- 		&"    Smectite-high-Fe-Mg " // trim(s_precip) // trim(s_smectite) // kinetics //NEW_LINE('')// & ! smectite
-! 		!&"    Saponite-K " // trim(s_precip) // trim(s_saponite_k) // kinetics //NEW_LINE('')// & ! smectite
+! 		&"    Smectite-high-Fe-Mg " // trim(s_precip) // trim(s_smectite) // kinetics //NEW_LINE('')// & ! smectite
 ! 		   &"    Vermiculite-Na " // trim(s_precip) // trim(s_verm_na) // kinetics //NEW_LINE('')// &
 ! 		!&"    Hematite " // trim(s_precip) // trim(s_hematite) // kinetics //NEW_LINE('')// &
 ! 		! &"    Hematite " // trim(si_hematite) // trim(s_hematite) // kinetics //NEW_LINE('')// &
 ! 		   &"    Vermiculite-Ca " // trim(s_precip) // trim(s_verm_ca) // kinetics //NEW_LINE('')// &
 ! 		&"    Analcime " // trim(s_precip) // trim(s_analcime) // kinetics //NEW_LINE('')// & ! zeolite
 ! 		&"    Phillipsite " // trim(s_precip) // trim(s_phillipsite) // kinetics //NEW_LINE('')// & ! zeolite
-! 		!&"    Diopside " // trim(s_precip) // trim(s_diopside) // kinetics //NEW_LINE('')// & ! pyroxene
 ! 		    !&"    Epidote  " // trim(s_precip) // trim(s_epidote) // kinetics //NEW_LINE('')// &
 ! ! 		   &"    Gismondine " // trim(s_precip) // trim(s_gismondine) // kinetics //NEW_LINE('')// & ! zeolite
-! 		!&"    Hedenbergite " // trim(s_precip) // trim(s_hedenbergite) // kinetics //NEW_LINE('')// & ! pyroxene
-! 		   !&"    Chalcedony " // trim(s_precip) // trim(s_chalcedony) // kinetics //NEW_LINE('')// & ! quartz
 ! 		   &"    Vermiculite-Mg " // trim(s_precip) // trim(s_verm_mg) // kinetics //NEW_LINE('')// &
-! ! 		&"    Ferrihydrite " // trim(s_precip) // trim(s_ferrihydrite) // kinetics //NEW_LINE('')// & ! iron oxyhydroxide
 ! 		&"    Natrolite " // trim(s_precip) // trim(s_natrolite) // kinetics //NEW_LINE('')// & ! zeolite
 		&"    Talc " // trim(s_precip) // trim(s_talc) // kinetics //NEW_LINE('')
 ! 		&"    Smectite-low-Fe-Mg 0.0 " // trim(s_smectite_low) // kinetics //NEW_LINE('')// & ! smectite
 ! 		  &"    Prehnite " // trim(s_precip) // trim(s_prehnite) // kinetics //NEW_LINE('')// &
 ! ! 		&"    Chlorite(14A) " // trim(s_precip) // trim(s_chlorite) // kinetics //NEW_LINE('')// & ! chlorite
 ! 		&"    Scolecite " // trim(s_precip) // trim(s_scolecite) // kinetics //NEW_LINE('')// & ! zeolite
-!  		&"    Chamosite-7A " // trim(s_precip) // trim(s_chamosite7a) // kinetics //NEW_LINE('')// & ! chlorite
-!  		&"    Clinochlore-14A " // trim(s_precip) // trim(s_clinochlore14a) // kinetics //NEW_LINE('')// & ! chlorite
-! ! ! 		&"    Clinochlore-7A " // trim(s_precip) // trim(s_clinochlore7a) // kinetics //NEW_LINE('')// & ! chlorite
-! ! 		&"   Saponite-Ca " // trim(s_precip) // trim(s_saponite_ca) // kinetics //NEW_LINE('')// & ! smectite
-! 		&"   Pyrrhotite " // trim(s_precip) // trim(s_pyrrhotite) // kinetics //NEW_LINE('')//& ! sulfide
-! 		  !&"   Magnetite " // trim(s_precip) // trim(s_magnetite) // kinetics //NEW_LINE('')// &
-!  		&"   Daphnite-7a " // trim(s_precip) // trim(s_daphnite_7a) // kinetics //NEW_LINE('')// & ! chlorite
-!  		&"   Daphnite-14a " // trim(s_precip) // trim(s_daphnite_14a) // kinetics //NEW_LINE('')! chlorite
-		  !&"   Vermiculite-K " // trim(s_precip) // trim(s_verm_k) // kinetics //NEW_LINE('')// &
-!		  &"   Aragonite " // trim(s_precip) // trim(s_aragonite) // kinetics //NEW_LINE('')// &
+!   		&"    Clinochlore-14A " // trim(s_precip) // trim(s_clinochlore14a) // kinetics //NEW_LINE('')// & ! chlorite
+! ! ! ! 		&"    Clinochlore-7A " // trim(s_precip) // trim(s_clinochlore7a) // kinetics //NEW_LINE('')// & ! chlorite
+! ! ! 		&"   Saponite-Ca " // trim(s_precip) // trim(s_saponite_ca) // kinetics //NEW_LINE('')// & ! smectite
+! ! 		&"   Pyrrhotite " // trim(s_precip) // trim(s_pyrrhotite) // kinetics //NEW_LINE('')//& ! sulfide
+
+!   		&"   Daphnite-7a " // trim(s_precip) // trim(s_daphnite_7a) // kinetics //NEW_LINE('')// & ! chlorite
+!   		&"   Daphnite-14a " // trim(s_precip) // trim(s_daphnite_14a) // kinetics //NEW_LINE('')! chlorite
+
 		! &" -force_equality"  //NEW_LINE('')// &
-! 		&"   Lepidocrocite " // trim(s_precip) // trim(s_lepidocrocite) // kinetics //NEW_LINE('')! iron oxyhydroxide
+
 		
 ! 		end if
 
@@ -4371,39 +4396,32 @@ write(s_reactive,'(F25.10)') medium3(4)
 		&"    -molalities HCO3-" //NEW_LINE('')// &
 		&"    -water true" //NEW_LINE('')// &
 		&"    -alkalinity" //NEW_LINE('')// &
-		&"    -p stilbite aragonite kaolinite albite saponite-mg celadonite Clinoptilolite-Ca" //NEW_LINE('')// &
-		&"    -p pyrite montmor-na goethite dolomite Smectite-high-Fe-Mg saponite-k anhydrite" //NEW_LINE('')// &
-		&"    -p siderite calcite quartz k-feldspar saponite-na nontronite-na nontronite-mg" //NEW_LINE('')// &
-		&"    -p nontronite-k fe_celadonite nontronite-ca muscovite mesolite hematite montmor-ca" //NEW_LINE('')// &
-		&"    -p vermiculate-ca analcime phillipsite diopside epidote gismondine hedenbergite" //NEW_LINE('')// &
-		&"    -p chalcedony vermiculite-mg ferrihydrite natrolite talc Smectite-low-Fe-Mg prehnite" //NEW_LINE('')// &
-		&"    -p chlorite scolecite chamosite-7a Clinochlore-14A Clinochlore-7A saponite-ca" //NEW_LINE('')// &
-		&"    -p vermiculite-na pyrrhotite magnetite Lepidocrocite Daphnite-7A Daphnite-14A" //NEW_LINE('')// &
-		! &"    -p vermiculite-k montmor-k montmor-mg" //NEW_LINE('')// &
-		!&"    -p vermiculite-k montmor-k" //NEW_LINE('')// &
-
-		&"    -s stilbite aragonite kaolinite albite saponite-mg celadonite Clinoptilolite-Ca" //NEW_LINE('')// &
-		&"    -s pyrite montmor-na goethite dolomite Smectite-high-Fe-Mg saponite-k anhydrite" //NEW_LINE('')// &
-		&"    -s siderite calcite quartz k-feldspar saponite-na nontronite-na nontronite-mg" //NEW_LINE('')// &
-		&"    -s nontronite-k fe-celadonite nontronite-ca muscovite mesolite hematite montmor-ca" //NEW_LINE('')// &
-		&"    -s vermiculate-ca analcime phillipsite diopside epidote gismondine hedenbergite" //NEW_LINE('')// &
-		&"    -s chalcedony vermiculite-mg ferrihydrite natrolite talc Smectite-low-Fe-Mg prehnite" //NEW_LINE('')// &
-		&"    -s chlorite scolecite chamosite-7a Clinochlore-14A Clinochlore-7A saponite-ca" //NEW_LINE('')// &
-		&"    -s vermiculite-na pyrrhotite magnetite Lepidocrocite Daphnite-7A Daphnite-14A" //NEW_LINE('')// &
-		! &"    -s vermiculite-k montmor-k montmor-mg" //NEW_LINE('')// &
-		!&"    -s vermiculite-k montmor-mg" //NEW_LINE('')// &
+		&"    -p kaolinite saponite-mg celadonite Clinoptilolite-Ca pyrite montmor-na goethite" //NEW_LINE('')// &
+		&"    -p Smectite-high-Fe-Mg calcite k-feldspar saponite-na nontronite-na nontronite-mg" //NEW_LINE('')// &
+		&"    -p fe-celadonite nontronite-ca mesolite hematite montmor-ca vermiculite-ca analcime" //NEW_LINE('')// &
+		&"    -p phillipsite diopside gismondine vermiculite-mg natrolite talc Smectite-low-Fe-Mg " //NEW_LINE('')// &
+		&"    -p prehnite chlorite(14a) scolecite Clinochlore-14A Clinochlore-7A saponite-ca" //NEW_LINE('')// &
+		&"    -p vermiculite-na pyrrhotite Daphnite-7A Daphnite-14A" //NEW_LINE('')// &
+		
+		
+		&"    -s kaolinite saponite-mg celadonite Clinoptilolite-Ca pyrite montmor-na goethite" //NEW_LINE('')// &
+		&"    -s Smectite-high-Fe-Mg calcite k-feldspar saponite-na nontronite-na nontronite-mg" //NEW_LINE('')// &
+		&"    -s fe-celadonite nontronite-ca mesolite hematite montmor-ca vermiculite-ca analcime" //NEW_LINE('')// &
+		&"    -s phillipsite diopside gismondine vermiculite-mg natrolite talc Smectite-low-Fe-Mg " //NEW_LINE('')// &
+		&"    -s prehnite chlorite(14a) scolecite Clinochlore-14A Clinochlore-7A saponite-ca" //NEW_LINE('')// &
+		&"    -s vermiculite-na pyrrhotite Daphnite-7A Daphnite-14A" //NEW_LINE('')// &
 		&"    -calculate_values R(sum) R(s_sp)" //NEW_LINE('')// &
 		&"    -time" //NEW_LINE('')// &
 		&"END"
 
 
-		if (my_id .eq. 40) then	
+		if (my_id .eq. 2) then	
 			call system_clock(countf, count_rate, count_max)
 			write(*,*) "	PROC 40 END LOADING" , countf - counti
 		end if
 
 
-		if (my_id .eq. 40) then	
+		if (my_id .eq. 2) then	
 			call system_clock(counti, count_rate, count_max)
 			write(*,*) "	PROC 40 START RUNNING"
 		end if
@@ -4427,7 +4445,7 @@ id = CreateIPhreeqc()
 ! 	STOP
 ! END IF
 
-if (my_id .eq. 40) then	
+if (my_id .eq. 2) then	
 	call system_clock(counti, count_rate, count_max)
 	write(*,*) "		R1 START"
 end if
@@ -4447,12 +4465,12 @@ IF (SetSelectedOutputStringOn(id, .TRUE.).NE.IPQ_OK) THEN
 	!STOP
 END IF
 
-if (my_id .eq. 40) then	
+if (my_id .eq. 2) then	
 	call system_clock(countf, count_rate, count_max)
 	write(*,*) "		R1 END" , countf - counti
 end if
 
-if (my_id .eq. 40) then	
+if (my_id .eq. 2) then	
 	call system_clock(counti, count_rate, count_max)
 	write(*,*) "		R2 START"
 end if
@@ -4462,12 +4480,12 @@ IF (SetOutputStringOn(id, .TRUE.).NE.IPQ_OK) THEN
 	!STOP
 END IF
 
-if (my_id .eq. 40) then	
+if (my_id .eq. 2) then	
 	call system_clock(countf, count_rate, count_max)
 	write(*,*) "		R2 END" , countf - counti
 end if
 
-if (my_id .eq. 40) then	
+if (my_id .eq. 2) then	
 	call system_clock(counti, count_rate, count_max)
 	write(*,*) "		R3 START"
 end if
@@ -4489,14 +4507,15 @@ IF (LoadDatabaseString(id, trim(L5)).NE.0) THEN
 	!STOP
 END IF
 
-if (my_id .eq. 40) then	
+if (my_id .eq. 2) then	
 	call system_clock(countf, count_rate, count_max)
 	write(*,*) "		R3 END" , countf - counti
 end if
 
-if (my_id .eq. 40) then	
+if (my_id .eq. 2) then	
 	call system_clock(counti, count_rate, count_max)
 	write(*,*) "		R4 START"
+	!write(*,*) inputz0
 end if
 
 ! RUN INPUT
@@ -4520,12 +4539,12 @@ IF (RunString(id, trim(inputz0)).NE.0) THEN
 	!STOP
 END IF
 
-if (my_id .eq. 40) then	
+if (my_id .eq. 2) then	
 	call system_clock(countf, count_rate, count_max)
 	write(*,*) "		R4 END" , countf - counti
 end if
 
-if (my_id .eq. 40) then	
+if (my_id .eq. 2) then	
 	call system_clock(counti, count_rate, count_max)
 	write(*,*) "		R5 START"
 end if
@@ -4556,19 +4575,19 @@ DO i=1,GetSelectedOutputStringLineCount(id)
 	end if
 END DO
 
-if (my_id .eq. 40) then	
+if (my_id .eq. 2) then	
 	call system_clock(countf, count_rate, count_max)
 	write(*,*) "		R5 END" , countf - counti
 end if
 
-if (my_id .eq. 40) then	
+if (my_id .eq. 2) then	
 	call system_clock(counti, count_rate, count_max)
 	write(*,*) "		R6 START"
 end if
   
 ! OUTPUT TO THE MAIN MASSACR METHOD
 alt0(1,:) = outmat(3,:)
-alt0(1,124:177) = outmat(2,124:177)
+!alt0(1,124:177) = outmat(2,124:177)
 alt_mat(m,:) = alt0(1,:)
 
 !write(*,*) "an output alt0: ", alt0
@@ -4607,7 +4626,7 @@ IF (DestroyIPhreeqc(id).NE.IPQ_OK) THEN
 END IF
 
 
-if (my_id .eq. 40) then	
+if (my_id .eq. 2) then	
 	call system_clock(countf, count_rate, count_max)
 	write(*,*) "		R6 END" , countf - counti
 end if
@@ -4615,12 +4634,12 @@ end if
 
 
 
-if (my_id .eq. 40) then	
+if (my_id .eq. 2) then	
 	call system_clock(countf, count_rate, count_max)
 	write(*,*) "	PROC 40 END RUNNING" , countf - counti
 end if
 
-if (my_id .eq. 40) then	
+if (my_id .eq. 2) then	
 	call system_clock(counti, count_rate, count_max)
 	write(*,*) "	PROC 40 START ASSEMBLING"
 end if
@@ -4628,41 +4647,12 @@ end if
 				solLocal(m,:) = (/ alt0(1,2), alt0(1,3), alt0(1,4), alt0(1,5), alt0(1,6), &
 				alt0(1,7), alt0(1,8), alt0(1,9), alt0(1,10), alt0(1,11), alt0(1,12), &
 				alt0(1,13), alt0(1,14), alt0(1,15), 0.0/)
-!
-! 				!write(*,*) solLocal(m,13)
-!
-! 				secLocal(m,:) = (/ alt0(1,16), alt0(1,18), alt0(1,20), alt0(1,22), alt0(1,24), alt0(1,26), alt0(1,28), &
-! 				alt0(1,30), alt0(1,32), alt0(1,34), alt0(1,36), alt0(1,38), alt0(1,40), alt0(1,42), &
-! 				alt0(1,44), alt0(1,46), alt0(1,48), alt0(1,50), alt0(1,52), alt0(1,54), alt0(1,56), &
-! 				alt0(1,58), alt0(1,60), alt0(1,62), alt0(1,64), alt0(1,66), alt0(1,68), alt0(1,70), &
-! 				alt0(1,72), alt0(1,74), alt0(1,76), alt0(1,78), alt0(1,80), alt0(1,82), alt0(1,84), &
-! 				alt0(1,86), alt0(1,88), alt0(1,90), alt0(1,92), alt0(1,94), alt0(1,96), alt0(1,98), &
-! 				alt0(1,100), alt0(1,102), alt0(1,104), alt0(1,106), alt0(1,108), alt0(1,110), alt0(1,112), &
-! 				alt0(1,114), alt0(1,116), alt0(1,118), alt0(1,120), alt0(1,122), & ! 54
-! 				!alt0(1,126), alt0(1,128), &
-!
-! 				alt0(1,124), alt0(1,125), &
-! 				alt0(1,126), alt0(1,127), &
-! 				alt0(1,128), alt0(1,129), &
-! 				alt0(1,130), alt0(1,131), alt0(1,132), alt0(1,133), alt0(1,134), alt0(1,135), alt0(1,136), &
-! 				alt0(1,137), alt0(1,138), alt0(1,139), alt0(1,140), &
-! 				alt0(1,141), alt0(1,142), alt0(1,143), alt0(1,144), alt0(1,145), alt0(1,146), &
-! 				alt0(1,147), alt0(1,148), alt0(1,149), alt0(1,150), alt0(1,151), alt0(1,152), &
-! 				alt0(1,153), alt0(1,154), alt0(1,155), alt0(1,156), alt0(1,157), alt0(1,158), &
-! 				alt0(1,159), alt0(1,160), alt0(1,161), alt0(1,162), alt0(1,163), alt0(1,164), &
-! 				alt0(1,165), alt0(1,166), alt0(1,167), alt0(1,168), alt0(1,169), alt0(1,170), &
-! 				alt0(1,171), alt0(1,172), alt0(1,173), alt0(1,174), alt0(1,175), alt0(1,176), &
-! 				alt0(1,177)/) ! 108
-! 				!alt0(1,177), alt0(1,178), alt0(1,179), alt0(1,180), alt0(1,181), alt0(1,182), &
-! 				!alt0(1,183), alt0(1,184), alt0(1,185), alt0(1,186)/)
-! 				!alt0(1,183)/)
-				priLocal(m,:) = (/ 0.0*alt0(1,187), alt0(1,178), alt0(1,180), alt0(1,182), alt0(1,184)/)
 
-				!write(*,*) priLocal(m,5)
+				priLocal(m,:) = (/ 0.0*alt0(1,136), alt0(1,127), alt0(1,129), alt0(1,131), alt0(1,133)/)
 
-				! medLocal(m,1:3) = (/ alt0(1,187), alt0(1,187), alt0(1,4)/)
-				medLocal(m,3) = alt0(1,4)
-
+!
+! 				medLocal(m,3) = alt0(1,4)
+!
 			if (alt0(1,2) .lt. 1.0) then
 				medLocal(m,5) = 0.0
 				solLocal(m,:) = (/ solute3(1), solute3(2), solute3(3), solute3(4), solute3(5), &
@@ -4670,149 +4660,24 @@ end if
 				solute3(12), solute3(13), solute3(14), 0.0/)
 			end if
 
-! 			if (alt0(1,2) .lt. 1.0) then
-! 				medLocal(m,5) = 0.0
-! 				solLocal(m,:) = (/ solute3(1), solute3(2), solute3(3), solute3(4), solute3(5), &
-! 				solute3(6), solute3(7), solute3(8), solute3(9), solute3(10), solute3(11), &
-! 				solute3(12), solute3(13), solute3(14), 0.0/)
-! 			end if
-
 			end if ! end if-cell-is-on loop (medLocl 5 == 1)
 
 		end do ! end m = 1,num rows, ran chem for each row and populated local arrays
-		
-! 		solLocal = 0.0
-! 		solLocal(:,1) = alt_mat(:,2)
-! 		solLocal(:,2) = alt_mat(:,3)
-! 		solLocal(:,3) = alt_mat(:,4)
-! 		solLocal(:,4) = alt_mat(:,5)
-! 		solLocal(:,5) = alt_mat(:,6)
-! 		solLocal(:,6) = alt_mat(:,7)
-! 		solLocal(:,7) = alt_mat(:,8)
-! 		solLocal(:,8) = alt_mat(:,9)
-! 		solLocal(:,9) = alt_mat(:,10)
-! 		solLocal(:,10) = alt_mat(:,11)
-! 		solLocal(:,11) = alt_mat(:,12)
-! 		solLocal(:,12) = alt_mat(:,13)
-! 		solLocal(:,13) = alt_mat(:,14)
-! 		solLocal(:,14) = alt_mat(:,15)
-		
+
 		secLocal = 0.0
 		do m=1,g_sec/2
 			secLocal(:,m) = alt_mat(:,2*m+14)
 		end do
-! 		secLocal(:,1) = alt_mat(:,16)
-! 		secLocal(:,2) = alt_mat(:,18)
-! 		secLocal(:,3) = alt_mat(:,20)
-! 		secLocal(:,4) = alt_mat(:,22)
-! 		secLocal(:,5) = alt_mat(:,24)
-! 		secLocal(:,6) = alt_mat(:,26)
-! 		secLocal(:,7) = alt_mat(:,28)
-! 		secLocal(:,8) = alt_mat(:,30)
-! 		secLocal(:,9) = alt_mat(:,32)
-! 		secLocal(:,10) = alt_mat(:,34)
-! 		secLocal(:,11) = alt_mat(:,36)
-! 		secLocal(:,12) = alt_mat(:,38)
-! 		secLocal(:,13) = alt_mat(:,40)
-! 		secLocal(:,14) = alt_mat(:,42)
-! 		secLocal(:,15) = alt_mat(:,44)
-! 		secLocal(:,16) = alt_mat(:,46)
-! 		secLocal(:,17) = alt_mat(:,48)
-! 		secLocal(:,18) = alt_mat(:,50)
-! 		secLocal(:,19) = alt_mat(:,52)
-! 		secLocal(:,20) = alt_mat(:,54)
-! 		secLocal(:,21) = alt_mat(:,56)
-! 		secLocal(:,22) = alt_mat(:,58)
-! 		secLocal(:,23) = alt_mat(:,60)
-! 		secLocal(:,24) = alt_mat(:,62)
-! 		secLocal(:,25) = alt_mat(:,64)
-! 		secLocal(:,26) = alt_mat(:,66)
-! 		secLocal(:,27) = alt_mat(:,68)
-! 		secLocal(:,28) = alt_mat(:,70)
-! 		secLocal(:,29) = alt_mat(:,72)
-! 		secLocal(:,30) = alt_mat(:,74)
-!
-! 		secLocal(:,31) = alt_mat(:,76)
-! 		secLocal(:,32) = alt_mat(:,70)
-! 		secLocal(:,33) = alt_mat(:,80)
-! 		secLocal(:,34) = alt_mat(:,82)
-! 		secLocal(:,35) = alt_mat(:,84)
-! 		secLocal(:,36) = alt_mat(:,86)
-! 		secLocal(:,37) = alt_mat(:,88)
-! 		secLocal(:,38) = alt_mat(:,90)
-! 		secLocal(:,39) = alt_mat(:,92)
-!
-! 		secLocal(:,40) = alt_mat(:,94)
-! 		secLocal(:,41) = alt_mat(:,96)
-! 		secLocal(:,42) = alt_mat(:,98)
-! 		secLocal(:,43) = alt_mat(:,100)
-! 		secLocal(:,44) = alt_mat(:,102)
-! 		secLocal(:,45) = alt_mat(:,104)
-! 		secLocal(:,46) = alt_mat(:,106)
-! 		secLocal(:,47) = alt_mat(:,108)
-! 		secLocal(:,48) = alt_mat(:,110)
-! 		secLocal(:,49) = alt_mat(:,112)
-! 		secLocal(:,50) = alt_mat(:,114)
-!
-! 		secLocal(:,51) = alt_mat(:,116)
-! 		secLocal(:,52) = alt_mat(:,118)
-! 		secLocal(:,53) = alt_mat(:,120)
-! 		secLocal(:,54) = alt_mat(:,122)
-		
-		
-! 		solLocal(:,:) = (/ alt_mat(:,2), alt_mat(:,3), alt_mat(:,4), alt_mat(:,5), alt_mat(:,6), &
-! 		alt_mat(:,7), alt_mat(:,8), alt_mat(:,9), alt_mat(:,10), alt_mat(:,11), alt_mat(:,12), &
-! 		alt_mat(:,13), alt_mat(:,14), alt_mat(:,15), 0.0/)
-!
-		!write(*,*) solLocal(m,13)
-!
-! 		secLocal(m,:) = (/ alt0(1,16), alt0(1,18), alt0(1,20), alt0(1,22), alt0(1,24), alt0(1,26), alt0(1,28), &
-! 		alt0(1,30), alt0(1,32), alt0(1,34), alt0(1,36), alt0(1,38), alt0(1,40), alt0(1,42), &
-! 		alt0(1,44), alt0(1,46), alt0(1,48), alt0(1,50), alt0(1,52), alt0(1,54), alt0(1,56), &
-! 		alt0(1,58), alt0(1,60), alt0(1,62), alt0(1,64), alt0(1,66), alt0(1,68), alt0(1,70), &
-! 		alt0(1,72), alt0(1,74), alt0(1,76), alt0(1,78), alt0(1,80), alt0(1,82), alt0(1,84), &
-! 		alt0(1,86), alt0(1,88), alt0(1,90), alt0(1,92), alt0(1,94), alt0(1,96), alt0(1,98), &
-! 		alt0(1,100), alt0(1,102), alt0(1,104), alt0(1,106), alt0(1,108), alt0(1,110), alt0(1,112), &
-! 		alt0(1,114), alt0(1,116), alt0(1,118), alt0(1,120), alt0(1,122), & ! 54
-! 		!alt0(1,126), alt0(1,128), &
-!
-! 		alt0(1,124), alt0(1,125), &
-! 		alt0(1,126), alt0(1,127), &
-! 		alt0(1,128), alt0(1,129), &
-! 		alt0(1,130), alt0(1,131), alt0(1,132), alt0(1,133), alt0(1,134), alt0(1,135), alt0(1,136), &
-! 		alt0(1,137), alt0(1,138), alt0(1,139), alt0(1,140), &
-! 		alt0(1,141), alt0(1,142), alt0(1,143), alt0(1,144), alt0(1,145), alt0(1,146), &
-! 		alt0(1,147), alt0(1,148), alt0(1,149), alt0(1,150), alt0(1,151), alt0(1,152), &
-! 		alt0(1,153), alt0(1,154), alt0(1,155), alt0(1,156), alt0(1,157), alt0(1,158), &
-! 		alt0(1,159), alt0(1,160), alt0(1,161), alt0(1,162), alt0(1,163), alt0(1,164), &
-! 		alt0(1,165), alt0(1,166), alt0(1,167), alt0(1,168), alt0(1,169), alt0(1,170), &
-! 		alt0(1,171), alt0(1,172), alt0(1,173), alt0(1,174), alt0(1,175), alt0(1,176), &
-! 		alt0(1,177)/) ! 108
-! 		!alt0(1,177), alt0(1,178), alt0(1,179), alt0(1,180), alt0(1,181), alt0(1,182), &
-! 		!alt0(1,183), alt0(1,184), alt0(1,185), alt0(1,186)/)
-! 		!alt0(1,183)/)
-! 		priLocal(m,:) = (/ 0.0*alt0(1,187), alt0(1,178), alt0(1,180), alt0(1,182), alt0(1,184)/)
-!
-! 		!write(*,*) priLocal(m,5)
-!
-! 		! medLocal(m,1:3) = (/ alt0(1,187), alt0(1,187), alt0(1,4)/)
-! 		medLocal(m,3) = alt0(1,4)
-!
-! 	if (alt0(1,2) .lt. 1.0) then
-! 		medLocal(m,5) = 0.0
-! 		solLocal(m,:) = (/ solute3(1), solute3(2), solute3(3), solute3(4), solute3(5), &
-! 		solute3(6), solute3(7), solute3(8), solute3(9), solute3(10), solute3(11), &
-! 		solute3(12), solute3(13), solute3(14), 0.0/)
-! 	end if
 
 
-if (my_id .eq. 40) then	
+
+if (my_id .eq. 2) then	
 	call system_clock(countf, count_rate, count_max)
 	write(*,*) "	PROC 40 END ASSEMBLING" , countf - counti
 end if
 
 
-if (my_id .eq. 40) then	
+if (my_id .eq. 2) then	
 	call system_clock(counti, count_rate, count_max)
 	write(*,*) "	PROC 40 START SENDING"
 end if
@@ -4843,7 +4708,7 @@ end if
 			return_data_tag, MPI_COMM_WORLD, ierr)
 		end do
 		
-if (my_id .eq. 40) then	
+if (my_id .eq. 2) then	
 	call system_clock(countf, count_rate, count_max)
 	write(*,*) "	PROC 40 END SENDING" , countf - counti
 end if
