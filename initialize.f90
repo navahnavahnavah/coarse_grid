@@ -54,6 +54,8 @@ real(4) :: secondaryMat_d(xn*tn/(cellx*(mstep*ar)),yn/(2*celly),g_sec)
 real(4) :: soluteMat_d(xn*tn/(cellx*(mstep*ar)),yn/(2*celly),g_sol)
 real(4) :: mediumMat_d(xn*tn/(cellx*(mstep*ar)),yn/(2*celly),g_med)
 
+real(4) :: t_vol_s, t_vol_a, t_vol_b
+
 ! ! coarse/mean arrays added for super duper coarse grid 03/25/17
 real(4) :: h_coarse(xn/cellx,yn/(2*celly))
 ! real(4) :: pri_coarse(xn/cellx,yn/celly,g_pri)
@@ -247,6 +249,10 @@ ki=2.0/(1000.0*4186.0)
 
 !--------------GEOCHEMICAL INITIAL CONDITIONS
 
+t_vol_s = 0.30
+t_vol_a = 0.28
+t_vol_b = 0.02
+
 ! primary minerals [mol]
 primary(:,:,:) = 0.0
 primary(:,:,1) = 0.0 !1.29600 ! feldspar
@@ -267,7 +273,7 @@ primary_b(:,:,1) = 0.0  ! feldspar
 primary_b(:,:,2) = 0.1 ! plag
 primary_b(:,:,3) = 0.1 ! pyr
 primary_b(:,:,4) = 0.1 ! ol
-primary_b(:,:,5) = 0.1  ! basaltic glass
+primary_b(:,:,5) = 0.0  ! basaltic glass
 
 ! ! speed test
 ! primary(:,:,:) = 0.0
@@ -286,52 +292,52 @@ saturation(:,:,:) = 0.0
 ! from elderfield 1999, and other places
 solute(:,:,1) = 8.2      ! ph
 solute(:,:,2) = .00243   ! Alk 1.6e-3
-solute(:,:,3) = .266*1.1     ! water mass
+solute(:,:,3) = t_vol_s     ! water mass
 solute(:,:,4) = .002100  ! param_dic , TOTAL C
 solute(:,:,5) = .01028   ! Ca
 ! solute(1:xn/(4*cellx),:,5) = .01428
 solute(:,:,6) = .0528    ! Mg
 solute(:,:,7) = .460     ! Na
 solute(:,:,8) = .00995   ! K
-solute(:,:,9) = 1.0e-10!0.0      ! Fe
+solute(:,:,9) = 0.0      ! Fe
 solute(:,:,10) = .028    ! S(6)
-solute(:,:,11) = 1.0e-10!0.0     ! Si
+solute(:,:,11) = 0.0     ! Si
 solute(:,:,12) = .540    ! Cl
-solute(:,:,13) =  1.0e-10!0.0 ! Al
+solute(:,:,13) =  0.0 ! Al
 solute(:,:,14) = .00245  ! inert
 solute(:,:,15) = 0.0     ! CO3-2
 
 solute_a(:,:,1) = 8.2      ! ph
 solute_a(:,:,2) = .00243   ! Alk 1.6e-3
-solute_a(:,:,3) = .266     ! water mass
+solute_a(:,:,3) = t_vol_a   ! water mass
 solute_a(:,:,4) = .002100  ! param_dic , TOTAL C
 solute_a(:,:,5) = .01028   ! Ca
 ! solute_a(1:xn/(4*cellx),:,5) = .01428
 solute_a(:,:,6) = .0528    ! Mg
 solute_a(:,:,7) = .460     ! Na
 solute_a(:,:,8) = .00995   ! K
-solute_a(:,:,9) = 1.0e-10!0.0      ! Fe
+solute_a(:,:,9) = 0.0      ! Fe
 solute_a(:,:,10) = .028    ! S(6)
-solute_a(:,:,11) = 1.0e-10!0.0     ! Si
+solute_a(:,:,11) = 0.0     ! Si
 solute_a(:,:,12) = .540    ! Cl
-solute_a(:,:,13) =  1.0e-10!0.0 ! Al
+solute_a(:,:,13) =  0.0 ! Al
 solute_a(:,:,14) = .00245  ! inert
 solute_a(:,:,15) = 0.0     ! CO3-2
 
 solute_b(:,:,1) = 8.2      ! ph
 solute_b(:,:,2) = .00243   ! Alk 1.6e-3
-solute_b(:,:,3) = 0.0266   ! water mass
+solute_b(:,:,3) = t_vol_b  ! water mass
 solute_b(:,:,4) = .002100  ! param_dic , TOTAL C
 solute_b(:,:,5) = .01028   ! Ca
 ! solute_b(1:xn/(4*cellx),:,5) = .01428
 solute_b(:,:,6) = .0528    ! Mg
 solute_b(:,:,7) = .460     ! Na
 solute_b(:,:,8) = .00995   ! K
-solute_b(:,:,9) = 1.0e-10!      ! Fe
+solute_b(:,:,9) = 0.0      ! Fe
 solute_b(:,:,10) = .028    ! S(6)
-solute_b(:,:,11) = 1.0e-10!     ! Si
+solute_b(:,:,11) = 0.0    ! Si
 solute_b(:,:,12) = .540    ! Cl
-solute_b(:,:,13) =  1.0e-10! ! Al
+solute_b(:,:,13) =  0.0 ! Al
 solute_b(:,:,14) = .00245  ! inert
 solute_b(:,:,15) = 0.0     ! CO3-2
 
@@ -357,7 +363,7 @@ end do
 sol_index = (/2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13/)
 !            alk dic ca mg na k  fe s   si  cl  al
 
-volume_ratio = 10.0
+volume_ratio = t_vol_a/t_vol_b
 mix_ratio = dt*mstep/tb_res
 
 !soluteOcean(5) = 0.011
@@ -370,7 +376,7 @@ mix_ratio = dt*mstep/tb_res
 
 medium(:,:,1) = .1          ! phiCoarse
 medium(:,:,2) = 0.0         ! precip
-medium(:,:,3) = 0.266*1.1       ! water_volume
+medium(:,:,3) = t_vol_s       ! water_volume
 vol_i = medium(1,1,3)
 medium(:,:,4) = 0.01        ! reactive fraction now!
 ! medium(:,:,5) = 1.0         ! rxn toggle
@@ -383,7 +389,7 @@ medium(:,:,7) = 0.0         ! y-coord
 
 medium_a(:,:,1) = .1          ! phiCoarse
 medium_a(:,:,2) = 0.0         ! precip toggle
-medium_a(:,:,3) = 0.266       ! water_volume
+medium_a(:,:,3) = t_vol_a       ! water_volume
 vol_i_a = medium_a(1,1,3)
 medium_a(:,:,4) = 0.01        ! reactive fraction now!
 medium_a(:,:,5) = 1.0         ! rxn toggle
@@ -395,7 +401,7 @@ medium_a(:,:,7) = 0.0         ! y-coord
 
 medium_b(:,:,1) = .1          ! phiCoarse
 medium_b(:,:,2) = 0.0         ! precip toggle
-medium_b(:,:,3) = 0.0266      ! water_volume
+medium_b(:,:,3) = t_vol_b     ! water_volume
 vol_i_b = medium_b(1,1,3)
 medium_b(:,:,4) = 0.01        ! reactive fraction now!
 medium_b(:,:,5) = 1.0         ! rxn toggle

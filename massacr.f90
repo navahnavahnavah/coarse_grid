@@ -3852,8 +3852,6 @@ else
 	leng = (yn/(2*celly))*(xn/cellx)
 	! message receiving has to happen every mth step
 	
-			param_exp_string = '0.0025'
-			param_exp1_string = '0.0025'
 
 			param_ol_string ='-f MgO 1.0 FeO 1.0 SiO2 1.0'
 			!param_ol_string ='-f MgO 2.0 SiO2 1.0'
@@ -3868,25 +3866,29 @@ else
 			! 		&"-f FeO 2.0 SiO2 2.0 " //NEW_LINE('')// & ! ferrosilite
 			! 		&"-f CaO 2.0 SiO2 2.0 " //NEW_LINE('')// & ! wollastonite
 
-!			exp_ol1 = "2.0"
-			exp_ol1 = "0.0025"
-! 			exp_ol2 = "0.1"
-! 			exp_ol3 = "0.1"
 
-			exp_ol = exp_ol1
-
-			! exp_pyr1 = "2.0"
-			exp_pyr1 = "0.0025"
-! 			exp_pyr2 = "0.1"
-! 			exp_pyr3 = "0.1"
-
-			exp_pyr = exp_pyr1
-
-			exp_plag1 = "0.25"
-! 			exp_plag2 = "0.1"
-! 			exp_plag3 = "0.1"
-
-			exp_plag = exp_plag1
+! 			param_exp_string = '0.0025'
+! 			param_exp1_string = '0.0025'
+!
+! !			exp_ol1 = "2.0"
+! 			exp_ol1 = "0.0025"
+! ! 			exp_ol2 = "0.1"
+! ! 			exp_ol3 = "0.1"
+!
+! 			exp_ol = exp_ol1
+!
+! 			! exp_pyr1 = "2.0"
+! 			exp_pyr1 = "0.0025"
+! ! 			exp_pyr2 = "0.1"
+! ! 			exp_pyr3 = "0.1"
+!
+! 			exp_pyr = exp_pyr1
+!
+! 			exp_plag1 = "0.25"
+! ! 			exp_plag2 = "0.1"
+! ! 			exp_plag3 = "0.1"
+!
+! 			exp_plag = exp_plag1
 
 			ol_k1 = "10.0^(-4.8)"
 			ol_e1 = "94.4"
@@ -4091,6 +4093,36 @@ write(s_basalt3,'(F25.10)') primary3(2)
 write(s_basalt2,'(F25.10)') primary3(3)
 write(s_basalt1,'(F25.10)') primary3(4)
 write(s_glass,'(F25.10)') primary3(5)
+
+
+exp_ol = "0.01"
+exp_pyr = "0.01"
+exp_plag = "1.0"
+param_exp_string = "0.01"
+
+! ! solo
+! if ((primary3(5) .gt. 0.0) .and. (primary3(4) .gt. 0.0) .and. (primary3(3) .gt. 0.0) .and. (primary3(2) .gt. 0.0)) then
+! 	exp_ol = "0.0025"
+! 	exp_pyr = "0.0025"
+! 	exp_plag = "0.25"
+! 	param_exp_string = "0.0025"
+! end if
+!
+! ! chamber a
+! if ((primary3(5) .gt. 0.0) .and. (primary3(4) .le. 0.0) .and. (primary3(3) .le. 0.0) .and. (primary3(2) .le. 0.0)) then
+! 	exp_ol = "0.0025"
+! 	exp_pyr = "0.0025"
+! 	exp_plag = "0.25"
+! 	param_exp_string = "0.0025"
+! end if
+
+! chamber b
+if ((primary3(5) .le. 0.0) .and. (primary3(4) .gt. 0.0) .and. (primary3(3) .gt. 0.0) .and. (primary3(2) .gt. 0.0)) then
+	exp_ol = "0.003"
+	exp_pyr = "0.003"
+	exp_plag = "0.3"
+	!param_exp_string = "0.003"
+end if
 
 ! SECONDARIES TO STRINGS
 ! ! write(s_stilbite,'(F25.10)') secondary3(1)
