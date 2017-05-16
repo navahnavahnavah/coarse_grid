@@ -1,10 +1,10 @@
 ! ----------------------------------------------------------------------------------%%
 !
-! MASSACR 
-! 
+! MASSACR
+!
 ! SUMMARY: main method runs fluid dynamic simulation coupled to geochemical
 !          simulation and writes selected model output to file
-! 
+!
 ! TO RUN: make -f theMakeFile
 !		  mpirun -np 4 ./massacr
 !
@@ -18,14 +18,14 @@ use initialize
 !use netcdf
 
 implicit none
- 
+
 include 'mpif.h'
 INCLUDE "IPhreeqc.f90.inc"
 save
 
 ! functions within massacr.f90
 interface
-	
+
 	! solves thermal energy equation
 	function h_next (h, psi, rho_in, phi_in, u_in, v_in, frac6_in, temp6_in, dt_in)
 		use globals
@@ -33,7 +33,7 @@ interface
 		implicit none
 		! integers
 		integer :: i, j, n, ii, m=3
-		! inputs 
+		! inputs
 		real(4) :: sx, sy, qx, qy, rho_in(xn,yn), phi_in(xn,yn)
 		! velocity stuff
 		real(4) :: uf(xn,yn), vf(xn,yn), u_in(xn,yn), v_in(xn,yn)
@@ -71,9 +71,9 @@ interface
 		real(4) :: rhoLong(longP)
 		real(4) :: permx(xn,yn), permy(xn,yn), frac6_in(yn,2)
 	end function psi_next
-	
-	
-	
+
+
+
 	function make_band(perm_in,phi_in,permx,permy,rho_in)
 		use globals
 		use initialize
@@ -87,8 +87,8 @@ interface
 		real(4) :: permx_left_long(longP), permx_right_long(longP), permy_bottom_long(longP), permy_top_long(longP)
 		real(4) :: perm_long(longP)
 	end function make_band
-	
-	
+
+
 	function particles_next (trace_in, uTransport, vTransport, inval, num, num_sat)
 		use globals
 		use initialize
@@ -99,7 +99,7 @@ interface
 		real(4) :: u_wt, v_wt, inval
 		real(4) :: rando
 	end function particles_next
-		
+
 	! transports solutes
 ! 	function solute_next(sol, uTransport, vTransport, seaw)
 ! 		use globals
@@ -123,8 +123,8 @@ interface
 ! 		real(4) :: bm1(xn,yn), b0(xn,yn), bp1(xn,yn), correction, sigma1, sigma2, sigma1a, sigma1b, sigma2a, sigma2b
 ! 		real(4) :: sigma3, sigma4, sigma3a, sigma3b, sigma4a, sigma4b, sigma5, sigma6
 ! 	end function solute_next
-	
-	
+
+
 	function solute_next(sol, uTransport, vTransport, seaw)
 		use globals
 		use initialize
@@ -143,9 +143,9 @@ interface
 		real(4) :: bm1(xn,yn), b0(xn,yn), bp1(xn,yn), correction, sigma1, sigma2, sigma1a, sigma1b, sigma2a, sigma2b
 		real(4) :: sigma3, sigma4, sigma3a, sigma3b, sigma4a, sigma4b, sigma5, sigma6
 	end function solute_next
-	
-	
-	
+
+
+
 	function solute_next_coarse (sol, uTransport, vTransport, seaw)
 		use globals
 		use initialize
@@ -164,7 +164,7 @@ interface
 		real(4) :: bm1(xn/cellx,yn/(2*celly)), b0(xn/cellx,yn/(2*celly)), bp1(xn/cellx,yn/(2*celly)), correction, sigma1, sigma2, sigma1a, sigma1b, sigma2a, sigma2b
 		real(4) :: sigma3, sigma4, sigma3a, sigma3b, sigma4a, sigma4b, sigma5, sigma6
 	end function solute_next_coarse
-	
+
 
 	! calculates fluid density
 	function rho_next (h_in)
@@ -174,7 +174,7 @@ interface
 		integer :: i,j
 		real(4) :: h_in(xn,yn), rho_next(xn,yn)
 	end function rho_next
-	
+
 	! calculates fluid density
 	function rho_one(h_in)
 		use globals
@@ -183,7 +183,7 @@ interface
 		integer :: i,j
 		real(4) :: h_in, rho_one
 	end function rho_one
-	
+
 	! calculates viscosity
 	function visc_next(h_in)
 		use globals
@@ -220,7 +220,7 @@ interface
 		real(4) :: array(rows,cols), d1, d2, d
 		real(4) :: partial(rows,cols)
 	end function partial
-	
+
 	function partial_coarse(array,rows,cols,d1,d2,dim)
 		use globals
 		use initialize
@@ -229,8 +229,8 @@ interface
 		real(4) :: array(rows,cols), d1, d2, d
 		real(4) :: partial_coarse(rows,cols)
 	end function partial_coarse
-	
-	
+
+
 	! calculates partial derivative of any 1D or 2D array
 	function partial_edge(array,rows,cols,d1,d2,dim)
 		use globals
@@ -240,7 +240,7 @@ interface
 		real(4) :: array(rows,cols), d1, d2, d
 		real(4) :: partial_edge(rows,cols)
 	end function partial_edge
-	
+
 	! calculates partial derivative of any 1D or 2D array
 	function partial_edge_p(array,rows,cols,d1,d2,dim)
 		use globals
@@ -266,13 +266,13 @@ interface
 		use globals
 		implicit none
 		integer :: n, j, output_status, unit0
-		character ( len = * ) filename 
+		character ( len = * ) filename
 		real(4)  :: vector(n), write_vec
 	end function write_vec
 
 end interface
 
-!--------------DECLARE EVERYTHING 
+!-DECLARE EVERYTHING
 
 ! dependent variable arrays
 real(4) :: h(xn,yn), psi(xn,yn), pside(xn,yn) ! xn rows deep & yn columns wide
@@ -333,7 +333,6 @@ real(4) :: local_mean, global_mean
 real(4) :: hLocal((xn/cellx)*(yn/(2*celly))), dt_local
 integer :: order
 
-!-reformat chem
 
 ! formatted message passing arrays
 real(4) :: hLong(3*(xn/cellx)*(yn/(2*celly)))
@@ -409,7 +408,7 @@ character(len=25) :: s_verm_ca, s_analcime, s_phillipsite, s_clinozoisite, s_ver
 character(len=25) :: s_diopside, s_epidote, s_minnesotaite, s_ferrite_ca, s_foshagite
 character(len=25) :: s_gismondine, s_gyrolite, s_hedenbergite, s_chalcedony, s_verm_mg
 character(len=25) :: s_ferrihydrite, s_lawsonite, s_merwinite, s_monticellite, s_natrolite
-character(len=25) :: s_talc, s_smectite_low, s_prehnite, s_chlorite, s_rankinite 
+character(len=25) :: s_talc, s_smectite_low, s_prehnite, s_chlorite, s_rankinite
 character(len=25) :: s_scolecite, s_tobermorite_9a, s_tremolite, s_chamosite7a, s_clinochlore14a
 character(len=25) :: s_clinochlore7a, s_andradite
 character(len=25) :: s_saponite_ca, s_troilite, s_pyrrhotite, s_lepidocrocite, s_daphnite_7a
@@ -418,7 +417,7 @@ character(len=25) :: s_siderite, s_kaolinite, s_goethite, s_dolomite, s_celadoni
 character(len=25) :: s_sio2, s_albite, s_calcite, s_mont_na, s_smectite, s_saponite ! secondary
 character(len=25) :: s_stilbite, s_saponite_k, s_anhydrite, s_clinoptilolite, s_pyrite ! secondary
 character(len=25) :: s_quartz, s_kspar, s_saponite_na, s_nont_na, s_nont_mg, s_nont_k ! secondary
-character(len=25) :: s_fe_celadonite, s_nont_ca, s_muscovite, s_mesolite, s_hematite, s_diaspore ! 
+character(len=25) :: s_fe_celadonite, s_nont_ca, s_muscovite, s_mesolite, s_hematite, s_diaspore !
 character(len=25) :: s_feldspar, s_pigeonite, s_augite, s_glass, s_magnetite ! primary
 character(len=25) :: s_laumontite, s_mont_k, s_mont_mg, s_mont_ca
 ! mid may 2017 minerals
@@ -1085,7 +1084,7 @@ L5 = "#  $Id: llnl.dat 4023 2010-02-09 21:02:42Z dlpark $" //NEW_LINE('')// &
 &"        -analytical     51.578          0.0     -11168.9        -14.865         0.0" //NEW_LINE('')// &
 
 
-		
+
 &"1.0000 SO4-- + 1.0000 Ca++  =  CaSO4" //NEW_LINE('')// &
 &"        -llnl_gamma           3.0    " //NEW_LINE('')// &
 &"        log_k           +2.1111" //NEW_LINE('')// &
@@ -2312,7 +2311,7 @@ L5 = "#  $Id: llnl.dat 4023 2010-02-09 21:02:42Z dlpark $" //NEW_LINE('')// &
 &"  log_k  40.17  #" //NEW_LINE('')// &
 &"  delta_h  -354.987   kJ/mol  #" //NEW_LINE('')// &
 &"  # Enthalpy of formation:    -6139.206  kJ/mol  07VIE" //NEW_LINE('')// &
-  
+
 ! FROM SIT.dat
 &"Fe-Saponite-Ca" //NEW_LINE('')// &
 ! &"Ca0.17Fe3Al0.34Si3.66O10(OH)2 = +0.170Ca+2     +3.000Fe+2     +0.340Al+3     -7.360H+     +3.660H4(SiO4)     -2.640H2O" //NEW_LINE('')// &
@@ -2372,7 +2371,7 @@ L5 = "#  $Id: llnl.dat 4023 2010-02-09 21:02:42Z dlpark $" //NEW_LINE('')// &
 
 
 &""! //NEW_LINE('')// &
- 
+
 
 
 write(*,*) "testing..."
@@ -2380,7 +2379,7 @@ write(*,*) "testing..."
 ! ! initialize domain geometry
 ! call init()
 
-!--------------INITIALIZE ALL PROCESSORS
+!-INITIALIZE ALL PROCESSORS
 
 ! process #0 is the root process
 root_process = 0
@@ -2397,9 +2396,9 @@ write(*,*) "my_id:", my_id
 write(*,*) " "
 
 ! what to do if you are the master processor
-if (my_id .eq. root_process) then 
+if (my_id .eq. root_process) then
 
-!--------------DO STUFF WITH THE MASTER PROCESSOR
+!-DO STUFF WITH THE MASTER PROCESSOR
 
 ! initialize domain geometry
 call init()
@@ -2417,11 +2416,11 @@ phi0 = phi
 ! fill coordinate arrays
 do i = 1,(xn/cellx)
 	do ii = 1,(yn/(2*celly))
-		medium(i,ii,6) = x(i*cellx) 
-		medium(i,ii,7) = y(ii*celly+yn/(2*cell)) 
-		medium_a(i,ii,6) = x(i*cellx) 
+		medium(i,ii,6) = x(i*cellx)
+		medium(i,ii,7) = y(ii*celly+yn/(2*cell))
+		medium_a(i,ii,6) = x(i*cellx)
 		medium_a(i,ii,7) = y(ii*celly+yn/(2*cell))
-		medium_b(i,ii,6) = x(i*cellx) 
+		medium_b(i,ii,6) = x(i*cellx)
 		medium_b(i,ii,7) = y(ii*celly+yn/(2*cell))
 	end do
 end do
@@ -2445,11 +2444,11 @@ h = param_tsw
 !no slant IC, 11/15/15
 do i=1,xn
 	do ii=1,yn
-		
+
 		 ! (.68-(0.00133*i*1.0))
-		 
+
 		h(i,1) = param_tsw!480.0 + ( first-(0.0016*i*factor)) * dy/1.8
-		
+
 		h(i,ii) = param_tsw!480.0*(h(i,1)/h(1,1)) + (param_tsw-(480.0*(h(i,1)/h(1,1)) ))*((-y_min)+y(ii))/((-y_min))
 		!h(i,ii) = h(i,ii) - (400.0 + (param_tsw-400.0)*((-y_min)-max(param_o_rhs,param_o))/((max(param_o_rhs,param_o))))
 	end do
@@ -2476,10 +2475,10 @@ u_coarse = 0.0
 v_coarse = 0.0
 
 
-!-------RESTART STEP!
+!-RESTART STEP!
 
 if (restart .eq. 1) then
-	
+
 
 		! FLUID DYNAMIC TIME SLICES
 !
@@ -2501,11 +2500,11 @@ if (restart .eq. 1) then
 !
 ! h = 275.0
 ! psi = 0.0
-		
-		
-		
-		
-		
+
+
+
+
+
 		!permeability = transpose(permeabilityTrans)
 		!phi = transpose(phiTrans)
 
@@ -2682,8 +2681,8 @@ outerBand = band(outerBand,2*((yn/2)-2) + 1,longP)
 
 
 
-	
-!-- DYNAMICS LOOP
+
+!-DYNAMICS LOOP
 	! this is the main loop that does all the solving for tn timesteps
 	do j = crashstep, tn
 	!do j = 2, 50
@@ -2717,7 +2716,7 @@ if (j .eq. crashstep) then
 	!velocitiesCoarse0 = 0.0
 end if
 
-	
+
 if (mod(j,mstep*10) .eq. 0) then
 	write(*,*) "STARTING STEP:" , j
 	write(*,*) " "
@@ -2725,7 +2724,7 @@ if (mod(j,mstep*10) .eq. 0) then
 	write(*,*) " "
 	OPEN(UNIT=8, status = 'replace', FILE=trim(path_final) // 'dynamicStep.txt')
 	write(*,*) "opened"
-	write(8,*) "j/mstep:" , j/mstep 
+	write(8,*) "j/mstep:" , j/mstep
 	write(8,*) "j:" , j
 	close ( 8 )
 	!velocitiesCoarse0 = 0.0
@@ -2733,7 +2732,7 @@ end if
 
 
 
-		
+
 if (mod(j,mstep/10) .eq. 0) then
 	write(*,*) "WRITING TO DYNAMIC SUB STEP"
 	write(*,*) " "
@@ -2751,15 +2750,15 @@ end if
 ! write(*,*) "j step:" , j
 
 if (restart .ne. 1) then
-	
-	
+
+
 
 		dt_bit = dt
 
-			
+
 		h = h_next(h, psi,rho,phi,u,v,frac6,temp6,dt_bit)
 		h = h_bc(h)
-		
+
 
 		! short outcrop outflow condition
 		do jj=2,yn-1
@@ -2800,7 +2799,7 @@ if (restart .ne. 1) then
 
 		end do
 		end do
-		
+
 		! insulating boundaries during spinup phase
 		if (iter .eq. 0) then
 			do ii=2,yn-1
@@ -2810,7 +2809,7 @@ if (restart .ne. 1) then
 					if ((mask(f_index1-1,ii) .eq. 3.0) .or. (mask(f_index1-1,ii) .eq. 3.5) .or. (mask(f_index1-1,ii) .eq. 3.1) .or. (mask(f_index1-1,ii) .eq. 3.05)) then
 						temp6(ii,1) = (4.0/3.0)*h(f_index1-1,ii) - (1.0/3.0)*h(f_index1-1-1,ii)
 					end if
-					
+
 					if ((mask(f_index1,ii) .eq. 6.5)) then
 						temp6(ii+1,2) = (4.0/3.0)*temp6(ii,2) - (1.0/3.0)*temp6(ii-1,2)
 					end if
@@ -2820,10 +2819,10 @@ if (restart .ne. 1) then
 					end if
 			end do
 		end if
-		
+
 		! fracture temperature set by vertical heat advection after spinup phase
 		if ((iter .eq. 1)) then
-			
+
 ! 		temp6_mid = temp6
 !
 				do ii=2,yn-1
@@ -2831,7 +2830,7 @@ if (restart .ne. 1) then
 						temp6(ii,1) = (4.0/3.0)*h(f_index1-1,ii) - (1.0/3.0)*h(f_index1-1-1,ii)
 					end if
 				end do
-				
+
 				do ii=2,yn-1
 					if ((mask(f_index1-1,ii) .eq. 3.1) .or. (mask(f_index1-1,ii) .eq. 3.0) .or. (mask(f_index1-1,ii) .eq. 3.5)) then
 						temp6(ii,1) = temp6(ii-1,1) - (dy*lambdaMat(f_index1-1,ii)/(dx*4179.0*frac6(ii,1))) * (h(f_index1-1,ii) - h(f_index1-2,ii))
@@ -2899,14 +2898,14 @@ if (restart .ne. 1) then
 		do ii=1,yn-1
 			temp6(ii,2) = temp6(ii,1)
 		end do
-		
-		
-		
+
+
+
 		rho = rho_next(h)
 		visc = visc_next(h)
-			
 
- 
+
+
 
 		! solve streamfunction-vorticity equation
 
@@ -2927,9 +2926,9 @@ if (restart .ne. 1) then
 				jj_top = jj
 			end if
 		end do
-		
+
 		h_adjacent = sum(temp6(jj_base:jj_top,1))/(jj_top-jj_base+1)
-		
+
 ! 		write(*,*) "tube temps"
 ! 		write(*,*) temp6(jj_base:jj_top,1)
 !
@@ -2949,12 +2948,12 @@ if (restart .ne. 1) then
 		if ((j .gt. spinup-1)) then
 			iter = 1
 		end if
-		
+
 ! 		if ((j .eq. spinup-1)) then
 ! 			h_adjacent = 273.0
 ! 		end if
-		
-		
+
+
 		if (iter .eq. 1) then
 			!write(*,*) "loop of fracj 1"
 			do jj=yn/2,yn-1
@@ -2962,7 +2961,7 @@ if (restart .ne. 1) then
 					!frac6(jj,1) = -param_f_por*param_f_dx*(param_f_dx*param_f_dx*rho_fluid*grav/((y_top-y_base)*viscosity*12.0))*(rho_one(h_top)*y_top - rho_one(h_base)*y_base - rho_fluid*(y_top-y_base))
 					frac6(jj,1) = -param_f_por*param_f_dx*(param_f_dx*param_f_dx*rho_one(h_base)*grav/((y_top-y_base)*viscosity*12.0))*(rho_one(h_top)*(y_top-y_top) - rho_one(h_base)*(y_base-y_top) - rho_one(param_tsw)*(y_top-y_base))
 					!frac6(jj,1) = param_f_por*psi(f_index1-1,jj) + (dx*(12.0*(1.0e-16)*1.0)/(param_f_dx*param_f_dx*param_f_dx))
-					
+
 ! 					write(*,*) "full frac6 jj 1"
 ! 					write(*,*) frac6(jj,1)
 !
@@ -2975,7 +2974,7 @@ if (restart .ne. 1) then
 
 			psi = psi_next(h, rhs0, psi, rho, phi, permeability, outerBand, permx, permy, j/mstep,frac6)
 			psi = psi_bc(psi)
-		
+
 			do jj=yn/2,yn-1
 				do i=1,xn
 					if ((maskP(i,jj) .eq. 50.0) .and. (i .lt. f_index1)) then
@@ -2987,9 +2986,9 @@ if (restart .ne. 1) then
 				end do
 			end do
 
-						
+
 		end if
-				
+
 
 		! run with frac6 = 0 during spinup phase
 		if (iter .eq. 0) then
@@ -2998,39 +2997,39 @@ if (restart .ne. 1) then
 			psi = psi_bc(psi)
 
 		end if
-				
-		
-			
 
-			
-			 
+
+
+
+
+
 end if ! end if restart .ne. 1
 
 if (j .eq. 3) then
-	
+
 			leng = (yn/(2*celly))*(xn/cellx)
 
 			! get velocities from streamfunction
-			
+
 			do ii = yn/(2*celly)+1,yn/(celly)
 				do i = 1,xn/cellx
 					h_coarse(i,ii-yn/(2*celly)) = sum(h((i-1)*cellx+1:i*cellx,(ii-1)*celly+1:ii*celly))/(cellx*celly)
 					psi_coarse(i,ii-yn/(2*celly)) = psi(i*cellx,ii*celly)
 				end do
 			end do
-			
-			
+
+
 			hLong = (/ reshape(transpose(h_coarse), (/ leng /)), reshape(transpose(h_coarse), (/ leng /)), reshape(transpose(h_coarse), (/ leng /)) /) ! for cell = 1
-			
+
 ! 			psi_coarse(2,:) = psi_coarse(1,:)
 			psi_coarse(xn/cellx,:) = 0.0
 			psi_coarse(xn/cellx-1,:) = 0.0
 			psi_coarse(xn/cellx-2,:) = 0.0
-			
+
 			velocities_coarse0 = velocities_coarse(psi_coarse)
 			u_coarse = phi_coarse*velocities_coarse0(1:xn/cellx,1:yn/(2*celly))/(rho_fluid)
 			v_coarse = phi_coarse*velocities_coarse0(1:xn/cellx,yn/(2*celly)+1:2*yn/(2*celly))/(rho_fluid)
-			
+
 ! 			write(*,*) "u coarse"
 ! 			write(*,*) maxval(u_coarse)
 !
@@ -3038,7 +3037,7 @@ if (j .eq. 3) then
 ! 			write(*,*) v_coarse
 ! 			u_step_coarse = u_coarse
 ! 			v_step_coarse = v_coarse
-			
+
 			velocities0 = velocities(psi)
 			u = phi*velocities0(1:xn,1:yn)/(rho_fluid)
 			v = phi*velocities0(1:xn,yn+1:2*yn)/(rho_fluid)
@@ -3049,9 +3048,9 @@ if (j .eq. 3) then
 
 ! 			u(f_index1-1:,:) = 0.0
 ! 			v(f_index1-1:,:) = 0.0
-			
-			
-			
+
+
+
 			write(*,*) "BEGIN INITIAL STRETCHING EVERYTHING OUT FOR GEOCHEM"
 
 
@@ -3095,11 +3094,11 @@ if (j .eq. 3) then
 
 
 
-			
 
-			
+
+
 end if ! if j == 5
-			
+
 ! 			do ii=1,yn
 ! 				do i=2,xn-2
 ! 					if ((maskP(i,ii) .eq. 6.0)) then
@@ -3107,24 +3106,24 @@ end if ! if j == 5
 ! 					end if
 ! 				end do
 ! 			end do
-			
+
 
 ! 	write(*,*) "about to start mstep loop"
-	
+
 	! things only done every mth timestep go here
 	if (mod(j,mstep) .eq. 0) then
-		
+
 		write(*,*) " "
 		write(*,*) "STEP" , j , "STUFF"
-		
 
-		
+
+
 ! 		! OUTER BAND THING
 ! 		outerBand = make_band(permeability,phi)
 ! 		outerBand = band(outerBand,2*(yn-2) + 1,(xn-2)*(yn-2))
 ! 		permx = partial_edge((phi/(permeability)),xn,yn,dx,dy,1)
 ! 		permy = partial_edge((phi/(permeability)),xn,yn,dx,dy,2)
-		
+
 		! make coarse grid average velocities
 ! 		uTransport = (uTransport/(mstep*wscale))
 ! 		vTransport = (vTransport/(mstep*wscale))
@@ -3155,8 +3154,8 @@ end if ! if j == 5
 ! 			write(*,*) "STEP" , j , "STUFF"
 ! 			write(*,*) "BEGIN CHAMBER MIXING"
 !
-!	
-			
+!
+
 ! 			do i = 1,g_sol
 ! 				bit_thing_t = reshape(solLongBitFull(1:len,i),(/yn/(2*celly), xn/cellx/))
 ! 				bit_thing = transpose(bit_thing_t)
@@ -3174,8 +3173,8 @@ end if ! if j == 5
 ! 				solute_b(:,(yn/(2*celly))+1:,i) = bit_thing_t1
 ! 			end do
 !
-			
-			
+
+
 !
 !
 ! 			n=2 ! alk
@@ -3188,8 +3187,8 @@ end if ! if j == 5
 ! 				solute_a(:,:,n) = solute_a(:,:,n)*(1.0-mix_ratio/volume_ratio) + solute_b(:,:,n)*mix_ratio/volume_ratio
 ! 				solute_b(:,:,n) = solute_b(:,:,n)*(1.0-mix_ratio) + solute_inter*mix_ratio
 ! 			end do
-			
-			
+
+
 
 
 !
@@ -3198,14 +3197,14 @@ end if ! if j == 5
 ! 		write (*,*) 'begin (system_clock):   ', counti
 		call system_clock(counti, count_rate, count_max)
  		write(*,*) "BEGIN SENDING SOLUTES TO PROCESSORS FOR ADVECTION" !, counti
-		
-		
-		!--------------FROM MASTER TO SLAVES FOR ADVECTION
+
+
+		!-FROM MASTER TO SLAVES FOR ADVECTION
 
 		do an_id = 1, 22
 
 			if (an_id .le. 11) then
-				
+
 ! 				do i=1,leng
 ! 					if (coarse_mask_long(i) .eq. 0.0) then
 ! 						solLongBitFull(i,sol_index(an_id)) = sea(sol_index(an_id))
@@ -3214,7 +3213,7 @@ end if ! if j == 5
 !
 				sol_coarse_long = solLongBitFull(:leng,sol_index(an_id)) !reshape(solute(:,:,sol_index(an_id)), (/(xn/cellx)*(yn/celly)/))
 			end if
-	
+
 			if (an_id .gt. 11) then
 
 ! 				do i=1,leng
@@ -3225,44 +3224,44 @@ end if ! if j == 5
 
 				sol_coarse_long = solLongBitFull(leng+1:2*leng,sol_index(an_id-11)) !sol_coarse_long = reshape(solute_a(:,:,sol_index(an_id-11)), (/(xn/cellx)*(yn/celly)/))
 			end if
-	
+
 			! send an_id name
 		    call MPI_SEND( an_id, 1, MPI_INTEGER, &
 			an_id, send_data_tag, MPI_COMM_WORLD, ierr)
-	
+
 			! send long sol coarse
 			call MPI_SEND( sol_coarse_long, leng, MPI_DOUBLE_PRECISION, &
 			an_id, send_data_tag, MPI_COMM_WORLD, ierr)
-	
+
 			! send long u coarse
 			call MPI_SEND( u_coarse_long, leng, MPI_DOUBLE_PRECISION, &
 			an_id, send_data_tag, MPI_COMM_WORLD, ierr)
-	
+
 			! send long v coarse
 			call MPI_SEND( v_coarse_long, leng, MPI_DOUBLE_PRECISION, &
 			an_id, send_data_tag, MPI_COMM_WORLD, ierr)
-	
+
 			! send long phi coarse
 			call MPI_SEND( phi_coarse_long, leng, MPI_DOUBLE_PRECISION, &
 			an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 
-		!write(*,*) "DONE SENDING SOLUTE TO PROCESSOR", an_id	
+		!write(*,*) "DONE SENDING SOLUTE TO PROCESSOR", an_id
 
 		end do
-		
+
 		! 		write (*,*) 'end (system_clock):     ', countf
 		call system_clock(countf, count_rate, count_max)
 		write(*,*) "...DONE SENDING SOLUTES TO ALL PROCESSORS" , countf - counti
 
-		
-		!--------------MESSAGE RECEIVING FROM SLAVE PROCESSORS
-		
+
+		!-MESSAGE RECEIVING FROM SLAVE PROCESSORS
+
 		call system_clock(counti, count_rate, count_max)
 		write(*,*) "BEGIN RECEIVING ADVECTED SOLUTES"
-		
+
 		do an_id = 1, 22
-			
-			
+
+
 			call MPI_RECV( sol_coarse_long, leng, MPI_DOUBLE_PRECISION, &
 			an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
 
@@ -3273,9 +3272,9 @@ end if ! if j == 5
 			if (an_id .gt. 11) then
 				solLongBitFull(leng+1:2*leng,sol_index(an_id-11)) = sol_coarse_long
 			end if
-			
+
 		end do
-		
+
 		call system_clock(countf, count_rate, count_max)
  		write(*,*) "...DONE RECEIVING ADVECTED SOLUTES" , countf - counti
 !
@@ -3290,9 +3289,9 @@ end if ! if j == 5
 ! 			solLongBitFull((2*xn/cellx)*(yn/(2*celly))+1:,i) = reshape(transpose(bit_thing_b), (/(xn/cellx)*(yn/(2*celly))/))
 ! 		end do
 !
-				
+
 		!end if	! end if j > mstep
-		
+
 
 		n=2 ! alk
 		solute_inter_long = solLongBitFull(leng+1:2*leng,n)
@@ -3306,15 +3305,15 @@ end if ! if j == 5
 		end do
 
 		write(*,*) "...DONE WITH CHAMBER MIXING"
-		
-		
-		
+
+
+
 		call system_clock(counti, count_rate, count_max)
  		write(*,*) "BEGIN SENDING GEOCHEM TO ALL PROCESSORS"
 !
-		!--------------MESSAGE DISTRIBUTING FROM MASTER TO SLAVES
+		!-MESSAGE DISTRIBUTING FROM MASTER TO SLAVES
 		do an_id = 1, num_procs - 1
-		
+
 			! put number of rows in vector here for hLong
 			num_rows = 3*(xn/cellx)*(yn/(2*celly))
 			avg_rows_per_process = num_rows / (num_procs-1)
@@ -3322,33 +3321,33 @@ end if ! if j == 5
 	        end_row = start_row + avg_rows_per_process - 1
 	        if (an_id .eq. (num_procs - 1)) end_row = num_rows
 	        num_rows_to_send = (end_row - start_row + 1)
-		
+
 			! send size of temperature array chunk to processor an_id
 	        call MPI_SEND( num_rows_to_send, 1, MPI_INTEGER, &
 			an_id, send_data_tag, MPI_COMM_WORLD, ierr)
-		
+
 			! send timestep size to processor an_id
 	        call MPI_SEND( dt, 1, MPI_DOUBLE_PRECISION, &
 			an_id, send_data_tag, MPI_COMM_WORLD, ierr)
-	
+
 			! send temperature array chunk to processor an_id
 	        call MPI_SEND( hLong(start_row), num_rows_to_send, MPI_DOUBLE_PRECISION, &
 			an_id, send_data_tag, MPI_COMM_WORLD, ierr)
-		
+
 			! send primary array chunk to processor an_id
 			do ii = 1,g_pri
 				!priLongBit = (/ priLong(:,ii), priLong_a(:,ii), priLong_b(:,ii) /)
 	        	call MPI_SEND( priLongBitFull(start_row,ii), num_rows_to_send, MPI_DOUBLE_PRECISION, &
 				an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 			end do
-		
-			!-send secondary array chunk to processor an_id
+
+			! send secondary array chunk to processor an_id
 			do ii = 1,g_sec
 				!secLongBit = (/ secLong(:,ii), secLong_a(:,ii), secLong_b(:,ii) /)
 	        	call MPI_SEND( secLongBitFull(start_row,ii), num_rows_to_send, MPI_DOUBLE_PRECISION, &
 				an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 			end do
-		
+
 			! send solute array chunk to processor an_id
 			do ii = 1,g_sol
 				!solLongBit = (/ solLong(:,ii), solLong_a(:,ii), solLong_b(:,ii) /)
@@ -3362,11 +3361,11 @@ end if ! if j == 5
 	        	call MPI_SEND( medLongBitFull(start_row,ii), num_rows_to_send, MPI_DOUBLE_PRECISION, &
 				an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 			end do
-			
+
 			!write(*,*) "DONE SENDING TO PROCESSOR", an_id
 
 		end do
-		
+
 		call system_clock(countf, count_rate, count_max)
  		write(*,*) "...DONE SENDING GEOCHEM TO ALL PROCESSORS" , countf - counti
 !
@@ -3376,7 +3375,7 @@ end if ! if j == 5
  		write(*,*) "BEGIN RECEIVING GEOCHEM FROM ALL PROCESSORS"
 !
 		do an_id = 1, num_procs - 1
-		
+
 			! get the size of each chunk again
 			num_rows = 3*(xn/cellx)*(yn/(2*celly))
 			avg_rows_per_process = num_rows / (num_procs-1)
@@ -3384,7 +3383,7 @@ end if ! if j == 5
 	        end_row = start_row + avg_rows_per_process - 1
 	        if (an_id .eq. (num_procs - 1)) end_row = num_rows
 	        num_rows_to_send = (end_row - start_row + 1)
-		
+
 			! receive primary chunk
 			do ii = 1,g_pri
 				! receive it
@@ -3393,7 +3392,7 @@ end if ! if j == 5
 				! fill it
 				priLongBitFull(start_row:end_row,ii) = priLocal(1:num_rows_to_send,ii)
 			end do
-		
+
 			! receive secondary chunk
 			do ii = 1,g_sec/2
 				! receive it
@@ -3402,7 +3401,7 @@ end if ! if j == 5
 				! fill it
 				secLongBitFull(start_row:end_row,ii) = secLocal(1:num_rows_to_send,ii)
 			end do
-		
+
 			! receive solute chunk
 			do ii = 1,g_sol
 				! receive it
@@ -3411,7 +3410,7 @@ end if ! if j == 5
 				! fill it
 				solLongBitFull(start_row:end_row,ii) = solLocal(1:num_rows_to_send,ii)
 			end do
-			
+
 			! receive medium chunk
 			do ii = 1,g_med
 				! receive it
@@ -3422,15 +3421,15 @@ end if ! if j == 5
 			end do
 
 			!write(*,*) "DONE RECEIVING FROM PROCESSOR", an_id
-		
+
 		end do
-		
+
 		call system_clock(countf, count_rate, count_max)
 		write(*,*) "...DONE RECEIVING GEOCHEM FROM ALL PROCESSORS" , countf - counti
-		
+
 !		write(*,*) "BEGIN STRETCHING REACTED CELLS"
-		
-		!--------------MASTER PROCESSOR SAVES OUTPUT TO BE WRITTEN TO FILE
+
+		!-MASTER PROCESSOR SAVES OUTPUT TO BE WRITTEN TO FILE
 
 
 
@@ -3447,64 +3446,64 @@ end if ! if j == 5
 
 		! add timestep's output to output arrays
 		if (mod(j,mstep*ar) .eq. 0) then
-			
-			
-			
+
+
+
 			leng = (yn/(2*celly))*(xn/cellx)
-		
+
 			do i = 1,g_pri
 ! 				bit_thing_t = reshape(priLongBitFull(1:leng,i),(/yn/(2*celly), xn/cellx/))
 ! 				bit_thing = transpose(bit_thing_t)
 				bit_thing_t1 = transpose(reshape(priLongBitFull(1:leng,i),(/yn/(2*celly), xn/cellx/)))
 				primary(:,:,i) = bit_thing_t1
-			
+
 ! 				bit_thing_t = reshape(priLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), xn/cellx/))
 ! 				bit_thing = transpose(bit_thing_t)
 				bit_thing_t1 = transpose(reshape(priLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), xn/cellx/)))
 				primary_a(:,:,i) = bit_thing_t1
-			
+
 ! 				bit_thing_t = reshape(priLongBitFull(2*leng+1:,i),(/yn/(2*celly), xn/cellx/))
 ! 				bit_thing = transpose(bit_thing_t)
 				bit_thing_t1 = transpose(reshape(priLongBitFull(2*leng+1:,i),(/yn/(2*celly), xn/cellx/)))
 				primary_b(:,:,i) = bit_thing_t1
 			end do
-		
+
 			if (maxval(medium(:,:,2)) .eq. 0.0) then
 				do i = 1,g_sec
 ! 					bit_thing_t = reshape(secLongBitFull(1:leng,i),(/yn/(2*celly), xn/cellx/))
 ! 					bit_thing = transpose(bit_thing_t)
 					bit_thing_t1 = transpose(reshape(secLongBitFull(1:leng,i),(/yn/(2*celly), xn/cellx/)))
 					secondary(:,:,i) = bit_thing_t1
-			
+
 ! 					bit_thing_t = reshape(secLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), xn/cellx/))
 ! 					bit_thing = transpose(bit_thing_t)
 					bit_thing_t1 = transpose(reshape(secLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), xn/cellx/)))
 					secondary_a(:,:,i) = bit_thing_t1
-			
+
 ! 					bit_thing_t = reshape(secLongBitFull(2*leng+1:,i),(/yn/(2*celly), xn/cellx/))
 ! 					bit_thing = transpose(bit_thing_t)
 					bit_thing_t1 = transpose(reshape(secLongBitFull(2*leng+1:,i),(/yn/(2*celly), xn/cellx/)))
 					secondary_b(:,:,i) = bit_thing_t1
 				end do
 			end if
-		
+
 			do i = 1,g_sol
 ! 				bit_thing_t = reshape(solLongBitFull(1:leng,i),(/yn/(2*celly), xn/cellx/))
 ! 				bit_thing = transpose(bit_thing_t)
 				bit_thing_t1 = transpose(reshape(solLongBitFull(1:leng,i),(/yn/(2*celly), xn/cellx/)))
 				solute(:,:,i) = bit_thing_t1
-			
+
 ! 				bit_thing_t = reshape(solLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), xn/cellx/))
 ! 				bit_thing = transpose(bit_thing_t)
 				bit_thing_t1 = transpose(reshape(solLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), xn/cellx/)))
 				solute_a(:,:,i) = bit_thing_t1
-			
+
 ! 				bit_thing_t = reshape(solLongBitFull(2*leng+1:,i),(/yn/(2*celly), xn/cellx/))
 ! 				bit_thing = transpose(bit_thing_t)
 				bit_thing_t1 = transpose(reshape(solLongBitFull(2*leng+1:,i),(/yn/(2*celly), xn/cellx/)))
 				solute_b(:,:,i) = bit_thing_t1
 			end do
-		
+
 	! 		i=2
 	! 		solute(:,:,i) = solute(:,:,i)*solute(:,:,3)/vol_i
 	! 		solute_a(:,:,i) = solute_a(:,:,i)*solute_a(:,:,3)/vol_i_a
@@ -3516,31 +3515,31 @@ end if ! if j == 5
 	! 			solute_b(:,:,i) = solute_b(:,:,i)*solute_b(:,:,3)/vol_i_b
 	! 		end do
 
-		
+
 			do i = 1,g_med
 ! 				bit_thing_t = reshape(medLongBitFull(1:leng,i),(/yn/(2*celly), xn/cellx/))
 ! 				bit_thing = transpose(bit_thing_t)
 				bit_thing_t1 = transpose(reshape(medLongBitFull(1:leng,i),(/yn/(2*celly), xn/cellx/)))
 				medium(:,:,i) = bit_thing_t1
-			
+
 ! 				bit_thing_t = reshape(medLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), xn/cellx/))
 ! 				bit_thing = transpose(bit_thing_t)
 				bit_thing_t1 = transpose(reshape(medLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), xn/cellx/)))
 				medium_a(:,:,i) = bit_thing_t1
-			
+
 ! 				bit_thing_t = reshape(medLongBitFull(2*leng+1:,i),(/yn/(2*celly), xn/cellx/))
 ! 				bit_thing = transpose(bit_thing_t)
 				bit_thing_t1 = transpose(reshape(medLongBitFull(2*leng+1:,i),(/yn/(2*celly), xn/cellx/)))
 				medium_b(:,:,i) = bit_thing_t1
 			end do
-		
-			
-			
-			
-			
-			
-			
-			
+
+
+
+
+
+
+
+
 			 write(*,*) "BEGIN UPDATING _MAT ARRAYS"
 			 rhsmat(1+xn*(j/(mstep*ar)-1):xn*(j/(mstep*ar)),1:yn) = rhs0
 			 rhomat(1+xn*(j/(mstep*ar)-1):xn*(j/(mstep*ar)),1:yn) = rho
@@ -3552,42 +3551,42 @@ end if ! if j == 5
 			 permxMat(1+xn*(j/(mstep*ar)-1):xn*(j/(mstep*ar)),1:yn) = permx
 			 permyMat(1+xn*(j/(mstep*ar)-1):xn*(j/(mstep*ar)),1:yn) = permy
 
-			 
+
 			 psiCoarseMat(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/(2*celly)) = psi_coarse
 ! 			 uCoarseMat(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/(2*celly)) = uTransport
 ! 			 vCoarseMat(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/(2*celly)) = vTransport
 	 		! reset coarse grid velocities for next timestep
 	 		uTransport = 0.0
 	 		vTransport = 0.0
-			 
+
 			 primaryMat(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/(2*celly),:) = primary
 			 secondaryMat(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/(2*celly),:)= secondary
 			 soluteMat(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/(2*celly),:) = solute
 			 mediumMat(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/(2*celly),:) = medium
 			 saturationMat(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/(2*celly),:) = saturation
-			 
+
 			 primaryMat_a(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/(2*celly),:) = primary_a
 			 secondaryMat_a(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/(2*celly),:)= secondary_a
 			 soluteMat_a(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/(2*celly),:) = solute_a
 			 mediumMat_a(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/(2*celly),:) = medium_a
-			 
+
 			 primaryMat_b(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/(2*celly),:) = primary_b
 			 secondaryMat_b(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/(2*celly),:)= secondary_b
 			 soluteMat_b(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/(2*celly),:) = solute_b
 			 mediumMat_b(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/(2*celly),:) = medium_b
-			 
+
 			 primaryMat_d(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/(2*celly),:) = primary_a + primary_b
 			 secondaryMat_d(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/(2*celly),:) = secondary_a + secondary_b
 			 soluteMat_d(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/(2*celly),:) = solute_a*(volume_ratio/(1.0+volume_ratio)) + solute_b*(1.0/(1.0+volume_ratio))
-			 
+
 
 
 			 write(*,*) "...DONE UPDATING _MAT ARRAYS"
 
-		 
+
 ! 		 ! get new porosity
  		 phi_coarse = 0.1 !medium(:,:,1) ! 1.0
-		 
+
 !
 !yep = write_matrix(xn,yn,real(psi,kind=4),'/data/navah/ic_saturday_400/psi_'// trim(param_o_string) //"_"// trim(param_o_rhs_string) //'.txt')
 !yep = write_matrix(xn,yn,real(h,kind=4),'/data/navah/ic_saturday_400/h_'// trim(param_o_string) //"_"// trim(param_o_rhs_string) //'.txt')
@@ -3607,7 +3606,7 @@ end if ! if j == 5
 
 		write(*,*) "BEGIN WRITING TO FILE"
 
-!--------------WRITE EVERYTHING TO FILE
+!-WRITE EVERYTHING TO FILE
 
 		yep = write_matrix ( xn, yn, real(psi,kind=4), trim(path) // 'psi.txt' )
 		yep = write_matrix ( xn, yn, real(h,kind=4), trim(path) // 'h.txt' )
@@ -3626,10 +3625,10 @@ end if ! if j == 5
 		yep = write_matrix ( xn, yn/2, real(mask(:,(yn/2)+1:), kind = 4), trim(path) // 'mask.txt' )
 		yep = write_matrix ( xn, yn/2, real(maskP(:,(yn/2)+1:), kind = 4), trim(path) // 'maskP.txt' )
 		yep = write_matrix ( xn/(cellx), yn/(2*celly), real(coarse_mask,kind=4), trim(path) // 'mask_coarse.txt' )
-		
+
 
 		if (restart .ne. 1) then
-			
+
 			yep = write_matrix ( yn, 2, real(frac6, kind = 4), trim(path) // 'frac6.txt' )
 			yep = write_matrix ( yn, 2, real(temp6, kind = 4), trim(path) // 'temp6.txt' )
 
@@ -3642,7 +3641,7 @@ end if ! if j == 5
 			yep = write_matrix ( xn, yn/2,real(phi(:,(yn/2)+1:),kind=4), trim(path) // 'phi.txt' )
 
 		end if ! end write only if restart ne 1
-		
+
 
 		! solute concentrations
 		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat(:,:,1),kind=4), trim(path) // 'ch_s/z_sol_ph.txt' )
@@ -3749,10 +3748,10 @@ end if ! if j == 5
 		do ii = (yn/(2*celly))+1,yn/celly
 			do i = 1,xn*tn/(cellx*mstep*ar)
 		 	   		soluteMat_d(i,ii,1) = -1.0*log10((volume_ratio/(1.0+volume_ratio))*10.0**(-1.0*soluteMat_a(i,ii,1)) + (1.0/(1.0+volume_ratio))*10.0**(-1.0*soluteMat_b(i,ii,1)))
-			 end do 
+			 end do
 		 end do
- 
- 
+
+
  		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_d(:,:,1),kind=4), trim(path) // 'ch_d/z_sol_ph.txt' )
  		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_d(:,:,3),kind=4), trim(path) // 'ch_d/z_sol_w.txt' )
  		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(soluteMat_d(:,:,2),kind=4), trim(path) // 'ch_d/z_sol_alk.txt' )
@@ -3778,7 +3777,7 @@ end if ! if j == 5
 
 
 
-		
+
 
 
 
@@ -3786,7 +3785,7 @@ end if ! if j == 5
 		do i = 1,g_sec/2
 			if (maxval(secondaryMat(:,:,i)) .gt. 0.0) then
 				write(*,*) i
-	
+
 		        if (i < 10) then
 					write(s_i,'(i1)') i
 		        else
@@ -3794,10 +3793,10 @@ end if ! if j == 5
 		        end if
 				yep = write_matrix(xn*tn/(cellx*mstep*ar),yn/(2*celly),real(secondaryMat(:,:,i),kind=4),trim(path)//'ch_s/z_sec'//trim(s_i)//'.txt')
 			end if
-	
+
 			if (maxval(secondaryMat_a(:,:,i)) .gt. 0.0) then
 				write(*,*) i
-	
+
 		        if (i < 10) then
 					write(s_i,'(i1)') i
 		        else
@@ -3805,10 +3804,10 @@ end if ! if j == 5
 		        end if
 				yep = write_matrix(xn*tn/(cellx*mstep*ar),yn/(2*celly),real(secondaryMat_a(:,:,i),kind=4),trim(path)//'ch_a/z_sec'//trim(s_i)//'.txt')
 			end if
-	
+
 			if (maxval(secondaryMat_b(:,:,i)) .gt. 0.0) then
 				write(*,*) i
-	
+
 		        if (i < 10) then
 					write(s_i,'(i1)') i
 		        else
@@ -3816,10 +3815,10 @@ end if ! if j == 5
 		        end if
 				yep = write_matrix(xn*tn/(cellx*mstep*ar),yn/(2*celly),real(secondaryMat_b(:,:,i),kind=4),trim(path)//'ch_b/z_sec'//trim(s_i)//'.txt')
 			end if
-	
+
 			if (maxval(secondaryMat_d(:,:,i)) .gt. 0.0) then
 				write(*,*) i
-	
+
 		        if (i < 10) then
 					write(s_i,'(i1)') i
 		        else
@@ -3827,7 +3826,7 @@ end if ! if j == 5
 		        end if
 				yep = write_matrix(xn*tn/(cellx*mstep*ar),yn/(2*celly),real(secondaryMat_d(:,:,i),kind=4),trim(path)//'ch_d/z_sec'//trim(s_i)//'.txt')
 			end if
-	
+
 		end do
 
 
@@ -3837,12 +3836,12 @@ end if ! if j == 5
 
 	end if ! end if (mod(j,mstep*ar) .eq. 0)
 
-	
-end if 
+
+end if
 ! end mstep timestep loop, finally
 
 
-end do 
+end do
 ! end all timestep loop
 
 
@@ -3859,25 +3858,25 @@ write(*,*) "msteps"
 
 
 ! what to do if you are a slave processor
-else 
+else
 
-	
-	
 
-	
-	!--------------SLAVE PROCESSOR RECEIVES MESSAGE
+
+
+
+	!-SLAVE PROCESSOR RECEIVES MESSAGE
 	call init_mini()
-	
+
 	leng = (yn/(2*celly))*(xn/cellx)
 	! message receiving has to happen every mth step
-	
+
 
 			param_ol_string ='-f MgO 1.0 FeO 1.0 SiO2 1.0'
 			!param_ol_string ='-f MgO 2.0 SiO2 1.0'
 			!param_ol_string ='-f FeO 2.0 SiO2 1.0'
 			param_pyr_string='-f CaO 1.0 MgO 1.0 SiO2 2.0'
 			param_plag_string='-f NaAlSi3O8 0.5 CaAl2Si2O8 0.5'
-			
+
 			! 		&"-f CaO 1.0 FeO 1.0 SiO2 2.0 " //NEW_LINE('')// & ! hedenbergite
 			! 		&"-f CaO 1.0 MgO 1.0 SiO2 2.0 " //NEW_LINE('')// & ! diopside
 			! 		&"-f FeO 1.0 MgO 1.0 SiO2 2.0 " //NEW_LINE('')// & ! fer mag
@@ -3944,36 +3943,36 @@ else
 			plag_k3 = ""
 			plag_e3 = ""
 			plag_n3 = ""
-			
-			
+
+
 			kinetics = " precipitate_only"
 			!kinetics = " "
-	
-	
+
+
 	do jj = 1, tn/mstep
-		
+
 		if (my_id .le. 22) then
 
 			! receive an_id
 			call MPI_RECV ( an_id_local, 1 , MPI_INTEGER, &
 			root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
-		
+
 			! receive solute long for advection
 			call MPI_RECV ( sol_coarse_long_local, (xn/cellx)*(yn/(2*celly)), MPI_DOUBLE_PRECISION, &
 			root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
-		
+
 			! receive u long for advection
 			call MPI_RECV ( u_coarse_long_local, (xn/cellx)*(yn/(2*celly)), MPI_DOUBLE_PRECISION, &
 			root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
-		
+
 			! receive v long for advection
 			call MPI_RECV ( v_coarse_long_local, (xn/cellx)*(yn/(2*celly)), MPI_DOUBLE_PRECISION, &
 			root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
-		
+
 			! receive phi long for advection
 			call MPI_RECV ( phi_coarse_long_local, (xn/cellx)*(yn/(2*celly)), MPI_DOUBLE_PRECISION, &
 			root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
-		
+
 			! reshape them all
 			sol_coarse_local = transpose(reshape(sol_coarse_long_local,(/yn/(2*celly),xn/cellx/)))
 			u_coarse_local = reshape(u_coarse_long_local,(/xn/cellx,yn/(2*celly)/))
@@ -3983,7 +3982,7 @@ else
 			phi_coarse_local = reshape(phi_coarse_long_local,(/xn/cellx,yn/(2*celly)/))
 			!phi_coarse_local = 0.5
 			!write(*,*) maxval(phi_coarse_local)
-		
+
 			if (an_id_local .le. 11) then
 				do ii = 1,cstep
 					sol_coarse_local = solute_next_coarse(sol_coarse_local,u_coarse_local/phi_coarse_local,v_coarse_local/phi_coarse_local,sea(sol_index(an_id_local)))
@@ -3997,32 +3996,32 @@ else
 			end if
 
 			sol_coarse_long_local = reshape(transpose(sol_coarse_local),(/(xn/cellx)*(yn/(2*celly))/))
-		
+
 			! send advected solutes back :)
 			call MPI_SEND( sol_coarse_long_local, (xn/cellx)*(yn/(2*celly)), MPI_DOUBLE_PRECISION, root_process, &
 			return_data_tag, MPI_COMM_WORLD, ierr)
-		
+
 		end if ! end if my_id .le. 22
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-	
+
+
+
+
+
+
+
+
+
+
+
+
 		! receive size of temperature array chunk
 		call MPI_RECV ( num_rows_to_receive, 1 , MPI_INTEGER, &
 		root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
-		
+
 		! receive timestep size
 		call MPI_RECV ( dt_local, 1 , MPI_DOUBLE_PRECISION, &
 		root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
-		
+
 		! receive temperature array chunk, save in local hLocal
 		call MPI_RECV ( hLocal, num_rows_to_receive, MPI_DOUBLE_PRECISION, &
 		root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
@@ -4034,14 +4033,14 @@ else
 			root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
 ! 			priLocal(:,ii) = priLocalBit
 		end do
-	
-		!-receive secondary array chunk, save in local secLocal
+
+		! receive secondary array chunk, save in local secLocal
 		do ii = 1,g_sec
 			call MPI_RECV ( secLocal(:,ii), num_rows_to_receive, MPI_DOUBLE_PRECISION, &
 			root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
 ! 			secLocal(:,ii) = secLocalBit
 		end do
-	
+
 		! receive solute chunk, save in local solLocal
 		do ii = 1,g_sol
 			call MPI_RECV ( solLocal(:,ii), num_rows_to_receive, MPI_DOUBLE_PRECISION, &
@@ -4055,27 +4054,27 @@ else
 			root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
 ! 			medLocal(:,ii) = medLocalBit
 		end do
-		
-		
 
-	
-		!--------------SLAVE PROCESSOR RUNS GEOCHEMICAL MODEL
+
+
+
+		!-SLAVE PROCESSOR RUNS GEOCHEMICAL MODEL
 
 		timestep3 = dt_local*mstep!/10.0
 		write(s_timestep,'(F25.10)') timestep3
 
 		! slave processor loops through each coarse cell
 		do m=1,num_rows_to_receive
-			
+
 		if (medLocal(m,5) .eq. 1.0) then
 
-if (my_id .eq. 2) then	
+if (my_id .eq. 2) then
 	call system_clock(counti, count_rate, count_max)
 	write(*,*) "	PROC 40 START LOADING"
 end if
 
 
-!--------------GEOCHEM START
+!-GEOCHEM START
 
 primary3 = priLocal(m,:)
 secondary3 = secLocal(m,:)
@@ -4224,7 +4223,7 @@ write(s_mesolite,'(F25.10)') secondary3(16)
 write(s_hematite,'(F25.10)') secondary3(17)
 write(s_mont_ca,'(F25.10)') secondary3(18)
 write(s_verm_ca,'(F25.10)') secondary3(19)
-write(s_analcime,'(F25.10)') secondary3(20) 
+write(s_analcime,'(F25.10)') secondary3(20)
 write(s_phillipsite,'(F25.10)') secondary3(21)
 write(s_diopside,'(F25.10)') secondary3(22)
 write(s_gismondine,'(F25.10)') secondary3(23)
@@ -4274,14 +4273,14 @@ write(s_reactive,'(F25.10)') medium3(4)
 		&"    C " // trim(s_co2) //NEW_LINE('')// &
 		&"    Alkalinity " // trim(s_alk) //NEW_LINE('')// &
 		&"    -water "// trim(s_water) // " # kg" //NEW_LINE('')// &
-		
+
 ! 		&"KNOBS" //NEW_LINE('')// &
 ! !		&"    -convergence_tolerance 1e-7" //NEW_LINE('')// &
 ! ! 		&"    -tolerance 1e-17" //NEW_LINE('')// &
 !  		&"    -diagonal_scale true" //NEW_LINE('')// &
 		&" "  //NEW_LINE('')
-		
-		
+
+
 ! 		if (medium3(2) .eq. 1000.0) then
 ! 			write(*,*) "med2 1000"
 ! 			inputz0 = trim(inputz0) // "EQUILIBRIUM_PHASES 1" //NEW_LINE('')// &
@@ -4339,10 +4338,10 @@ write(s_reactive,'(F25.10)') medium3(4)
 
 		! &" -force_equality"  //NEW_LINE('')// &
 
-		
+
 ! 		end if
 
-		inputz0 = trim(inputz0) // "RATES" //NEW_LINE('')// & 
+		inputz0 = trim(inputz0) // "RATES" //NEW_LINE('')// &
 
 		! linear decrease with alteration
 		&"BGlass" //NEW_LINE('')// &
@@ -4356,7 +4355,7 @@ write(s_reactive,'(F25.10)') medium3(4)
 		 &"*(((ACT('H+')^3)/(base0))^.33333)" //NEW_LINE('')// &
 		&"    40 save rate0 * time" //NEW_LINE('')// &
 		&"-end" //NEW_LINE('')// &
-		
+
 		&"Basalt1" //NEW_LINE('')// &
 		&"-start" //NEW_LINE('')// &
 		&"    10 rate0=M*140.7*(1.52e-5)*" // trim(exp_ol) //"*(" //trim(ol_k1)//"*(ACT('H+')^"//trim(ol_n1)//")*exp(-("//trim(ol_e1)//"/.008314)*((1.0/TK) - (1.0/298.0))) + "//trim(ol_k2)//"*exp(-("//trim(ol_e2)//"/.008314)*((1.0/TK) - (1.0/298.0))))" //NEW_LINE('')// &
@@ -4385,7 +4384,7 @@ write(s_reactive,'(F25.10)') medium3(4)
 		& "Fe2O3 .149 MgO .1744 K2O .002 " //&
 		& "Na2O .043" //NEW_LINE('')// &
 		&"-m0 " // trim(s_glass) //NEW_LINE('')// &
-		
+
 		&"Basalt1 " //NEW_LINE('')// &
 		& trim(param_ol_string) //NEW_LINE('')// &
 ! 		&"-f MgO 2.0 SiO2 1.0 " //NEW_LINE('')// & ! forsterite
@@ -4435,10 +4434,10 @@ write(s_reactive,'(F25.10)') medium3(4)
 		&"" //NEW_LINE('')// &
 		&"100 SAVE s_sp" //NEW_LINE('')// &
 		&"-end" //NEW_LINE('')// &
-		
-		
-		
-		
+
+
+
+
 
 
 		&"SELECTED_OUTPUT" //NEW_LINE('')// &
@@ -4458,7 +4457,7 @@ write(s_reactive,'(F25.10)') medium3(4)
 		&"    -p phillipsite diopside gismondine vermiculite-mg natrolite talc Smectite-low-Fe-Mg " //NEW_LINE('')// & ! 7
 		&"    -p prehnite chlorite(14a) scolecite Clinochlore-14A Clinochlore-7A saponite-ca" //NEW_LINE('')// & ! 6
 		&"    -p vermiculite-na pyrrhotite Fe-Saponite-Ca Fe-Saponite-Mg" //NEW_LINE('')// & ! 4
-		
+
 		&"    -p prehnite chlorite(14a) scolecite Clinochlore-14A Clinochlore-7A saponite-ca" //NEW_LINE('')// & ! 6
 		&"    -p prehnite chlorite(14a) scolecite Clinochlore-14A Clinochlore-7A saponite-ca" //NEW_LINE('')// & ! 6
 		&"    -p prehnite chlorite(14a) scolecite Clinochlore-14A Clinochlore-7A saponite-ca" //NEW_LINE('')// & ! 6
@@ -4474,17 +4473,17 @@ write(s_reactive,'(F25.10)') medium3(4)
 		&"END"
 
 
-		if (my_id .eq. 2) then	
+		if (my_id .eq. 2) then
 			call system_clock(countf, count_rate, count_max)
 			write(*,*) "	PROC 40 END LOADING" , countf - counti
 		end if
 
 
-		if (my_id .eq. 2) then	
+		if (my_id .eq. 2) then
 			call system_clock(counti, count_rate, count_max)
 			write(*,*) "	PROC 40 START RUNNING"
 		end if
-		
+
 ! INITIALIZE STUFF
 id = CreateIPhreeqc()
 
@@ -4497,14 +4496,14 @@ id = CreateIPhreeqc()
 ! END IF
 
 
-!--------------GEOCHEM TO VARIABLES
+!-GEOCHEM TO VARIABLES
 
 ! IF (id.LT.0) THEN
 ! 	write(*,*) "weird stop?"
 ! 	STOP
 ! END IF
 
-if (my_id .eq. 2) then	
+if (my_id .eq. 2) then
 	call system_clock(counti, count_rate, count_max)
 	write(*,*) "		R1 START"
 end if
@@ -4524,12 +4523,12 @@ IF (SetSelectedOutputStringOn(id, .TRUE.).NE.IPQ_OK) THEN
 	!STOP
 END IF
 
-if (my_id .eq. 2) then	
+if (my_id .eq. 2) then
 	call system_clock(countf, count_rate, count_max)
 	write(*,*) "		R1 END" , countf - counti
 end if
 
-if (my_id .eq. 2) then	
+if (my_id .eq. 2) then
 	call system_clock(counti, count_rate, count_max)
 	write(*,*) "		R2 START"
 end if
@@ -4539,12 +4538,12 @@ IF (SetOutputStringOn(id, .TRUE.).NE.IPQ_OK) THEN
 	!STOP
 END IF
 
-if (my_id .eq. 2) then	
+if (my_id .eq. 2) then
 	call system_clock(countf, count_rate, count_max)
 	write(*,*) "		R2 END" , countf - counti
 end if
 
-if (my_id .eq. 2) then	
+if (my_id .eq. 2) then
 	call system_clock(counti, count_rate, count_max)
 	write(*,*) "		R3 START"
 end if
@@ -4566,12 +4565,12 @@ IF (LoadDatabaseString(id, trim(L5)).NE.0) THEN
 	!STOP
 END IF
 
-if (my_id .eq. 2) then	
+if (my_id .eq. 2) then
 	call system_clock(countf, count_rate, count_max)
 	write(*,*) "		R3 END" , countf - counti
 end if
 
-if (my_id .eq. 2) then	
+if (my_id .eq. 2) then
 	call system_clock(counti, count_rate, count_max)
 	write(*,*) "		R4 START"
 	!write(*,*) inputz0
@@ -4598,12 +4597,12 @@ IF (RunString(id, trim(inputz0)).NE.0) THEN
 	!STOP
 END IF
 
-if (my_id .eq. 2) then	
+if (my_id .eq. 2) then
 	call system_clock(countf, count_rate, count_max)
 	write(*,*) "		R4 END" , countf - counti
 end if
 
-if (my_id .eq. 2) then	
+if (my_id .eq. 2) then
 	call system_clock(counti, count_rate, count_max)
 	write(*,*) "		R5 START"
 end if
@@ -4618,7 +4617,7 @@ DO i=1,GetSelectedOutputStringLineCount(id)
 ! ! 	   write(*,*) trim(line) ! PRINT LABELS FOR EVERY FIELD (USEFUL)
 ! ! 	   !end if
 ! 	end if
-	
+
 	! MEAT
 	if (i .gt. 1) then
 		read(line,*) outmat(i,:)
@@ -4634,16 +4633,16 @@ DO i=1,GetSelectedOutputStringLineCount(id)
 	end if
 END DO
 
-if (my_id .eq. 2) then	
+if (my_id .eq. 2) then
 	call system_clock(countf, count_rate, count_max)
 	write(*,*) "		R5 END" , countf - counti
 end if
 
-if (my_id .eq. 2) then	
+if (my_id .eq. 2) then
 	call system_clock(counti, count_rate, count_max)
 	write(*,*) "		R6 START"
 end if
-  
+
 ! OUTPUT TO THE MAIN MASSACR METHOD
 alt0(1,:) = outmat(3,:)
 !alt0(1,124:177) = outmat(2,124:177)
@@ -4685,7 +4684,7 @@ IF (DestroyIPhreeqc(id).NE.IPQ_OK) THEN
 END IF
 
 
-if (my_id .eq. 2) then	
+if (my_id .eq. 2) then
 	call system_clock(countf, count_rate, count_max)
 	write(*,*) "		R6 END" , countf - counti
 end if
@@ -4693,12 +4692,12 @@ end if
 
 
 
-if (my_id .eq. 2) then	
+if (my_id .eq. 2) then
 	call system_clock(countf, count_rate, count_max)
 	write(*,*) "	PROC 40 END RUNNING" , countf - counti
 end if
 
-if (my_id .eq. 2) then	
+if (my_id .eq. 2) then
 	call system_clock(counti, count_rate, count_max)
 	write(*,*) "	PROC 40 START ASSEMBLING"
 end if
@@ -4730,58 +4729,58 @@ end if
 
 
 
-if (my_id .eq. 2) then	
+if (my_id .eq. 2) then
 	call system_clock(countf, count_rate, count_max)
 	write(*,*) "	PROC 40 END ASSEMBLING" , countf - counti
 end if
 
 
-if (my_id .eq. 2) then	
+if (my_id .eq. 2) then
 	call system_clock(counti, count_rate, count_max)
 	write(*,*) "	PROC 40 START SENDING"
 end if
 
-		!--------------SLAVE PROCESSOR SENDS ALTERED MESSAGE TO MASTER PROCESSOR
-	
+		!-SLAVE PROCESSOR SENDS ALTERED MESSAGE TO MASTER PROCESSOR
+
 		! send primary array chunk back to root process
 		do ii = 1,g_pri
 			call MPI_SEND( priLocal(:,ii), num_rows_received, MPI_DOUBLE_PRECISION, root_process, &
 			return_data_tag, MPI_COMM_WORLD, ierr)
 		end do
-		
+
 		! send secondary array chunk back to root process
 		do ii = 1,g_sec/2
 			call MPI_SEND( secLocal(:,ii), num_rows_received, MPI_DOUBLE_PRECISION, root_process, &
 			return_data_tag, MPI_COMM_WORLD, ierr)
 		end do
-		
+
 		! send solute array chunk back to root process
 		do ii = 1,g_sol
 			call MPI_SEND( solLocal(:,ii), num_rows_received, MPI_DOUBLE_PRECISION, root_process, &
 			return_data_tag, MPI_COMM_WORLD, ierr)
 		end do
-		
+
 		! send medium array chunk back to root process
 		do ii = 1,g_med
 			call MPI_SEND( medLocal(:,ii), num_rows_received, MPI_DOUBLE_PRECISION, root_process, &
 			return_data_tag, MPI_COMM_WORLD, ierr)
 		end do
-		
-if (my_id .eq. 2) then	
+
+if (my_id .eq. 2) then
 	call system_clock(countf, count_rate, count_max)
 	write(*,*) "	PROC 40 END SENDING" , countf - counti
 end if
-		
+
 		!write(*,*) "SLAVE PROCESSOR IS DONE WITH WORK"
-	
+
 	! done with looping through coarse timesteps
 	end do ! end do jj = tn/mstep ??
 
 
 
 
-! end loop through processors	
-end if 
+! end loop through processors
+end if
 
 
 
@@ -4810,7 +4809,7 @@ END PROGRAM main
 ! ----------------------------------------------------------------------------------%%
 
 function h_next (h, psi, rho_in, phi_in, u_in, v_in, frac6_in, temp6_in, dt_in)
-	
+
 use globals
 use initialize
 implicit none
@@ -4831,7 +4830,7 @@ implicit none
 
 ! integers
 integer :: i, j, n, ii, m=3
-! inputs 
+! inputs
 real(4) :: sx, sy, qx, qy, rho_in(xn,yn), flux(xn,2), phi_in(xn,yn)
 ! velocity stuff
 real(4) :: uf(xn,yn), vf(xn,yn), u_in(xn,yn), v_in(xn,yn)
@@ -4929,7 +4928,7 @@ v = -1.0*v_in
 uLong = -1.0*reshape(u(2:xn-1,2:yn-1), (/(xn-2)*(yn-2)/))
 vLong = -1.0*reshape(transpose(v(2:xn-1,2:yn-1)), (/(xn-2)*(yn-2)/))
 
-  
+
 mn = h
 
 
@@ -4980,15 +4979,15 @@ do ii=2,yn-2
 		if ((mask(i,ii) .eq. 5.0) .or. (mask(i,ii) .eq. 12.5) ) then
 			stretch(i,ii) = stretch(i+1,ii)
 		end if
-		
+
 		if ((mask(i,ii) .eq. 3.0) .or. (mask(i,ii) .eq. 3.5) .or. (mask(i,ii) .eq. 3.1) .or. (mask(i,ii) .eq. 3.05)) then
 			stretch(i,ii) = temp6_in(ii,1)
 		end if
-		
+
 		if ((mask(i,ii) .eq. 10.0) .or. (mask(i,ii) .eq. 17.5)) then
 			stretch(i,ii) = stretch(i-1,ii)
 		end if
-		
+
 		if ((mask(i,ii) .eq. 6.0) .or. (mask(i,ii) .eq. 6.5) .or. (mask(i,ii) .eq. 6.1) .or. (mask(i,ii) .eq. 6.05)) then
 			stretch(i,ii) = temp6_in(ii,2)
 		end if
@@ -5044,7 +5043,7 @@ end do
 
 !h(2,2) = h(2,2) + h0(1,2)*sxMat(2,2)/2.0  ! bottom left corner
 !h(xn-1,2) = h(xn-1,2) + h0(xn,2)*sxMat(xn-1,2)/2.0  ! bottom right corner
- 
+
 uVec = reshape(h(2:xn-1,2:yn-1), (/(xn-2)*(yn-2)/))
 h0Long = reshape(h0(2:xn-1,2:yn-1), (/(xn-2)*(yn-2)/))
 sxLong = reshape(sxMat(2:xn-1,2:yn-1), (/(xn-2)*(yn-2)/))
@@ -5071,24 +5070,24 @@ aBand((xn-2)*(yn-2),3) =  0.0
 
 
 do i = 2,(xn-2)*(yn-2)-1
-	
+
 	! flow left anywhere, 2 and 3
 	if (uLong(i) .lt. 0.0) then
-	
-		aBand(i,1) = -sxLong(i)/2.0 
+
+		aBand(i,1) = -sxLong(i)/2.0
 		aBand(i,2) = 1.0+sxLong(i) - uLong(i)*qxLong(i)
 		aBand(i,3) = -sxLong(i)/2.0 + uLong(i)*qxLong(i)
-	
-	end if
-	
 
-	! flow right anywhere, 1 and 2 
+	end if
+
+
+	! flow right anywhere, 1 and 2
 	if (uLong(i) .gt. 0.0) then
-	
+
 		aBand(i,1) = -sxLong(i)/2.0 - uLong(i)*qxLong(i)
 		aBand(i,2) = 1.0+sxLong(i) + uLong(i)*qxLong(i)
-		aBand(i,3) = -sxLong(i)/2.0 
-	
+		aBand(i,3) = -sxLong(i)/2.0
+
 	end if
 
 
@@ -5101,30 +5100,30 @@ do i = 2,(xn-2)*(yn-2)-1
 	end if
 
 
-	
+
 	! left edge flowing to the right, 1 & 2
 	if (uLong(i) .gt. 0.0) then
-	
+
 		! left edge of right outcrop
 		if ((maskLong(i).eq.10.0) .or. (maskLong(i).eq.17.5) .or. (maskLong(i).eq.6.0) .or. (maskLong(i).eq.6.5) .or. (maskLong(i).eq.6.1) .or. (maskLong(i).eq.6.05)) then
 				aBand(i,1) =  0.0
 				aBand(i,2) = 1.0 + sxLong(i) + uLong(i)*qxLong(i)
-				aBand(i,3) = -sxLong(i)/2.0 
+				aBand(i,3) = -sxLong(i)/2.0
 				uVec(i) = uVec(i) + uLong(i)*qxLong(i)*stretchLong(i)
 		end if
-		
+
 		! left edge but not uppper left corner
 		if ((mod(i-1,xn-2).eq.0) .and. (maskLong(i) .ne. 25.0)) then
 				aBand(i,1) =  0.0
 				aBand(i,2) = 1.0 + sxLong(i) + uLong(i)*qxLong(i)
-				aBand(i,3) = -sxLong(i)/2.0 
+				aBand(i,3) = -sxLong(i)/2.0
 				uVec(i) = uVec(i) + uLong(i)*qxLong(i)*stretchLong(i)
 		end if
-	
+
 
 	end if
-	
-	
+
+
 	! right edge, 1 and 2 by default
 	if ((mod(i,xn-2) .eq. 0) .or. (maskLong(i).eq.5.0) .or. (maskLong(i).eq.12.5) .or. (maskLong(i).eq.3.0) .or. (maskLong(i).eq.3.5) .or. (maskLong(i).eq.3.1) .or. (maskLong(i).eq.3.05)) then
 			aBand(i,1) = -sxLong(i)/2.0 - uLong(i)*qxLong(i)
@@ -5132,30 +5131,30 @@ do i = 2,(xn-2)*(yn-2)-1
 			aBand(i,3) =  0.0
 	end if
 
-	
+
 	! right edge flowing to the left, 2 and 3
 	if (uLong(i) .lt. 0.0) then
-	
+
 		! right edge of left outcrop
 		if ((maskLong(i).eq.5.0) .or. (maskLong(i).eq.12.5) .or. (maskLong(i).eq.3.0) .or. (maskLong(i).eq.3.5) .or. (maskLong(i).eq.3.1) .or. (maskLong(i).eq.3.05)) then
-				aBand(i,1) = -sxLong(i)/2.0 
+				aBand(i,1) = -sxLong(i)/2.0
 				aBand(i,2) = 1.0 + sxLong(i) - uLong(i)*qxLong(i)
 				aBand(i,3) =  0.0
 				uVec(i) = uVec(i) - uLong(i)*qxLong(i)*stretchLong(i)
 		end if
-		
+
 		! right edge but not upper right corner
 		if ((mod(i,xn-2) .eq. 0) .and. (maskLong(i) .ne. 25.0)) then
-				aBand(i,1) = -sxLong(i)/2.0 
+				aBand(i,1) = -sxLong(i)/2.0
 				aBand(i,2) = 1.0 + sxLong(i) - uLong(i)*qxLong(i)
 				aBand(i,3) =  0.0
 				uVec(i) = uVec(i) - uLong(i)*qxLong(i)*stretchLong(i)
 		end if
 
 
-	end if 
-	
-	
+	end if
+
+
 	! upper left corner, default 2 and 3
 	if ((mod(i-1,xn-2).eq.0) .and. (maskLong(i) .eq. 25.0)) then
 			aBand(i,1) =  0.0
@@ -5169,7 +5168,7 @@ do i = 2,(xn-2)*(yn-2)-1
 			aBand(i,2) = 1.0 + sxLong(i)/1.0 + uLong(i)*qxLong(i)!/2.0
 			aBand(i,3) =  0.0
 	end if
-	
+
 	! bottom right corner, 1 and 2
 	if (i.eq.xn-2) then
 			aBand(i,1) = -sxLong(i)/2.0 - uLong(i)*qxLong(i)!/2.0
@@ -5178,7 +5177,7 @@ do i = 2,(xn-2)*(yn-2)-1
 	end if
 
 
-	
+
 
 
 
@@ -5195,7 +5194,7 @@ do i=1,(xn-2)*(yn-2)
 	end if
 
 end do
-  
+
 ! make sure solver doesn't go out of bounds
 do i=1,((yn-2)-1)
 	ii = i*(xn-2)
@@ -5244,9 +5243,9 @@ do i=2,xn-1
 	if ((mask(i,ii) .eq. 50.0) .or. (mask(i,ii) .eq. 2.0) .or. (mask(i,ii) .eq. 7.0)) then
 		h(i,ii) = h(i,ii) + h0(i,ii+1)*(syMat(i,ii)/2.0) ! top
 	end if
-	
+
 	if ((mask(i,ii) .eq. 25.0) .and. (i .ge. 3) .and. (i .le. xn-2)) then
-		h(i,ii) = h(i,ii) + h0(i,ii+1)*(syMat(i,ii)/2.0) ! top 
+		h(i,ii) = h(i,ii) + h0(i,ii+1)*(syMat(i,ii)/2.0) ! top
 	end if
 	if ((mask(i,ii) .eq. 25.0) .and. (i .eq. 2)) then
 		h(i,ii) = h(i,ii) + h0(i,ii+1)*(syMat(i,ii)/2.0) ! top left corner
@@ -5254,14 +5253,14 @@ do i=2,xn-1
 	if ((mask(i,ii) .eq. 25.0) .and. (i .eq. xn-1)) then
 		h(i,ii) = h(i,ii) + h0(i,ii+1)*(syMat(i,ii)/2.0) ! top right corner
 	end if
-	
+
 	if ((mask(i,ii) .eq. 1.0) .and. (ii .eq. 2) .and. (i .eq. 2)) then
 		h(i,ii) = h(i,ii) + h0(i,ii-1)*(syMat(i,ii)/2.0) ! bottom left corner
 	end if
 	if ((mask(i,ii) .eq. 1.0) .and. (ii .eq. 2) .and. (i .eq. xn-1)) then
 		h(i,ii) = h(i,ii) + h0(i,ii-1)*(syMat(i,ii)/2.0) ! bottom right corner
 	end if
-	
+
 
 	if ((mask(i,ii) .eq. 12.5) .or. (mask(i,ii) .eq. 17.5) .or. (mask(i,ii) .eq. 3.5) .or. (mask(i,ii) .eq. 6.5)) then
 		h(i,ii) = h(i,ii) + h0(i,ii+1)*(syMat(i,ii)/2.0) ! top
@@ -5291,114 +5290,114 @@ bBand((xn-2)*(yn-2),1) = -syLong((xn-2)*(yn-2))/2.0 - vLong((xn-2)*(yn-2))*qyLon
 bBand((xn-2)*(yn-2),2) = 1.0 + syLong((xn-2)*(yn-2))/1.0 + vLong((xn-2)*(yn-2))*qyLong((xn-2)*(yn-2))!/2.0
 bBand((xn-2)*(yn-2),3) =  0.0
 do i = 2,(xn-2)*(yn-2)-1
-	
-		
+
+
 	! flow going down anywhere, 2 and 3
 	if (vLong(i) .lt. 0.0) then
-		
-		bBand(i,1) = -syLong(i)/2.0 
+
+		bBand(i,1) = -syLong(i)/2.0
 		bBand(i,2) = 1.0+syLong(i) - vLong(i)*qyLong(i)
 		bBand(i,3) = -syLong(i)/2.0 + vLong(i)*qyLong(i)
 
 	end if
-	
+
 	! flow coming up anywhere, 1 and 2
 	if (vLong(i) .gt. 0.0) then
-		
+
 		bBand(i,1) = -syLong(i)/2.0 - vLong(i)*qyLong(i)
 		bBand(i,2) = 1.0+syLong(i) + vLong(i)*qyLong(i)
-		bBand(i,3) = -syLong(i)/2.0 
-		
+		bBand(i,3) = -syLong(i)/2.0
+
 	end if
 
 
 	!!!!! TOP EDGES
-	
-	
-	! bottom rrow, default 2 and 3 !! 
+
+
+	! bottom rrow, default 2 and 3 !!
 	if (mod(i-1,yn-2) .eq. 0) then
 			bBand(i,1) =  0.0
 			bBand(i,2) = 1.0 + syLong(i) - vLong(i)*qyLong(i)
 			bBand(i,3) = -syLong(i)/2.0 + vLong(i)*qyLong(i)
 	end if
-	
+
 	! bottom rrow, if flow is coming up (1 and 2)
 	if (vLong(i) .gt. 0.0) then
-		
+
 		! bottom row but not bottom right corner
 		if ((mod(i-1,yn-2) .eq. 0) .and. (i .ne. (xn-2)*(yn-2)-(yn-2)+1)) then
 				bBand(i,1) =  0.0
 				bBand(i,2) = 1.0 + syLong(i) + vLong(i)*qyLong(i)
-				bBand(i,3) = -syLong(i)/2.0 
+				bBand(i,3) = -syLong(i)/2.0
 				h_nextRow(i) = h_nextRow(i) + vLong(i)*qyLong(i)*stretchLongT(i)
 		end if
 
 	end if
-	
+
 
 	! last/top edge, default 1 and 2
 	if ((maskLongT(i).eq.25.0) .or. (maskLongT(i).eq.50.0) .or. (maskLongT(i).eq.2.0) .or. (maskLongT(i).eq.7.0)) then
 			bBand(i,1) = -syLong(i)/2.0 - vLong(i)*qyLong(i)
 			bBand(i,2) = 1.0 + syLong(i) + vLong(i)*qyLong(i)
 			bBand(i,3) =  0.0
-			
+
 	end if
-	
+
 	if ((maskLongT(i).eq.12.5).or.(maskLongT(i).eq.17.5).or.(maskLongT(i).eq.3.5).or.(maskLongT(i).eq.6.5)) then
 			bBand(i,1) = -syLong(i)/2.0 - vLong(i)*qyLong(i)!/2.0
 			bBand(i,2) = 1.0 + syLong(i)/1.0 + vLong(i)*qyLong(i)!/2.0
 			bBand(i,3) =  0.0
 	end if
-	
-	
+
+
 	! top edges if flow coming down (2, 3)
 	if (vLong(i) .lt. 0.0) then
-		
+
 		if ((maskLongT(i).eq.50.0) .or. (maskLongT(i).eq.2.0) .or. (maskLongT(i).eq.7.0)) then
-				bBand(i,1) = -syLong(i)/2.0 
+				bBand(i,1) = -syLong(i)/2.0
 				bBand(i,2) = 1.0 + syLong(i) - vLong(i)*qyLong(i)
 				bBand(i,3) =  0.0
 				h_nextRow(i) = h_nextRow(i) - vLong(i)*qyLong(i)*stretchLongT(i)
 		end if
-		
+
 		! top but not top left or top right corner
 		if ((maskLongT(i).eq.25.0) .and. (i .gt. yn-2) .and. (i .le. (xn-2)*(yn-2)-(yn-2))) then
-				bBand(i,1) = -syLong(i)/2.0 
+				bBand(i,1) = -syLong(i)/2.0
 				bBand(i,2) = 1.0 + syLong(i) - vLong(i)*qyLong(i)
 				bBand(i,3) =  0.0
 				h_nextRow(i) = h_nextRow(i) - vLong(i)*qyLong(i)*stretchLongT(i)
-			
+
 		end if
-	
+
 		if ((maskLongT(i).eq.12.5).or.(maskLongT(i).eq.17.5).or.(maskLongT(i).eq.3.5).or.(maskLongT(i).eq.6.5)) then
-				bBand(i,1) = -syLong(i)/2.0 
+				bBand(i,1) = -syLong(i)/2.0
 				bBand(i,2) = 1.0 + syLong(i)/1.0 - vLong(i)*qyLong(i)!/2.0
 				bBand(i,3) =  0.0
 				h_nextRow(i) = h_nextRow(i) - vLong(i)*qyLong(i)*stretchLongT(i)!/2.0
 		end if
-		
-	end if 
-	
-	
-	
-	
+
+	end if
+
+
+
+
 	! upper left corner
 	if ((i .le. (yn-2)) .and. (maskLongT(i) .eq. 25.0)) then
 			bBand(i,1) = -syLong(i)/2.0 - vLong(i)*qyLong(i)!/2.0
 			bBand(i,2) = 1.0 + syLong(i)/1.0 + vLong(i)*qyLong(i)!/2.0
 			bBand(i,3) =  0.0
 	end if
-	
+
 	! upper right corner
 	if ((i .gt. (yn-2)*(xn-2)-(yn-2)) .and. (maskLongT(i) .eq. 25.0)) then
 			bBand(i,1) = -syLong(i)/2.0 - vLong(i)*qyLong(i)!/2.0
 			bBand(i,2) = 1.0 + syLong(i)/1.0 + vLong(i)*qyLong(i)!/2.0
 			bBand(i,3) =  0.0
-			
-	end if
-	
 
-	
+	end if
+
+
+
 	! bottom right corner
 	if (i .eq. (yn-2)*(xn-2)-(yn-2)+1) then
 			bBand(i,1) =  0.0
@@ -5420,7 +5419,7 @@ do i=1,(xn-2)*(yn-2)
 	end if
 
 end do
- 
+
 ! make sure solver doesn't go out of bounds
 do i=1,((xn-2)-1)
 	ii = i*(yn-2)
@@ -5429,7 +5428,7 @@ do i=1,((xn-2)-1)
 end do
 
 h_nextRow = tridiag(bBand(:,1),bBand(:,2),bBand(:,3),h_nextRow,(xn-2)*(yn-2))
-h_next(2:xn-1,2:yn-1) = transpose(reshape(h_nextRow, (/yn-2, xn-2/))) 
+h_next(2:xn-1,2:yn-1) = transpose(reshape(h_nextRow, (/yn-2, xn-2/)))
 hMid = h_next
 !
 !
@@ -5538,7 +5537,7 @@ do ii=2,yn-1
 do i=2,xn-1
 	permx_left(i,ii) = phi_in(i,ii) / ((grav*rho_fluid/viscosity)*(perm_in(i,ii)*rho_fluid + perm_in(i-1,ii)*rho_fluid) / 2.0)
 	permx_right(i,ii) = phi_in(i,ii) / ((grav*rho_fluid/viscosity)*(perm_in(i,ii)*rho_in(i,ii) + perm_in(i+1,ii)*rho_fluid) / 2.0)
-	
+
 	if (maskP(i,ii) .eq. 5.0) then
 		permx_right(i,ii) = phi_in(i,ii) / ((grav*rho_fluid/viscosity)*(perm_in(i,ii)*rho_in(i,ii)))
 	end if
@@ -5577,7 +5576,7 @@ do ii=yn/2,yn
 	 ! left
 	 rhs1(2,ii) = rhs1(2,ii) + psi(1,ii)*permx_left(2,ii)/(dx*dx)
 	end if
-	
+
 	if (maskP(xn,ii) .eq. 1.0) then
 	! right
 	 rhs1(xn-1,ii) = rhs1(xn-1,ii) + psi(xn,ii)*permx_right(xn-1,ii)/(dx*dx)
@@ -5589,7 +5588,7 @@ do ii=yn/2,yn
 		rhs1(2,ii) = rhs1(2,ii) + psi(2,ii-1)*permy_bottom(2,ii)/(dy*dy)
 		rhs1(2,ii) = rhs1(2,ii) + psi(1,ii)*permx_left(2,ii)/(dx*dx)
 	end if
-	
+
 	! bottom right corner
 	if (maskP(xn,ii) .eq. 100.0) then
 	 ! left
@@ -5597,7 +5596,7 @@ do ii=yn/2,yn
 		rhs1(xn-1,ii) = rhs1(xn-1,ii) + psi(xn,ii)*permx_right(xn-1,ii)/(dx*dx)
 	end if
 
-	
+
 end do
 
 
@@ -5611,35 +5610,35 @@ do i=2,xn-1
 	if ((maskP(i,ii) .eq. 17.5)) then
 	    rhs1(i,ii) = rhs1(i,ii) + psi(i-1,ii)*permx_left(i,ii)/(dx*dx)
 	end if
-	
+
 	if ((maskP(i,ii) .eq. 10.0)) then
 	    !rhs1(i,ii) = rhs1(i,ii) + psi(i-1,ii)*permx_left(i,ii)/(dx*dx)
 		rhs1(i,ii) = rhs1(i,ii) + ((4.0/3.0)*psi(i,ii) - (1.0/3.0)*psi(i+1,ii))*permx_left(i,ii)/(dx*dx)
 	end if
-	
+
 	if ((maskP(i,ii) .eq. 6.0) .or. (maskP(i,ii) .eq. 6.5) .or. (maskP(i,ii) .eq. 6.1) .or. (maskP(i,ii) .eq. 6.05) .or. (maskP(i,ii) .eq. 6.01)) then
 	    rhs1(i,ii) = rhs1(i,ii) + frac6_in(ii,2)*permx_left(i,ii)/(dx*dx)
 	end if
-	
+
 	if ((maskP(i,ii) .eq. 12.5)) then
 	    rhs1(i,ii) = rhs1(i,ii) + psi(i+1,ii)*permx_right(i,ii)/(dx*dx)
 	end if
-	
+
 	if ((maskP(i,ii) .eq. 5.0)) then
 		!rhs1(i,ii) = rhs1(i,ii) + psi(i+1,ii)*permx_right(i,ii)/(dx*dx)
 		rhs1(i,ii) = rhs1(i,ii) + ((4.0/3.0)*psi(i,ii) - (1.0/3.0)*psi(i-1,ii))*permx_right(i,ii)/(dx*dx)
 	end if
-	
+
 	if ((maskP(i,ii) .eq. 3.05) .or. (maskP(i,ii) .eq. 3.01)) then
 		rhs1(i,ii) = rhs1(i,ii) + frac6_in(ii,1)*permx_right(i,ii)/(dx*dx)
 	end if
-	
+
 	if ((maskP(i,ii) .eq. 3.0) .or. (maskP(i,ii) .eq. 3.5) .or. (maskP(i,ii) .eq. 3.1)) then
 		rhs1(i,ii) = rhs1(i,ii) + frac6_in(ii,1)*permx_right(i,ii)/(dx*dx)
 		!rhs1(i,ii) = rhs1(i,ii) + (frac6_in(ii,1)/(dx*dx))*phi_in(i,ii)*2.0*viscosity/(grav*rho_fluid*(rho_fluid*perm_in(i,ii) + (rho_fluid*param_f_dx*param_f_dx/12.0) ))
 		!rhs1(i,ii) = rhs1(i,ii) + (frac6_in(ii,1)/(dx*dx))*(phi_in(i,ii) / ((grav*rho_fluid/viscosity)*(perm_in(i,ii)*rho_in(i,ii) + (param_f_dx*param_f_dx/12.0)*rho_fluid) / 2.0))
 	end if
-	
+
 
 end do
 end do
@@ -5718,7 +5717,7 @@ psi_next = 0.0
 
 
 
- 
+
 
 ! THIS IS WHERE THE BAND IS MADE
 aband0 = band_in
@@ -5755,13 +5754,13 @@ end function psi_next
 
 
 function make_band(perm_in,phi_in,permx,permy,rho_in)
-	
-	
+
+
 	use globals
 	use initialize
 	implicit none
-	
-	
+
+
 	interface
 
 	function partial(array,rows,cols,d1,d2,dim)
@@ -5772,7 +5771,7 @@ function make_band(perm_in,phi_in,permx,permy,rho_in)
 		real(4) :: array(rows,cols), d1, d2, d
 		real(4) :: partial(rows,cols)
 	end function partial
-	
+
 	function partial_edge(array,rows,cols,d1,d2,dim)
 		use globals
 		use initialize
@@ -5781,7 +5780,7 @@ function make_band(perm_in,phi_in,permx,permy,rho_in)
 		real(4) :: array(rows,cols), d1, d2, d
 		real(4) :: partial_edge(rows,cols)
 	end function partial_edge
-	
+
 	function partial_edge_p(array,rows,cols,d1,d2,dim)
 		use globals
 		use initialize
@@ -5790,10 +5789,10 @@ function make_band(perm_in,phi_in,permx,permy,rho_in)
 		real(4) :: array(rows,cols), d1, d2, d
 		real(4) :: partial_edge_p(rows,cols)
 	end function partial_edge_p
-	
+
 	end interface
-	
-	
+
+
 	integer :: i, j, ii, n, m
 	real(4) :: perm_in(xn,yn), phi_in(xn,yn), rho_in(xn,yn)
 	real(4) :: permx(xn,yn), permy(xn,yn), permLong(longP)
@@ -5802,9 +5801,9 @@ function make_band(perm_in,phi_in,permx,permy,rho_in)
 	real(4) :: permx_left(xn,yn), permx_right(xn,yn), permy_bottom(xn,yn), permy_top(xn,yn)
 	real(4) :: permx_left_long(longP), permx_right_long(longP), permy_bottom_long(longP), permy_top_long(longP)
 	real(4) :: perm_long(longP)
-	
+
 !	phi_in = 1.0
-	
+
 	rho_in = rho_fluid
 
 	permx_left = phi_in / ((grav*rho_fluid/viscosity)*perm_in*rho_fluid)
@@ -5815,14 +5814,14 @@ function make_band(perm_in,phi_in,permx,permy,rho_in)
 	do i=2,xn-1
 		permx_left(i,ii) = phi_in(i,ii) / ((grav*rho_fluid/viscosity)*(perm_in(i,ii)*rho_fluid + perm_in(i-1,ii)*rho_fluid) / 2.0)
 		permx_right(i,ii) = phi_in(i,ii) / ((grav*rho_fluid/viscosity)*(perm_in(i,ii)*rho_in(i,ii) + perm_in(i+1,ii)*rho_fluid) / 2.0)
-		
+
 		if (maskP(i,ii) .eq. 5.0) then
 			permx_right(i,ii) = phi_in(i,ii) / ((grav*rho_fluid/viscosity)*(perm_in(i,ii)*rho_in(i,ii)))
 		end if
 
 		permy_bottom(i,ii) = phi_in(i,ii) / ((grav*rho_fluid/viscosity)*(perm_in(i,ii)*rho_fluid + perm_in(i,ii-1)*rho_fluid) / 2.0)
 		permy_top(i,ii) = phi_in(i,ii) / ((grav*rho_fluid/viscosity)*(perm_in(i,ii)*rho_fluid + perm_in(i,ii+1)*rho_fluid) / 2.0)
-	
+
 		if ((maskP(i,ii) .eq. 6.0) .or. (maskP(i,ii) .eq. 6.5) .or. (maskP(i,ii) .eq. 6.1) .or. (maskP(i,ii) .eq. 6.05) .or. (maskP(i,ii) .eq. 6.01)) then
 			permx_left(i,ii) = phi_in(i,ii) / ((grav*rho_fluid/viscosity)*perm_in(i,ii)*rho_fluid)!phi_in(i,ii) / ((grav*rho_fluid/viscosity)*(perm_in(i,ii)*rho_in(i,ii) + (param_f_dx*param_f_dx/3.0)*rho_in(i,ii)) / 2.0)!
 		end if
@@ -5831,7 +5830,7 @@ function make_band(perm_in,phi_in,permx,permy,rho_in)
 		end if
 	end do
 	end do
-	
+
 	do ii=2,yn-1
 	do i=2,xn-1
 		if ((maskP(i,ii) .eq. 50.0) .or. (maskP(i,ii) .eq. 3.5) .or. (maskP(i,ii) .eq. 6.5)) then
@@ -5845,8 +5844,8 @@ function make_band(perm_in,phi_in,permx,permy,rho_in)
 	permx_right_long = reshape(transpose(permx_right(2:xn-1,(yn/2)+2:yn-1)),(/longP/))
 	permy_bottom_long = reshape(transpose(permy_bottom(2:xn-1,(yn/2)+2:yn-1)),(/longP/))
 	permy_top_long = reshape(transpose(permy_top(2:xn-1,(yn/2)+2:yn-1)),(/longP/))
-	
-	
+
+
 ! 	do ii=2,yn-1
 ! 	do i=2,xn-1
 ! 		if (maskP(i,ii) .eq. 50.0) then
@@ -5854,20 +5853,20 @@ function make_band(perm_in,phi_in,permx,permy,rho_in)
 ! 		end if
 ! 	end do
 ! 	end do
-	
+
 	! make the band
 	innerBand = 0.0
 	make_band = 0.0
 	m = 2*((yn/2)-2) + 1
-	
+
 
 	! trial (7 days) inner band
 	innerBand = 0.0
 		do i = 1,longP
 			! diagonal
 			innerBand(i,(m+1)/2) = (permx_right_long(i) + permx_left_long(i))/(dx*dx) + (permy_top_long(i) + permy_bottom_long(i))/(dy*dy)
-			
-			
+
+
 			! off-diagonals
 			! all but left edge
 			if ((i .gt. ((yn/2)-2)) .and. (maskPLongT(i) .ne. 10.0) .and. (maskPLongT(i) .ne. 17.5) .and. (maskPLongT(i) .ne. 6.0) .and. (maskPLongT(i) .ne. 6.5) .and. (maskPLongT(i) .ne. 6.1) .and. (maskPLongT(i) .ne. 6.05) .and. (maskPLongT(i) .ne. 6.01)) then
@@ -5877,18 +5876,18 @@ function make_band(perm_in,phi_in,permx,permy,rho_in)
 			if ((i .le. (longP)-((yn/2)-2)) .and. (maskPLongT(i) .ne. 5.0) .and. (maskPLongT(i) .ne. 12.5) .and. (maskPLongT(i) .ne. 3.0) .and. (maskPLongT(i) .ne. 3.5) .and. (maskPLongT(i) .ne. 3.1) .and. (maskPLongT(i) .ne. 3.05) .and. (maskPLongT(i) .ne. 3.01)) then
 				innerBand(i,m) = -permx_right_long(i)/(dx*dx)
 			end if
-		
-		
+
+
 			! all but bottom
 			if ((maskPLongT(i) .ne. 100.0) .or. (maskPLongT(i) .ne. 3.01) .or. (maskPLongT(i) .ne. 6.01)) then
 				innerBand(i,(m+1)/2-1) = -permy_bottom_long(i)/(dy*dy)
 			end if
-		
+
 			! all but top
 			if ((maskPLongT(i) .ne. 50.0) .and. (maskPLongT(i) .ne. 25.0) .and. (maskPLongT(i) .ne. 12.5) .and. (maskPLongT(i) .ne. 17.5) .and. (maskPLongT(i) .ne. 3.5) .and. (maskPLongT(i) .ne. 6.5)) then
 				innerBand(i,(m+1)/2+1) = -permy_top_long(i)/(dy*dy)
 			end if
-			
+
 ! 			if (maskPLongT(i) .eq. 2.0) then
 ! 				innerBand(i,m) = 0.0 ! skip right
 ! 				innerBand(i,(m+1)/2+1) = 0.0 ! skip top
@@ -5898,11 +5897,11 @@ function make_band(perm_in,phi_in,permx,permy,rho_in)
 ! 				innerBand(i,1) = 0.0 ! skip left
 ! 				innerBand(i,(m+1)/2+1) = 0.0 ! skip top
 ! 			end if
-		
+
 		end do
 
 	do i = 1,longP
-	 
+
 		! mask
 		if ((maskPLongT(i) .eq. 0.0) .or. (maskPLongT(i) .eq. 600.0)) then
 			innerBand(i,:) = 0.0
@@ -5912,9 +5911,9 @@ function make_band(perm_in,phi_in,permx,permy,rho_in)
 	end do
 
 	!write(*,*) innerBand(1,:)
-	
+
 	make_band = innerBand
-	
+
 return
 end function make_band
 
@@ -5931,15 +5930,15 @@ end function make_band
 !
 ! SUMMARY: transports particles by euler or 4th order runge kutta
 !
-! INPUTS: 
+! INPUTS:
 !
 !
-! RETURNS: 
+! RETURNS:
 !
 ! ----------------------------------------------------------------------------------%%
 
 function particles_next (trace_in, uTransport, vTransport, inval, num, num_sat)
-	
+
 use globals
 use initialize
 implicit none
@@ -5993,9 +5992,9 @@ do mm=1,cstep
 ! put in new particles in inflow cells
 
 do nn = 1, xn
-	
+
 		if (vTransport(twentyfives(1,nn),twentyfives(2,nn)) .lt. 0.0) then
-			
+
 		! generate a new particle so the cell is at saturation
 		do j=1,num_sat
 			m = 0
@@ -6004,28 +6003,28 @@ do nn = 1, xn
 			do while (m .eq. 0)
 				n = n +1
 				if ((trace_in(3,n) .eq. 0.0)) then
-					call random_number(rando) 
+					call random_number(rando)
 					trace_in(1,n) = dx*rando + (x(twentyfives(1,nn)) - dx/2)
 					trace_in(2,n) = dy*rando + (y(twentyfives(2,nn)) - dy/2)
 					trace_in(3,n) = inval
-					
+
 					trace_in(4,n) = twentyfives(1,nn)
 					trace_in(5,n) = twentyfives(2,nn)
 					m = 1
-					
+
 				end if
 			end do
 		end do
-		
+
 		end if
 
 end do
 
 
 do nn = yn/2, yn
-	
+
 		if (uTransport(fives(1,nn),fives(2,nn)) .lt. 0.0) then
-			
+
 		! generate a new particle so the cell is at saturation
 		do j=1,num_sat
 			m = 0
@@ -6034,23 +6033,23 @@ do nn = yn/2, yn
 			do while (m .eq. 0)
 				n = n +1
 				if ((trace_in(3,n) .eq. 0.0)) then
-					call random_number(rando) 
+					call random_number(rando)
 					trace_in(1,n) = dx*rando + (x(fives(1,nn)) - dx/2)
 					trace_in(2,n) = dy*rando + (y(fives(2,nn)) - dy/2)
 					trace_in(3,n) = inval
-					
+
 					trace_in(4,n) = fives(1,nn)
 					trace_in(5,n) = fives(2,nn)
 					m = 1
 				end if
 			end do
 		end do
-		
+
 		end if
-		
-		
+
+
 		if (uTransport(tens(1,nn),tens(2,nn)) .gt. 0.0) then
-			
+
 		! generate a new particle so the cell is at saturation
 		do j=1,num_sat
 			m = 0
@@ -6059,18 +6058,18 @@ do nn = yn/2, yn
 			do while (m .eq. 0)
 				n = n +1
 				if ((trace_in(3,n) .eq. 0.0)) then
-					call random_number(rando) 
+					call random_number(rando)
 					trace_in(1,n) = dx*rando + (x(tens(1,nn)) - dx/2)
 					trace_in(2,n) = dy*rando + (y(tens(2,nn)) - dy/2)
 					trace_in(3,n) = inval
-					
+
 					trace_in(4,n) = tens(1,nn)
 					trace_in(5,n) = tens(2,nn)
 					m = 1
 				end if
 			end do
 		end do
-		
+
 		end if
 
 end do
@@ -6122,25 +6121,25 @@ do n = 1,num
 					u_wt = ( uTransport(i,ii) * (y(ii+1) - trace_in(2,n)) * (x(i+1) - trace_in(1,n)) + &
 						   uTransport(i+1,ii) * (y(ii+1) - trace_in(2,n)) * (trace_in(1,n) - x(i)) + &
 						   uTransport(i+1,ii+1) * (trace_in(2,n) - y(ii)) * (trace_in(1,n) - x(i)) + &
-						   uTransport(i,ii+1) * (trace_in(2,n) - y(ii)) * (x(i+1) - trace_in(1,n)) ) / (dx*dy) 
-			
+						   uTransport(i,ii+1) * (trace_in(2,n) - y(ii)) * (x(i+1) - trace_in(1,n)) ) / (dx*dy)
+
    					v_wt = ( vTransport(i,ii) * (y(ii+1) - trace_in(2,n)) * (x(i+1) - trace_in(1,n)) + &
    						   vTransport(i+1,ii) * (y(ii+1) - trace_in(2,n)) * (trace_in(1,n) - x(i)) + &
    						   vTransport(i+1,ii+1) * (trace_in(2,n) - y(ii)) * (trace_in(1,n) - x(i)) + &
-   						   vTransport(i,ii+1) * (trace_in(2,n) - y(ii)) * (x(i+1) - trace_in(1,n)) ) / (dx*dy) 
+   						   vTransport(i,ii+1) * (trace_in(2,n) - y(ii)) * (x(i+1) - trace_in(1,n)) ) / (dx*dy)
 
 ! 					u_wt = uTransport(i,ii)
 ! 					v_wt = vTransport(i,ii)
 
-		
+
 		! advect the thing
 		trace_in(1,n) = trace_in(1,n) + u_wt*dt*mstep/(cstep)!/1000.0
 		trace_in(2,n) = trace_in(2,n) + v_wt*dt*mstep/(cstep)!/1000.0
-		
+
 		if ((trace_in(1,n).gt.x_max) .or. (trace_in(1,n).lt.x_min) .or. (trace_in(2,n).gt.y_max) .or. (trace_in(2,n).lt.y_min)) then
 			trace_in(:,n) = 0.0
 		end if
-		
+
 ! 		i = 1.0*floor(trace_in(1,n)/dx) + 1
 ! 		i = 1.0*min(i,xn-1)
 ! 		trace_in(4,n) = i
@@ -6153,15 +6152,15 @@ do n = 1,num
 		trace_in(5,n) = min(yn - floor(-1.0*trace_in(2,n)/dy) - 1,yn-1)
 		i = trace_in(4,n)
 		ii = trace_in(5,n)
-		
+
 		if (maskP(i,ii) .eq. 0.0) then
 			trace_in(:,n) = 0.0
 		end if
-		
+
 		if ((maskP(i,ii+1) .eq. 0.0) .and. (abs(trace_in(2,n) - y(ii+1)) .lt. dy/2.0)) then
 			trace_in(:,n) = 0.0
 		end if
-		
+
 		if ((maskP(i,ii-1) .eq. 0.0) .and. (abs(trace_in(2,n) - y(ii-1)) .lt. dy/2.0)) then
 			trace_in(:,n) = 0.0
 		end if
@@ -6174,7 +6173,7 @@ do n = 1,num
 end do
 
 
-end do	
+end do
 
 particles_next = trace_in
 
@@ -6199,7 +6198,7 @@ end function particles_next
 ! ----------------------------------------------------------------------------------%%
 
 function solute_next (sol, uTransport, vTransport, seaw)
-	
+
 use globals
 use initialize
 implicit none
@@ -6255,7 +6254,7 @@ uTransport(1,:) = 0.0
 
 
 do i = 1,xn
-	
+
 ! 	if (i .eq. f_index1-1) then
 ! 		sol(i,:) = (4.0/3.0)*sol(i-1,:) - (1.0/3.0)*sol(i-2,:)
 ! 		do j = yn/2,yn
@@ -6263,24 +6262,24 @@ do i = 1,xn
 ! 		end do
 !
 ! 	end if
-	
+
 	do j = yn/2,yn
-		
+
 ! 		if ((maskP(i,j) .eq. 0.0)) then
 ! 			sol(i,j) = seaw
 ! 		end if
-		
+
 		if ((maskP(i,j) .eq. 5.0)) then
-			
+
 			if (uTransport(i,j) .lt. 0.0) then
 				sol(i+1,j) = seaw
 				uTransport(i+1,j) = uTransport(i,j)
 			else
 				sol(i+1,j) = (4.0/3.0)*sol(i,j) - (1.0/3.0)*sol(i-1,j)
 			end if
-			
+
 		end if
-		
+
 
 ! 		if ((maskP(i,j) .eq. 10.0) .or. (maskP(i,j) .eq. 170.5)) then
 ! 			if (uTransport(i,j) .gt. 0.0) then
@@ -6302,14 +6301,14 @@ do j = yn/2,yn-1
 	do i = 3,xn-2
 		if (uTransport(i,j) .gt. 1e-9) then
 	!do i = 3,f_index1-2
-	
-	
-		
+
+
+
 			! if (uTransport(i,j) .gt. 0.0) then
 			!if (uTransport(i,j) .gt. 0.0) then
 				! upwind including LHS value
 				solute_next(i,j) = sol0(i,j) - qx*uTransport(i,j)*( sol0(i,j) - sol0(i-1,j) )
-				
+
 
 				! correction loop: sort of a mess
 				!if (i .gt. 2) then
@@ -6317,7 +6316,7 @@ do j = yn/2,yn-1
 						!sigma1 = 0.0
 						sigma1a = (sol0(i+1,j) - sol0(i,j))/dx
 						sigma1b = 2.0*(sol0(i,j) - sol0(i-1,j))/dx
-						
+
 						!if (sigma1a*sigma1b .gt. 0.0) then
 !							sigma1 = minval((/abs(sigma1a), abs(sigma1b)/))
 ! 							if (sigma1 .eq. abs(sigma1a)) then
@@ -6331,11 +6330,11 @@ do j = yn/2,yn-1
 ! 							sigma1 = sig_bool_a*sign(1.0,sigma1a)*sigma1 + sig_bool_b*sign(1.0,sigma1b)*sigma1
 							sigma1 = ((minloc((/abs(sigma1a), abs(sigma1b)/),DIM=1)-1.0)*sigma1b) + ((minloc((/abs(sigma1b), abs(sigma1a)/),DIM=1)-1.0)*sigma1a)
 							!end if
-						
+
 						!sigma3 = 0.0
 						sigma3a = 2.0*(sol0(i+1,j) - sol0(i,j))/dx
 						sigma3b = (sol0(i,j) - sol0(i-1,j))/dx
-						
+
 						!if (sigma3a*sigma3b .gt. 0.0) then
 !						sigma3 = minval((/abs(sigma3a), abs(sigma3b)/))
 ! 						if (sigma3 .eq. abs(sigma3a)) then
@@ -6349,7 +6348,7 @@ do j = yn/2,yn-1
 ! 						sigma3 = sig_bool_a*sign(1.0,sigma3a)*sigma3 + sig_bool_b*sign(1.0,sigma3b)*sigma3
 						sigma3 = ((minloc((/abs(sigma3a), abs(sigma3b)/),DIM=1)-1.0)*sigma3b) + ((minloc((/abs(sigma3b), abs(sigma3a)/),DIM=1)-1.0)*sigma3a)
 						!end if
-						
+
 						! choosing sigma5
 						sigma5 = 0.0
 						if (sigma1*sigma3 .gt. 0.0) then
@@ -6373,7 +6372,7 @@ do j = yn/2,yn-1
 ! 						sigma2 = sig_bool_a*sign(1.0,sigma2a)*sigma2 + sig_bool_b*sign(1.0,sigma2b)*sigma2
 						sigma2 = ((minloc((/abs(sigma2a), abs(sigma2b)/),DIM=1)-1.0)*sigma2b) + ((minloc((/abs(sigma2b), abs(sigma2a)/),DIM=1)-1.0)*sigma2a)
 						!end if
-						
+
 						!sigma4 = 0.0
 						sigma4a = 2.0*(sol0(i,j) - sol0(i-1,j))/dx
 						sigma4b = (sol0(i-1,j) - sol0(i-2,j))/dx
@@ -6391,14 +6390,14 @@ do j = yn/2,yn-1
 ! 						sigma4 = sig_bool_a*sign(1.0,sigma4a)*sigma4 + sig_bool_b*sign(1.0,sigma4b)*sigma4
 						sigma4 = ((minloc((/abs(sigma4a), abs(sigma4b)/),DIM=1)-1.0)*sigma4b) + ((minloc((/abs(sigma4b), abs(sigma4a)/),DIM=1)-1.0)*sigma4a)
 						!end if
-						
-						
+
+
 						! choosing sigma6
 						sigma6 = 0.0
 						if (sigma2*sigma4 .gt. 0.0) then
 							sigma6 = sign(1.0,sigma2)*maxval((/abs(sigma2), abs(sigma4)/))
 						end if
-						
+
 ! 						write(*,*) "sigma5"
 ! 						write(*,*) sigma5
 ! 						write(*,*) "sigma6"
@@ -6409,9 +6408,9 @@ do j = yn/2,yn-1
 					!end if ! end if maskP i-2,j .eq. 0
 				!end if ! end if i .gt. 2
 				! end correction loop
-				
+
 			!end if ! end if u .gt. 0.0
-			
+
 ! 			if (uTransport(i,j) .lt. 0.0) then
 ! 				! upwind including RHS value
 ! 				solute_next(i,j) = sol0(i,j) - qx*uTransport(i,j)*( sol0(i+1,j) - sol0(i,j) )
@@ -6521,7 +6520,7 @@ do j = yn/2,yn-1
 ! 				! end correction loop
 !
 ! 			end if
-!		
+!
 end if ! end mod thing
 	end do
 	!solute_next(xn-1,j) = sol0(xn-1,j) - qx*uTransport(xn-1,j)*( sol0(xn-1,j) - sol0(xn-2,j) )
@@ -6831,7 +6830,7 @@ end function solute_next
 ! ----------------------------------------------------------------------------------%%
 
 function solute_next_coarse (sol, uTransport, vTransport, seaw)
-	
+
 use globals
 use initialize
 implicit none
@@ -6887,7 +6886,7 @@ uTransport(1,:) = 0.0
 
 
 do i = 1,xn/cellx
-	
+
 ! 	if (i .eq. f_index1-1) then
 ! 		sol(i,:) = (4.0/3.0)*sol(i-1,:) - (1.0/3.0)*sol(i-2,:)
 ! 		do j = yn/2,yn
@@ -6895,13 +6894,13 @@ do i = 1,xn/cellx
 ! 		end do
 !
 ! 	end if
-	
+
 	do j = 1,yn/(2*celly)
-		
+
 ! 		if ((maskP(i,j) .eq. 0.0)) then
 ! 			sol(i,j) = seaw
 ! 		end if
-		
+
 ! 		if ((coarse_mask(i,j) .eq. 5.0)) then
 !
 ! 			if (uTransport(i,j) .lt. 0.0) then
@@ -6912,7 +6911,7 @@ do i = 1,xn/cellx
 ! 			end if
 !
 ! 		end if
-		
+
 
 ! 		if ((maskP(i,j) .eq. 10.0) .or. (maskP(i,j) .eq. 170.5)) then
 ! 			if (uTransport(i,j) .gt. 0.0) then
@@ -6934,14 +6933,14 @@ do j = 1,yn/(2*celly)
 	do i = 3,xn/cellx-1
 		if (uTransport(i,j) .gt. 1e-9) then
 	!do i = 3,f_index1-2
-	
-	
-		
+
+
+
 			! if (uTransport(i,j) .gt. 0.0) then
 			!if (uTransport(i,j) .gt. 0.0) then
 				! upwind including LHS value
 				solute_next_coarse(i,j) = sol0(i,j) - qx*uTransport(i,j)*( sol0(i,j) - sol0(i-1,j) )
-				
+
 
 				! correction loop: sort of a mess
 				!if (i .gt. 2) then
@@ -6949,7 +6948,7 @@ do j = 1,yn/(2*celly)
 						!sigma1 = 0.0
 						sigma1a = (sol0(i+1,j) - sol0(i,j))/(dx*cellx)
 						sigma1b = 2.0*(sol0(i,j) - sol0(i-1,j))/(dx*cellx)
-						
+
 						!if (sigma1a*sigma1b .gt. 0.0) then
 !							sigma1 = minval((/abs(sigma1a), abs(sigma1b)/))
 ! 							if (sigma1 .eq. abs(sigma1a)) then
@@ -6963,11 +6962,11 @@ do j = 1,yn/(2*celly)
 ! 							sigma1 = sig_bool_a*sign(1.0,sigma1a)*sigma1 + sig_bool_b*sign(1.0,sigma1b)*sigma1
 							sigma1 = ((minloc((/abs(sigma1a), abs(sigma1b)/),DIM=1)-1.0)*sigma1b) + ((minloc((/abs(sigma1b), abs(sigma1a)/),DIM=1)-1.0)*sigma1a)
 							!end if
-						
+
 						!sigma3 = 0.0
 						sigma3a = 2.0*(sol0(i+1,j) - sol0(i,j))/(dx*cellx)
 						sigma3b = (sol0(i,j) - sol0(i-1,j))/(dx*cellx)
-						
+
 						!if (sigma3a*sigma3b .gt. 0.0) then
 !						sigma3 = minval((/abs(sigma3a), abs(sigma3b)/))
 ! 						if (sigma3 .eq. abs(sigma3a)) then
@@ -6981,7 +6980,7 @@ do j = 1,yn/(2*celly)
 ! 						sigma3 = sig_bool_a*sign(1.0,sigma3a)*sigma3 + sig_bool_b*sign(1.0,sigma3b)*sigma3
 						sigma3 = ((minloc((/abs(sigma3a), abs(sigma3b)/),DIM=1)-1.0)*sigma3b) + ((minloc((/abs(sigma3b), abs(sigma3a)/),DIM=1)-1.0)*sigma3a)
 						!end if
-						
+
 						! choosing sigma5
 						sigma5 = 0.0
 						if (sigma1*sigma3 .gt. 0.0) then
@@ -7005,7 +7004,7 @@ do j = 1,yn/(2*celly)
 ! 						sigma2 = sig_bool_a*sign(1.0,sigma2a)*sigma2 + sig_bool_b*sign(1.0,sigma2b)*sigma2
 						sigma2 = ((minloc((/abs(sigma2a), abs(sigma2b)/),DIM=1)-1.0)*sigma2b) + ((minloc((/abs(sigma2b), abs(sigma2a)/),DIM=1)-1.0)*sigma2a)
 						!end if
-						
+
 						!sigma4 = 0.0
 						sigma4a = 2.0*(sol0(i,j) - sol0(i-1,j))/(dx*cellx)
 						sigma4b = (sol0(i-1,j) - sol0(i-2,j))/(dx*cellx)
@@ -7023,14 +7022,14 @@ do j = 1,yn/(2*celly)
 ! 						sigma4 = sig_bool_a*sign(1.0,sigma4a)*sigma4 + sig_bool_b*sign(1.0,sigma4b)*sigma4
 						sigma4 = ((minloc((/abs(sigma4a), abs(sigma4b)/),DIM=1)-1.0)*sigma4b) + ((minloc((/abs(sigma4b), abs(sigma4a)/),DIM=1)-1.0)*sigma4a)
 						!end if
-						
-						
+
+
 						! choosing sigma6
 						sigma6 = 0.0
 						if (sigma2*sigma4 .gt. 0.0) then
 							sigma6 = sign(1.0,sigma2)*maxval((/abs(sigma2), abs(sigma4)/))
 						end if
-						
+
 ! 						write(*,*) "sigma5"
 ! 						write(*,*) sigma5
 ! 						write(*,*) "sigma6"
@@ -7041,9 +7040,9 @@ do j = 1,yn/(2*celly)
 					!end if ! end if maskP i-2,j .eq. 0
 				!end if ! end if i .gt. 2
 				! end correction loop
-				
+
 			!end if ! end if u .gt. 0.0
-			
+
 ! 			if (uTransport(i,j) .lt. 0.0) then
 ! 				! upwind including RHS value
 ! 				solute_next(i,j) = sol0(i,j) - qx*uTransport(i,j)*( sol0(i+1,j) - sol0(i,j) )
@@ -7153,7 +7152,7 @@ do j = 1,yn/(2*celly)
 ! 				! end correction loop
 !
 ! 			end if
-!		
+!
 end if ! end mod thing
 	end do
 	!solute_next(xn-1,j) = sol0(xn-1,j) - qx*uTransport(xn-1,j)*( sol0(xn-1,j) - sol0(xn-2,j) )
@@ -8034,11 +8033,11 @@ end function solute_next_coarse
 ! ----------------------------------------------------------------------------------%%
 
 function rho_next(h_in)
-	
+
 use globals
 use initialize
 implicit none
-  
+
 ! declare errthing
 integer :: i,j
 real(4) :: h_in(xn,yn), rho_next(xn,yn)
@@ -8047,7 +8046,7 @@ real(4) :: h_in(xn,yn), rho_next(xn,yn)
 do i=1,xn
 	do j = 1,yn
 		rho_next(i,j) = rho_fluid*(1.0 - alpha*(h_in(i,j)-273.0))
-	end do 
+	end do
 end do
 
 return
@@ -8064,11 +8063,11 @@ end function rho_next
 ! ----------------------------------------------------------------------------------%%
 
 function rho_one(h_in)
-	
+
 use globals
 use initialize
 implicit none
-  
+
 ! declare errthing
 integer :: i,j
 real(4) :: h_in, rho_one
@@ -8095,11 +8094,11 @@ end function rho_one
 ! ----------------------------------------------------------------------------------%%
 
 function visc_next(h_in)
-	
+
 use globals
 use initialize
 implicit none
-  
+
 ! declare errthing
 integer :: i,j
 real(4) :: h_in(xn,yn), visc_next(xn,yn)
@@ -8110,7 +8109,7 @@ do i=1,xn
 		!visc_next(i,j) = (2.44e-5)*10.0**(247.8/(h_in(i,j)-140.0))
 		visc_next(i,j) = .001!.001!.0002 !.00350*exp(-(h_in(i,j)-273.16)/35.0) + .0002
 		! from nist.gov
-	end do 
+	end do
 end do
 
 return
@@ -8135,7 +8134,7 @@ end function visc_next
 
 
 function velocities(psi)
-	
+
 use globals
 use initialize
 implicit none
@@ -8150,7 +8149,7 @@ interface
 		real(4) :: array(rows,cols), d1, d2, d
 		real(4) :: partial_edge(rows,cols)
 	end function partial_edge
-	
+
 	function partial_edge_p(array,rows,cols,d1,d2,dim)
 		use globals
 		use initialize
@@ -8235,7 +8234,7 @@ end function velocities_coarse
 ! ----------------------------------------------------------------------------------%%
 
 function partial(array,rows,cols,d1,d2,dim)
-	
+
 use globals
 use initialize
 implicit none
@@ -8257,17 +8256,17 @@ if (dim .eq. 1) then
 	ii = 1
 	jj = 0
 	d = d1
-	
+
 	! compute edges beforehand
 	partial(1,:) = ( -3.0*array(1,:) + 4.0*array(2,:) -array(3,:)) / (2.0*d)
 	partial(rows,:) = ( 3.0*array(rows,:) - 4.0*array(rows-1,:) + array(rows-2,:) ) / (2.0*d)
-	
+
 	do i = 2,rows-1
 		do j = 1,cols
 			partial(i,j) = (array(i+1,j) - array(i-1,j))/(2.0*d)
 		end do
 	end do
-	
+
 	do i = 2,rows-1
 		do j = 1,cols
 			if ((maskP(i,j) .eq. 3.0) .or. (maskP(i,j) .eq. 3.5) .or. (maskP(i,j) .eq. 3.1) .or. (maskP(i,j) .eq. 3.05) .or. (maskP(i,j) .eq. 3.01) .or. (mask(i,j) .eq. 3.05)) then
@@ -8280,7 +8279,7 @@ if (dim .eq. 1) then
 			end if
 		end do
 	end do
-	
+
 end if
 
 
@@ -8288,8 +8287,8 @@ if (dim .eq. 2) then
 	ii = 0
 	jj = 1
 	d = d2
-	
-	! compute edges beforehand 
+
+	! compute edges beforehand
 	partial(:,1) = ( -3.0*array(:,1) + 4.0*array(:,2) -array(:,3)) / (2.0*d)
 	partial(:,cols) = ( 3.0*array(:,cols) - 4.0*array(:,cols-1) + array(:,cols-2) ) / (2.0*d)
 end if
@@ -8325,7 +8324,7 @@ end if
 
 ! ! if jj=1, dim=2, cols=yn, rows=xn
 
-! ! compute edges beforehand 
+! ! compute edges beforehand
 ! partial(:,1) = ( -3.0*array(:,1) + 4.0*array(:,2) -array(:,3)) / (2.0*d)
 ! partial(:,yn) = ( 3.0*array(:,yn) - 4.0*array(:,yn-1) + array(:,yn-2) ) / (2.0*d)
 
@@ -8343,7 +8342,7 @@ end if
 
 ! ! if ii=1, dim=1, cols=yn, rows=xn
 
-! ! compute edges beforehand 
+! ! compute edges beforehand
 ! partial(1,:) = ( -3.0*array(1,:) + 4.0*array(2,:) -array(3,:)) / (2.0*d)
 ! partial(xn,:) = ( 3.0*array(xn,:) - 4.0*array(xn-1,:) + array(xn-2,:) ) / (2.0*d)
 
@@ -8373,7 +8372,7 @@ end function partial
 ! ----------------------------------------------------------------------------------%%
 
 function partial_coarse(array,rows,cols,d1,d2,dim)
-	
+
 use globals
 use initialize
 implicit none
@@ -8390,18 +8389,18 @@ if (dim .eq. 1) then
 	ii = 1
 	jj = 0
 	d = d1
-	
+
 	! compute edges beforehand
 	partial_coarse(1,:) = ( -3.0*array(1,:) + 4.0*array(2,:) -array(3,:)) / (2.0*d)
 	partial_coarse(rows,:) = ( 3.0*array(rows,:) - 4.0*array(rows-1,:) + array(rows-2,:) ) / (2.0*d)
-	
+
 	do i = 2,rows-1
 		do j = 1,cols
 			partial_coarse(i,j) = (array(i+1,j) - array(i-1,j))/(2.0*d)
 		end do
 	end do
-	
-	
+
+
 end if
 
 
@@ -8411,28 +8410,28 @@ if (dim .eq. 2) then
 	ii = 0
 	jj = 1
 	d = d2
-	
-	! compute edges beforehand 
+
+	! compute edges beforehand
 	partial_coarse(:,1) = ( -3.0*array(:,1) + 4.0*array(:,2) -array(:,3)) / (2.0*d)
 	partial_coarse(:,cols) = ( 3.0*array(:,cols) - 4.0*array(:,cols-1) + array(:,cols-2) ) / (2.0*d)
-	
+
 	do i = 1,rows
 		do j = 2,cols-1
 			if ((coarse_mask(i,j) .ne. 0.0) .and. (coarse_mask(i,j+1) .ne. 0.0) .and. (coarse_mask(i,j-1) .ne. 0.0)) then
 				partial_coarse(i,j) = (array(i,j+1) - array(i,j-1))/(2.0*d)
 			end if
-			
+
 			if ((coarse_mask(i,j) .ne. 0.0) .and. (coarse_mask(i,j+1) .ne. 0.0) .and. (coarse_mask(i,j-1) .eq. 0.0)) then
 				partial_coarse(i,j) = (array(i,j+1) - array(i,j))/(1.0*d)
 			end if
-			
+
 			if ((coarse_mask(i,j) .ne. 0.0) .and. (coarse_mask(i,j+1) .eq. 0.0) .and. (coarse_mask(i,j-1) .ne. 0.0)) then
 				partial_coarse(i,j) = (array(i,j) - array(i,j-1))/(1.0*d)
 			end if
-			
+
 		end do
 	end do
-	
+
 end if
 
 
@@ -8457,7 +8456,7 @@ end function partial_coarse
 ! ----------------------------------------------------------------------------------%%
 
 function partial_edge(array,rows,cols,d1,d2,dim)
-	
+
 use globals
 use initialize
 implicit none
@@ -8516,7 +8515,7 @@ if (dim .eq. 1) then
 	! compute edges beforehand
 	partial_edge(1,:) = ( -3.0*array(1,:) + 4.0*array(2,:) -array(3,:)) / (2.0*d)
 	partial_edge(rows,:) = ( 3.0*array(rows,:) - 4.0*array(rows-1,:) + array(rows-2,:) ) / (2.0*d)
-	
+
 	! inner edges
 	do j=2,cols-1
 		do i=2,rows-1
@@ -8524,33 +8523,33 @@ if (dim .eq. 1) then
 				partial_edge(i,j) =( 3.0*array(i,j) - 4.0*array(i-1,j) + array(i-2,j) ) / (2.0*d)!(array(i+1,j) - array(i,j))/(d)
 			end if
 			if ((mask(i-1,j) .eq. 5.0) .and. (mask(i-1,j) .eq. 5.0)) then
-				partial_edge(i,j) = ( 3.0*array(i,j) - 4.0*array(i-1,j) + array(i-2,j) ) / (2.0*d)!(array(i+1,j) - array(i,j))/(d) 
+				partial_edge(i,j) = ( 3.0*array(i,j) - 4.0*array(i-1,j) + array(i-2,j) ) / (2.0*d)!(array(i+1,j) - array(i,j))/(d)
 			end if
-			
+
 			if ((mask(i+1,j) .eq. 17.5)) then
 				partial_edge(i,j) = ( -3.0*array(i,j) + 4.0*array(i+1,j) - array(i+2,j) ) / (2.0*d)
 			end if
 			if ((mask(i+1,j) .eq. 10.0) .and. (mask(i+1,j) .eq. 10.0)) then
-				partial_edge(i,j) = ( -3.0*array(i,j) + 4.0*array(i+1,j) - array(i+2,j) ) / (2.0*d)!(array(i,j) - array(i-1,j))/(d) 
+				partial_edge(i,j) = ( -3.0*array(i,j) + 4.0*array(i+1,j) - array(i+2,j) ) / (2.0*d)!(array(i,j) - array(i-1,j))/(d)
 			end if
-			
-			
+
+
 			if (mask(i,j-1) .eq. 12.5) then
 				partial_edge(i,j) = ( 3.0*array(i,j) - 4.0*array(i-1,j) + array(i-2,j) ) / (2.0*d)!(array(i+1,j) - array(i,j))/(d)
-			end if 
-			
+			end if
+
 			if (mask(i,j-1) .eq. 17.5) then
-				partial_edge(i,j) =( -3.0*array(i,j) + 4.0*array(i+1,j) - array(i+2,j) ) / (2.0*d)!(array(i,j) - array(i-1,j))/(d) 
-			end if 
+				partial_edge(i,j) =( -3.0*array(i,j) + 4.0*array(i+1,j) - array(i+2,j) ) / (2.0*d)!(array(i,j) - array(i-1,j))/(d)
+			end if
 
 
 		end do
 	end do
-	
-	
+
+
 	do j=1,cols
 		do i=2,rows-1
-			
+
 			if (mask(i-1,j-1) .eq. 12.5) then
 				partial_edge(i,j) = partial_edge(i-1,j)
 			end if
@@ -8558,22 +8557,22 @@ if (dim .eq. 1) then
 			if (mask(i+1,j-1) .eq. 17.5) then
 				partial_edge(i,j) = partial_edge(i+1,j)
 			end if
-		
+
 		end do
 	end do
-	
-	
+
+
 end if
 
 
 
 
 if (dim .eq. 2) then
-	! compute edges beforehand 
+	! compute edges beforehand
 	partial_edge(:,1) = ( -3.0*array(:,1) + 4.0*array(:,2) -array(:,3)) / (2.0*d)
 	partial_edge(:,cols) = ( 3.0*array(:,cols) - 4.0*array(:,cols-1) + array(:,cols-2) ) / (2.0*d)
-	
-	
+
+
 	! inner edges
 	do j=2,cols
 		do i=1,rows
@@ -8582,7 +8581,7 @@ if (dim .eq. 2) then
 			end if
 		end do
 	end do
-	
+
 	do j=2,cols-1
 		do i=2,rows-1
 			if ((mask(i,j-1).eq.50.0) .and. (mask(i,j-1).eq.50.0) .and. (mask(i,j-1).eq.50.0)) then
@@ -8590,7 +8589,7 @@ if (dim .eq. 2) then
 			end if
 		end do
 	end do
-	
+
 
 
 	! JANUARY DELETION...
@@ -8607,10 +8606,10 @@ if (dim .eq. 2) then
 
 		end do
 	end do
-	
+
 	do j=2,cols
 		do i=2,rows-1
- 
+
 			if ((mask(i-1,j-1) .eq. 12.5)) then
 				partial_edge(i,j) = partial_edge(i,j-1)
 			end if
@@ -8618,13 +8617,13 @@ if (dim .eq. 2) then
 			if ((mask(i+1,j-1) .eq. 17.5)) then
 				partial_edge(i,j) = partial_edge(i,j-1)
 			end if
-			
+
 
 		end do
 	end do
-	
 
-	
+
+
 end if
 
 
@@ -8651,7 +8650,7 @@ end function partial_edge
 
 
 function partial_edge_p(array,rows,cols,d1,d2,dim)
-	
+
 use globals
 use initialize
 implicit none
@@ -8672,7 +8671,7 @@ if (dim .eq. 1) then
 	ii = 1
 	jj = 0
 	d = d1
-	
+
 	do i=2,rows-1
 		do j=1,cols
 			if (maskP(i,j) .ne. 0.0) then
@@ -8680,7 +8679,7 @@ if (dim .eq. 1) then
 			end if
 		end do
 	end do
-	
+
 	do i=2,rows-1
 		do j=1,cols
 			if ((maskP(i,j) .eq. 5.0) .or. (maskP(i,j) .eq. 2.5)) then
@@ -8688,7 +8687,7 @@ if (dim .eq. 1) then
 			end if
 		end do
 	end do
-	
+
 	do i=1,rows-1
 		do j=1,cols
 ! 			if (maskP(i,j) .eq. 6.0) then
@@ -8706,14 +8705,14 @@ if (dim .eq. 1) then
 	! fracture vertical velocity
 	!partial_edge_p(xn-1,:) = (array(xn,:) - array(xn-1,:)) / param_f_dx
 
-	
+
 end if
 
 if (dim .eq. 2) then
 	ii = 0
 	jj = 1
 	d = d2
-	
+
 	do i=1,rows
 		do j=2,cols-1
 			if ((maskP(i,j) .ne. 0.0)) then
@@ -8721,7 +8720,7 @@ if (dim .eq. 2) then
 			end if
 		end do
 	end do
-	
+
 	do i=1,rows
 		do j=2,cols-1
 			if ((maskP(i,j) .eq. 50.0) .or. (maskP(i,j) .eq. 3.5) .or. (maskP(i,j) .eq. 6.5)) then
@@ -8729,7 +8728,7 @@ if (dim .eq. 2) then
 			end if
 		end do
 	end do
-	
+
 
 
 end if
@@ -8753,7 +8752,7 @@ function write_vec ( n, vector, filename )
 use globals
   implicit none
   integer :: n, j, output_status, unit0
-  character ( len = * ) filename 
+  character ( len = * ) filename
   real(4)  :: vector(n), write_vec
 
 
@@ -8766,7 +8765,7 @@ use globals
     unit0 = -1
     stop
   end if
-  
+
 
   if ( 0 < n ) then
     do j = 1, n
@@ -8798,8 +8797,8 @@ use globals
   character ( len = 30 ) string
   real(4)  :: table(m,n) , write_matrix
 
-  
-  
+
+
   INQUIRE(iolength=reclen)table
   unit0 = get_unit ()
   open ( unit = unit0, file = filename, &
@@ -8813,8 +8812,8 @@ use globals
     unit0 = -1
     stop
   end if
-  
-  
+
+
 
 !
  	write ( string, '(a1,i8,a1,i8,a1,i8,a1)' ) '(', m, 'g', 24, '.', 16, ')'
