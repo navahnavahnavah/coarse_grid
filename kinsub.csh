@@ -10,7 +10,7 @@
 # you want to run.
 #
 # set the name of the job
-#PBS -N f4
+#PBS -N f7
 #
 # set the output and error files
 #PBS -o /home/navah/coarse_grid/mOutG.txt
@@ -21,8 +21,8 @@
 
 
 ##PBS -l nodes=compute-0-0:ppn=10+compute-0-1:ppn=10+compute-0-2:ppn=10+compute-0-3:ppn=10+compute-0-4:ppn=10
-##PBS -l nodes=compute-1-0:ppn=10+compute-1-1:ppn=10+compute-1-2:ppn=10+compute-1-3:ppn=10+compute-1-4:ppn=10
-#PBS -l nodes=compute-1-5:ppn=10+compute-1-6:ppn=10+compute-1-7:ppn=10+compute-1-8:ppn=10+compute-1-9:ppn=10
+#PBS -l nodes=compute-1-0:ppn=10+compute-1-1:ppn=10+compute-1-2:ppn=10+compute-1-3:ppn=10+compute-1-4:ppn=10
+##PBS -l nodes=compute-1-5:ppn=10+compute-1-6:ppn=10+compute-1-7:ppn=10+compute-1-8:ppn=10+compute-1-9:ppn=10
 
 
 
@@ -84,8 +84,8 @@ set PARAM_F_POR = '6e-4'
 
 
 
-set PARAM_PATH='/home/navah/coarse_grid/output/f4/'
-set PARAM_ISO_PATH='/home/navah/coarse_grid/output/f4/'
+set PARAM_PATH='/home/navah/coarse_grid/output/f7/'
+set PARAM_ISO_PATH='/home/navah/coarse_grid/output/f7/'
 
  
 echo $PARAM_PATH

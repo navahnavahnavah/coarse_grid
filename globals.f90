@@ -2,20 +2,20 @@ module globals
 	implicit none
 save
 
-    
-  
+
+
 ! JDF PARAMS WITH FRACTURE AUGUST 9
 integer, parameter :: testInt = 31, xn =801, yn = 52, altnum = 134,  cell = 1 !50000
-integer, parameter :: cellx = 20, celly = 2
-integer, parameter ::  g_pri = 5, g_sec = 74, g_sol = 15, g_med = 7, g_iso = 2, cstep = 100, ar = 400 ! cstep = 1000
-integer, parameter :: tn = 1000000, mstep = 100, wscale = 1, ison = 10, inertn = 10! ison = 10000, inertn = 100000
+integer, parameter :: cellx = 20, celly = 1
+integer, parameter ::  g_pri = 5, g_sec = 74, g_sol = 15, g_med = 7, g_iso = 2, cstep = 50, ar = 200 ! cstep = 1000
+integer, parameter :: tn = 500000, mstep = 100, wscale = 1, ison = 10, inertn = 10! ison = 10000, inertn = 100000
 integer, parameter :: write_factor = 25, res_factor = 300 ! res factor is how many flushes happen within t_max
 integer :: active_cells
 integer, parameter :: particle_sat = 1, inert_sat = 10
 real(4) :: tb_res = 1.0e10
 real(4) :: cstep_int
-integer :: cstep_num 
-real(4) :: u_1d  
+integer :: cstep_num
+real(4) :: u_1d
 real(4) :: x_min = 0.0, x_max = 29000.0, y_min = -1250.0, y_max = 25.0 !y_min = -1650.0, y_max = 25.0
 real(4) :: t_min = 0.0, t_max = 3.14e13!23.55e13 !9.42e13 !
 real(4) :: ki = .76, ra = 100.0, viscosity = .001, cp = 1173.0, alpha =4.0e-4, k, calc0, psi_round, psi_round2 !alpha =4.0e-5 !cp = 1175.0
@@ -37,7 +37,7 @@ logical, dimension(cellx,celly) :: i_mask
 integer :: th_bool(.TRUE.:.FALSE.)
 logical :: sig_bool_a, sig_bool_b
 integer :: tag
-  
+
 real(4) :: dt, dx, dy, dt0 = 0.001
 real(4) :: dPsi, psiLast(xn,yn)
 integer :: loop
@@ -53,13 +53,13 @@ integer :: i_unit, code
 real(4) :: something, refL, refR
 integer :: vfe1=24, vfe2 = 16
 contains
-	
-	
-	
- 
 
-	 
-	
+
+
+
+
+
+
 ! ----------------------------------------------------------------------------------%%
 !
 ! CHECK SOMETHING
@@ -69,12 +69,12 @@ contains
 subroutine check(status)
 integer, intent ( in) :: status
 
-	!if(status /= nf90_noerr) then 
+	!if(status /= nf90_noerr) then
 	  !print *, trim(nf90_strerror(status))
 	  !stop "Stopped"
 	!end if
-	
-end subroutine check  
+
+end subroutine check
 ! ----------------------------------------------------------------------------------%%
 !
 ! BAND
@@ -86,7 +86,7 @@ end subroutine check
 !		  		   relation between matrix A and band a is A(i,j) = a(i,j-i+(m+1)/2)
 !		  m : width of the band (MUST BE ODD! no 4-wide bands. makes sense)
 !		  n : order of the matrix A or # of rows in a
-!         
+!
 !
 ! RETURNS: band(n,m) : which contains upper triangular and lower triangular in the
 !       			   columns that are not the central column
@@ -129,7 +129,7 @@ band(k,r) = 1.0/band(k,r)
 		j = j+1
 		g = g+1
 		goto 30
-		
+
 40	continue
 	i = i+1
 	h = h-1
@@ -143,7 +143,7 @@ write(*,*) "made it??"
 99 m=0
 return
 end function band
-  
+
 ! subroutine band(a,m,n)
 !
 ! implicit none
@@ -235,7 +235,7 @@ end function band
 
 
 
-  
+
 function solve(a,b,m,n)
 
 implicit none
@@ -263,18 +263,18 @@ do 120 k=n,1,-1
 	i = i+1
 	j=j+1
 	goto 130
-	
+
 140 continue
 solve(k) = solve(k)*a(k,r)
 
 120 continue
-return 
+return
 end function
 
 ! ----------------------------------------------------------------------------------%%
 !
 ! LINSPACE
-! 
+!
 ! SUMMARY: Makes a vector of dimension n, starting with a_first, ending with a_last
 !          with n-2 evenly spaced items along the way.
 !
@@ -289,7 +289,7 @@ end function
 function linspace ( n, a_first, a_last )
 
   implicit none
-  integer, intent(in) :: n 
+  integer, intent(in) :: n
    real (4) :: linspace(n)
    integer :: i
    real (4) :: a(n)
@@ -306,7 +306,7 @@ function linspace ( n, a_first, a_last )
   end if
   linspace = a
   return
-  
+
 end function linspace
 
 
@@ -378,7 +378,7 @@ function Gsselm(a,row)
 !	      print *,'check that the input dimensions are correct.'
 !   	   call break()
 !	   END if
-   
+
 
 
 !/*      Perform row-reduction with pivotal element a[k][k]     */
@@ -443,24 +443,24 @@ real(4) :: aa(nn,nn), a(nn), b(nn), c(nn), d(nn), tridiag(nn), xm
       !	c(k) = aa(k,k+1)
       !end do
 
-      
+
 !      if(nn .eq. 1) then
 !      tridiag(1)=d(1)/b(1)
 !      write(*,*) "shit"
 !      end if
-      
+
       do k = 2,nn
       km1 = k - 1
-      
+
       if(b(k-1) .eq. 0.0) then
       write(*,*) "what"
       end if
-      
+
       xm  = a(k)/b(km1)
       b(k)  = b(k) - xm*c(km1)
       tridiag(k)  = tridiag(k) - xm*tridiag(km1)
       end do
-      
+
       tridiag(nn)   = tridiag(nn)/b(nn)
 
       k = nn
@@ -468,7 +468,7 @@ real(4) :: aa(nn,nn), a(nn), b(nn), c(nn), d(nn), tridiag(nn), xm
       k = nn + 1 - i
       tridiag(k) = (tridiag(k) - c(k)*tridiag(k+1))/b(k)
       end do
-      
+
 !      format(/3x,'diagonal element .eq. 0 in tridag at k = ',i2/)
       return
 end function tridiag
@@ -618,10 +618,10 @@ integer :: m, i, j, i1, i2, k1, k2, iflag, nd, n
 
         iflag = 0
 
-        i1 = i - k2 
+        i1 = i - k2
         i2 = i + k2
 
-        If ((i1 <= 0).or.(i2 > n)) iflag = 1 
+        If ((i1 <= 0).or.(i2 > n)) iflag = 1
         If ((i1 <= 0).or.(i2 > n)) k2 = k2 -1
 
         If (iflag == 1) Go to 151

@@ -4290,7 +4290,7 @@ write(s_reactive,'(F25.10)') medium3(4)
  		&"    Nontronite-Mg " // trim(s_precip) // trim(s_nont_mg) // kinetics //NEW_LINE('')// & ! smectite
  		  &"    Fe-Celadonite " // trim(s_precip) // trim(s_fe_celadonite) // kinetics //NEW_LINE('')// & ! mica
  		&"    Nontronite-Ca " // trim(s_precip) // trim(s_nont_ca) // kinetics //NEW_LINE('')// & ! smectite
- 		&"    Mesolite " // trim(s_precip) // trim(s_mesolite) // kinetics //NEW_LINE('')// & ! zeolite
+! 		&"    Mesolite " // trim(s_precip) // trim(s_mesolite) // kinetics //NEW_LINE('')// & ! zeolite
 ! 		&"    Smectite-high-Fe-Mg " // trim(s_precip) // trim(s_smectite) // kinetics //NEW_LINE('')// & ! smectite
 ! 		   &"    Vermiculite-Na " // trim(s_precip) // trim(s_verm_na) // kinetics //NEW_LINE('')// &
 ! 		!&"    Hematite " // trim(s_precip) // trim(s_hematite) // kinetics //NEW_LINE('')// &
