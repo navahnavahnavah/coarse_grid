@@ -421,6 +421,8 @@ character(len=25) :: s_quartz, s_kspar, s_saponite_na, s_nont_na, s_nont_mg, s_n
 character(len=25) :: s_fe_celadonite, s_nont_ca, s_muscovite, s_mesolite, s_hematite, s_diaspore ! 
 character(len=25) :: s_feldspar, s_pigeonite, s_augite, s_glass, s_magnetite ! primary
 character(len=25) :: s_laumontite, s_mont_k, s_mont_mg, s_mont_ca
+! mid may 2017 minerals
+character(len=25) :: s_fe_saponite_ca, s_fe_saponite_mg
 character(len=25) :: s_temp, s_timestep ! important information
 character(len=25) :: s_ph, s_ca, s_mg, s_na, s_k, s_fe, s_s, s_si, s_cl, s_al, s_alk, s_co2 ! solutes
 character(len=25) :: s_hco3, s_co3, s_pe
@@ -2311,6 +2313,23 @@ L5 = "#  $Id: llnl.dat 4023 2010-02-09 21:02:42Z dlpark $" //NEW_LINE('')// &
 &"  delta_h  -354.987   kJ/mol  #" //NEW_LINE('')// &
 &"  # Enthalpy of formation:    -6139.206  kJ/mol  07VIE" //NEW_LINE('')// &
   
+! FROM SIT.dat
+&"Fe-Saponite-Ca" //NEW_LINE('')// &
+! &"Ca0.17Fe3Al0.34Si3.66O10(OH)2 = +0.170Ca+2     +3.000Fe+2     +0.340Al+3     -7.360H+     +3.660H4(SiO4)     -2.640H2O" //NEW_LINE('')// &
+&"Ca0.17Fe3Al0.34Si3.66O10(OH)2 = +0.170Ca+2     +3.000Fe+2     +0.340Al+3     -7.360H+   +7.32H2O  +3.66SiO2     -2.640H2O" //NEW_LINE('')// &
+&"  log_k     22.43        #" //NEW_LINE('')// &
+&"  delta_h  -222.166      kJ/mol        #" //NEW_LINE('')// &
+&"  # Enthalpy of formation:             -4916.58      kJ/mol        07VIE" //NEW_LINE('')// &
+
+
+
+! FROM SIT.dat
+&"Fe-Saponite-Mg" //NEW_LINE('')// &
+! &"Mg0.17Fe3Al0.34Si3.66O10(OH)2 = +0.170Mg+2     +3.000Fe+2     +0.340Al+3     -7.360H+     +3.660H4(SiO4)     -2.640H2O" //NEW_LINE('')// &
+&"Mg0.17Fe3Al0.34Si3.66O10(OH)2 = +0.170Mg+2     +3.000Fe+2     +0.340Al+3     -7.360H+   +7.32H2O  +3.66SiO2     -2.640H2O" //NEW_LINE('')// &
+&"  log_k     21.73        #" //NEW_LINE('')// &
+&"  delta_h  -222.096      kJ/mol        #" //NEW_LINE('')// &
+&"  # Enthalpy of formation:             -4903.73      kJ/mol        07VIE" //NEW_LINE('')// &
 !
 ! &"Lepidocrocite" //NEW_LINE('')// &
 ! &"FeOOH = +1.000Fe+3  -3.000H+  +2.000H2O  " //NEW_LINE('')// &
@@ -4221,8 +4240,8 @@ write(s_clinochlore7a,'(F25.10)') secondary3(32)
 write(s_saponite_ca,'(F25.10)') secondary3(33)
 write(s_verm_na,'(F25.10)') secondary3(34)
 write(s_pyrrhotite,'(F25.10)') secondary3(35)
-write(s_daphnite_7a,'(F25.10)') secondary3(36) !!!
-write(s_daphnite_14a,'(F25.10)') secondary3(37) !!!
+write(s_fe_saponite_ca,'(F25.10)') secondary3(36) !!!
+write(s_fe_saponite_mg,'(F25.10)') secondary3(37) !!!
 
 ! OTHER INFORMATION TO STRINGS
 write(s_temp,'(F25.10)') temp3
@@ -4295,12 +4314,12 @@ write(s_reactive,'(F25.10)') medium3(4)
 ! 		   &"    Vermiculite-Na " // trim(s_precip) // trim(s_verm_na) // kinetics //NEW_LINE('')// &
 ! 		!&"    Hematite " // trim(s_precip) // trim(s_hematite) // kinetics //NEW_LINE('')// &
 ! 		! &"    Hematite " // trim(si_hematite) // trim(s_hematite) // kinetics //NEW_LINE('')// &
-! 		   &"    Vermiculite-Ca " // trim(s_precip) // trim(s_verm_ca) // kinetics //NEW_LINE('')// &
+ 		   &"    Vermiculite-Ca " // trim(s_precip) // trim(s_verm_ca) // kinetics //NEW_LINE('')// &
  		&"    Analcime " // trim(s_precip) // trim(s_analcime) // kinetics //NEW_LINE('')// & ! zeolite
  		&"    Phillipsite " // trim(s_precip) // trim(s_phillipsite) // kinetics //NEW_LINE('')// & ! zeolite
 ! 		    !&"    Epidote  " // trim(s_precip) // trim(s_epidote) // kinetics //NEW_LINE('')// &
 ! ! 		   &"    Gismondine " // trim(s_precip) // trim(s_gismondine) // kinetics //NEW_LINE('')// & ! zeolite
-! 		   &"    Vermiculite-Mg " // trim(s_precip) // trim(s_verm_mg) // kinetics //NEW_LINE('')// &
+ 		   &"    Vermiculite-Mg " // trim(s_precip) // trim(s_verm_mg) // kinetics //NEW_LINE('')// &
  		&"    Natrolite " // trim(s_precip) // trim(s_natrolite) // kinetics //NEW_LINE('')// & ! zeolite
 		&"    Talc " // trim(s_precip) // trim(s_talc) // kinetics //NEW_LINE('')// &
 ! 		&"    Smectite-low-Fe-Mg 0.0 " // trim(s_smectite_low) // kinetics //NEW_LINE('')// & ! smectite
@@ -4312,8 +4331,11 @@ write(s_reactive,'(F25.10)') medium3(4)
  		&"   Saponite-Ca " // trim(s_precip) // trim(s_saponite_ca) // kinetics //NEW_LINE('')// & ! smectite
 ! ! 		&"   Pyrrhotite " // trim(s_precip) // trim(s_pyrrhotite) // kinetics //NEW_LINE('')//& ! sulfide
 
-  		&"   Daphnite-7a " // trim(s_precip) // trim(s_daphnite_7a) // kinetics //NEW_LINE('')// & ! chlorite
-  		&"   Daphnite-14a " // trim(s_precip) // trim(s_daphnite_14a) // kinetics //NEW_LINE('')! chlorite
+&"   Fe-Saponite-Ca " // trim(s_precip) // trim(s_fe_saponite_ca) // kinetics //NEW_LINE('')// & ! sap smec
+&"   Fe-Saponite-Mg " // trim(s_precip) // trim(s_fe_saponite_mg) // kinetics //NEW_LINE('')! sap smec
+
+!   		&"   Daphnite-7a " // trim(s_precip) // trim(s_daphnite_7a) // kinetics //NEW_LINE('')// & ! chlorite
+!   		&"   Daphnite-14a " // trim(s_precip) // trim(s_daphnite_14a) // kinetics //NEW_LINE('')! chlorite
 
 		! &" -force_equality"  //NEW_LINE('')// &
 
@@ -4430,23 +4452,23 @@ write(s_reactive,'(F25.10)') medium3(4)
 		&"    -molalities HCO3-" //NEW_LINE('')// &
 		&"    -water true" //NEW_LINE('')// &
 		&"    -alkalinity" //NEW_LINE('')// &
-		&"    -p kaolinite saponite-mg celadonite Clinoptilolite-Ca pyrite montmor-na goethite" //NEW_LINE('')// &
-		&"    -p Smectite-high-Fe-Mg calcite k-feldspar saponite-na nontronite-na nontronite-mg" //NEW_LINE('')// &
-		&"    -p fe-celadonite nontronite-ca mesolite hematite montmor-ca vermiculite-ca analcime" //NEW_LINE('')// &
-		&"    -p phillipsite diopside gismondine vermiculite-mg natrolite talc Smectite-low-Fe-Mg " //NEW_LINE('')// &
-		&"    -p prehnite chlorite(14a) scolecite Clinochlore-14A Clinochlore-7A saponite-ca" //NEW_LINE('')// &
-		&"    -p vermiculite-na pyrrhotite Daphnite-7A Daphnite-14A" //NEW_LINE('')// &
+		&"    -p kaolinite saponite-mg celadonite Clinoptilolite-Ca pyrite montmor-na goethite" //NEW_LINE('')// & ! 7
+		&"    -p Smectite-high-Fe-Mg calcite k-feldspar saponite-na nontronite-na nontronite-mg" //NEW_LINE('')// & ! 6
+		&"    -p fe-celadonite nontronite-ca mesolite hematite montmor-ca vermiculite-ca analcime" //NEW_LINE('')// & ! 7
+		&"    -p phillipsite diopside gismondine vermiculite-mg natrolite talc Smectite-low-Fe-Mg " //NEW_LINE('')// & ! 7
+		&"    -p prehnite chlorite(14a) scolecite Clinochlore-14A Clinochlore-7A saponite-ca" //NEW_LINE('')// & ! 6
+		&"    -p vermiculite-na pyrrhotite Fe-Saponite-Ca Fe-Saponite-Mg" //NEW_LINE('')// & ! 4
 		
-		&"    -p prehnite chlorite(14a) scolecite Clinochlore-14A Clinochlore-7A saponite-ca" //NEW_LINE('')// &
-		&"    -p prehnite chlorite(14a) scolecite Clinochlore-14A Clinochlore-7A saponite-ca" //NEW_LINE('')// &
-		&"    -p prehnite chlorite(14a) scolecite Clinochlore-14A Clinochlore-7A saponite-ca" //NEW_LINE('')// &
- 		&"    -s kaolinite" //NEW_LINE('')// &		
+		&"    -p prehnite chlorite(14a) scolecite Clinochlore-14A Clinochlore-7A saponite-ca" //NEW_LINE('')// & ! 6
+		&"    -p prehnite chlorite(14a) scolecite Clinochlore-14A Clinochlore-7A saponite-ca" //NEW_LINE('')// & ! 6
+		&"    -p prehnite chlorite(14a) scolecite Clinochlore-14A Clinochlore-7A saponite-ca" //NEW_LINE('')// & ! 6
+ 		&"    -s kaolinite" //NEW_LINE('')// &		! 1
 ! 		&"    -s kaolinite saponite-mg celadonite Clinoptilolite-Ca pyrite montmor-na goethite" //NEW_LINE('')// &
 ! 		&"    -s Smectite-high-Fe-Mg calcite k-feldspar saponite-na nontronite-na nontronite-mg" //NEW_LINE('')// &
 ! 		&"    -s fe-celadonite nontronite-ca mesolite hematite montmor-ca vermiculite-ca analcime" //NEW_LINE('')// &
 ! 		&"    -s phillipsite diopside gismondine vermiculite-mg natrolite talc Smectite-low-Fe-Mg " //NEW_LINE('')// &
 ! 		&"    -s prehnite chlorite(14a) scolecite Clinochlore-14A Clinochlore-7A saponite-ca" //NEW_LINE('')// &
-! 		&"    -s vermiculite-na pyrrhotite Daphnite-7A Daphnite-14A" //NEW_LINE('')// &
+! 		&"    -s vermiculite-na pyrrhotite Fe-Saponite-Ca Fe-Saponite-Mg" //NEW_LINE('')// &
 		&"    -calculate_values R(sum) R(s_sp)" //NEW_LINE('')// &
 		&"    -time" //NEW_LINE('')// &
 		&"END"
