@@ -10,7 +10,7 @@
 # you want to run.
 #
 # set the name of the job
-#PBS -N f7
+#PBS -N g5
 #
 # set the output and error files
 #PBS -o /home/navah/coarse_grid/mOutG.txt
@@ -20,20 +20,15 @@
 # to use per node
 
 
-##PBS -l nodes=compute-0-0:ppn=10+compute-0-1:ppn=10+compute-0-2:ppn=10+compute-0-3:ppn=10+compute-0-4:ppn=10
-#PBS -l nodes=compute-1-0:ppn=10+compute-1-1:ppn=10+compute-1-2:ppn=10+compute-1-3:ppn=10+compute-1-4:ppn=10
+#PBS -l nodes=compute-0-0:ppn=10+compute-0-1:ppn=10+compute-0-2:ppn=10+compute-0-3:ppn=10+compute-0-4:ppn=10
+##PBS -l nodes=compute-1-0:ppn=10+compute-1-1:ppn=10+compute-1-2:ppn=10+compute-1-3:ppn=10+compute-1-4:ppn=10
 ##PBS -l nodes=compute-1-5:ppn=10+compute-1-6:ppn=10+compute-1-7:ppn=10+compute-1-8:ppn=10+compute-1-9:ppn=10
-
-
-
-
-
 
 
 
 ##PBS -l nodes=compute-1-5:ppn=10+compute-1-6:ppn=10+compute-1-7:ppn=10+compute-1-8:ppn=10+compute-1-9:ppn=10
 
-
+# ! whew
 
 # or, if using only one node, you can do it this way too
 ##PBS -l ncpus=5
@@ -45,13 +40,13 @@
 #
 # bring in the module settings
 
-sleep 10s 
+sleep 10s
 source /etc/profile.d/modules.csh
 module load intel/intel-12
 module load mpi/mvapich2/intel
 
-  
- 
+
+
 
 # model parameters go here i guess
 set PARAM_O='100'
@@ -70,7 +65,7 @@ set PARAM_TRACE='0'
 
 set PARAM_CH='600'
 
-set PARAM_PAQ = '1e-12' 
+set PARAM_PAQ = '1e-12'
 
 set PARAM_CH_RHS = '600'
 
@@ -79,26 +74,26 @@ set PARAM_F_DX = '-1.6'
 set PARAM_F_K = '1e-5'
 #set PARAM_F_FREQ = '0.0005'
 set PARAM_F_FREQ = '20'
-set PARAM_F_POR = '6e-4' 
- 
+set PARAM_F_POR = '6e-4'
 
 
 
-set PARAM_PATH='/home/navah/coarse_grid/output/f7/'
-set PARAM_ISO_PATH='/home/navah/coarse_grid/output/f7/'
 
- 
+set PARAM_PATH='/home/navah/coarse_grid/output/g5/'
+set PARAM_ISO_PATH='/home/navah/coarse_grid/output/g5/'
+
+
 echo $PARAM_PATH
 # set PROGNAME to the name of your program
 set PROGNAME=massacr
- 
+
 # figure out which mpiexec to use
 set LAUNCH=/usr/mpi/intel/openmpi-1.4.3-qlc/bin/mpirun
- 
+
 # working directory
 set WORKDIR=${HOME}
 set WORKDIR=/home/navah/coarse_grid
- 
+
 set NCPU=`wc -l < $PBS_NODEFILE`
 set NNODES=`uniq $PBS_NODEFILE | wc -l`
 # set this to zero to turn OFF debugging, 1 to turn it on
@@ -106,7 +101,7 @@ set PERMDIR=${HOME}
 set SERVPERMDIR=${PBS_O_HOST}:${PERMDIR}
 
 set DEBUG=1
-if ( $DEBUG ) then 
+if ( $DEBUG ) then
 	echo ------------------------------------------------------
 	echo ' This job is allocated on '${NCPU}' cpu(s)'
 	echo 'Job is running on node(s): '

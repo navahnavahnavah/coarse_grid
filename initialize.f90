@@ -4,7 +4,7 @@ use globals
 implicit none
 
 save
- 
+
 integer :: g, gg, f, ff, long, longP, maskBit
 real(4) :: x(xn), y(yn), t(tn)
 real(4) :: rho0(xn,yn)
@@ -55,6 +55,9 @@ real(4) :: soluteMat_d(xn*tn/(cellx*(mstep*ar)),yn/(2*celly),g_sol)
 real(4) :: mediumMat_d(xn*tn/(cellx*(mstep*ar)),yn/(2*celly),g_med)
 
 real(4) :: t_vol_s, t_vol_a, t_vol_b
+
+real(4) :: sec_density(g_sec/2), sec_molar(g_sec/2)
+real(4) :: pri_density(g_pri), pri_molar(g_pri)
 
 ! ! coarse/mean arrays added for super duper coarse grid 03/25/17
 real(4) :: h_coarse(xn/cellx,yn/(2*celly))
@@ -118,15 +121,33 @@ integer :: sol_index(11)
 
 
 contains
-	
+
 subroutine init_mini ()
 use globals
 
-dx = ( x_max - x_min ) / real ( xn - 1, kind = 4 ) 
+sec_density = (/2.65, 2.3, 3.05, 2.17, 5.01, 2.5, 3.8, & ! 7
+& 2.7, 2.71, 2.56, 2.3, 2.28, 2.28, 3.05, 2.28, & ! 8
+& 2.25, 5.3, 2.5, 2.55, 2.27, 2.2, 2.5, 2.26, & ! 8
+& 2.55, 2.25, 2.75, 2.7, 2.87, 2.9, 2.275, 2.8, & !8
+& 2.8, 2.3, 2.55, 4.61, 2.3, 2.3/) ! 6
+
+pri_density = (/1.0, 3.0, 3.0, 3.0, 2.7/)
+
+
+sec_molar = (/258.156, 480.19, 429.02, 2742.13, 119.98, 549.07, 88.851, &
+& 549.07, 100.0869, 287.327, 480.19, 495.90, 495.90, 429.02, 495.90, &
+& 380.22, 159.6882, 549.07, 504.19, 220.15, 649.86, 549.07, 649.86, &
+& 504.19, 380.22, 379.259, 549.07, 395.38, 64.448, 392.34, 64.448, &
+& 64.448, 480.19, 504.19, 85.12, 480.19, 480.19/)
+
+pri_molar = (/1.0, 277.0, 236.0, 153.0, 110.0/)
+
+
+dx = ( x_max - x_min ) / real ( xn - 1, kind = 4 )
 x = linspace ( xn, x_min,x_max )
-dy = ( y_max - y_min ) / real ( yn - 1, kind = 4 ) 
+dy = ( y_max - y_min ) / real ( yn - 1, kind = 4 )
 y = linspace ( yn, y_min, y_max )
-dt = ( t_max - t_min ) / real ( tn - 1, kind = 4 ) 
+dt = ( t_max - t_min ) / real ( tn - 1, kind = 4 )
 t = linspace ( tn, t_min, t_max)
 
 
@@ -145,7 +166,7 @@ end subroutine init_mini
 ! SUBROUTINE TO INITIALIZE, JUST CALL IT
 !
 ! ----------------------------------------------------------------------------------%%
-  
+
 subroutine init ()
 use globals
 integer :: m,n
@@ -220,11 +241,11 @@ read (param_f_por_string, *) param_f_por
 permf = param_f_dx*param_f_dx/3.0
 
 ! SET UP THINGS THAT CAN'T BE DONE IN THE MODULE FOR WHATEVER REASON
-dx = ( x_max - x_min ) / real ( xn - 1, kind = 4 ) 
+dx = ( x_max - x_min ) / real ( xn - 1, kind = 4 )
 x = linspace ( xn, x_min,x_max )
-dy = ( y_max - y_min ) / real ( yn - 1, kind = 4 ) 
+dy = ( y_max - y_min ) / real ( yn - 1, kind = 4 )
 y = linspace ( yn, y_min, y_max )
-dt = ( t_max - t_min ) / real ( tn - 1, kind = 4 ) 
+dt = ( t_max - t_min ) / real ( tn - 1, kind = 4 )
 t = linspace ( tn, t_min, t_max)
 
 ! BOUNDARY CONDITIONS
@@ -247,7 +268,7 @@ kMat = 2.0/(1000.0*4186.0)
 ki=2.0/(1000.0*4186.0)
 
 
-!--------------GEOCHEMICAL INITIAL CONDITIONS
+!-GEOCHEMICAL INITIAL CONDITIONS
 
 t_vol_s = 0.30
 t_vol_a = 0.28
@@ -284,6 +305,23 @@ primary_b(:,:,5) = 0.0  ! basaltic glass
 secondary(:,:,:) = 0.0
 secondary_a(:,:,:) = 0.0
 secondary_b(:,:,:) = 0.0
+
+sec_density = (/2.65, 2.3, 3.05, 2.17, 5.01, 2.5, 3.8, & ! 7
+& 2.7, 2.71, 2.56, 2.3, 2.28, 2.28, 3.05, 2.28, & ! 8
+& 2.25, 5.3, 2.5, 2.55, 2.27, 2.2, 2.5, 2.26, & ! 8
+& 2.55, 2.25, 2.75, 2.7, 2.87, 2.9, 2.275, 2.8, & !8
+& 2.8, 2.3, 2.55, 4.61, 2.3, 2.3/) ! 6
+
+pri_density = (/1.0, 3.0, 3.0, 3.0, 2.7/)
+
+
+sec_molar = (/258.156, 480.19, 429.02, 2742.13, 119.98, 549.07, 88.851, &
+& 549.07, 100.0869, 287.327, 480.19, 495.90, 495.90, 429.02, 495.90, &
+& 380.22, 159.6882, 549.07, 504.19, 220.15, 649.86, 549.07, 649.86, &
+& 504.19, 380.22, 379.259, 549.07, 395.38, 64.448, 392.34, 64.448, &
+& 64.448, 480.19, 504.19, 85.12, 480.19, 480.19/)
+
+pri_molar = (/1.0, 277.0, 236.0, 153.0, 110.0/)
 
 ! saturation
 saturation(:,:,:) = 0.0
@@ -342,18 +380,18 @@ solute_b(:,:,14) = .00245  ! inert
 solute_b(:,:,15) = 0.0     ! CO3-2
 
 ! seawater solute concentrations [mol/kgw]
-soluteOcean = (/ solute(1,1,1), solute(1,1,2), solute(1,1,3), solute(1,1,4), solute(1,1,5), & 
+soluteOcean = (/ solute(1,1,1), solute(1,1,2), solute(1,1,3), solute(1,1,4), solute(1,1,5), &
 			  & solute(1,1,6), solute(1,1,7), solute(1,1,8), solute(1,1,9), solute(1,1,10), &
 			  & solute(1,1,11), solute(1,1,12), solute(1,1,13), solute(1,1,14), solute(1,1,15) /)
 
-soluteOcean_a = (/ solute_a(1,1,1), solute_a(1,1,2), solute_a(1,1,3), solute_a(1,1,4), solute_a(1,1,5), & 
+soluteOcean_a = (/ solute_a(1,1,1), solute_a(1,1,2), solute_a(1,1,3), solute_a(1,1,4), solute_a(1,1,5), &
 		  & solute_a(1,1,6), solute_a(1,1,7), solute_a(1,1,8), solute_a(1,1,9), solute_a(1,1,10), &
-		  & solute_a(1,1,11), solute_a(1,1,12), solute_a(1,1,13), solute_a(1,1,14), solute_a(1,1,15) /)		
-		  	  
-soluteOcean_b = (/ solute_b(1,1,1), solute_b(1,1,2), solute_b(1,1,3), solute_b(1,1,4), solute_b(1,1,5), & 
+		  & solute_a(1,1,11), solute_a(1,1,12), solute_a(1,1,13), solute_a(1,1,14), solute_a(1,1,15) /)
+
+soluteOcean_b = (/ solute_b(1,1,1), solute_b(1,1,2), solute_b(1,1,3), solute_b(1,1,4), solute_b(1,1,5), &
 		  & solute_b(1,1,6), solute_b(1,1,7), solute_b(1,1,8), solute_b(1,1,9), solute_b(1,1,10), &
-		  & solute_b(1,1,11), solute_b(1,1,12), solute_b(1,1,13), solute_b(1,1,14), solute_b(1,1,15) /)			  
-			     
+		  & solute_b(1,1,11), solute_b(1,1,12), solute_b(1,1,13), solute_b(1,1,14), solute_b(1,1,15) /)
+
 do g=1,g_sol
 	solute_fine(:,:,g) = soluteOcean(g)
 	solute_fine_a(:,:,g) = soluteOcean_a(g)
@@ -414,7 +452,7 @@ medium_b(:,:,7) = 0.0         ! y-coord
 sea = soluteOcean
 
 
-!-----------------PERMEABILITY SET UP
+!-PERMEABILITY SET UP
 
 slope = param_w
 slope2 = x_max-param_w_rhs
@@ -652,7 +690,7 @@ sed2(1:param_w/dx) = sed2((param_w/dx)+1)
 
 !sed = sum(sed)/xn
 !sed = -100.0
- 
+
 if (param_o_rhs .gt. param_o) then
 	sed = sed-(param_o_rhs)
 end if
@@ -682,7 +720,7 @@ end do
 ! with sediment cap
 sed3 = sed1 - (param_h)
 
-	
+
 	! the mask
 	mask = 1.0
 	do gg=1,yn
@@ -730,7 +768,7 @@ sed3 = sed1 - (param_h)
 			end if
 		end do
 	end do
-	
+
 	do gg=2,yn-1
 		do g =2,xn-1
 			! left upper corner
@@ -743,21 +781,21 @@ sed3 = sed1 - (param_h)
 			end if
 		end do
 	end do
-		
+
 	do gg=2,yn-1
-		do g =2,xn-1 
+		do g =2,xn-1
 			! left bottom corner
 			if ((mask(g,gg) .eq. 5.0) .and. (mask(g+1,gg-1) .eq. 50.0)) then
 				mask(g,gg-1) = 2.5
 			end if
-		
+
 			! right bottom corner
 			if ((mask(g,gg) .eq. 10.0) .and. (mask(g-1,gg-1) .eq. 50.0)) then
 				mask(g,gg-1) = 7.5
 			end if
 		end do
 	end do
-	
+
 
 
 	maskP = mask
@@ -769,7 +807,7 @@ sed3 = sed1 - (param_h)
 			end if
 		end do
 	end do
-	
+
 	do gg=2,yn-3
 		do g =1,xn
 			if (gg .eq. yn/2 + 3) then
@@ -778,7 +816,7 @@ sed3 = sed1 - (param_h)
 			end if
 		end do
 	end do
-	
+
 	do gg=2,yn-3
 		do g =1,xn
 			if ((y(gg) .le. sed3(g)) .and. (gg .gt. code)) then
@@ -786,8 +824,8 @@ sed3 = sed1 - (param_h)
 			end if
 		end do
 	end do
-	
-	
+
+
 
 	! coarse mask
 	coarse_mask = 0.0
@@ -801,18 +839,18 @@ sed3 = sed1 - (param_h)
 				primary(g,gg,:) = 0.0   ! basaltic glass
 				solute(g,gg,3) = 0.0    ! solute water
 				medium(g,gg,3) = 0.0    ! medium water
-			
+
 				medium_a(g,gg,5) = 0.0    ! cell toggle
 				primary_a(g,gg,:) = 0.0   ! basaltic glass
 				solute_a(g,gg,3) = 0.0    ! solute water
 				medium_a(g,gg,3) = 0.0    ! medium water
-			
+
 				medium_b(g,gg,5) = 0.0    ! cell toggle
 				primary_b(g,gg,:) = 0.0   ! basaltic glass
 				solute_b(g,gg,3) = 0.0    ! solute water
 				medium_b(g,gg,3) = 0.0    ! medium water
 			end if
-			
+
 ! 			if (x((g-1)*cellx) .ge. x(f_index1-1)) then
 ! 				medium(g,gg,5) = 0.0    ! cell toggle
 ! 				primary(g,gg,:) = 0.0   ! basaltic glass
@@ -829,26 +867,26 @@ sed3 = sed1 - (param_h)
 ! 				solute_b(g,gg,3) = 0.0    ! solute water
 ! 				medium_b(g,gg,3) = 0.0    ! medium water
 ! 			end if
-			
+
 		end do
 	end do
-	
+
 ! 	do gg=1,yn/celly
 ! 		do g =1,xn/cellx-1
 ! 			if ((coarse_mask(g,gg) .eq. 1.0) .and. (coarse_mask(g+1,gg) .eq. 0.0)) then
 ! 		end do
 ! 	end do
-	
-	
-	
-	
-	
+
+
+
+
+
 
 	fives = 1.0
 	tens = 1.0
 	twentyfives = 1.0
 	fifties = 1.0
-	
+
 	do gg=1,yn
 		do g=1,xn
 			if ((maskP(g,gg) .eq. 5.0) .or. (maskP(g,gg) .eq. 12.5)) then
@@ -861,8 +899,8 @@ sed3 = sed1 - (param_h)
 			end if
 		end do
 	end do
-		
-	
+
+
 	do g=1,xn
 		do gg=1,yn
 			if ((maskP(g,gg) .eq. 25.0) .or. (maskP(g,gg) .eq. 12.5) .or. (maskP(g,gg) .eq. 17.5)) then
@@ -888,8 +926,8 @@ sed3 = sed1 - (param_h)
 			end if
 		end do
 	end do
-	
-	
+
+
 	! 369 fracture goes HERE
 	do gg=2,yn-3
 		do g =1,xn
@@ -920,8 +958,8 @@ sed3 = sed1 - (param_h)
 			end if
 		end do
 	end do
-	
-	
+
+
 !
 	! coarse mask 2
 	do gg=1,yn/(2*celly)
@@ -947,7 +985,7 @@ sed3 = sed1 - (param_h)
 			end if
 		end do
 	end do
-	
+
 	coarse_mask_long = reshape(coarse_mask,(/(xn/cellx)*(yn/(2*celly))/))
 
 	! high lambda in deep basalt
@@ -958,7 +996,7 @@ sed3 = sed1 - (param_h)
 			end if
 		end do
 	end do
-	
+
 	active_cells = 0
 	do gg=1,yn
 		do g=1,xn
@@ -973,13 +1011,13 @@ sed3 = sed1 - (param_h)
 
 	maskLong = reshape(mask(2:xn-1,2:yn-1), (/long/))
 	maskLongT = reshape(transpose(mask(2:xn-1,2:yn-1)), (/long/))
-	
+
 	maskLongU = reshape(mask(2:xn-1,1:yn), (/(xn-2)*(yn-0)/))
 	maskLongTV = reshape(transpose(mask(1:xn,2:yn-1)), (/(xn-0)*(yn-2)/))
-	
+
 	maskPLong = reshape(maskP(2:xn-1,(yn/2)+2:yn-1), (/longP/))
 	maskPLongT = reshape(transpose(maskP(2:xn-1,(yn/2)+2:yn-1)), (/longP/))
-	
+
 
 
 return
@@ -992,11 +1030,11 @@ end subroutine init
 
 
 function h_bc(h_in)
-	
+
 	use globals
 	real(4) :: h_in(xn,yn), h_bc(xn,yn), rip_lith_y(xn)
 	integer :: p, pp
-	
+
 	rip_lith_y = 0.48
 ! 	rip_lith_y = (/0.602087135445, &
 ! & 0.60116684559, 0.600246555734, 0.599326265879, 0.598405976024, 0.597485686169, 0.596565396314, &
@@ -1096,10 +1134,10 @@ function h_bc(h_in)
 ! & 0.38027111787, 0.38027111787, 0.38027111787, 0.38027111787, 0.38027111787, 0.38027111787, &
 ! & 0.38027111787, 0.38027111787, 0.38027111787, 0.38027111787, 0.38027111787, 0.38027111787, &
 ! & 0.38027111787, 0.38027111787, 0.38027111787, 0.38027111787/)
-	
-	h_bc = h_in 
-	
-	
+
+	h_bc = h_in
+
+
 	! top of outcrops
 	do pp=1,yn
 		do p=1,xn
@@ -1112,16 +1150,16 @@ function h_bc(h_in)
 	!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	!!!!!    VERTICAL OUTER   !!!!!
 	!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		
-	do pp=1,yn	
+
+	do pp=1,yn
 		if (mask(xn,pp) .ne. 0.0) then
 			h_bc(xn,pp) = (4.0/3.0)*h_in(xn-1,pp) - (1.0/3.0)*h_in(xn-2,pp) ! right
 		end if
 	end do
-	
-	do pp=1,yn	
+
+	do pp=1,yn
 		if (mask(1,pp) .ne. 0.0) then
-			h_bc(1,pp) = (4.0/3.0)*h_in(2,pp) - (1.0/3.0)*h_in(3,pp) ! left 
+			h_bc(1,pp) = (4.0/3.0)*h_in(2,pp) - (1.0/3.0)*h_in(3,pp) ! left
 		end if
 	end do
 
@@ -1129,12 +1167,12 @@ function h_bc(h_in)
 	!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	!!!!!   HORIZONTAL OUTER  !!!!!
 	!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	 
+
 	! bottom
 	do p = 1,xn
 		h_bc(p,1) = h_in(p,2) + ( rip_lith_y(p)) * dy/1.8
 	end do
-	
+
 	! two lines recent...
  	h_bc(xn,1) = h_bc(xn,2)
  	h_bc(1,1) = h_bc(1,2)
@@ -1176,11 +1214,11 @@ function h_bc(h_in)
 		end do
 	end do
 
-	
+
 	!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	!!!!!    VERTICAL INNER   !!!!!
 	!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	
+
 	do p=2,xn-1
 	 	do pp=2,yn
 			! left outcrop
@@ -1200,7 +1238,7 @@ function h_bc(h_in)
 		end do
 	end do
 
-		
+
 return
 end function h_bc
 
@@ -1214,14 +1252,14 @@ end function h_bc
 
 
 function psi_bc(psi_in)
-	
+
 	use globals
 	real(4) :: psi_in(xn,yn), psi_bc(xn,yn)
 	integer :: p,pp
-	
+
 	psi_bc = psi_in
-	
-	
+
+
 	do pp=1,yn
 	    do p=1,xn
 			if ((maskP(p,pp) .eq. 0.0)) then
@@ -1238,8 +1276,8 @@ function psi_bc(psi_in)
     		end if
     	end do
     end do
-	
-	
+
+
 	do pp=1,yn
 		! left
 		if (maskP(1,pp) .ne. 0.0) then
@@ -1287,7 +1325,7 @@ function psi_bc(psi_in)
 			end if
 		end do
 	end do
-	
+
 	do p=2,xn
 		do pp=2,yn-1
 			! top of sediment
@@ -1295,10 +1333,10 @@ function psi_bc(psi_in)
 				psi_bc(p,pp+1) = (4.0/3.0)*psi_in(p,pp) - (1.0/3.0)*psi_in(p,pp-1)
 			end if
 		end do
-	end do		
+	end do
 
 	psi_bc(f_index1,:) = 0.0
-	
+
 
 	return
 end function psi_bc
@@ -1312,13 +1350,13 @@ end function psi_bc
 
 
 function psi_mod(psi_in)
-	
+
 	use globals
 	real(4) :: psi_in(xn,yn), psi_mod(xn,yn)
 	integer :: p,pp
-	
+
 	psi_mod = psi_in
-	
+
 	do pp=1,yn
     do p=1,xn
 		if (mask(p,pp) .eq. 0.0) then
@@ -1326,7 +1364,7 @@ function psi_mod(psi_in)
 		end if
 	end do
 	end do
-	
+
 
 
 
