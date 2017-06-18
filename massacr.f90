@@ -5,8 +5,8 @@
 ! SUMMARY: main method runs fluid dynamic simulation coupled to geochemical
 !          simulation and writes selected model output to file
 !
-! TO RUN: make -f theMakeFile
-!		  mpirun -np 4 ./massacr
+! TO RUN: make -f berMakeFile
+!		  qsub kinsub.csh
 !
 ! ----------------------------------------------------------------------------------%%
 
@@ -31,19 +31,13 @@ interface
 		use globals
 		use initialize
 		implicit none
-		! integers
 		integer :: i, j, n, ii, m=3
-		! inputs
 		real(4) :: sx, sy, qx, qy, rho_in(xn,yn), phi_in(xn,yn)
-		! velocity stuff
 		real(4) :: uf(xn,yn), vf(xn,yn), u_in(xn,yn), v_in(xn,yn)
 		real(4) :: u(xn,yn), v(xn,yn), uLong((xn-2)*(yn-2)), vLong((xn-2)*(yn-2))
 		real(4) ::  velocities0(xn,2*yn)
-		! matrix stuff
 		real(4) :: h(xn,yn), h_next(xn,yn), psi(xn,yn)
-		! real(4) :: aa((xn-2)*(yn-2),(xn-2)*(yn-2)), a((xn-2)*(yn-2),(xn-2)*(yn-2)+1)
 		real(4) :: aBand((xn-2)*(yn-2),5), bBand((xn-2)*(yn-2),5)
-		! real(4) :: bb((xn-2)*(yn-2),(xn-2)*(yn-2)), b((xn-2)*(yn-2),(xn-2)*(yn-2)+1)
 		real(4) :: h0(xn,yn), uVec((xn-2)*(yn-2)), h_nextRow((xn-2)*(yn-2))
 		real(4) :: kMatLong((xn-2)*(yn-2))
 		real(4) :: mn(xn,yn)
@@ -57,22 +51,16 @@ interface
 		use globals
 		use initialize
 		implicit none
-		! integers
 		integer :: i, j, ii, n, m, stage
-		! inputs
 		real(4) :: rhs0(xn,yn), rhs1(xn,yn), rhsLong(longP)
 		real(4) :: h(xn,yn), psi(xn,yn), rho_in(xn,yn), phi_in(xn,yn), perm_in(xn,yn)
-		! matrix stuff
 		real(4) :: uVec(longP), psiLong((xn)*(yn)), psi_nextRow(longP)
 		real(4) :: psi_next(xn,yn)
 		real(4) :: mn(xn,yn)
-		! back to band
 		real(4) :: aBand0(longP,4*((yn/2)-2) + 3), band_in(longP,4*((yn/2)-2) + 3)
 		real(4) :: rhoLong(longP)
 		real(4) :: permx(xn,yn), permy(xn,yn), frac6_in(yn,2)
 	end function psi_next
-
-
 
 	function make_band(perm_in,phi_in,permx,permy,rho_in)
 		use globals
@@ -88,7 +76,6 @@ interface
 		real(4) :: perm_long(longP)
 	end function make_band
 
-
 	function particles_next (trace_in, uTransport, vTransport, inval, num, num_sat)
 		use globals
 		use initialize
@@ -100,41 +87,13 @@ interface
 		real(4) :: rando
 	end function particles_next
 
-	! transports solutes
-! 	function solute_next(sol, uTransport, vTransport, seaw)
-! 		use globals
-! 		use initialize
-! 		implicit none
-! 		! integers
-! 		integer :: i, j, ii, n, m
-! 		! inputs
-! 		real(4) :: sol(xn/cellx,yn/celly), sol0(xn/cellx,yn/celly)
-! 		real(4) :: uTransport(xn/cellx,yn/celly), vTransport(xn/cellx,yn/celly)
-! 		! solver stuff
-! 		! real(4) :: uLong((xn/cell-2)*(yn/cell-2)), vLong((xn/cell-2)*(yn/cell-2))
-! 		! real(4) :: aBand((xn/cell-2)*(yn/cell-2),5), bBand((xn/cell-2)*(yn/cell-2),5)
-! 		! real(4) :: qx, qy, solute_next(xn/cell,yn/cell), vec((xn/cell-2)*(yn/cell-2))
-! 		! real(4) :: sol_nextRow((xn/cell-2)*(yn/cell-2))
-! 		real(4) :: uLong(((xn/cellx)-2)*((yn/celly)-0)), vLong(((xn/cellx)-0)*((yn/celly)-2))
-! 		real(4) :: aBand(((xn/cellx)-2)*((yn/celly)-0),5), bBand(((xn/cellx)-0)*((yn/celly)-2),5)
-! 		real(4) :: qx, qy, solute_next(xn/cellx,yn/celly), vec(((xn/cellx)-2)*((yn/celly)-0))
-! 		real(4) :: sol_nextRow(((xn/cellx)-2)*((yn/celly)-0)), sol_nextRowB(((xn/cellx)-0)*((yn/celly)-2))
-! 		real(4) :: seaw
-! 		real(4) :: bm1(xn,yn), b0(xn,yn), bp1(xn,yn), correction, sigma1, sigma2, sigma1a, sigma1b, sigma2a, sigma2b
-! 		real(4) :: sigma3, sigma4, sigma3a, sigma3b, sigma4a, sigma4b, sigma5, sigma6
-! 	end function solute_next
-
-
 	function solute_next(sol, uTransport, vTransport, seaw)
 		use globals
 		use initialize
 		implicit none
-		! integers
 		integer :: i, j, ii, n, m
-		! inputs
 		real(4) :: sol(xn,yn), sol0(xn,yn)
 		real(4) :: uTransport(xn,yn), vTransport(xn,yn)
-		! solver stuff
 		real(4) :: uLong(((xn)-2)*((yn)-0)), vLong(((xn)-0)*((yn)-2))
 		real(4) :: aBand(((xn)-2)*((yn)-0),5), bBand(((xn)-0)*((yn)-2),5)
 		real(4) :: qx, qy, solute_next(xn,yn), vec(((xn)-2)*((yn)-0))
@@ -144,18 +103,13 @@ interface
 		real(4) :: sigma3, sigma4, sigma3a, sigma3b, sigma4a, sigma4b, sigma5, sigma6
 	end function solute_next
 
-
-
 	function solute_next_coarse (sol, uTransport, vTransport, seaw)
 		use globals
 		use initialize
 		implicit none
-		! integers
 		integer :: i, j, ii, n, m
-		! inputs
 		real(4) :: sol(xn/cellx,yn/(2*celly)), sol0(xn/cellx,yn/(2*celly))
 		real(4) :: uTransport(xn/cellx,yn/(2*celly)), vTransport(xn/cellx,yn/(2*celly))
-		! solver stuff
 		real(4) :: uLong(((xn/cellx)-2)*((yn/(2*celly))-0)), vLong(((xn/cellx)-0)*((yn/(2*celly))-2))
 		real(4) :: aBand(((xn/cellx)-2)*((yn/(2*celly))-0),5), bBand(((xn/cellx)-0)*((yn/(2*celly))-2),5)
 		real(4) :: qx, qy, solute_next_coarse(xn/cellx,yn/(2*celly)), vec(((xn/cellx)-2)*((yn/(2*celly))-0))
@@ -164,7 +118,6 @@ interface
 		real(4) :: bm1(xn/cellx,yn/(2*celly)), b0(xn/cellx,yn/(2*celly)), bp1(xn/cellx,yn/(2*celly)), correction, sigma1, sigma2, sigma1a, sigma1b, sigma2a, sigma2b
 		real(4) :: sigma3, sigma4, sigma3a, sigma3b, sigma4a, sigma4b, sigma5, sigma6
 	end function solute_next_coarse
-
 
 	! calculates fluid density
 	function rho_next (h_in)
@@ -230,7 +183,6 @@ interface
 		real(4) :: partial_coarse(rows,cols)
 	end function partial_coarse
 
-
 	! calculates partial derivative of any 1D or 2D array
 	function partial_edge(array,rows,cols,d1,d2,dim)
 		use globals
@@ -272,7 +224,6 @@ interface
 
 end interface
 
-!-DECLARE EVERYTHING
 
 ! dependent variable arrays
 real(4) :: h(xn,yn), psi(xn,yn), pside(xn,yn) ! xn rows deep & yn columns wide
@@ -304,16 +255,12 @@ integer :: x_varid, y_varid, t_varid, h_varid, u_varid, v_varid
 integer :: i, j, ii, m, n, jj
 real(4) :: yep
 
-
-
 ! benchmark stuff
 real(4) :: nusseltLocalv(xn,1), nuBar
 
 ! geochemical alteration stuff
 real(4) :: alt0(1,altnum), alt_mat(3*(xn/cellx)*(yn/(2*celly))/22,altnum)
-
 real(4) :: primaryShift(xn/cellx,yn/celly,g_pri), secondaryShift(xn/cellx,yn/celly,g_sec)
-
 
 ! solute transport stuff
 real(4) :: uTransport(xn/cellx,yn/celly), vTransport(xn/cellx,yn/celly)
@@ -333,30 +280,20 @@ real(4) :: local_mean, global_mean
 real(4) :: hLocal((xn/cellx)*(yn/(2*celly))), dt_local
 integer :: order
 
-
 ! formatted message passing arrays
 real(4) :: hLong(3*(xn/cellx)*(yn/(2*celly)))
 real(4) :: priLong((xn/cellx)*(yn/(2*celly)),g_pri), priLocal(3*(xn/cellx)*(yn/(2*celly))/22,g_pri)
 real(4) :: secLong((xn/cellx)*(yn/(2*celly)),g_sec), secLocal(3*(xn/cellx)*(yn/(2*celly))/22,g_sec)
 real(4) :: solLong((xn/cellx)*(yn/(2*celly)),g_sol), solLocal(3*(xn/cellx)*(yn/(2*celly))/22,g_sol)
 real(4) :: medLong((xn/cellx)*(yn/(2*celly)),g_med), medLocal(3*(xn/cellx)*(yn/(2*celly))/22,g_med)
-! real(4) :: medLong(xn*(yn/2),g_med), medLocal(xn*(yn/2),g_med) used to be this shape
 real(4) :: priLongBit(3*(xn/cellx)*(yn/(2*celly))) !, priLocalBit(3*(xn/cellx)*(yn/(2*celly)))
 real(4) :: secLongBit(3*(xn/cellx)*(yn/(2*celly))) !, secLocalBit(3*(xn/cellx)*(yn/(2*celly)))
 real(4) :: solLongBit(3*(xn/cellx)*(yn/(2*celly))) !, solLocalBit(3*(xn/cellx)*(yn/(2*celly)))
 real(4) :: medLongBit(3*(xn/cellx)*(yn/(2*celly))) !, medLocalBit(3*(xn/cellx)*(yn/(2*celly)))
 
-! ! advection distribution
-! real(4) :: solFineLong(xn*yn), solFineLong_a(xn*yn)
-! real(4) :: solFineLongLocal(xn*yn), solFineLongLocal_a(xn*yn)
-! real(4) :: solFineLocal(xn,yn), solFineLocal_a(xn,yn)
-! real(4) :: uFineLong(xn*yn), vFineLong(xn*yn), phiFineLong(xn*yn)
-! real(4) :: uFineLongLocal(xn*yn), vFineLongLocal(xn*yn), phiFineLongLocal(xn*yn)
-! real(4) :: uFineLocal(xn,yn), vFineLocal(xn,yn), phiFineLocal(xn,yn)
-
-real(4) :: sol_coarse_long((xn/cellx)*(yn/(2*celly))) !, sol_coarse_long_a((xn/cellx)*(yn/celly))
-real(4) :: sol_coarse_long_local((xn/cellx)*(yn/(2*celly))) !, sol_coarse_long_local_a((xn/cellx)*(yn/celly))
-real(4) :: sol_coarse_local(xn/cellx,yn/(2*celly)) !, sol_coarse_local_a(xn/cellx,yn/celly)
+real(4) :: sol_coarse_long((xn/cellx)*(yn/(2*celly)))
+real(4) :: sol_coarse_long_local((xn/cellx)*(yn/(2*celly)))
+real(4) :: sol_coarse_local(xn/cellx,yn/(2*celly))
 real(4) :: u_coarse_long((xn/cellx)*(yn/(2*celly))), v_coarse_long((xn/cellx)*(yn/(2*celly))), phi_coarse_long((xn/cellx)*(yn/(2*celly)))
 real(4) :: u_coarse_local(xn/cellx,yn/(2*celly)), v_coarse_local(xn/cellx,yn/(2*celly)), phi_coarse_local(xn/cellx,yn/(2*celly))
 real(4) :: u_coarse_long_local((xn/cellx)*(yn/(2*celly))), v_coarse_long_local((xn/cellx)*(yn/(2*celly))), phi_coarse_long_local((xn/cellx)*(yn/(2*celly)))
@@ -366,27 +303,18 @@ real(4) :: priLongBitFull(3*(xn/cellx)*(yn/(2*celly)),g_pri)
 real(4) :: secLongBitFull(3*(xn/cellx)*(yn/(2*celly)),g_sec)
 real(4) :: solLongBitFull(3*(xn/cellx)*(yn/(2*celly)),g_sol)
 real(4) :: medLongBitFull(3*(xn/cellx)*(yn/(2*celly)),g_med)
-!real(4) :: solLocal0((xn/cell)*(yn/cell),g_sol)
 
-! CHAMBERS :)
+! chamber stuff
+real(4) :: priLong_a((xn/cellx)*(yn/(2*celly)),g_pri)
+real(4) :: secLong_a((xn/cellx)*(yn/(2*celly)),g_sec)
+real(4) :: solLong_a((xn/cellx)*(yn/(2*celly)),g_sol)
+real(4) :: medLong_a((xn/cellx)*(yn/(2*celly)),g_med)
 
-real(4) :: priLong_a((xn/cellx)*(yn/(2*celly)),g_pri) !, priLocal_a((xn/cellx)*(yn/(2*celly)),g_pri)
-real(4) :: secLong_a((xn/cellx)*(yn/(2*celly)),g_sec) !, secLocal_a((xn/cellx)*(yn/(2*celly)),g_sec)
-real(4) :: solLong_a((xn/cellx)*(yn/(2*celly)),g_sol) !, solLocal_a((xn/cellx)*(yn/(2*celly)),g_sol)
-real(4) :: medLong_a((xn/cellx)*(yn/(2*celly)),g_med) !, medLocal_a((xn/cellx)*(yn/(2*celly)),g_med)
-! real(4) :: priLongBit_a((xn/cellx)*(yn/(2*celly))) !, priLocalBit_a((xn/cellx)*(yn/(2*celly)))
-! real(4) :: secLongBit_a((xn/cellx)*(yn/(2*celly))) !, secLocalBit_a((xn/cellx)*(yn/(2*celly)))
-! real(4) :: solLongBit_a((xn/cellx)*(yn/(2*celly))) !, solLocalBit_a((xn/cellx)*(yn/(2*celly)))
-! real(4) :: medLongBit_a((xn/cellx)*(yn/(2*celly))) !, medLocalBit_a((xn/cellx)*(yn/(2*celly)))
+real(4) :: priLong_b((xn/cellx)*(yn/(2*celly)),g_pri)
+real(4) :: secLong_b((xn/cellx)*(yn/(2*celly)),g_sec)
+real(4) :: solLong_b((xn/cellx)*(yn/(2*celly)),g_sol)
+real(4) :: medLong_b((xn/cellx)*(yn/(2*celly)),g_med)
 
-real(4) :: priLong_b((xn/cellx)*(yn/(2*celly)),g_pri) !, priLocal_b((xn/cellx)*(yn/(2*celly)),g_pri)
-real(4) :: secLong_b((xn/cellx)*(yn/(2*celly)),g_sec) !, secLocal_b((xn/cellx)*(yn/(2*celly)),g_sec)
-real(4) :: solLong_b((xn/cellx)*(yn/(2*celly)),g_sol) !, solLocal_b((xn/cellx)*(yn/(2*celly)),g_sol)
-real(4) :: medLong_b((xn/cellx)*(yn/(2*celly)),g_med) !, medLocal_b((xn/cellx)*(yn/(2*celly)),g_med)
-! real(4) :: priLongBit_b((xn/cellx)*(yn/(2*celly))) !, priLocalBit_b((xn/cellx)*(yn/(2*celly)))
-! real(4) :: secLongBit_b((xn/cellx)*(yn/(2*celly))) !, secLocalBit_b((xn/cellx)*(yn/(2*celly)))
-! real(4) :: solLongBit_b((xn/cellx)*(yn/(2*celly))) !, solLocalBit_b((xn/cellx)*(yn/(2*celly)))
-! real(4) :: medLongBit_b((xn/cellx)*(yn/(2*celly))) !, medLocalBit_b((xn/cellx)*(yn/(2*celly)))
 
 
 INTEGER(KIND=4) :: id, all=134
@@ -2381,7 +2309,8 @@ write(*,*) "testing..."
 ! ! initialize domain geometry
 ! call init()
 
-!-INITIALIZE ALL PROCESSORS
+!-initialize all processors
+
 
 ! process #0 is the root process
 root_process = 0
@@ -2400,7 +2329,7 @@ write(*,*) " "
 ! what to do if you are the master processor
 if (my_id .eq. root_process) then
 
-!-DO STUFF WITH THE MASTER PROCESSOR
+!-Master processor does stuff
 
 ! initialize domain geometry
 call init()
@@ -2477,7 +2406,6 @@ u_coarse = 0.0
 v_coarse = 0.0
 
 
-!-RESTART STEP!
 
 if (restart .eq. 1) then
 
@@ -2684,7 +2612,8 @@ outerBand = band(outerBand,2*((yn/2)-2) + 1,longP)
 
 
 
-!-DYNAMICS LOOP
+!- Dynamics loop
+
 	! this is the main loop that does all the solving for tn timesteps
 	do j = crashstep, tn
 	!do j = 2, 50
@@ -3201,7 +3130,7 @@ end if ! if j == 5
  		write(*,*) "BEGIN SENDING SOLUTES TO PROCESSORS FOR ADVECTION" !, counti
 
 
-		!-FROM MASTER TO SLAVES FOR ADVECTION
+		!-ADVECTION: send from master to slaves
 
 		do an_id = 1, 22
 
@@ -3256,7 +3185,7 @@ end if ! if j == 5
 		write(*,*) "...DONE SENDING SOLUTES TO ALL PROCESSORS" , countf - counti
 
 
-		!-MESSAGE RECEIVING FROM SLAVE PROCESSORS
+		!-ADVECTION: master receives from slaves
 
 		call system_clock(counti, count_rate, count_max)
 		write(*,*) "BEGIN RECEIVING ADVECTED SOLUTES"
@@ -3313,7 +3242,9 @@ end if ! if j == 5
 		call system_clock(counti, count_rate, count_max)
  		write(*,*) "BEGIN SENDING GEOCHEM TO ALL PROCESSORS"
 !
-		!-MESSAGE DISTRIBUTING FROM MASTER TO SLAVES
+		!-GEOCHEM: send from master to slaves
+
+
 		do an_id = 1, num_procs - 1
 
 			! put number of rows in vector here for hLong
@@ -3431,7 +3362,7 @@ end if ! if j == 5
 
 !		write(*,*) "BEGIN STRETCHING REACTED CELLS"
 
-		!-MASTER PROCESSOR SAVES OUTPUT TO BE WRITTEN TO FILE
+		!-Master processor saves output
 
 
 
@@ -3608,7 +3539,7 @@ end if ! if j == 5
 
 		write(*,*) "BEGIN WRITING TO FILE"
 
-!-WRITE EVERYTHING TO FILE
+!-Write everything to file
 
 		yep = write_matrix ( xn, yn, real(psi,kind=4), trim(path) // 'psi.txt' )
 		yep = write_matrix ( xn, yn, real(h,kind=4), trim(path) // 'h.txt' )
@@ -3866,25 +3797,26 @@ else
 
 
 
-	!-SLAVE RECEIVES, RUNS ADVECTION
+	!-ADVECTION: slave receives message
 	call init_mini()
 
 	leng = (yn/(2*celly))*(xn/cellx)
 	! message receiving has to happen every mth step
 
+    !-GEOCHEM: primary compositions + amounts
 
-			param_ol_string ='-f MgO 1.0 FeO 1.0 SiO2 1.0'
-			!param_ol_string ='-f MgO 2.0 SiO2 1.0'
-			!param_ol_string ='-f FeO 2.0 SiO2 1.0'
-			param_pyr_string='-f CaO 1.0 MgO 1.0 SiO2 2.0'
-			param_plag_string='-f NaAlSi3O8 0.5 CaAl2Si2O8 0.5'
+	param_ol_string ='-f MgO 1.0 FeO 1.0 SiO2 1.0'
+	!param_ol_string ='-f MgO 2.0 SiO2 1.0'
+	!param_ol_string ='-f FeO 2.0 SiO2 1.0'
+	param_pyr_string='-f CaO 1.0 MgO 1.0 SiO2 2.0'
+	param_plag_string='-f NaAlSi3O8 0.5 CaAl2Si2O8 0.5'
 
-			! 		&"-f CaO 1.0 FeO 1.0 SiO2 2.0 " //NEW_LINE('')// & ! hedenbergite
-			! 		&"-f CaO 1.0 MgO 1.0 SiO2 2.0 " //NEW_LINE('')// & ! diopside
-			! 		&"-f FeO 1.0 MgO 1.0 SiO2 2.0 " //NEW_LINE('')// & ! fer mag
-			! 		&"-f MgO 2.0 SiO2 2.0 " //NEW_LINE('')// & ! enstatite
-			! 		&"-f FeO 2.0 SiO2 2.0 " //NEW_LINE('')// & ! ferrosilite
-			! 		&"-f CaO 2.0 SiO2 2.0 " //NEW_LINE('')// & ! wollastonite
+	! 		&"-f CaO 1.0 FeO 1.0 SiO2 2.0 " //NEW_LINE('')// & ! hedenbergite
+	! 		&"-f CaO 1.0 MgO 1.0 SiO2 2.0 " //NEW_LINE('')// & ! diopside
+	! 		&"-f FeO 1.0 MgO 1.0 SiO2 2.0 " //NEW_LINE('')// & ! fer mag
+	! 		&"-f MgO 2.0 SiO2 2.0 " //NEW_LINE('')// & ! enstatite
+	! 		&"-f FeO 2.0 SiO2 2.0 " //NEW_LINE('')// & ! ferrosilite
+	! 		&"-f CaO 2.0 SiO2 2.0 " //NEW_LINE('')// & ! wollastonite
 
 
 ! 			param_exp_string = '0.0025'
@@ -3910,14 +3842,14 @@ else
 !
 ! 			exp_plag = exp_plag1
 
-			ol_k1 = "10.0^(-4.8)"
-			ol_e1 = "94.4"
-			ol_n1 = "1.0"
-			ol_k2 = "10.0^(-12.8)"
-			ol_e2 = "94.4"
-			ol_k3 = ""
-			ol_e3 = ""
-			ol_n3 = ""
+	ol_k1 = "10.0^(-4.8)"
+	ol_e1 = "94.4"
+	ol_n1 = "1.0"
+	ol_k2 = "10.0^(-12.8)"
+	ol_e2 = "94.4"
+	ol_k3 = ""
+	ol_e3 = ""
+	ol_n3 = ""
 
 ! 			ol_k1 = "10.0^(-6.85)"
 ! 			ol_e1 = "67.2"
@@ -3928,27 +3860,27 @@ else
 ! 			ol_e3 = ""
 ! 			ol_n3 = ""
 
-			pyr_k1 = "10.0^(-6.82)"
-			pyr_e1 = "78.0"
-			pyr_n1 = "0.7"
-			pyr_k2 = "10.0^(-11.97)"
-			pyr_e2 = "78.0"
-			pyr_k3 = ""
-			pyr_e3 = ""
-			pyr_n3 = ""
+	pyr_k1 = "10.0^(-6.82)"
+	pyr_e1 = "78.0"
+	pyr_n1 = "0.7"
+	pyr_k2 = "10.0^(-11.97)"
+	pyr_e2 = "78.0"
+	pyr_k3 = ""
+	pyr_e3 = ""
+	pyr_n3 = ""
 
-			plag_k1 = "10.0^(-7.87)"
-			plag_e1 = "42.1"
-			plag_n1 = "0.626"
-			plag_k2 = "10.0^(-10.91)"
-			plag_e2 = "45.2"
-			plag_k3 = ""
-			plag_e3 = ""
-			plag_n3 = ""
+	plag_k1 = "10.0^(-7.87)"
+	plag_e1 = "42.1"
+	plag_n1 = "0.626"
+	plag_k2 = "10.0^(-10.91)"
+	plag_e2 = "45.2"
+	plag_k3 = ""
+	plag_e3 = ""
+	plag_n3 = ""
 
 
-			kinetics = " precipitate_only"
-			!kinetics = " "
+	kinetics = " precipitate_only"
+	!kinetics = " "
 
 
 	do jj = 1, tn/mstep
@@ -4060,7 +3992,7 @@ else
 
 
 
-		!-SLAVE PROCESSOR RUNS GEOCHEMICAL MODEL
+		!-GEOCHEM: slave runs geochem model
 
 		timestep3 = dt_local*mstep!/10.0
 		write(s_timestep,'(F25.10)') timestep3
@@ -4076,7 +4008,7 @@ if (my_id .eq. 2) then
 end if
 
 
-!-GEOCHEM START
+!-GEOCHEM: slave starts
 
 primary3 = priLocal(m,:)
 secondary3 = secLocal(m,:)
@@ -4114,11 +4046,19 @@ write(s_basalt2,'(F25.10)') primary3(3)
 write(s_basalt1,'(F25.10)') primary3(4)
 write(s_glass,'(F25.10)') primary3(5)
 
-
+!-GEOCHEM: rate constants!
 exp_ol = "0.01"
 exp_pyr = "0.01"
 exp_plag = "1.0"
 param_exp_string = "0.005"
+
+! chamber b
+if ((primary3(5) .le. 0.0) .and. (primary3(4) .gt. 0.0) .and. (primary3(3) .gt. 0.0) .and. (primary3(2) .gt. 0.0)) then
+	exp_ol =  "0.003"
+	exp_pyr = "0.003"
+	exp_plag = "0.3"
+	!param_exp_string = "0.003"
+end if
 
 ! ! solo
 ! if ((primary3(5) .gt. 0.0) .and. (primary3(4) .gt. 0.0) .and. (primary3(3) .gt. 0.0) .and. (primary3(2) .gt. 0.0)) then
@@ -4136,13 +4076,7 @@ param_exp_string = "0.005"
 ! 	param_exp_string = "0.0025"
 ! end if
 
-! chamber b
-if ((primary3(5) .le. 0.0) .and. (primary3(4) .gt. 0.0) .and. (primary3(3) .gt. 0.0) .and. (primary3(2) .gt. 0.0)) then
-	exp_ol =  "0.003"
-	exp_pyr = "0.003"
-	exp_plag = "0.3"
-	!param_exp_string = "0.003"
-end if
+
 
 
 write(s_kaolinite,'(F25.10)') secondary3(1)
@@ -4232,55 +4166,48 @@ write(s_reactive,'(F25.10)') medium3(4)
 
 
 		inputz0 = trim(inputz0) // "EQUILIBRIUM_PHASES 1" //NEW_LINE('')// &
-! 		&"    Kaolinite " // trim(s_precip) // trim(s_kaolinite) // kinetics //NEW_LINE('')// & ! clay
+
 		&"    Goethite " // trim(s_precip) // trim(s_goethite) // kinetics //NEW_LINE('')// &
 		&"    Celadonite " // trim(s_precip) // trim(s_celadonite) // kinetics //NEW_LINE('')// & ! mica
+        &"    Saponite-Mg " // trim(s_precip) // trim(s_saponite) // kinetics //NEW_LINE('')// & ! smectite
+        &"    Pyrite " // trim(s_precip) // trim(s_pyrite) // kinetics //NEW_LINE('')// &
+        &"    Saponite-Na " // trim(s_precip) // trim(s_saponite_na) // kinetics //NEW_LINE('')// & ! smectite
+ 		&"    Nontronite-Na " // trim(s_precip) // trim(s_nont_na) // kinetics //NEW_LINE('')// & ! smectite
+ 		&"    Nontronite-Mg " // trim(s_precip) // trim(s_nont_mg) // kinetics //NEW_LINE('')// & ! smectite
+ 		&"    Fe-Celadonite " // trim(s_precip) // trim(s_fe_celadonite) // kinetics //NEW_LINE('')// & ! mica
+ 		&"    Nontronite-Ca " // trim(s_precip) // trim(s_nont_ca) // kinetics //NEW_LINE('')// & ! smectite
+        &"    Analcime " // trim(s_precip) // trim(s_analcime) // kinetics //NEW_LINE('')// & ! zeolite
+ 		&"    Phillipsite " // trim(s_precip) // trim(s_phillipsite) // kinetics //NEW_LINE('')// & ! zeolite
+        &"    Natrolite " // trim(s_precip) // trim(s_natrolite) // kinetics //NEW_LINE('')// & ! zeolite
+		&"    Talc " // trim(s_precip) // trim(s_talc) // kinetics //NEW_LINE('')// &
+        &"    Chlorite(14A) " // trim(s_precip) // trim(s_chlorite) // kinetics //NEW_LINE('')// & ! chlorite
+        &"    Clinochlore-14A " // trim(s_precip) // trim(s_clinochlore14a) // kinetics //NEW_LINE('')// & ! chlorite
+ 		&"    Clinochlore-7A " // trim(s_precip) // trim(s_clinochlore7a) // kinetics //NEW_LINE('')// & ! chlorite
+ 		&"   Saponite-Ca " // trim(s_precip) // trim(s_saponite_ca) // kinetics //NEW_LINE('')// & ! smectite
+ 		&"   Pyrrhotite " // trim(s_precip) // trim(s_pyrrhotite) // kinetics //NEW_LINE('')//& ! sulfide
+        &"   Fe-Saponite-Ca " // trim(s_precip) // trim(s_fe_saponite_ca) // kinetics //NEW_LINE('')// & ! sap smec
+        &"   Fe-Saponite-Mg " // trim(s_precip) // trim(s_fe_saponite_mg) // kinetics //NEW_LINE('')! sap smec
+
+! 		&"    Kaolinite " // trim(s_precip) // trim(s_kaolinite) // kinetics //NEW_LINE('')// & ! clay
 ! 		!&"    Celadonite -5.0 " // trim(s_celadonite) // kinetics //NEW_LINE('')// & ! mica
 ! 		!&"    Calcite " // trim(s_precip) // trim(s_calcite) // kinetics //NEW_LINE('')// & ! .135
  	! 	&"    Montmor-Na " // trim(s_precip) // trim(s_mont_na) // kinetics //NEW_LINE('')// & ! smectite
  	! 	&"    Montmor-Mg " // trim(s_precip) // trim(s_mont_mg) // kinetics //NEW_LINE('')// & ! smectite
  	! 	&"    Montmor-Ca " // trim(s_precip) // trim(s_mont_ca) // kinetics //NEW_LINE('')// & ! smectite
- 		&"    Saponite-Mg " // trim(s_precip) // trim(s_saponite) // kinetics //NEW_LINE('')// & ! smectite
 ! ! 		&"    Clinoptilolite-Ca " // trim(s_precip) // trim(s_clinoptilolite) // kinetics //NEW_LINE('')// & ! zeolite
-		&"    Pyrite " // trim(s_precip) // trim(s_pyrite) // kinetics //NEW_LINE('')// &
 ! ! 		&"    K-Feldspar " // trim(s_precip) // trim(s_kspar) // kinetics //NEW_LINE('')// &
- 		&"    Saponite-Na " // trim(s_precip) // trim(s_saponite_na) // kinetics //NEW_LINE('')// & ! smectite
- 		&"    Nontronite-Na " // trim(s_precip) // trim(s_nont_na) // kinetics //NEW_LINE('')// & ! smectite
- 		&"    Nontronite-Mg " // trim(s_precip) // trim(s_nont_mg) // kinetics //NEW_LINE('')// & ! smectite
- 		  &"    Fe-Celadonite " // trim(s_precip) // trim(s_fe_celadonite) // kinetics //NEW_LINE('')// & ! mica
- 		&"    Nontronite-Ca " // trim(s_precip) // trim(s_nont_ca) // kinetics //NEW_LINE('')// & ! smectite
 ! 		&"    Mesolite " // trim(s_precip) // trim(s_mesolite) // kinetics //NEW_LINE('')// & ! zeolite
 ! 		&"    Smectite-high-Fe-Mg " // trim(s_precip) // trim(s_smectite) // kinetics //NEW_LINE('')// & ! smectite
-
-
-
  	! 	   &"    Vermiculite-Na " // trim(s_precip) // trim(s_verm_na) // kinetics //NEW_LINE('')// &
 		!    &"    Vermiculite-Ca " // trim(s_precip) // trim(s_verm_ca) // kinetics //NEW_LINE('')// &
 		!    &"    Vermiculite-Mg " // trim(s_precip) // trim(s_verm_mg) // kinetics //NEW_LINE('')// &
-
-
 ! 		&"    Hematite " // trim(s_precip) // trim(s_hematite) // kinetics //NEW_LINE('')// &
 !!!!!!!old!! &"    Hematite " // trim(si_hematite) // trim(s_hematite) // kinetics //NEW_LINE('')// &
-
- 		&"    Analcime " // trim(s_precip) // trim(s_analcime) // kinetics //NEW_LINE('')// & ! zeolite
- 		&"    Phillipsite " // trim(s_precip) // trim(s_phillipsite) // kinetics //NEW_LINE('')// & ! zeolite
 ! 		    !&"    Epidote  " // trim(s_precip) // trim(s_epidote) // kinetics //NEW_LINE('')// &
 ! 		   &"    Gismondine " // trim(s_precip) // trim(s_gismondine) // kinetics //NEW_LINE('')// & ! zeolite
-
- 		&"    Natrolite " // trim(s_precip) // trim(s_natrolite) // kinetics //NEW_LINE('')// & ! zeolite
-		&"    Talc " // trim(s_precip) // trim(s_talc) // kinetics //NEW_LINE('')// &
 ! 		&"    Smectite-low-Fe-Mg 0.0 " // trim(s_smectite_low) // kinetics //NEW_LINE('')// & ! smectite
 ! 		  &"    Prehnite " // trim(s_precip) // trim(s_prehnite) // kinetics //NEW_LINE('')// &
- 		&"    Chlorite(14A) " // trim(s_precip) // trim(s_chlorite) // kinetics //NEW_LINE('')// & ! chlorite
 ! ! 		&"    Scolecite " // trim(s_precip) // trim(s_scolecite) // kinetics //NEW_LINE('')// & ! zeolite
-   		&"    Clinochlore-14A " // trim(s_precip) // trim(s_clinochlore14a) // kinetics //NEW_LINE('')// & ! chlorite
- 		&"    Clinochlore-7A " // trim(s_precip) // trim(s_clinochlore7a) // kinetics //NEW_LINE('')// & ! chlorite
- 		&"   Saponite-Ca " // trim(s_precip) // trim(s_saponite_ca) // kinetics //NEW_LINE('')// & ! smectite
- 		&"   Pyrrhotite " // trim(s_precip) // trim(s_pyrrhotite) // kinetics //NEW_LINE('')//& ! sulfide
-
-&"   Fe-Saponite-Ca " // trim(s_precip) // trim(s_fe_saponite_ca) // kinetics //NEW_LINE('')// & ! sap smec
-&"   Fe-Saponite-Mg " // trim(s_precip) // trim(s_fe_saponite_mg) // kinetics //NEW_LINE('')! sap smec
-
 !   		&"   Daphnite-7a " // trim(s_precip) // trim(s_daphnite_7a) // kinetics //NEW_LINE('')// & ! chlorite
 !   		&"   Daphnite-14a " // trim(s_precip) // trim(s_daphnite_14a) // kinetics //NEW_LINE('')! chlorite
 
@@ -4326,10 +4253,12 @@ write(s_reactive,'(F25.10)') medium3(4)
 
 		&"KINETICS 1" //NEW_LINE('')// &
 		&"BGlass" //NEW_LINE('')// &
+        !-GEOCHEM: glass composition
 		! ! seyfried JDF
 		&"-f CaO .1997 SiO2 .847 Al2O3 .138 " //&
 		! & "Fe2O3 .149 FeO .0075 MgO .1744 K2O .002 " //&
-		& "Fe2O3 .149 MgO .1744 K2O .002 " //&
+		! & "Fe2O3 .149 MgO .1744 K2O .002 " //&
+        & "FeO .149 MgO .1744 K2O .002 " //&
 		& "Na2O .043" //NEW_LINE('')// &
 		&"-m0 " // trim(s_glass) //NEW_LINE('')// &
 
@@ -4444,7 +4373,7 @@ id = CreateIPhreeqc()
 ! END IF
 
 
-!-GEOCHEM TO VARIABLES
+!-GEOCHEM: slave writes to variables
 
 ! IF (id.LT.0) THEN
 ! 	write(*,*) "weird stop?"
@@ -4705,7 +4634,7 @@ if (my_id .eq. 2) then
 	write(*,*) "	PROC 40 START SENDING"
 end if
 
-		!-SLAVE PROCESSOR SENDS ALTERED MESSAGE TO MASTER PROCESSOR
+		!-GEOCHEM: slave sends to master
 
 		! send primary array chunk back to root process
 		do ii = 1,g_pri

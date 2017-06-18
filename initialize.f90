@@ -268,7 +268,7 @@ kMat = 2.0/(1000.0*4186.0)
 ki=2.0/(1000.0*4186.0)
 
 
-!-GEOCHEMICAL INITIAL CONDITIONS
+!-Primary initial conditions
 
 t_vol_s = 0.30
 t_vol_a = 0.28

@@ -3,7 +3,7 @@ module globals
 save
 
 
-
+ 
 ! JDF PARAMS WITH FRACTURE AUGUST 9
 integer, parameter :: testInt = 31, xn =801, yn = 52, altnum = 134,  cell = 1 !50000
 integer, parameter :: cellx = 20, celly = 1
