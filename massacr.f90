@@ -4186,21 +4186,21 @@ write(s_reactive,'(F25.10)') medium3(4)
  		&"    Saponite-Ca " // trim(s_precip) // trim(s_saponite_ca) // kinetics //NEW_LINE('')// & ! smectite
  		&"    Pyrrhotite " // trim(s_precip) // trim(s_pyrrhotite) // kinetics //NEW_LINE('')//& ! sulfide
         &"    Fe-Saponite-Ca " // trim(s_precip) // trim(s_fe_saponite_ca) // kinetics //NEW_LINE('')// & ! sap smec
-        &"    Fe-Saponite-Mg " // trim(s_precip) // trim(s_fe_saponite_mg) // kinetics //NEW_LINE('')! sap smec
+        &"    Fe-Saponite-Mg " // trim(s_precip) // trim(s_fe_saponite_mg) // kinetics //NEW_LINE('')// &! sap smec
 
 ! 		&"    Kaolinite " // trim(s_precip) // trim(s_kaolinite) // kinetics //NEW_LINE('')// & ! clay
 ! 		!&"    Celadonite -5.0 " // trim(s_celadonite) // kinetics //NEW_LINE('')// & ! mica
 ! 		!&"    Calcite " // trim(s_precip) // trim(s_calcite) // kinetics //NEW_LINE('')// & ! .135
- 	! 	&"    Montmor-Na " // trim(s_precip) // trim(s_mont_na) // kinetics //NEW_LINE('')// & ! smectite
- 	! 	&"    Montmor-Mg " // trim(s_precip) // trim(s_mont_mg) // kinetics //NEW_LINE('')// & ! smectite
- 	! 	&"    Montmor-Ca " // trim(s_precip) // trim(s_mont_ca) // kinetics //NEW_LINE('')// & ! smectite
+ 	 	&"    Montmor-Na " // trim(s_precip) // trim(s_mont_na) // kinetics //NEW_LINE('')// & ! smectite
+ 	 	&"    Montmor-Mg " // trim(s_precip) // trim(s_mont_mg) // kinetics //NEW_LINE('')// & ! smectite
+ 	 	&"    Montmor-Ca " // trim(s_precip) // trim(s_mont_ca) // kinetics //NEW_LINE('')// & ! smectite
 ! ! 		&"    Clinoptilolite-Ca " // trim(s_precip) // trim(s_clinoptilolite) // kinetics //NEW_LINE('')// & ! zeolite
 ! ! 		&"    K-Feldspar " // trim(s_precip) // trim(s_kspar) // kinetics //NEW_LINE('')// &
 ! 		&"    Mesolite " // trim(s_precip) // trim(s_mesolite) // kinetics //NEW_LINE('')// & ! zeolite
 ! 		&"    Smectite-high-Fe-Mg " // trim(s_precip) // trim(s_smectite) // kinetics //NEW_LINE('')// & ! smectite
- 	! 	   &"    Vermiculite-Na " // trim(s_precip) // trim(s_verm_na) // kinetics //NEW_LINE('')// &
-		!    &"    Vermiculite-Ca " // trim(s_precip) // trim(s_verm_ca) // kinetics //NEW_LINE('')// &
-		!    &"    Vermiculite-Mg " // trim(s_precip) // trim(s_verm_mg) // kinetics //NEW_LINE('')// &
+ 	 	   &"    Vermiculite-Na " // trim(s_precip) // trim(s_verm_na) // kinetics //NEW_LINE('')// &
+		    &"    Vermiculite-Ca " // trim(s_precip) // trim(s_verm_ca) // kinetics //NEW_LINE('')// &
+		    &"    Vermiculite-Mg " // trim(s_precip) // trim(s_verm_mg) // kinetics //NEW_LINE('')
 ! 		&"    Hematite " // trim(s_precip) // trim(s_hematite) // kinetics //NEW_LINE('')// &
 !!!!!!!old!! &"    Hematite " // trim(si_hematite) // trim(s_hematite) // kinetics //NEW_LINE('')// &
 ! 		    !&"    Epidote  " // trim(s_precip) // trim(s_epidote) // kinetics //NEW_LINE('')// &
@@ -4257,8 +4257,8 @@ write(s_reactive,'(F25.10)') medium3(4)
 		! ! seyfried JDF
 		&"-f CaO .1997 SiO2 .847 Al2O3 .138 " //&
 		! & "Fe2O3 .149 FeO .0075 MgO .1744 K2O .002 " //&
-		! & "Fe2O3 .149 MgO .1744 K2O .002 " //&
-        & "FeO .149 MgO .1744 K2O .002 " //&
+		& "Fe2O3 .149 MgO .1744 K2O .002 " //&
+        ! & "FeO .149 MgO .1744 K2O .002 " //&
 		& "Na2O .043" //NEW_LINE('')// &
 		&"-m0 " // trim(s_glass) //NEW_LINE('')// &
 
