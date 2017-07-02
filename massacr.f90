@@ -3245,6 +3245,7 @@ end if ! if j == 5
 		!-GEOCHEM: send from master to slaves
 
 
+
 		do an_id = 1, num_procs - 1
 
 			! put number of rows in vector here for hLong
@@ -4000,6 +4001,16 @@ else
 		! slave processor loops through each coarse cell
 		do m=1,num_rows_to_receive
 
+
+
+			!-GEOCHEM: turn off aged cells
+			if (t(j) .gt. 2.512e13) then
+				if (medLocal(m,6) .le. ((t(j) - 2.512e13)/(9.42e11))*cellx*(x(2) - x(1))) then
+					medLocal(m,5) = 0.0
+				end if
+			end if
+
+
 		if (medLocal(m,5) .eq. 1.0) then
 
 if (my_id .eq. 2) then
@@ -4054,9 +4065,9 @@ param_exp_string = "0.005"
 
 ! chamber b
 if ((primary3(5) .le. 0.0) .and. (primary3(4) .gt. 0.0) .and. (primary3(3) .gt. 0.0) .and. (primary3(2) .gt. 0.0)) then
-	exp_ol =  "0.003"
-	exp_pyr = "0.003"
-	exp_plag = "0.3"
+	exp_ol =  "0.01"
+	exp_pyr = "0.01"
+	exp_plag = "1.0"
 	!param_exp_string = "0.003"
 end if
 
