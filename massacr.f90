@@ -3245,6 +3245,59 @@ end if ! if j == 5
 		!-GEOCHEM: send from master to slaves
 
 
+		!-GEOCHEM: turn off aged cells
+		! num_rows = 3*(xn/cellx)*(yn/(2*celly))
+		! do n=1,num_rows
+		! 	if (t(j) .gt. 2.512e13) then
+		! 		if (medLongBitFull(n,6) .le. ((t(j) - 2.512e13)/(9.42e11))*cellx*(x(2) - x(1))) then
+		! 			medLongBitFull(n,5) = 0.0
+		! 		end if
+		! 	end if
+		! end do
+
+		!-GEOCHEM: move aged cells
+		num_rows = 3*(xn/cellx)*(yn/(2*celly))
+		do n=1,num_rows
+			if (t(j) .gt. 2.512e13) then
+				if (floor((t(j-1)-2.512e13)/9.42e11) .gt. floor((t(j)-2.512e13)/9.42e11)) then
+
+
+					do i = 1,g_pri
+						bit_thing_t1 = transpose(reshape(priLongBitFull(1:leng,i),(/yn/(2*celly), xn/cellx/)))
+						bit_thing_t1(2:,:) = bit_thing_t1(:xn/cellx-1,:)
+						priLongBitFull(:leng,i) = reshape(transpose(bit_thing_t1(:,:)), (/ leng /))
+
+						bit_thing_t1 = transpose(reshape(priLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), xn/cellx/)))
+						bit_thing_t1(2:,:) = bit_thing_t1(:xn/cellx-1,:)
+						priLongBitFull(leng+1:2*leng,i) = reshape(transpose(bit_thing_t1(:,:)), (/ leng /))
+
+						bit_thing_t1 = transpose(reshape(priLongBitFull(2*leng+1:,i),(/yn/(2*celly), xn/cellx/)))
+						bit_thing_t1(2:,:) = bit_thing_t1(:xn/cellx-1,:)
+						priLongBitFull(2*leng+1:,i) = reshape(transpose(bit_thing_t1(:,:)), (/ leng /))
+
+
+					end do
+
+					do i = 1,g_sec
+						bit_thing_t1 = transpose(reshape(secLongBitFull(1:leng,i),(/yn/(2*celly), xn/cellx/)))
+						bit_thing_t1(2:,:) = bit_thing_t1(:xn/cellx-1,:)
+						secLongBitFull(:leng,i) = reshape(transpose(bit_thing_t1(:,:)), (/ leng /))
+
+						bit_thing_t1 = transpose(reshape(secLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), xn/cellx/)))
+						bit_thing_t1(2:,:) = bit_thing_t1(:xn/cellx-1,:)
+						secLongBitFull(leng+1:2*leng,i) = reshape(transpose(bit_thing_t1(:,:)), (/ leng /))
+
+						bit_thing_t1 = transpose(reshape(secLongBitFull(2*leng+1:,i),(/yn/(2*celly), xn/cellx/)))
+						bit_thing_t1(2:,:) = bit_thing_t1(:xn/cellx-1,:)
+						secLongBitFull(2*leng+1:,i) = reshape(transpose(bit_thing_t1(:,:)), (/ leng /))
+					end do
+
+
+				end if
+			end if
+		end do
+
+
 
 		do an_id = 1, num_procs - 1
 
@@ -3288,6 +3341,8 @@ end if ! if j == 5
 	        	call MPI_SEND( solLongBitFull(start_row,ii), num_rows_to_send, MPI_DOUBLE_PRECISION, &
 				an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 			end do
+
+
 
 			! send medium array chunk to processor an_id
 			do ii = 1,g_med
@@ -4003,12 +4058,7 @@ else
 
 
 
-			!-GEOCHEM: turn off aged cells
-			if (t(j) .gt. 2.512e13) then
-				if (medLocal(m,6) .le. ((t(j) - 2.512e13)/(9.42e11))*cellx*(x(2) - x(1))) then
-					medLocal(m,5) = 0.0
-				end if
-			end if
+
 
 
 		if (medLocal(m,5) .eq. 1.0) then
