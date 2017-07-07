@@ -3242,7 +3242,6 @@ end if ! if j == 5
 		call system_clock(counti, count_rate, count_max)
  		write(*,*) "BEGIN SENDING GEOCHEM TO ALL PROCESSORS"
 !
-		!-GEOCHEM: send from master to slaves
 
 
 		!-GEOCHEM: turn off aged cells
@@ -3257,9 +3256,16 @@ end if ! if j == 5
 
 		!-GEOCHEM: move aged cells
 		num_rows = 3*(xn/cellx)*(yn/(2*celly))
-		do n=1,num_rows
+		!do n=1,num_rows'
+		write(*,*) "t j-mstep"
+		write(*,*) t(j-mstep)
+		write(*,*) "t j"
+		write(*,*) t(j)
 			if (t(j) .gt. 2.512e13) then
-				if (floor((t(j-1)-2.512e13)/9.42e11) .gt. floor((t(j)-2.512e13)/9.42e11)) then
+				write(*,*) "past 0.8 myr"
+
+				if (floor((t(j-mstep)-2.512e13)/9.42e11) .lt. floor((t(j)-2.512e13)/9.42e11)) then
+					write(*,*) "moving cells now..."
 
 
 					do i = 1,g_pri
@@ -3295,9 +3301,10 @@ end if ! if j == 5
 
 				end if
 			end if
-		end do
+		!end do
 
 
+		!-GEOCHEM: send from master to slaves
 
 		do an_id = 1, num_procs - 1
 
