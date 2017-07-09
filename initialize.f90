@@ -674,12 +674,12 @@ sed3 = sed1 - (param_h)
 	end do
 
 	!-QUICK FIX
-	medium(14:,:,5) = 0.0
-	medium_a(14:,:,5) = 0.0
-	medium_b(14:,:,5) = 0.0
-	primary(14:,:,:) = 0.0
-	primary_a(14:,:,:) = 0.0
-	primary_b(14:,:,:) = 0.0
+	medium(:,14:,5) = 0.0
+	medium_a(:,14:,5) = 0.0
+	medium_b(:,14:,5) = 0.0
+	primary(:,14:,:) = 0.0
+	primary_a(:,14:,:) = 0.0
+	primary_b(:,14:,:) = 0.0
 
 ! 	do gg=1,yn/celly
 ! 		do g =1,xn/cellx-1
