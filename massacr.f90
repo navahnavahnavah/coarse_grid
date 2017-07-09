@@ -3299,13 +3299,17 @@ end if ! if j == 5
 					end do
 
 
+					bit_thing_t1 = transpose(reshape(medLongBitFull(1:leng,5),(/yn/(2*celly), xn/cellx/)))
+					bit_thing_t1(2:,:) = bit_thing_t1(:xn/cellx-1,:)
+					medLongBitFull(:leng,5) = reshape(transpose(bit_thing_t1(:,:)), (/ leng /))
+
+
 				end if
 			end if
 		!end do
 
 
 		!-GEOCHEM: send from master to slaves
-
 		do an_id = 1, num_procs - 1
 
 			! put number of rows in vector here for hLong
@@ -3316,11 +3320,11 @@ end if ! if j == 5
 	        if (an_id .eq. (num_procs - 1)) end_row = num_rows
 	        num_rows_to_send = (end_row - start_row + 1)
 
-			! send size of temperature array chunk to processor an_id
+			! send size of array chunk to processor an_id
 	        call MPI_SEND( num_rows_to_send, 1, MPI_INTEGER, &
 			an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 
-			! send timestep size to processor an_id
+			! send timestep to processor an_id
 	        call MPI_SEND( dt, 1, MPI_DOUBLE_PRECISION, &
 			an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 
@@ -3330,46 +3334,38 @@ end if ! if j == 5
 
 			! send primary array chunk to processor an_id
 			do ii = 1,g_pri
-				!priLongBit = (/ priLong(:,ii), priLong_a(:,ii), priLong_b(:,ii) /)
 	        	call MPI_SEND( priLongBitFull(start_row,ii), num_rows_to_send, MPI_DOUBLE_PRECISION, &
 				an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 			end do
 
 			! send secondary array chunk to processor an_id
 			do ii = 1,g_sec
-				!secLongBit = (/ secLong(:,ii), secLong_a(:,ii), secLong_b(:,ii) /)
 	        	call MPI_SEND( secLongBitFull(start_row,ii), num_rows_to_send, MPI_DOUBLE_PRECISION, &
 				an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 			end do
 
 			! send solute array chunk to processor an_id
 			do ii = 1,g_sol
-				!solLongBit = (/ solLong(:,ii), solLong_a(:,ii), solLong_b(:,ii) /)
 	        	call MPI_SEND( solLongBitFull(start_row,ii), num_rows_to_send, MPI_DOUBLE_PRECISION, &
 				an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 			end do
 
-
-
 			! send medium array chunk to processor an_id
 			do ii = 1,g_med
-				!medLongBit = (/ medLong(:,ii), medLong_a(:,ii), medLong_b(:,ii) /)
 	        	call MPI_SEND( medLongBitFull(start_row,ii), num_rows_to_send, MPI_DOUBLE_PRECISION, &
 				an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 			end do
-
-			!write(*,*) "DONE SENDING TO PROCESSOR", an_id
 
 		end do
 
 		call system_clock(countf, count_rate, count_max)
  		write(*,*) "...DONE SENDING GEOCHEM TO ALL PROCESSORS" , countf - counti
 !
-! 		!--------------MESSAGE RECEIVING FROM SLAVE PROCESSORS
+ 		!-GEOCHEM: master processor receives from slaves
 !
 		call system_clock(counti, count_rate, count_max)
  		write(*,*) "BEGIN RECEIVING GEOCHEM FROM ALL PROCESSORS"
-!
+
 		do an_id = 1, num_procs - 1
 
 			! get the size of each chunk again
@@ -3423,11 +3419,10 @@ end if ! if j == 5
 		call system_clock(countf, count_rate, count_max)
 		write(*,*) "...DONE RECEIVING GEOCHEM FROM ALL PROCESSORS" , countf - counti
 
-!		write(*,*) "BEGIN STRETCHING REACTED CELLS"
-
-		!-Master processor saves output
 
 
+
+		!-GEOCHEM: water volume correction here
 
 ! 		medium(:,:,3) = vol_i
 ! 		medium_a(:,:,3) = vol_i_a
@@ -3437,10 +3432,19 @@ end if ! if j == 5
 ! 		solute_a(:,:,3) = vol_i_a
 ! 		solute_b(:,:,3) = vol_i_b
 
-!		write(*,*) "...DONE STRETCHING REACTED CELLS"
+! 		i=2
+! 		solute(:,:,i) = solute(:,:,i)*solute(:,:,3)/vol_i
+! 		solute_a(:,:,i) = solute_a(:,:,i)*solute_a(:,:,3)/vol_i_a
+! 		solute_b(:,:,i) = solute_b(:,:,i)*solute_b(:,:,3)/vol_i_b
+!
+! 		do i=4,13
+! 			solute(:,:,i) = solute(:,:,i)*solute(:,:,3)/vol_i
+! 			solute_a(:,:,i) = solute_a(:,:,i)*solute_a(:,:,3)/vol_i_a
+! 			solute_b(:,:,i) = solute_b(:,:,i)*solute_b(:,:,3)/vol_i_b
+! 		end do
 
 
-		! add timestep's output to output arrays
+		!-GEOCHEM: add to full output arrays
 		if (mod(j,mstep*ar) .eq. 0) then
 
 
@@ -3448,92 +3452,54 @@ end if ! if j == 5
 			leng = (yn/(2*celly))*(xn/cellx)
 
 			do i = 1,g_pri
-! 				bit_thing_t = reshape(priLongBitFull(1:leng,i),(/yn/(2*celly), xn/cellx/))
-! 				bit_thing = transpose(bit_thing_t)
 				bit_thing_t1 = transpose(reshape(priLongBitFull(1:leng,i),(/yn/(2*celly), xn/cellx/)))
 				primary(:,:,i) = bit_thing_t1
 
-! 				bit_thing_t = reshape(priLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), xn/cellx/))
-! 				bit_thing = transpose(bit_thing_t)
 				bit_thing_t1 = transpose(reshape(priLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), xn/cellx/)))
 				primary_a(:,:,i) = bit_thing_t1
 
-! 				bit_thing_t = reshape(priLongBitFull(2*leng+1:,i),(/yn/(2*celly), xn/cellx/))
-! 				bit_thing = transpose(bit_thing_t)
 				bit_thing_t1 = transpose(reshape(priLongBitFull(2*leng+1:,i),(/yn/(2*celly), xn/cellx/)))
 				primary_b(:,:,i) = bit_thing_t1
 			end do
 
 			if (maxval(medium(:,:,2)) .eq. 0.0) then
 				do i = 1,g_sec
-! 					bit_thing_t = reshape(secLongBitFull(1:leng,i),(/yn/(2*celly), xn/cellx/))
-! 					bit_thing = transpose(bit_thing_t)
+
 					bit_thing_t1 = transpose(reshape(secLongBitFull(1:leng,i),(/yn/(2*celly), xn/cellx/)))
 					secondary(:,:,i) = bit_thing_t1
 
-! 					bit_thing_t = reshape(secLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), xn/cellx/))
-! 					bit_thing = transpose(bit_thing_t)
 					bit_thing_t1 = transpose(reshape(secLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), xn/cellx/)))
 					secondary_a(:,:,i) = bit_thing_t1
 
-! 					bit_thing_t = reshape(secLongBitFull(2*leng+1:,i),(/yn/(2*celly), xn/cellx/))
-! 					bit_thing = transpose(bit_thing_t)
 					bit_thing_t1 = transpose(reshape(secLongBitFull(2*leng+1:,i),(/yn/(2*celly), xn/cellx/)))
 					secondary_b(:,:,i) = bit_thing_t1
 				end do
 			end if
 
 			do i = 1,g_sol
-! 				bit_thing_t = reshape(solLongBitFull(1:leng,i),(/yn/(2*celly), xn/cellx/))
-! 				bit_thing = transpose(bit_thing_t)
+
 				bit_thing_t1 = transpose(reshape(solLongBitFull(1:leng,i),(/yn/(2*celly), xn/cellx/)))
 				solute(:,:,i) = bit_thing_t1
 
-! 				bit_thing_t = reshape(solLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), xn/cellx/))
-! 				bit_thing = transpose(bit_thing_t)
 				bit_thing_t1 = transpose(reshape(solLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), xn/cellx/)))
 				solute_a(:,:,i) = bit_thing_t1
 
-! 				bit_thing_t = reshape(solLongBitFull(2*leng+1:,i),(/yn/(2*celly), xn/cellx/))
-! 				bit_thing = transpose(bit_thing_t)
 				bit_thing_t1 = transpose(reshape(solLongBitFull(2*leng+1:,i),(/yn/(2*celly), xn/cellx/)))
 				solute_b(:,:,i) = bit_thing_t1
 			end do
 
-	! 		i=2
-	! 		solute(:,:,i) = solute(:,:,i)*solute(:,:,3)/vol_i
-	! 		solute_a(:,:,i) = solute_a(:,:,i)*solute_a(:,:,3)/vol_i_a
-	! 		solute_b(:,:,i) = solute_b(:,:,i)*solute_b(:,:,3)/vol_i_b
-	!
-	! 		do i=4,13
-	! 			solute(:,:,i) = solute(:,:,i)*solute(:,:,3)/vol_i
-	! 			solute_a(:,:,i) = solute_a(:,:,i)*solute_a(:,:,3)/vol_i_a
-	! 			solute_b(:,:,i) = solute_b(:,:,i)*solute_b(:,:,3)/vol_i_b
-	! 		end do
-
-
 			do i = 1,g_med
-! 				bit_thing_t = reshape(medLongBitFull(1:leng,i),(/yn/(2*celly), xn/cellx/))
-! 				bit_thing = transpose(bit_thing_t)
+
 				bit_thing_t1 = transpose(reshape(medLongBitFull(1:leng,i),(/yn/(2*celly), xn/cellx/)))
 				medium(:,:,i) = bit_thing_t1
 
-! 				bit_thing_t = reshape(medLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), xn/cellx/))
-! 				bit_thing = transpose(bit_thing_t)
 				bit_thing_t1 = transpose(reshape(medLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), xn/cellx/)))
 				medium_a(:,:,i) = bit_thing_t1
 
-! 				bit_thing_t = reshape(medLongBitFull(2*leng+1:,i),(/yn/(2*celly), xn/cellx/))
-! 				bit_thing = transpose(bit_thing_t)
 				bit_thing_t1 = transpose(reshape(medLongBitFull(2*leng+1:,i),(/yn/(2*celly), xn/cellx/)))
 				medium_b(:,:,i) = bit_thing_t1
+
 			end do
-
-
-
-
-
-
 
 
 			 write(*,*) "BEGIN UPDATING _MAT ARRAYS"
@@ -3551,9 +3517,9 @@ end if ! if j == 5
 			 psiCoarseMat(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/(2*celly)) = psi_coarse
 ! 			 uCoarseMat(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/(2*celly)) = uTransport
 ! 			 vCoarseMat(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/(2*celly)) = vTransport
-	 		! reset coarse grid velocities for next timestep
-	 		uTransport = 0.0
-	 		vTransport = 0.0
+	 		 ! reset coarse grid velocities for next timestep
+	 		 uTransport = 0.0
+	 		 vTransport = 0.0
 
 			 primaryMat(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/(2*celly),:) = primary
 			 secondaryMat(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/(2*celly),:)= secondary

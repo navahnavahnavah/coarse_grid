@@ -82,8 +82,8 @@ set PARAM_F_POR = '6e-4'
 
 
 
-set PARAM_PATH='/home/navah/coarse_grid/output/summer_coarse_grid/sites_90km_l/'
-set PARAM_ISO_PATH='/home/navah/coarse_grid/output/summer_coarse_grid/sites_90km_l/'
+set PARAM_PATH='/home/navah/coarse_grid/output/summer_coarse_grid/sites_90km_o/'
+set PARAM_ISO_PATH='/home/navah/coarse_grid/output/summer_coarse_grid/sites_90km_o/'
 
 
 echo $PARAM_PATH
