@@ -2931,12 +2931,11 @@ if (restart .ne. 1) then
 
 
 
-
-
-
 end if ! end if restart .ne. 1
 
 if (j .eq. 3) then
+
+			!# INITIALIZE FOR GEOCHEM
 
 			leng = (yn/(2*celly))*(xn/cellx)
 
@@ -3126,8 +3125,8 @@ end if ! if j == 5
 !
 !
 ! 		write (*,*) 'begin (system_clock):   ', counti
-		call system_clock(counti, count_rate, count_max)
- 		write(*,*) "BEGIN SENDING SOLUTES TO PROCESSORS FOR ADVECTION" !, counti
+		! call system_clock(counti, count_rate, count_max)
+ 	! 	write(*,*) "BEGIN SENDING SOLUTES TO PROCESSORS FOR ADVECTION" !, counti
 
 
 		!-ADVECTION: send from master to slaves
@@ -3180,15 +3179,15 @@ end if ! if j == 5
 
 		end do
 
-		! 		write (*,*) 'end (system_clock):     ', countf
-		call system_clock(countf, count_rate, count_max)
-		write(*,*) "...DONE SENDING SOLUTES TO ALL PROCESSORS" , countf - counti
+		! ! 		write (*,*) 'end (system_clock):     ', countf
+		! call system_clock(countf, count_rate, count_max)
+		! write(*,*) "...DONE SENDING SOLUTES TO ALL PROCESSORS" , countf - counti
 
 
 		!-ADVECTION: master receives from slaves
 
-		call system_clock(counti, count_rate, count_max)
-		write(*,*) "BEGIN RECEIVING ADVECTED SOLUTES"
+		! call system_clock(counti, count_rate, count_max)
+		! write(*,*) "BEGIN RECEIVING ADVECTED SOLUTES"
 
 		do an_id = 1, 22
 
@@ -3206,8 +3205,8 @@ end if ! if j == 5
 
 		end do
 
-		call system_clock(countf, count_rate, count_max)
- 		write(*,*) "...DONE RECEIVING ADVECTED SOLUTES" , countf - counti
+		! call system_clock(countf, count_rate, count_max)
+ 	! 	write(*,*) "...DONE RECEIVING ADVECTED SOLUTES" , countf - counti
 !
 !
 !
@@ -3239,8 +3238,8 @@ end if ! if j == 5
 
 
 
-		call system_clock(counti, count_rate, count_max)
- 		write(*,*) "BEGIN SENDING GEOCHEM TO ALL PROCESSORS"
+		! call system_clock(counti, count_rate, count_max)
+ 	! 	write(*,*) "BEGIN SENDING GEOCHEM TO ALL PROCESSORS"
 !
 
 
@@ -3388,13 +3387,13 @@ end if ! if j == 5
 
 		end do
 
-		call system_clock(countf, count_rate, count_max)
- 		write(*,*) "...DONE SENDING GEOCHEM TO ALL PROCESSORS" , countf - counti
+		! call system_clock(countf, count_rate, count_max)
+ 	! 	write(*,*) "...DONE SENDING GEOCHEM TO ALL PROCESSORS" , countf - counti
 !
  		!-GEOCHEM: master processor receives from slaves
 !
-		call system_clock(counti, count_rate, count_max)
- 		write(*,*) "BEGIN RECEIVING GEOCHEM FROM ALL PROCESSORS"
+		! call system_clock(counti, count_rate, count_max)
+ 	! 	write(*,*) "BEGIN RECEIVING GEOCHEM FROM ALL PROCESSORS"
 
 		do an_id = 1, num_procs - 1
 
@@ -3446,8 +3445,8 @@ end if ! if j == 5
 
 		end do
 
-		call system_clock(countf, count_rate, count_max)
-		write(*,*) "...DONE RECEIVING GEOCHEM FROM ALL PROCESSORS" , countf - counti
+		! call system_clock(countf, count_rate, count_max)
+		! write(*,*) "...DONE RECEIVING GEOCHEM FROM ALL PROCESSORS" , countf - counti
 
 
 
@@ -4066,10 +4065,10 @@ else
 
 		if (medLocal(m,5) .eq. 1.0) then
 
-if (my_id .eq. 2) then
-	call system_clock(counti, count_rate, count_max)
-	write(*,*) "	PROC 40 START LOADING"
-end if
+! if (my_id .eq. 2) then
+! 	call system_clock(counti, count_rate, count_max)
+! 	write(*,*) "	PROC 40 START LOADING"
+! end if
 
 
 !-GEOCHEM: slave starts
@@ -4237,50 +4236,51 @@ write(s_reactive,'(F25.10)') medium3(4)
 
 
 		inputz0 = trim(inputz0) // "EQUILIBRIUM_PHASES 1" //NEW_LINE('')// &
+		!# GEOCHEM: secondaries
 
-! 		&"    Goethite " // trim(s_precip) // trim(s_goethite) // kinetics //NEW_LINE('')// &
-! 		&"    Celadonite " // trim(s_precip) // trim(s_celadonite) // kinetics //NEW_LINE('')// & ! mica
-!         &"    Saponite-Mg " // trim(s_precip) // trim(s_saponite) // kinetics //NEW_LINE('')// & ! smectite
-!         &"    Pyrite " // trim(s_precip) // trim(s_pyrite) // kinetics //NEW_LINE('')// &
-!         &"    Saponite-Na " // trim(s_precip) // trim(s_saponite_na) // kinetics //NEW_LINE('')// & ! smectite
-!  		&"    Nontronite-Na " // trim(s_precip) // trim(s_nont_na) // kinetics //NEW_LINE('')// & ! smectite
-!  		&"    Nontronite-Mg " // trim(s_precip) // trim(s_nont_mg) // kinetics //NEW_LINE('')// & ! smectite
-!  		&"    Fe-Celadonite " // trim(s_precip) // trim(s_fe_celadonite) // kinetics //NEW_LINE('')// & ! mica
-!  		&"    Nontronite-Ca " // trim(s_precip) // trim(s_nont_ca) // kinetics //NEW_LINE('')// & ! smectite
-!         &"    Analcime " // trim(s_precip) // trim(s_analcime) // kinetics //NEW_LINE('')// & ! zeolite
-!  		&"    Phillipsite " // trim(s_precip) // trim(s_phillipsite) // kinetics //NEW_LINE('')// & ! zeolite
-!         &"    Natrolite " // trim(s_precip) // trim(s_natrolite) // kinetics //NEW_LINE('')// & ! zeolite
-! 		&"    Talc " // trim(s_precip) // trim(s_talc) // kinetics //NEW_LINE('')// &
-!         &"    Chlorite(14A) " // trim(s_precip) // trim(s_chlorite) // kinetics //NEW_LINE('')// & ! chlorite
-!         &"    Clinochlore-14A " // trim(s_precip) // trim(s_clinochlore14a) // kinetics //NEW_LINE('')// & ! chlorite
-!  		&"    Clinochlore-7A " // trim(s_precip) // trim(s_clinochlore7a) // kinetics //NEW_LINE('')// & ! chlorite
-!  		&"    Saponite-Ca " // trim(s_precip) // trim(s_saponite_ca) // kinetics //NEW_LINE('')// & ! smectite
-!  		&"    Pyrrhotite " // trim(s_precip) // trim(s_pyrrhotite) // kinetics //NEW_LINE('')//& ! sulfide
-!         &"    Fe-Saponite-Ca " // trim(s_precip) // trim(s_fe_saponite_ca) // kinetics //NEW_LINE('')// & ! sap smec
-!         &"    Fe-Saponite-Mg " // trim(s_precip) // trim(s_fe_saponite_mg) // kinetics //NEW_LINE('')// &! sap smec
-!
-! ! 		&"    Kaolinite " // trim(s_precip) // trim(s_kaolinite) // kinetics //NEW_LINE('')// & ! clay
-! ! 		!&"    Celadonite -5.0 " // trim(s_celadonite) // kinetics //NEW_LINE('')// & ! mica
-! ! 		!&"    Calcite " // trim(s_precip) // trim(s_calcite) // kinetics //NEW_LINE('')// & ! .135
-!  	 	&"    Montmor-Na " // trim(s_precip) // trim(s_mont_na) // kinetics //NEW_LINE('')// & ! smectite
-!  	 	&"    Montmor-Mg " // trim(s_precip) // trim(s_mont_mg) // kinetics //NEW_LINE('')// & ! smectite
-!  	 	&"    Montmor-Ca " // trim(s_precip) // trim(s_mont_ca) // kinetics //NEW_LINE('')// & ! smectite
-! ! ! 		&"    Clinoptilolite-Ca " // trim(s_precip) // trim(s_clinoptilolite) // kinetics //NEW_LINE('')// & ! zeolite
-! ! ! 		&"    K-Feldspar " // trim(s_precip) // trim(s_kspar) // kinetics //NEW_LINE('')// &
-! ! 		&"    Mesolite " // trim(s_precip) // trim(s_mesolite) // kinetics //NEW_LINE('')// & ! zeolite
-! ! 		&"    Smectite-high-Fe-Mg " // trim(s_precip) // trim(s_smectite) // kinetics //NEW_LINE('')// & ! smectite
-!  	 	   &"    Vermiculite-Na " // trim(s_precip) // trim(s_verm_na) // kinetics //NEW_LINE('')// &
-! 		    &"    Vermiculite-Ca " // trim(s_precip) // trim(s_verm_ca) // kinetics //NEW_LINE('')// &
-! 		    &"    Vermiculite-Mg " // trim(s_precip) // trim(s_verm_mg) // kinetics //NEW_LINE('')
-! ! 		&"    Hematite " // trim(s_precip) // trim(s_hematite) // kinetics //NEW_LINE('')// &
-! !!!!!!!old!! &"    Hematite " // trim(si_hematite) // trim(s_hematite) // kinetics //NEW_LINE('')// &
-! ! 		    !&"    Epidote  " // trim(s_precip) // trim(s_epidote) // kinetics //NEW_LINE('')// &
-! ! 		   &"    Gismondine " // trim(s_precip) // trim(s_gismondine) // kinetics //NEW_LINE('')// & ! zeolite
-! ! 		&"    Smectite-low-Fe-Mg 0.0 " // trim(s_smectite_low) // kinetics //NEW_LINE('')// & ! smectite
-! ! 		  &"    Prehnite " // trim(s_precip) // trim(s_prehnite) // kinetics //NEW_LINE('')// &
-! ! ! 		&"    Scolecite " // trim(s_precip) // trim(s_scolecite) // kinetics //NEW_LINE('')// & ! zeolite
-! !   		&"   Daphnite-7a " // trim(s_precip) // trim(s_daphnite_7a) // kinetics //NEW_LINE('')// & ! chlorite
-! !   		&"   Daphnite-14a " // trim(s_precip) // trim(s_daphnite_14a) // kinetics //NEW_LINE('')! chlorite
+		&"    Goethite " // trim(s_precip) // trim(s_goethite) // kinetics //NEW_LINE('')// &
+		&"    Celadonite " // trim(s_precip) // trim(s_celadonite) // kinetics //NEW_LINE('')// & ! mica
+        &"    Saponite-Mg " // trim(s_precip) // trim(s_saponite) // kinetics //NEW_LINE('')// & ! smectite
+        &"    Pyrite " // trim(s_precip) // trim(s_pyrite) // kinetics //NEW_LINE('')// &
+        &"    Saponite-Na " // trim(s_precip) // trim(s_saponite_na) // kinetics //NEW_LINE('')// & ! smectite
+ 		&"    Nontronite-Na " // trim(s_precip) // trim(s_nont_na) // kinetics //NEW_LINE('')// & ! smectite
+ 		&"    Nontronite-Mg " // trim(s_precip) // trim(s_nont_mg) // kinetics //NEW_LINE('')// & ! smectite
+ 		&"    Fe-Celadonite " // trim(s_precip) // trim(s_fe_celadonite) // kinetics //NEW_LINE('')// & ! mica
+ 		&"    Nontronite-Ca " // trim(s_precip) // trim(s_nont_ca) // kinetics //NEW_LINE('')// & ! smectite
+        &"    Analcime " // trim(s_precip) // trim(s_analcime) // kinetics //NEW_LINE('')// & ! zeolite
+ 		&"    Phillipsite " // trim(s_precip) // trim(s_phillipsite) // kinetics //NEW_LINE('')// & ! zeolite
+        &"    Natrolite " // trim(s_precip) // trim(s_natrolite) // kinetics //NEW_LINE('')// & ! zeolite
+		&"    Talc " // trim(s_precip) // trim(s_talc) // kinetics //NEW_LINE('')// &
+        &"    Chlorite(14A) " // trim(s_precip) // trim(s_chlorite) // kinetics //NEW_LINE('')// & ! chlorite
+        &"    Clinochlore-14A " // trim(s_precip) // trim(s_clinochlore14a) // kinetics //NEW_LINE('')// & ! chlorite
+ 		&"    Clinochlore-7A " // trim(s_precip) // trim(s_clinochlore7a) // kinetics //NEW_LINE('')// & ! chlorite
+ 		&"    Saponite-Ca " // trim(s_precip) // trim(s_saponite_ca) // kinetics //NEW_LINE('')// & ! smectite
+ 		&"    Pyrrhotite " // trim(s_precip) // trim(s_pyrrhotite) // kinetics //NEW_LINE('')//& ! sulfide
+        &"    Fe-Saponite-Ca " // trim(s_precip) // trim(s_fe_saponite_ca) // kinetics //NEW_LINE('')// & ! sap smec
+        &"    Fe-Saponite-Mg " // trim(s_precip) // trim(s_fe_saponite_mg) // kinetics //NEW_LINE('')// &! sap smec
+
+! 		&"    Kaolinite " // trim(s_precip) // trim(s_kaolinite) // kinetics //NEW_LINE('')// & ! clay
+! 		!&"    Celadonite -5.0 " // trim(s_celadonite) // kinetics //NEW_LINE('')// & ! mica
+! 		!&"    Calcite " // trim(s_precip) // trim(s_calcite) // kinetics //NEW_LINE('')// & ! .135
+ 	 	&"    Montmor-Na " // trim(s_precip) // trim(s_mont_na) // kinetics //NEW_LINE('')// & ! smectite
+ 	 	&"    Montmor-Mg " // trim(s_precip) // trim(s_mont_mg) // kinetics //NEW_LINE('')// & ! smectite
+ 	 	&"    Montmor-Ca " // trim(s_precip) // trim(s_mont_ca) // kinetics //NEW_LINE('')// & ! smectite
+! ! 		&"    Clinoptilolite-Ca " // trim(s_precip) // trim(s_clinoptilolite) // kinetics //NEW_LINE('')// & ! zeolite
+! ! 		&"    K-Feldspar " // trim(s_precip) // trim(s_kspar) // kinetics //NEW_LINE('')// &
+! 		&"    Mesolite " // trim(s_precip) // trim(s_mesolite) // kinetics //NEW_LINE('')// & ! zeolite
+! 		&"    Smectite-high-Fe-Mg " // trim(s_precip) // trim(s_smectite) // kinetics //NEW_LINE('')// & ! smectite
+ 	 	   &"    Vermiculite-Na " // trim(s_precip) // trim(s_verm_na) // kinetics //NEW_LINE('')// &
+		    &"    Vermiculite-Ca " // trim(s_precip) // trim(s_verm_ca) // kinetics //NEW_LINE('')// &
+		    &"    Vermiculite-Mg " // trim(s_precip) // trim(s_verm_mg) // kinetics //NEW_LINE('')//&
+ 		&"    Hematite 2.0 " // trim(s_hematite) // kinetics //NEW_LINE('')// &
+!!!!!!!old!! &"    Hematite " // trim(si_hematite) // trim(s_hematite) // kinetics //NEW_LINE('')// &
+! 		    !&"    Epidote  " // trim(s_precip) // trim(s_epidote) // kinetics //NEW_LINE('')// &
+! 		   &"    Gismondine " // trim(s_precip) // trim(s_gismondine) // kinetics //NEW_LINE('')// & ! zeolite
+! 		&"    Smectite-low-Fe-Mg 0.0 " // trim(s_smectite_low) // kinetics //NEW_LINE('')// & ! smectite
+! 		  &"    Prehnite " // trim(s_precip) // trim(s_prehnite) // kinetics //NEW_LINE('')// &
+! ! 		&"    Scolecite " // trim(s_precip) // trim(s_scolecite) // kinetics //NEW_LINE('')// & ! zeolite
+!   		&"   Daphnite-7a " // trim(s_precip) // trim(s_daphnite_7a) // kinetics //NEW_LINE('')// & ! chlorite
+!   		&"   Daphnite-14a " // trim(s_precip) // trim(s_daphnite_14a) // kinetics //NEW_LINE('')! chlorite
 
 		&" "  //NEW_LINE('')
 
@@ -4418,16 +4418,16 @@ write(s_reactive,'(F25.10)') medium3(4)
 		&"END"
 
 
-		if (my_id .eq. 2) then
-			call system_clock(countf, count_rate, count_max)
-			write(*,*) "	PROC 40 END LOADING" , countf - counti
-		end if
+		! if (my_id .eq. 2) then
+		! 	call system_clock(countf, count_rate, count_max)
+		! 	write(*,*) "	PROC 40 END LOADING" , countf - counti
+		! end if
 
 
-		if (my_id .eq. 2) then
-			call system_clock(counti, count_rate, count_max)
-			write(*,*) "	PROC 40 START RUNNING"
-		end if
+		! if (my_id .eq. 2) then
+		! 	call system_clock(counti, count_rate, count_max)
+		! 	write(*,*) "	PROC 40 START RUNNING"
+		! end if
 
 ! INITIALIZE STUFF
 id = CreateIPhreeqc()
@@ -4453,10 +4453,10 @@ id = CreateIPhreeqc()
 ! 	STOP
 ! END IF
 
-if (my_id .eq. 2) then
-	call system_clock(counti, count_rate, count_max)
-	write(*,*) "		R1 START"
-end if
+! if (my_id .eq. 2) then
+! 	call system_clock(counti, count_rate, count_max)
+! 	write(*,*) "		R1 START"
+! end if
 
 IF (SetSelectedOutputStringOn(id, .TRUE.).NE.IPQ_OK) THEN
 	CALL OutputErrorString(id)
@@ -4473,30 +4473,30 @@ IF (SetSelectedOutputStringOn(id, .TRUE.).NE.IPQ_OK) THEN
 	!STOP
 END IF
 
-if (my_id .eq. 2) then
-	call system_clock(countf, count_rate, count_max)
-	write(*,*) "		R1 END" , countf - counti
-end if
+! if (my_id .eq. 2) then
+! 	call system_clock(countf, count_rate, count_max)
+! 	write(*,*) "		R1 END" , countf - counti
+! end if
 
-if (my_id .eq. 2) then
-	call system_clock(counti, count_rate, count_max)
-	write(*,*) "		R2 START"
-end if
+! if (my_id .eq. 2) then
+! 	call system_clock(counti, count_rate, count_max)
+! 	write(*,*) "		R2 START"
+! end if
 
 IF (SetOutputStringOn(id, .TRUE.).NE.IPQ_OK) THEN
 	CALL OutputErrorString(id)
 	!STOP
 END IF
 
-if (my_id .eq. 2) then
-	call system_clock(countf, count_rate, count_max)
-	write(*,*) "		R2 END" , countf - counti
-end if
+! if (my_id .eq. 2) then
+! 	call system_clock(countf, count_rate, count_max)
+! 	write(*,*) "		R2 END" , countf - counti
+! end if
 
-if (my_id .eq. 2) then
-	call system_clock(counti, count_rate, count_max)
-	write(*,*) "		R3 START"
-end if
+! if (my_id .eq. 2) then
+! 	call system_clock(counti, count_rate, count_max)
+! 	write(*,*) "		R3 START"
+! end if
 
 ! write(*,*) "we here"
 !IF (LoadDatabase(id, 'l5.dat').NE.0) THEN
@@ -4515,16 +4515,16 @@ IF (LoadDatabaseString(id, trim(L5)).NE.0) THEN
 	!STOP
 END IF
 
-if (my_id .eq. 2) then
-	call system_clock(countf, count_rate, count_max)
-	write(*,*) "		R3 END" , countf - counti
-end if
+! if (my_id .eq. 2) then
+! 	call system_clock(countf, count_rate, count_max)
+! 	write(*,*) "		R3 END" , countf - counti
+! end if
 
-if (my_id .eq. 2) then
-	call system_clock(counti, count_rate, count_max)
-	write(*,*) "		R4 START"
-	!write(*,*) inputz0
-end if
+! if (my_id .eq. 2) then
+! 	call system_clock(counti, count_rate, count_max)
+! 	write(*,*) "		R4 START"
+! 	!write(*,*) inputz0
+! end if
 
 ! RUN INPUT
 IF (RunString(id, trim(inputz0)).NE.0) THEN
@@ -4547,15 +4547,15 @@ IF (RunString(id, trim(inputz0)).NE.0) THEN
 	!STOP
 END IF
 
-if (my_id .eq. 2) then
-	call system_clock(countf, count_rate, count_max)
-	write(*,*) "		R4 END" , countf - counti
-end if
+! if (my_id .eq. 2) then
+! 	call system_clock(countf, count_rate, count_max)
+! 	write(*,*) "		R4 END" , countf - counti
+! end if
 
-if (my_id .eq. 2) then
-	call system_clock(counti, count_rate, count_max)
-	write(*,*) "		R5 START"
-end if
+! if (my_id .eq. 2) then
+! 	call system_clock(counti, count_rate, count_max)
+! 	write(*,*) "		R5 START"
+! end if
 
 ! WRITE AWAY
 DO i=1,GetSelectedOutputStringLineCount(id)
@@ -4583,15 +4583,15 @@ DO i=1,GetSelectedOutputStringLineCount(id)
 	end if
 END DO
 
-if (my_id .eq. 2) then
-	call system_clock(countf, count_rate, count_max)
-	write(*,*) "		R5 END" , countf - counti
-end if
+! if (my_id .eq. 2) then
+! 	call system_clock(countf, count_rate, count_max)
+! 	write(*,*) "		R5 END" , countf - counti
+! end if
 
-if (my_id .eq. 2) then
-	call system_clock(counti, count_rate, count_max)
-	write(*,*) "		R6 START"
-end if
+! if (my_id .eq. 2) then
+! 	call system_clock(counti, count_rate, count_max)
+! 	write(*,*) "		R6 START"
+! end if
 
 ! OUTPUT TO THE MAIN MASSACR METHOD
 alt0(1,:) = outmat(3,:)
@@ -4634,23 +4634,23 @@ IF (DestroyIPhreeqc(id).NE.IPQ_OK) THEN
 END IF
 
 
-if (my_id .eq. 2) then
-	call system_clock(countf, count_rate, count_max)
-	write(*,*) "		R6 END" , countf - counti
-end if
+! if (my_id .eq. 2) then
+! 	call system_clock(countf, count_rate, count_max)
+! 	write(*,*) "		R6 END" , countf - counti
+! end if
 
 
 
 
-if (my_id .eq. 2) then
-	call system_clock(countf, count_rate, count_max)
-	write(*,*) "	PROC 40 END RUNNING" , countf - counti
-end if
+! if (my_id .eq. 2) then
+! 	call system_clock(countf, count_rate, count_max)
+! 	write(*,*) "	PROC 40 END RUNNING" , countf - counti
+! end if
 
-if (my_id .eq. 2) then
-	call system_clock(counti, count_rate, count_max)
-	write(*,*) "	PROC 40 START ASSEMBLING"
-end if
+! if (my_id .eq. 2) then
+! 	call system_clock(counti, count_rate, count_max)
+! 	write(*,*) "	PROC 40 START ASSEMBLING"
+! end if
 
 				solLocal(m,:) = (/ alt0(1,2), alt0(1,3), alt0(1,4), alt0(1,5), alt0(1,6), &
 				alt0(1,7), alt0(1,8), alt0(1,9), alt0(1,10), alt0(1,11), alt0(1,12), &
@@ -4696,16 +4696,16 @@ end if
 
 
 
-if (my_id .eq. 2) then
-	call system_clock(countf, count_rate, count_max)
-	write(*,*) "	PROC 40 END ASSEMBLING" , countf - counti
-end if
+! if (my_id .eq. 2) then
+! 	call system_clock(countf, count_rate, count_max)
+! 	write(*,*) "	PROC 40 END ASSEMBLING" , countf - counti
+! end if
 
 
-if (my_id .eq. 2) then
-	call system_clock(counti, count_rate, count_max)
-	write(*,*) "	PROC 40 START SENDING"
-end if
+! if (my_id .eq. 2) then
+! 	call system_clock(counti, count_rate, count_max)
+! 	write(*,*) "	PROC 40 START SENDING"
+! end if
 
 		!-GEOCHEM: slave sends to master
 
@@ -4733,10 +4733,10 @@ end if
 			return_data_tag, MPI_COMM_WORLD, ierr)
 		end do
 
-if (my_id .eq. 2) then
-	call system_clock(countf, count_rate, count_max)
-	write(*,*) "	PROC 40 END SENDING" , countf - counti
-end if
+! if (my_id .eq. 2) then
+! 	call system_clock(countf, count_rate, count_max)
+! 	write(*,*) "	PROC 40 END SENDING" , countf - counti
+! end if
 
 		!write(*,*) "SLAVE PROCESSOR IS DONE WITH WORK"
 

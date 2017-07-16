@@ -413,39 +413,30 @@ mix_ratio = dt*mstep/tb_res
 ! write(*,*) "coarse" , solute(:,:,5)
 
 medium(:,:,1) = .1          ! phiCoarse
-medium(:,:,2) = 0.0         ! precip
+medium(:,:,2) = 0.0         ! precip (saturation state)
 medium(:,:,3) = t_vol_s       ! water_volume
 vol_i = medium(1,1,3)
 medium(:,:,4) = 0.01        ! reactive fraction now!
-! medium(:,:,5) = 1.0         ! rxn toggle
 medium(:,:,5) = 1.0         ! rxn toggle
-medium(xn/cellx-2:,:,5) = 0.0
-! medium(xn,yn/celly-3:,5) = 1.0         ! rxn toggle
 medium(:,:,6) = 0.0         ! x-coord
 medium(:,:,7) = 0.0         ! y-coord
 
 
 medium_a(:,:,1) = .1          ! phiCoarse
-medium_a(:,:,2) = 0.0         ! precip toggle
+medium_a(:,:,2) = 0.0         ! precip (saturation state)
 medium_a(:,:,3) = t_vol_a       ! water_volume
 vol_i_a = medium_a(1,1,3)
 medium_a(:,:,4) = 0.01        ! reactive fraction now!
 medium_a(:,:,5) = 1.0         ! rxn toggle
-medium_a(xn/cellx-2:,:,5) = 0.0
-! medium_a(xn,yn/celly-3:,5) = 1.0
-!medium_a(xn,yn/cell-3:,5) = 1.0         ! rxn toggle
 medium_a(:,:,6) = 0.0         ! x-coord
 medium_a(:,:,7) = 0.0         ! y-coord
 
 medium_b(:,:,1) = .1          ! phiCoarse
-medium_b(:,:,2) = 0.0         ! precip toggle
+medium_b(:,:,2) = 0.0         ! precip (saturation state)
 medium_b(:,:,3) = t_vol_b     ! water_volume
 vol_i_b = medium_b(1,1,3)
 medium_b(:,:,4) = 0.01        ! reactive fraction now!
 medium_b(:,:,5) = 1.0         ! rxn toggle
-medium_b(xn/cellx-2:,:,5) = 0.0
-! medium_b(xn,yn/celly-3:,5) = 1.0
-!medium_b(xn,yn/cell-3:,5) = 1.0         ! rxn toggle
 medium_b(:,:,6) = 0.0         ! x-coord
 medium_b(:,:,7) = 0.0         ! y-coord
 
@@ -674,12 +665,19 @@ sed3 = sed1 - (param_h)
 	end do
 
 	!-QUICK FIX
-	medium(:,14:,5) = 0.0
-	medium_a(:,14:,5) = 0.0
-	medium_b(:,14:,5) = 0.0
-	primary(:,14:,:) = 0.0
-	primary_a(:,14:,:) = 0.0
-	primary_b(:,14:,:) = 0.0
+	! medium(:,14:,5) = 0.0
+	! medium_a(:,14:,5) = 0.0
+	! medium_b(:,14:,5) = 0.0
+	! primary(:,14:,:) = 0.0
+	! primary_a(:,14:,:) = 0.0
+	! primary_b(:,14:,:) = 0.0
+
+	medium(:,8:,5) = 0.0
+	medium_a(:,8:,5) = 0.0
+	medium_b(:,8:,5) = 0.0
+	primary(:,8:,:) = 0.0
+	primary_a(:,8:,:) = 0.0
+	primary_b(:,8:,:) = 0.0
 
 ! 	do gg=1,yn/celly
 ! 		do g =1,xn/cellx-1

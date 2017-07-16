@@ -10,24 +10,22 @@
 # you want to run.
 #
 # set the name of the job
-#PBS -N sites90
+#PBS -N sites_x
 #
 # set the output and error files
-#PBS -o /home/navah/coarse_grid/mOutG.txt
-#PBS -e /home/navah/coarse_grid/mErrG.txt
+#PBS -o /data/navah/cg_output/mOutG.txt
+#PBS -e /data/navah/cg_output/mErrG.txt
 #PBS -m abe -M navah@uchicago.edu
 # set the number of nodes to use, and number of processors
 # to use per node
 
 
-##PBS -l nodes=compute-0-0:ppn=12+compute-0-1:ppn=12+compute-0-2:ppn=12+compute-0-3:ppn=12+compute-0-4:ppn=12
-##PBS -l nodes=compute-1-0:ppn=12+compute-1-1:ppn=12+compute-1-2:ppn=12+compute-1-3:ppn=12+compute-1-4:ppn=12
-##PBS -l nodes=compute-1-5:ppn=12+compute-1-6:ppn=12+compute-1-7:ppn=12+compute-1-8:ppn=12+compute-1-9:ppn=12
+#PBS -l nodes=compute-0-0:ppn=11+compute-0-1:ppn=11+compute-0-2:ppn=11+compute-0-3:ppn=11+compute-0-4:ppn=11
+##PBS -l nodes=compute-1-0:ppn=11+compute-1-1:ppn=11+compute-1-2:ppn=11+compute-1-3:ppn=11+compute-1-4:ppn=11
+##PBS -l nodes=compute-1-5:ppn=11+compute-1-6:ppn=11+compute-1-7:ppn=11+compute-1-8:ppn=11+compute-1-9:ppn=11
 
 
-#PBS -l nodes=compute-0-0:ppn=11+compute-0-1:ppn=11+compute-0-2:ppn=11+compute-0-3:ppn=11+compute-0-4:ppn=11+compute-1-0:ppn=11+compute-1-1:ppn=11+compute-1-2:ppn=11+compute-1-3:ppn=11+compute-1-4:ppn=11+compute-1-5:ppn=11+compute-1-6:ppn=11+compute-1-7:ppn=11+compute-1-8:ppn=11+compute-1-9:ppn=11
-##PBS -l nodes=compute-1-3:ppn=11+compute-1-4:ppn=11+compute-1-5:ppn=11+compute-1-6:ppn=11+compute-1-7:ppn=11+compute-1-8:ppn=11+compute-1-9:ppn=11
-
+##PBS -l nodes=compute-0-0:ppn=11+compute-0-1:ppn=11+compute-0-2:ppn=11+compute-0-3:ppn=11+compute-0-4:ppn=11+compute-1-0:ppn=11+compute-1-1:ppn=11+compute-1-2:ppn=11+compute-1-3:ppn=11+compute-1-4:ppn=11+compute-1-5:ppn=11+compute-1-6:ppn=11+compute-1-7:ppn=11+compute-1-8:ppn=11+compute-1-9:ppn=11
 
 ##PBS -l nodes=compute-1-5:ppn=10+compute-1-6:ppn=10+compute-1-7:ppn=10+compute-1-8:ppn=10+compute-1-9:ppn=10
 
@@ -82,8 +80,10 @@ set PARAM_F_POR = '6e-4'
 
 
 
-set PARAM_PATH='/home/navah/coarse_grid/output/summer_coarse_grid/sites_90km_o/'
-set PARAM_ISO_PATH='/home/navah/coarse_grid/output/summer_coarse_grid/sites_90km_o/'
+# set PARAM_PATH='/home/navah/coarse_grid/output/summer_coarse_grid/sites_b/'
+# set PARAM_ISO_PATH='/home/navah/coarse_grid/output/summer_coarse_grid/sites_b/'
+set PARAM_PATH='/data/navah/cg_output/sites_e/'
+set PARAM_ISO_PATH='/data/navah/cg_output/sites_e/'
 
 
 echo $PARAM_PATH
