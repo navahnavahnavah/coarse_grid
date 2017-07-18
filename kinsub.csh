@@ -20,8 +20,10 @@
 # to use per node
 
 
-#PBS -l nodes=compute-0-0:ppn=11+compute-0-1:ppn=11+compute-0-2:ppn=11+compute-0-3:ppn=11+compute-0-4:ppn=11
-##PBS -l nodes=compute-1-0:ppn=11+compute-1-1:ppn=11+compute-1-2:ppn=11+compute-1-3:ppn=11+compute-1-4:ppn=11
+##PBS -l nodes=compute-0-0:ppn=11+compute-0-1:ppn=11+compute-0-2:ppn=11+compute-0-3:ppn=11+compute-0-4:ppn=11
+#PBS -l nodes=compute-1-0:ppn=11+compute-1-1:ppn=11+compute-1-2:ppn=11+compute-1-3:ppn=11
+
+###+compute-1-4:ppn=11
 ##PBS -l nodes=compute-1-5:ppn=11+compute-1-6:ppn=11+compute-1-7:ppn=11+compute-1-8:ppn=11+compute-1-9:ppn=11
 
 
@@ -80,10 +82,8 @@ set PARAM_F_POR = '6e-4'
 
 
 
-# set PARAM_PATH='/home/navah/coarse_grid/output/summer_coarse_grid/sites_b/'
-# set PARAM_ISO_PATH='/home/navah/coarse_grid/output/summer_coarse_grid/sites_b/'
-set PARAM_PATH='/data/navah/cg_output/sites_e/'
-set PARAM_ISO_PATH='/data/navah/cg_output/sites_e/'
+set PARAM_PATH='/data/navah/cg_output/sites_m/'
+set PARAM_ISO_PATH='/data/navah/cg_output/sites_m/'
 
 
 echo $PARAM_PATH

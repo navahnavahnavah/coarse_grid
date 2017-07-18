@@ -78,7 +78,7 @@ real(4) :: h_coarse(xn/cellx,yn/(2*celly))
 
 real(4) :: coarse_mask(xn/cellx,yn/(2*celly)), coarse_mask_long((xn/cellx)*(yn/(2*celly)))
 
-real(4) :: volume_ratio, mix_ratio, volume_ratio_i
+real(4) :: volume_ratio, mix_ratio, volume_ratio_i, volume_ratio_u
 real(4) :: vol_i, vol_i_a, vol_i_b
 
 ! coordinates for optimization
@@ -140,7 +140,8 @@ sec_molar = (/258.156, 480.19, 429.02, 2742.13, 119.98, 549.07, 88.851, &
 & 504.19, 380.22, 379.259, 549.07, 395.38, 64.448, 392.34, 64.448, &
 & 64.448, 480.19, 504.19, 85.12, 480.19, 480.19/)
 
-pri_molar = (/1.0, 110.0, 153.0, 158.81, 277.0/)
+! pri_molar = (/1.0, 110.0, 153.0, 158.81, 277.0/)
+pri_molar = (/1.0, 277.0, 153.0, 158.81, 110.0/)
 
 
 dx = ( x_max - x_min ) / real ( xn - 1, kind = 4 )
@@ -270,9 +271,17 @@ ki=2.0/(1000.0*4186.0)
 
 !-Primary initial conditions
 
-t_vol_s = 0.30
-t_vol_a = 0.28
-t_vol_b = 0.02
+! t_vol_s = 0.30
+! t_vol_a = 0.28
+! t_vol_b = 0.02
+
+! t_vol_s = 0.01156
+! t_vol_a = 0.01156 - 0.001156
+! t_vol_b = 0.001156
+
+t_vol_s = 0.0112
+t_vol_a = 0.0112 - 0.00112
+t_vol_b = 0.00112
 
 ! primary minerals [mol]
 primary(:,:,:) = 0.0
@@ -321,8 +330,8 @@ sec_molar = (/258.156, 480.19, 429.02, 2742.13, 119.98, 549.07, 88.851, &
 & 504.19, 380.22, 379.259, 549.07, 395.38, 64.448, 392.34, 64.448, &
 & 64.448, 480.19, 504.19, 85.12, 480.19, 480.19/)
 
-pri_molar = (/1.0, 110.0, 153.0, 158.81, 277.0/)
-
+! pri_molar = (/1.0, 110.0, 153.0, 158.81, 277.0/)
+pri_molar = (/1.0, 277.0, 153.0, 158.81, 110.0/)
 ! saturation
 saturation(:,:,:) = 0.0
 

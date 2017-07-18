@@ -354,7 +354,7 @@ character(len=25) :: s_temp, s_timestep ! important information
 character(len=25) :: s_ph, s_ca, s_mg, s_na, s_k, s_fe, s_s, s_si, s_cl, s_al, s_alk, s_co2 ! solutes
 character(len=25) :: s_hco3, s_co3, s_pe
 character(len=25) :: s_water, s_w, s_reactive ! medium
-character(len=25) :: s_basalt1, s_basalt2, s_basalt3, s_precip
+character(len=25) :: s_basalt1, s_basalt2, s_basalt3, s_precip, s_clay, s_chlor
 
 
 ! NEWER GEOCHEM
@@ -2935,7 +2935,7 @@ end if ! end if restart .ne. 1
 
 if (j .eq. 3) then
 
-			!# INITIALIZE FOR GEOCHEM
+			 !# INITIALIZE FOR GEOCHEM
 
 			leng = (yn/(2*celly))*(xn/cellx)
 
@@ -2959,6 +2959,15 @@ if (j .eq. 3) then
 			velocities_coarse0 = velocities_coarse(psi_coarse)
 			u_coarse = phi_coarse*velocities_coarse0(1:xn/cellx,1:yn/(2*celly))/(rho_fluid)
 			v_coarse = phi_coarse*velocities_coarse0(1:xn/cellx,yn/(2*celly)+1:2*yn/(2*celly))/(rho_fluid)
+
+			 !#EQUALIZE U_COARSE
+
+			do i = 1,yn/(2*celly)
+				u_coarse(:,i) = sum(u_coarse(:,i))/(xn/cellx)
+			end do
+			u_coarse(xn/cellx,:) = 0.0
+			u_coarse(xn/cellx-1,:) = 0.0
+			u_coarse(xn/cellx-2,:) = 0.0
 
 ! 			write(*,*) "u coarse"
 ! 			write(*,*) maxval(u_coarse)
@@ -3129,7 +3138,7 @@ end if ! if j == 5
  	! 	write(*,*) "BEGIN SENDING SOLUTES TO PROCESSORS FOR ADVECTION" !, counti
 
 
-		!-ADVECTION: send from master to slaves
+		 !-ADVECTION: send from master to slaves
 
 		do an_id = 1, 22
 
@@ -3222,15 +3231,27 @@ end if ! if j == 5
 
 		!end if	! end if j > mstep
 
+		! (solLongBitFull(leng+1:2*leng,3)/solLongBitFull(2*leng+1:,2))
+
 		!-GEOCHEM: mixing between chambers
 		n=2 ! alk
+
+		! solute_inter_long = solLongBitFull(leng+1:2*leng,n)
+		! solLongBitFull(leng+1:2*leng,n) = solLongBitFull(leng+1:2*leng,n)*(1.0-mix_ratio/volume_ratio) + solLongBitFull(2*leng+1:,n)*mix_ratio/volume_ratio ! a mix
+		! solLongBitFull(2*leng+1:,n) = solLongBitFull(2*leng+1:,n)*(1.0-mix_ratio) + solute_inter_long*mix_ratio
+		!
+		! do n=4,13 ! solutes
+		! 	solute_inter_long = solLongBitFull(leng+1:2*leng,n)
+		! 	solLongBitFull(leng+1:2*leng,n) = solLongBitFull(leng+1:2*leng,n)*(1.0-mix_ratio/volume_ratio) + solLongBitFull(2*leng+1:,n)*mix_ratio/volume_ratio ! a mix
+		! 	solLongBitFull(2*leng+1:,n) = solLongBitFull(2*leng+1:,n)*(1.0-mix_ratio) + solute_inter_long*mix_ratio
+		! end do
 		solute_inter_long = solLongBitFull(leng+1:2*leng,n)
-		solLongBitFull(leng+1:2*leng,n) = solLongBitFull(leng+1:2*leng,n)*(1.0-mix_ratio/volume_ratio) + solLongBitFull(2*leng+1:,n)*mix_ratio/volume_ratio ! a mix
+		solLongBitFull(leng+1:2*leng,n) = solLongBitFull(leng+1:2*leng,n)*(1.0-mix_ratio/(solLongBitFull(leng+1:2*leng,3)/solLongBitFull(2*leng+1:,2))) + solLongBitFull(2*leng+1:,n)*mix_ratio/(solLongBitFull(leng+1:2*leng,3)/solLongBitFull(2*leng+1:,2)) ! a mix
 		solLongBitFull(2*leng+1:,n) = solLongBitFull(2*leng+1:,n)*(1.0-mix_ratio) + solute_inter_long*mix_ratio
 
 		do n=4,13 ! solutes
 			solute_inter_long = solLongBitFull(leng+1:2*leng,n)
-			solLongBitFull(leng+1:2*leng,n) = solLongBitFull(leng+1:2*leng,n)*(1.0-mix_ratio/volume_ratio) + solLongBitFull(2*leng+1:,n)*mix_ratio/volume_ratio ! a mix
+			solLongBitFull(leng+1:2*leng,n) = solLongBitFull(leng+1:2*leng,n)*(1.0-mix_ratio/(solLongBitFull(leng+1:2*leng,3)/solLongBitFull(2*leng+1:,2))) + solLongBitFull(2*leng+1:,n)*mix_ratio/(solLongBitFull(leng+1:2*leng,3)/solLongBitFull(2*leng+1:,2)) ! a mix
 			solLongBitFull(2*leng+1:,n) = solLongBitFull(2*leng+1:,n)*(1.0-mix_ratio) + solute_inter_long*mix_ratio
 		end do
 
@@ -4181,9 +4202,12 @@ write(s_fe_saponite_ca,'(F25.10)') secondary3(36) !!!
 write(s_fe_saponite_mg,'(F25.10)') secondary3(37) !!!
 
 ! OTHER INFORMATION TO STRINGS
+ !# s_precip, s_clay
 write(s_temp,'(F25.10)') temp3
 write(s_precip,'(F25.10)') medium3(2)
 write(s_reactive,'(F25.10)') medium3(4)
+s_clay = "0.0"
+s_chlor = "0.0"
 
 ! ----------------------------------%%
 ! INITIAL AQUEOUS PHASE CONSITUENTS
@@ -4240,39 +4264,39 @@ write(s_reactive,'(F25.10)') medium3(4)
 
 		&"    Goethite " // trim(s_precip) // trim(s_goethite) // kinetics //NEW_LINE('')// &
 		&"    Celadonite " // trim(s_precip) // trim(s_celadonite) // kinetics //NEW_LINE('')// & ! mica
-        &"    Saponite-Mg " // trim(s_precip) // trim(s_saponite) // kinetics //NEW_LINE('')// & ! smectite
+        &"    Saponite-Mg " // trim(s_clay) // trim(s_saponite) // kinetics //NEW_LINE('')// & ! smectite
         &"    Pyrite " // trim(s_precip) // trim(s_pyrite) // kinetics //NEW_LINE('')// &
-        &"    Saponite-Na " // trim(s_precip) // trim(s_saponite_na) // kinetics //NEW_LINE('')// & ! smectite
- 		&"    Nontronite-Na " // trim(s_precip) // trim(s_nont_na) // kinetics //NEW_LINE('')// & ! smectite
- 		&"    Nontronite-Mg " // trim(s_precip) // trim(s_nont_mg) // kinetics //NEW_LINE('')// & ! smectite
+        &"    Saponite-Na " // trim(s_clay) // trim(s_saponite_na) // kinetics //NEW_LINE('')// & ! smectite
+ 		&"    Nontronite-Na " // trim(s_clay) // trim(s_nont_na) // kinetics //NEW_LINE('')// & ! smectite
+ 		&"    Nontronite-Mg " // trim(s_clay) // trim(s_nont_mg) // kinetics //NEW_LINE('')// & ! smectite
  		&"    Fe-Celadonite " // trim(s_precip) // trim(s_fe_celadonite) // kinetics //NEW_LINE('')// & ! mica
- 		&"    Nontronite-Ca " // trim(s_precip) // trim(s_nont_ca) // kinetics //NEW_LINE('')// & ! smectite
+ 		&"    Nontronite-Ca " // trim(s_clay) // trim(s_nont_ca) // kinetics //NEW_LINE('')// & ! smectite
         &"    Analcime " // trim(s_precip) // trim(s_analcime) // kinetics //NEW_LINE('')// & ! zeolite
  		&"    Phillipsite " // trim(s_precip) // trim(s_phillipsite) // kinetics //NEW_LINE('')// & ! zeolite
         &"    Natrolite " // trim(s_precip) // trim(s_natrolite) // kinetics //NEW_LINE('')// & ! zeolite
 		&"    Talc " // trim(s_precip) // trim(s_talc) // kinetics //NEW_LINE('')// &
-        &"    Chlorite(14A) " // trim(s_precip) // trim(s_chlorite) // kinetics //NEW_LINE('')// & ! chlorite
-        &"    Clinochlore-14A " // trim(s_precip) // trim(s_clinochlore14a) // kinetics //NEW_LINE('')// & ! chlorite
- 		&"    Clinochlore-7A " // trim(s_precip) // trim(s_clinochlore7a) // kinetics //NEW_LINE('')// & ! chlorite
- 		&"    Saponite-Ca " // trim(s_precip) // trim(s_saponite_ca) // kinetics //NEW_LINE('')// & ! smectite
+        &"    Chlorite(14A) " // trim(s_chlor) // trim(s_chlorite) // kinetics //NEW_LINE('')// & ! chlorite
+        &"    Clinochlore-14A " // trim(s_chlor) // trim(s_clinochlore14a) // kinetics //NEW_LINE('')// & ! chlorite
+ 		&"    Clinochlore-7A " // trim(s_chlor) // trim(s_clinochlore7a) // kinetics //NEW_LINE('')// & ! chlorite
+ 		&"    Saponite-Ca " // trim(s_clay) // trim(s_saponite_ca) // kinetics //NEW_LINE('')// & ! smectite
  		&"    Pyrrhotite " // trim(s_precip) // trim(s_pyrrhotite) // kinetics //NEW_LINE('')//& ! sulfide
-        &"    Fe-Saponite-Ca " // trim(s_precip) // trim(s_fe_saponite_ca) // kinetics //NEW_LINE('')// & ! sap smec
-        &"    Fe-Saponite-Mg " // trim(s_precip) // trim(s_fe_saponite_mg) // kinetics //NEW_LINE('')// &! sap smec
+        &"    Fe-Saponite-Ca " // trim(s_clay) // trim(s_fe_saponite_ca) // kinetics //NEW_LINE('')// & ! sap smec
+        &"    Fe-Saponite-Mg " // trim(s_clay) // trim(s_fe_saponite_mg) // kinetics //NEW_LINE('')// &! sap smec
 
 ! 		&"    Kaolinite " // trim(s_precip) // trim(s_kaolinite) // kinetics //NEW_LINE('')// & ! clay
 ! 		!&"    Celadonite -5.0 " // trim(s_celadonite) // kinetics //NEW_LINE('')// & ! mica
 ! 		!&"    Calcite " // trim(s_precip) // trim(s_calcite) // kinetics //NEW_LINE('')// & ! .135
- 	 	&"    Montmor-Na " // trim(s_precip) // trim(s_mont_na) // kinetics //NEW_LINE('')// & ! smectite
- 	 	&"    Montmor-Mg " // trim(s_precip) // trim(s_mont_mg) // kinetics //NEW_LINE('')// & ! smectite
- 	 	&"    Montmor-Ca " // trim(s_precip) // trim(s_mont_ca) // kinetics //NEW_LINE('')// & ! smectite
+ 	 	&"    Montmor-Na " // trim(s_clay) // trim(s_mont_na) // kinetics //NEW_LINE('')// & ! smectite
+ 	 	&"    Montmor-Mg " // trim(s_clay) // trim(s_mont_mg) // kinetics //NEW_LINE('')// & ! smectite
+ 	 	&"    Montmor-Ca " // trim(s_clay) // trim(s_mont_ca) // kinetics //NEW_LINE('')// & ! smectite
 ! ! 		&"    Clinoptilolite-Ca " // trim(s_precip) // trim(s_clinoptilolite) // kinetics //NEW_LINE('')// & ! zeolite
 ! ! 		&"    K-Feldspar " // trim(s_precip) // trim(s_kspar) // kinetics //NEW_LINE('')// &
 ! 		&"    Mesolite " // trim(s_precip) // trim(s_mesolite) // kinetics //NEW_LINE('')// & ! zeolite
 ! 		&"    Smectite-high-Fe-Mg " // trim(s_precip) // trim(s_smectite) // kinetics //NEW_LINE('')// & ! smectite
- 	 	   &"    Vermiculite-Na " // trim(s_precip) // trim(s_verm_na) // kinetics //NEW_LINE('')// &
-		    &"    Vermiculite-Ca " // trim(s_precip) // trim(s_verm_ca) // kinetics //NEW_LINE('')// &
-		    &"    Vermiculite-Mg " // trim(s_precip) // trim(s_verm_mg) // kinetics //NEW_LINE('')//&
- 		&"    Hematite 2.0 " // trim(s_hematite) // kinetics //NEW_LINE('')// &
+ 	 	   &"    Vermiculite-Na " // trim(s_clay) // trim(s_verm_na) // kinetics //NEW_LINE('')// & ! clay
+		    &"    Vermiculite-Ca " // trim(s_clay) // trim(s_verm_ca) // kinetics //NEW_LINE('')// & ! clay
+		    &"    Vermiculite-Mg " // trim(s_clay) // trim(s_verm_mg) // kinetics //NEW_LINE('')//& ! clay
+! 		&"    Hematite 2.0 " // trim(s_hematite) // kinetics //NEW_LINE('')// &
 !!!!!!!old!! &"    Hematite " // trim(si_hematite) // trim(s_hematite) // kinetics //NEW_LINE('')// &
 ! 		    !&"    Epidote  " // trim(s_precip) // trim(s_epidote) // kinetics //NEW_LINE('')// &
 ! 		   &"    Gismondine " // trim(s_precip) // trim(s_gismondine) // kinetics //NEW_LINE('')// & ! zeolite
