@@ -279,9 +279,17 @@ ki=2.0/(1000.0*4186.0)
 ! t_vol_a = 0.01156 - 0.001156
 ! t_vol_b = 0.001156
 
+! t_vol_s = 0.0112
+! t_vol_a = 0.0112 - 0.00112
+! t_vol_b = 0.00112
+
+! t_vol_s = 0.0112
+! t_vol_a = 0.0112 - 0.00112
+! t_vol_b = 0.00112
+
 t_vol_s = 0.0112
-t_vol_a = 0.0112 - 0.00112
-t_vol_b = 0.00112
+t_vol_a = 0.0112 - 0.0112/2.0
+t_vol_b = 0.0112/2.0
 
 ! primary minerals [mol]
 primary(:,:,:) = 0.0
@@ -639,18 +647,18 @@ sed3 = sed1 - (param_h)
 			if (coarse_mask(g,gg) .eq. 0.0) then
 				medium(g,gg,5) = 0.0    ! cell toggle
 				primary(g,gg,:) = 0.0   ! basaltic glass
-				solute(g,gg,3) = 0.0    ! solute water
-				medium(g,gg,3) = 0.0    ! medium water
+				! solute(g,gg,3) = 0.0    ! solute water
+				! medium(g,gg,3) = 0.0    ! medium water
 
 				medium_a(g,gg,5) = 0.0    ! cell toggle
 				primary_a(g,gg,:) = 0.0   ! basaltic glass
-				solute_a(g,gg,3) = 0.0    ! solute water
-				medium_a(g,gg,3) = 0.0    ! medium water
+				! solute_a(g,gg,3) = 0.0    ! solute water
+				! medium_a(g,gg,3) = 0.0    ! medium water
 
 				medium_b(g,gg,5) = 0.0    ! cell toggle
 				primary_b(g,gg,:) = 0.0   ! basaltic glass
-				solute_b(g,gg,3) = 0.0    ! solute water
-				medium_b(g,gg,3) = 0.0    ! medium water
+				! solute_b(g,gg,3) = 0.0    ! solute water
+				! medium_b(g,gg,3) = 0.0    ! medium water
 			end if
 
 ! 			if (x((g-1)*cellx) .ge. x(f_index1-1)) then
@@ -787,18 +795,18 @@ sed3 = sed1 - (param_h)
 			if (coarse_mask(g,gg) .eq. 0.0) then
 				medium(g,gg,5) = 0.0    ! cell toggle
 				primary(g,gg,:) = 0.0   ! basaltic glass
-				solute(g,gg,3) = 0.0    ! solute water
-				medium(g,gg,3) = 0.0    ! medium water
+				! solute(g,gg,3) = 0.0    ! solute water
+				! medium(g,gg,3) = 0.0    ! medium water
 
 				medium_a(g,gg,5) = 0.0    ! cell toggle
 				primary_a(g,gg,:) = 0.0   ! basaltic glass
-				solute_a(g,gg,3) = 0.0    ! solute water
-				medium_a(g,gg,3) = 0.0    ! medium water
+				! solute_a(g,gg,3) = 0.0    ! solute water
+				! medium_a(g,gg,3) = 0.0    ! medium water
 
 				medium_b(g,gg,5) = 0.0    ! cell toggle
 				primary_b(g,gg,:) = 0.0   ! basaltic glass
-				solute_b(g,gg,3) = 0.0    ! solute water
-				medium_b(g,gg,3) = 0.0    ! medium water
+				! solute_b(g,gg,3) = 0.0    ! solute water
+				! medium_b(g,gg,3) = 0.0    ! medium water
 			end if
 		end do
 	end do

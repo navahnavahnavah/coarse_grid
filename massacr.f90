@@ -302,6 +302,7 @@ integer :: an_id_local
 real(4) :: priLongBitFull(3*(xn/cellx)*(yn/(2*celly)),g_pri)
 real(4) :: secLongBitFull(3*(xn/cellx)*(yn/(2*celly)),g_sec)
 real(4) :: solLongBitFull(3*(xn/cellx)*(yn/(2*celly)),g_sol)
+real(4) :: volLongBitFull((xn/cellx)*(yn/(2*celly)))
 real(4) :: medLongBitFull(3*(xn/cellx)*(yn/(2*celly)),g_med)
 
 ! chamber stuff
@@ -3231,7 +3232,7 @@ end if ! if j == 5
 
 		!end if	! end if j > mstep
 
-		! (solLongBitFull(leng+1:2*leng,3)/solLongBitFull(2*leng+1:,2))
+		! (solLongBitFull(leng+1:2*leng,3)/solLongBitFull(2*leng+1:,3))
 
 		!-GEOCHEM: mixing between chambers
 		n=2 ! alk
@@ -3245,17 +3246,21 @@ end if ! if j == 5
 		! 	solLongBitFull(leng+1:2*leng,n) = solLongBitFull(leng+1:2*leng,n)*(1.0-mix_ratio/volume_ratio) + solLongBitFull(2*leng+1:,n)*mix_ratio/volume_ratio ! a mix
 		! 	solLongBitFull(2*leng+1:,n) = solLongBitFull(2*leng+1:,n)*(1.0-mix_ratio) + solute_inter_long*mix_ratio
 		! end do
+
+		do i=1,leng
+			volLongBitFull(i) = max(solLongBitFull(leng+i,3)/max(solLongBitFull(2*leng+i,3),1e-10),1e-10)
+		end do
 		solute_inter_long = solLongBitFull(leng+1:2*leng,n)
-		solLongBitFull(leng+1:2*leng,n) = solLongBitFull(leng+1:2*leng,n)*(1.0-mix_ratio/(solLongBitFull(leng+1:2*leng,3)/solLongBitFull(2*leng+1:,2))) + solLongBitFull(2*leng+1:,n)*mix_ratio/(solLongBitFull(leng+1:2*leng,3)/solLongBitFull(2*leng+1:,2)) ! a mix
+		solLongBitFull(leng+1:2*leng,n) = solLongBitFull(leng+1:2*leng,n)*(1.0-mix_ratio/volLongBitFull) + solLongBitFull(2*leng+1:,n)*mix_ratio/volLongBitFull ! a mix
 		solLongBitFull(2*leng+1:,n) = solLongBitFull(2*leng+1:,n)*(1.0-mix_ratio) + solute_inter_long*mix_ratio
 
 		do n=4,13 ! solutes
 			solute_inter_long = solLongBitFull(leng+1:2*leng,n)
-			solLongBitFull(leng+1:2*leng,n) = solLongBitFull(leng+1:2*leng,n)*(1.0-mix_ratio/(solLongBitFull(leng+1:2*leng,3)/solLongBitFull(2*leng+1:,2))) + solLongBitFull(2*leng+1:,n)*mix_ratio/(solLongBitFull(leng+1:2*leng,3)/solLongBitFull(2*leng+1:,2)) ! a mix
+			solLongBitFull(leng+1:2*leng,n) = solLongBitFull(leng+1:2*leng,n)*(1.0-mix_ratio/volLongBitFull) + solLongBitFull(2*leng+1:,n)*mix_ratio/volLongBitFull ! a mix
 			solLongBitFull(2*leng+1:,n) = solLongBitFull(2*leng+1:,n)*(1.0-mix_ratio) + solute_inter_long*mix_ratio
 		end do
 
-		write(*,*) "...DONE WITH CHAMBER MIXING"
+		! write(*,*) "...DONE WITH CHAMBER MIXING"
 
 
 
@@ -3319,15 +3324,31 @@ end if ! if j == 5
 					bit_thing_t1(2:,:) = bit_thing_t1(:xn/cellx-1,:)
 					medLongBitFull(:leng,5) = reshape(transpose(bit_thing_t1(:,:)), (/ leng /))
 
-					! move solutes WITH the rock (not h2o_vol)
-					bit_thing_t1 = transpose(reshape(solLongBitFull(1:leng,2),(/yn/(2*celly), xn/cellx/)))
-					bit_thing_t1(2:,:) = bit_thing_t1(:xn/cellx-1,:)
-					solLongBitFull(:leng,2) = reshape(transpose(bit_thing_t1(:,:)), (/ leng /))
+					! move solutes WITH the rock (including h2o_vol and pH i guess)
+					! bit_thing_t1 = transpose(reshape(solLongBitFull(1:leng,2),(/yn/(2*celly), xn/cellx/)))
+					! bit_thing_t1(2:,:) = bit_thing_t1(:xn/cellx-1,:)
+					! solLongBitFull(:leng,2) = reshape(transpose(bit_thing_t1(:,:)), (/ leng /))
+					!
+					! bit_thing_t1 = transpose(reshape(solLongBitFull(leng+1:2*leng,2),(/yn/(2*celly), xn/cellx/)))
+					! bit_thing_t1(2:,:) = bit_thing_t1(:xn/cellx-1,:)
+					! solLongBitFull(leng+1:2*leng,2) = reshape(transpose(bit_thing_t1(:,:)), (/ leng /))
+					!
+					! bit_thing_t1 = transpose(reshape(solLongBitFull(2*leng+1:,2),(/yn/(2*celly), xn/cellx/)))
+					! bit_thing_t1(2:,:) = bit_thing_t1(:xn/cellx-1,:)
+					! solLongBitFull(2*leng+1:,2) = reshape(transpose(bit_thing_t1(:,:)), (/ leng /))
 
-					do i = 4,g_sol
+					do i = 1,g_sol
 						bit_thing_t1 = transpose(reshape(solLongBitFull(1:leng,i),(/yn/(2*celly), xn/cellx/)))
 						bit_thing_t1(2:,:) = bit_thing_t1(:xn/cellx-1,:)
 						solLongBitFull(:leng,i) = reshape(transpose(bit_thing_t1(:,:)), (/ leng /))
+
+						bit_thing_t1 = transpose(reshape(solLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), xn/cellx/)))
+						bit_thing_t1(2:,:) = bit_thing_t1(:xn/cellx-1,:)
+						solLongBitFull(leng+1:2*leng,i) = reshape(transpose(bit_thing_t1(:,:)), (/ leng /))
+
+						bit_thing_t1 = transpose(reshape(solLongBitFull(2*leng+1:,i),(/yn/(2*celly), xn/cellx/)))
+						bit_thing_t1(2:,:) = bit_thing_t1(:xn/cellx-1,:)
+						solLongBitFull(2*leng+1:,i) = reshape(transpose(bit_thing_t1(:,:)), (/ leng /))
 					end do
 
 
@@ -3472,7 +3493,7 @@ end if ! if j == 5
 
 
 
-		!-GEOCHEM: water volume correction here
+		!#GEOCHEM: water volume correction here
 
 ! 		medium(:,:,3) = vol_i
 ! 		medium_a(:,:,3) = vol_i_a
@@ -4219,7 +4240,7 @@ s_chlor = "0.0"
 
 
 
-
+		!# PHREEQ SOLUTION
 		inputz0 = "SOLUTION 1 " //NEW_LINE('')// &
 		&"    units   mol/kgw" //NEW_LINE('')// &
 		&"    temp" // trim(s_temp) //NEW_LINE('')// &
@@ -4258,7 +4279,7 @@ s_chlor = "0.0"
 !
 ! 		if (medium3(2) .eq. 0.0) then
 
-
+		!# PHREEQ EQUILIBRIUM_PHASES
 		inputz0 = trim(inputz0) // "EQUILIBRIUM_PHASES 1" //NEW_LINE('')// &
 		!# GEOCHEM: secondaries
 
@@ -4308,11 +4329,10 @@ s_chlor = "0.0"
 
 		&" "  //NEW_LINE('')
 
-		! &" -force_equality"  //NEW_LINE('')// &
-
 
 ! 		end if
 
+		!# PHREEQ RATES
 		inputz0 = trim(inputz0) // "RATES" //NEW_LINE('')// &
 
 		! linear decrease with alteration
@@ -4349,9 +4369,11 @@ s_chlor = "0.0"
 
 		! & "Fe2O3 .149 FeO .0075 MgO .1744 K2O .002 " //&
 		! & "FeO .149 MgO .1744 K2O .002 " //&
+
+
+		!# PHREEQ KINETICS
 		&"KINETICS 1" //NEW_LINE('')// &
 		&"BGlass" //NEW_LINE('')// &
-        !-GEOCHEM: glass composition
 		! ! seyfried JDF
 		&"-f CaO .1997 SiO2 .847 Al2O3 .138 " //&
 		& "Fe2O3 .149 MgO .1744 K2O .002 " //&
