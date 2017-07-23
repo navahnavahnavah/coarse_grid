@@ -30,7 +30,7 @@ real(4) :: top5, top10, bottom5, bottom10, sumplace
 real(4) :: ksed = 1e-16
 real(4) :: fix_b, dpd, dt_bit
 real(4) :: psi_bl, psi_br
-real(4) :: permf
+real(4) :: permf, phi_calc_denom
 real(4) :: h_base, y_base, h_top, y_top, h_adjacent
 integer :: jj_base, jj_top, leng, i_count
 logical, dimension(cellx,celly) :: i_mask

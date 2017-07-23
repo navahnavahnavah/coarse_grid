@@ -3152,6 +3152,18 @@ end if ! if j == 5
 ! 				end do
 !
 				sol_coarse_long = solLongBitFull(:leng,sol_index(an_id)) !reshape(solute(:,:,sol_index(an_id)), (/(xn/cellx)*(yn/celly)/))
+
+				!# CALCULATE phi_coarse_calc_long (s)
+				do i = 1,leng
+					phi_calc_denom = solLongBitFull(i,3)*1000.0
+					phi_calc_denom = phi_calc_denom + (priLongBitFull(i,2)*pri_molar(2)/pri_density(2)) + (priLongBitFull(i,3)*pri_molar(3)/pri_density(3))
+					phi_calc_denom = phi_calc_denom + (priLongBitFull(i,4)*pri_molar(4)/pri_density(4)) + (priLongBitFull(i,5)*pri_molar(5)/pri_density(5))
+					do ii=1,g_sec/2
+						phi_calc_denom = phi_calc_denom + (secLongBitFull(i,ii)*sec_molar(ii)/sec_density(ii))
+					end do
+					phi_coarse_long(i) = solLongBitFull(i,3)*1000.0 / phi_calc_denom
+				end do
+
 			end if
 
 			if (an_id .gt. 11) then
@@ -3163,6 +3175,18 @@ end if ! if j == 5
 ! 				end do
 
 				sol_coarse_long = solLongBitFull(leng+1:2*leng,sol_index(an_id-11)) !sol_coarse_long = reshape(solute_a(:,:,sol_index(an_id-11)), (/(xn/cellx)*(yn/celly)/))
+
+				!# CALCULATE phi_coarse_calc_long (a)
+				do i = 1,leng
+					phi_calc_denom = solLongBitFull(leng+i,3)*1000.0
+					phi_calc_denom = phi_calc_denom + (priLongBitFull(leng+i,2)*pri_molar(2)/pri_density(2)) + (priLongBitFull(leng+i,3)*pri_molar(3)/pri_density(3))
+					phi_calc_denom = phi_calc_denom + (priLongBitFull(leng+i,4)*pri_molar(4)/pri_density(4)) + (priLongBitFull(leng+i,5)*pri_molar(5)/pri_density(5))
+					do ii=1,g_sec/2
+						phi_calc_denom = phi_calc_denom + (secLongBitFull(leng+i,ii)*sec_molar(ii)/sec_density(ii))
+					end do
+					phi_coarse_long(i) = solLongBitFull(leng+i,3)*1000.0 / phi_calc_denom
+				end do
+
 			end if
 
 			! send an_id name
@@ -3279,7 +3303,7 @@ end if ! if j == 5
 		! 	end if
 		! end do
 
-		!-GEOCHEM: move aged cells
+		!# move aged cells
 		num_rows = 3*(xn/cellx)*(yn/(2*celly))
 		!do n=1,num_rows'
 		write(*,*) "t j-mstep"
@@ -3356,25 +3380,43 @@ end if ! if j == 5
 			end if
 		!end do
 
-		!-GEOCHEM: adjust solutes right of fracture to avoid drift
+		!# adjust RHS solutes (avoid drift?)
 		do i = 1,g_sol
 
+			! bit_thing_t1 = transpose(reshape(solLongBitFull(1:leng,i),(/yn/(2*celly), xn/cellx/)))
+			! do ii = xn/cellx-3,xn/cellx
+			! 	bit_thing_t1(ii,:) = bit_thing_t1(xn/cellx-4,:)
+		    ! end do
+			! solLongBitFull(:leng,i) = reshape(transpose(bit_thing_t1(:,:)), (/ leng /))
+			!
+			! bit_thing_t1 = transpose(reshape(solLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), xn/cellx/)))
+			! do ii = xn/cellx-3,xn/cellx
+			! 	bit_thing_t1(ii,:) = bit_thing_t1(xn/cellx-4,:)
+		    ! end do
+			! solLongBitFull(leng+1:2*leng,i) = reshape(transpose(bit_thing_t1(:,:)), (/ leng /))
+			!
+			! bit_thing_t1 = transpose(reshape(solLongBitFull(2*leng+1:,i),(/yn/(2*celly), xn/cellx/)))
+			! do ii = xn/cellx-3,xn/cellx
+			! 	bit_thing_t1(ii,:) = bit_thing_t1(xn/cellx-4,:)
+		    ! end do
+			! solLongBitFull(2*leng+1:,i) = reshape(transpose(bit_thing_t1(:,:)), (/ leng /))
+
 			bit_thing_t1 = transpose(reshape(solLongBitFull(1:leng,i),(/yn/(2*celly), xn/cellx/)))
-			do ii = xn/cellx-3,xn/cellx
-				bit_thing_t1(ii,:) = bit_thing_t1(xn/cellx-4,:)
-		    end do
+			do ii = xn/cellx-2,xn/cellx
+				bit_thing_t1(ii,:) = bit_thing_t1(xn/cellx-3,:)
+			end do
 			solLongBitFull(:leng,i) = reshape(transpose(bit_thing_t1(:,:)), (/ leng /))
 
 			bit_thing_t1 = transpose(reshape(solLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), xn/cellx/)))
-			do ii = xn/cellx-3,xn/cellx
-				bit_thing_t1(ii,:) = bit_thing_t1(xn/cellx-4,:)
-		    end do
+			do ii = xn/cellx-2,xn/cellx
+				bit_thing_t1(ii,:) = bit_thing_t1(xn/cellx-3,:)
+			end do
 			solLongBitFull(leng+1:2*leng,i) = reshape(transpose(bit_thing_t1(:,:)), (/ leng /))
 
 			bit_thing_t1 = transpose(reshape(solLongBitFull(2*leng+1:,i),(/yn/(2*celly), xn/cellx/)))
-			do ii = xn/cellx-3,xn/cellx
-				bit_thing_t1(ii,:) = bit_thing_t1(xn/cellx-4,:)
-		    end do
+			do ii = xn/cellx-2,xn/cellx
+				bit_thing_t1(ii,:) = bit_thing_t1(xn/cellx-3,:)
+			end do
 			solLongBitFull(2*leng+1:,i) = reshape(transpose(bit_thing_t1(:,:)), (/ leng /))
 
 		end do
@@ -4013,10 +4055,14 @@ else
 			!write(*,*) maxval(u_coarse_local)
 			v_coarse_local = reshape(v_coarse_long_local,(/xn/cellx,yn/(2*celly)/))
 			!write(*,*) maxval(v_coarse_local)
+
+
+
 			phi_coarse_local = reshape(phi_coarse_long_local,(/xn/cellx,yn/(2*celly)/))
 			!phi_coarse_local = 0.5
 			!write(*,*) maxval(phi_coarse_local)
 
+			!# DO ADVECTION
 			if (an_id_local .le. 11) then
 				do ii = 1,cstep
 					sol_coarse_local = solute_next_coarse(sol_coarse_local,u_coarse_local/phi_coarse_local,v_coarse_local/phi_coarse_local,sea(sol_index(an_id_local)))
