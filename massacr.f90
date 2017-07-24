@@ -3196,6 +3196,7 @@ end if ! if j == 5
 				! 	phi_coarse_long(i) = solLongBitFull(i,3)*1000.0 / phi_calc_denom
 				! end do
 				! phiLongBitFull(:leng) = phi_coarse_long
+				phi_coarse_long = phiLongBitFull(:leng)
 
 
 			end if
@@ -3221,6 +3222,7 @@ end if ! if j == 5
 				! 	phi_coarse_long(i) = solLongBitFull(leng+i,3)*1000.0 / phi_calc_denom
 				! end do
 				! phiLongBitFull(leng+1:2*leng) = phi_coarse_long
+				phi_coarse_long = phiLongBitFull(leng+1:2*leng)
 
 
 			end if
@@ -4247,16 +4249,16 @@ write(s_basalt1,'(F25.10)') primary3(4)
 write(s_glass,'(F25.10)') primary3(5)
 
 !-GEOCHEM: rate constants!
-exp_ol = "0.001"
-exp_pyr = "0.001"
-exp_plag = "0.01"
-param_exp_string = "0.0005"
+exp_ol = "0.005"
+exp_pyr = "0.005"
+exp_plag = "0.05"
+param_exp_string = "0.0025"
 
 ! chamber b
 if ((primary3(5) .le. 0.0) .and. (primary3(4) .gt. 0.0) .and. (primary3(3) .gt. 0.0) .and. (primary3(2) .gt. 0.0)) then
-	exp_ol =  "0.001"
-	exp_pyr = "0.001"
-	exp_plag = "0.01"
+	exp_ol =  "0.005"
+	exp_pyr = "0.005"
+	exp_plag = "0.05"
 	!param_exp_string = "0.003"
 end if
 
