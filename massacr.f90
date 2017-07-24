@@ -304,6 +304,7 @@ real(4) :: secLongBitFull(3*(xn/cellx)*(yn/(2*celly)),g_sec)
 real(4) :: solLongBitFull(3*(xn/cellx)*(yn/(2*celly)),g_sol)
 real(4) :: volLongBitFull((xn/cellx)*(yn/(2*celly)))
 real(4) :: medLongBitFull(3*(xn/cellx)*(yn/(2*celly)),g_med)
+real(4) :: phiLongBitFull(3*(xn/cellx)*(yn/(2*celly)))
 
 ! chamber stuff
 real(4) :: priLong_a((xn/cellx)*(yn/(2*celly)),g_pri)
@@ -3141,6 +3142,37 @@ end if ! if j == 5
 
 		 !-ADVECTION: send from master to slaves
 
+
+		 !# CALCULATE phi_coarse_calc_long (s)
+		 do i = 1,leng
+			 phi_calc_denom = 0.0
+			 phi_calc_denom = solLongBitFull(i,3)*1000.0
+			 phi_calc_denom = phi_calc_denom + (priLongBitFull(i,2)*pri_molar(2)/pri_density(2)) + (priLongBitFull(i,3)*pri_molar(3)/pri_density(3))
+			 phi_calc_denom = phi_calc_denom + (priLongBitFull(i,4)*pri_molar(4)/pri_density(4)) + (priLongBitFull(i,5)*pri_molar(5)/pri_density(5))
+			 do ii=1,g_sec/2
+				 phi_calc_denom = phi_calc_denom + (secLongBitFull(i,ii)*sec_molar(ii)/sec_density(ii))
+			 end do
+			 phi_coarse_long(i) = solLongBitFull(i,3)*1000.0 / phi_calc_denom
+		 end do
+		 phiLongBitFull(:leng) = phi_coarse_long
+
+		 write(*,*) "done with phi_coarse_long (s)"
+
+		 !# CALCULATE phi_coarse_calc_long (a)
+		 do i = 1,leng
+			 phi_calc_denom = 0.0
+			 phi_calc_denom = solLongBitFull(leng+i,3)*1000.0
+			 phi_calc_denom = phi_calc_denom + (priLongBitFull(leng+i,2)*pri_molar(2)/pri_density(2)) + (priLongBitFull(leng+i,3)*pri_molar(3)/pri_density(3))
+			 phi_calc_denom = phi_calc_denom + (priLongBitFull(leng+i,4)*pri_molar(4)/pri_density(4)) + (priLongBitFull(leng+i,5)*pri_molar(5)/pri_density(5))
+			 do ii=1,g_sec/2
+				 phi_calc_denom = phi_calc_denom + (secLongBitFull(leng+i,ii)*sec_molar(ii)/sec_density(ii))
+			 end do
+			 phi_coarse_long(i) = solLongBitFull(leng+i,3)*1000.0 / phi_calc_denom
+		 end do
+		 phiLongBitFull(leng+1:2*leng) = phi_coarse_long
+
+		 write(*,*) "done with phi_coarse_long (a)"
+
 		do an_id = 1, 22
 
 			if (an_id .le. 11) then
@@ -3153,16 +3185,18 @@ end if ! if j == 5
 !
 				sol_coarse_long = solLongBitFull(:leng,sol_index(an_id)) !reshape(solute(:,:,sol_index(an_id)), (/(xn/cellx)*(yn/celly)/))
 
-				!# CALCULATE phi_coarse_calc_long (s)
-				do i = 1,leng
-					phi_calc_denom = solLongBitFull(i,3)*1000.0
-					phi_calc_denom = phi_calc_denom + (priLongBitFull(i,2)*pri_molar(2)/pri_density(2)) + (priLongBitFull(i,3)*pri_molar(3)/pri_density(3))
-					phi_calc_denom = phi_calc_denom + (priLongBitFull(i,4)*pri_molar(4)/pri_density(4)) + (priLongBitFull(i,5)*pri_molar(5)/pri_density(5))
-					do ii=1,g_sec/2
-						phi_calc_denom = phi_calc_denom + (secLongBitFull(i,ii)*sec_molar(ii)/sec_density(ii))
-					end do
-					phi_coarse_long(i) = solLongBitFull(i,3)*1000.0 / phi_calc_denom
-				end do
+				! !# CALCULATE phi_coarse_calc_long (s)
+				! do i = 1,leng
+				! 	phi_calc_denom = solLongBitFull(i,3)*1000.0
+				! 	phi_calc_denom = phi_calc_denom + (priLongBitFull(i,2)*pri_molar(2)/pri_density(2)) + (priLongBitFull(i,3)*pri_molar(3)/pri_density(3))
+				! 	phi_calc_denom = phi_calc_denom + (priLongBitFull(i,4)*pri_molar(4)/pri_density(4)) + (priLongBitFull(i,5)*pri_molar(5)/pri_density(5))
+				! 	do ii=1,g_sec/2
+				! 		phi_calc_denom = phi_calc_denom + (secLongBitFull(i,ii)*sec_molar(ii)/sec_density(ii))
+				! 	end do
+				! 	phi_coarse_long(i) = solLongBitFull(i,3)*1000.0 / phi_calc_denom
+				! end do
+				! phiLongBitFull(:leng) = phi_coarse_long
+
 
 			end if
 
@@ -3176,16 +3210,18 @@ end if ! if j == 5
 
 				sol_coarse_long = solLongBitFull(leng+1:2*leng,sol_index(an_id-11)) !sol_coarse_long = reshape(solute_a(:,:,sol_index(an_id-11)), (/(xn/cellx)*(yn/celly)/))
 
-				!# CALCULATE phi_coarse_calc_long (a)
-				do i = 1,leng
-					phi_calc_denom = solLongBitFull(leng+i,3)*1000.0
-					phi_calc_denom = phi_calc_denom + (priLongBitFull(leng+i,2)*pri_molar(2)/pri_density(2)) + (priLongBitFull(leng+i,3)*pri_molar(3)/pri_density(3))
-					phi_calc_denom = phi_calc_denom + (priLongBitFull(leng+i,4)*pri_molar(4)/pri_density(4)) + (priLongBitFull(leng+i,5)*pri_molar(5)/pri_density(5))
-					do ii=1,g_sec/2
-						phi_calc_denom = phi_calc_denom + (secLongBitFull(leng+i,ii)*sec_molar(ii)/sec_density(ii))
-					end do
-					phi_coarse_long(i) = solLongBitFull(leng+i,3)*1000.0 / phi_calc_denom
-				end do
+				! !# CALCULATE phi_coarse_calc_long (a)
+				! do i = 1,leng
+				! 	phi_calc_denom = solLongBitFull(leng+i,3)*1000.0
+				! 	phi_calc_denom = phi_calc_denom + (priLongBitFull(leng+i,2)*pri_molar(2)/pri_density(2)) + (priLongBitFull(leng+i,3)*pri_molar(3)/pri_density(3))
+				! 	phi_calc_denom = phi_calc_denom + (priLongBitFull(leng+i,4)*pri_molar(4)/pri_density(4)) + (priLongBitFull(leng+i,5)*pri_molar(5)/pri_density(5))
+				! 	do ii=1,g_sec/2
+				! 		phi_calc_denom = phi_calc_denom + (secLongBitFull(leng+i,ii)*sec_molar(ii)/sec_density(ii))
+				! 	end do
+				! 	phi_coarse_long(i) = solLongBitFull(leng+i,3)*1000.0 / phi_calc_denom
+				! end do
+				! phiLongBitFull(leng+1:2*leng) = phi_coarse_long
+
 
 			end if
 
@@ -3258,9 +3294,8 @@ end if ! if j == 5
 
 		! (solLongBitFull(leng+1:2*leng,3)/solLongBitFull(2*leng+1:,3))
 
-		!-GEOCHEM: mixing between chambers
-		n=2 ! alk
 
+		! old chamber mixing
 		! solute_inter_long = solLongBitFull(leng+1:2*leng,n)
 		! solLongBitFull(leng+1:2*leng,n) = solLongBitFull(leng+1:2*leng,n)*(1.0-mix_ratio/volume_ratio) + solLongBitFull(2*leng+1:,n)*mix_ratio/volume_ratio ! a mix
 		! solLongBitFull(2*leng+1:,n) = solLongBitFull(2*leng+1:,n)*(1.0-mix_ratio) + solute_inter_long*mix_ratio
@@ -3271,9 +3306,12 @@ end if ! if j == 5
 		! 	solLongBitFull(2*leng+1:,n) = solLongBitFull(2*leng+1:,n)*(1.0-mix_ratio) + solute_inter_long*mix_ratio
 		! end do
 
+		!-GEOCHEM: mixing between chambers
 		do i=1,leng
 			volLongBitFull(i) = max(solLongBitFull(leng+i,3)/max(solLongBitFull(2*leng+i,3),1e-10),1e-10)
 		end do
+		write(*,*) "made volLongBitFull"
+		n=2 ! alk
 		solute_inter_long = solLongBitFull(leng+1:2*leng,n)
 		solLongBitFull(leng+1:2*leng,n) = solLongBitFull(leng+1:2*leng,n)*(1.0-mix_ratio/volLongBitFull) + solLongBitFull(2*leng+1:,n)*mix_ratio/volLongBitFull ! a mix
 		solLongBitFull(2*leng+1:,n) = solLongBitFull(2*leng+1:,n)*(1.0-mix_ratio) + solute_inter_long*mix_ratio
@@ -3348,18 +3386,13 @@ end if ! if j == 5
 					bit_thing_t1(2:,:) = bit_thing_t1(:xn/cellx-1,:)
 					medLongBitFull(:leng,5) = reshape(transpose(bit_thing_t1(:,:)), (/ leng /))
 
-					! move solutes WITH the rock (including h2o_vol and pH i guess)
-					! bit_thing_t1 = transpose(reshape(solLongBitFull(1:leng,2),(/yn/(2*celly), xn/cellx/)))
-					! bit_thing_t1(2:,:) = bit_thing_t1(:xn/cellx-1,:)
-					! solLongBitFull(:leng,2) = reshape(transpose(bit_thing_t1(:,:)), (/ leng /))
-					!
-					! bit_thing_t1 = transpose(reshape(solLongBitFull(leng+1:2*leng,2),(/yn/(2*celly), xn/cellx/)))
-					! bit_thing_t1(2:,:) = bit_thing_t1(:xn/cellx-1,:)
-					! solLongBitFull(leng+1:2*leng,2) = reshape(transpose(bit_thing_t1(:,:)), (/ leng /))
-					!
-					! bit_thing_t1 = transpose(reshape(solLongBitFull(2*leng+1:,2),(/yn/(2*celly), xn/cellx/)))
-					! bit_thing_t1(2:,:) = bit_thing_t1(:xn/cellx-1,:)
-					! solLongBitFull(2*leng+1:,2) = reshape(transpose(bit_thing_t1(:,:)), (/ leng /))
+					bit_thing_t1 = transpose(reshape(medLongBitFull(leng+1:2*leng,5),(/yn/(2*celly), xn/cellx/)))
+					bit_thing_t1(2:,:) = bit_thing_t1(:xn/cellx-1,:)
+					medLongBitFull(leng+1:2*leng,5) = reshape(transpose(bit_thing_t1(:,:)), (/ leng /))
+
+					bit_thing_t1 = transpose(reshape(medLongBitFull(2*leng+1:,5),(/yn/(2*celly), xn/cellx/)))
+					bit_thing_t1(2:,:) = bit_thing_t1(:xn/cellx-1,:)
+					medLongBitFull(2*leng+1:,5) = reshape(transpose(bit_thing_t1(:,:)), (/ leng /))
 
 					do i = 1,g_sol
 						bit_thing_t1 = transpose(reshape(solLongBitFull(1:leng,i),(/yn/(2*celly), xn/cellx/)))
@@ -3407,11 +3440,13 @@ end if ! if j == 5
 			end do
 			solLongBitFull(:leng,i) = reshape(transpose(bit_thing_t1(:,:)), (/ leng /))
 
+
 			bit_thing_t1 = transpose(reshape(solLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), xn/cellx/)))
 			do ii = xn/cellx-2,xn/cellx
 				bit_thing_t1(ii,:) = bit_thing_t1(xn/cellx-3,:)
 			end do
 			solLongBitFull(leng+1:2*leng,i) = reshape(transpose(bit_thing_t1(:,:)), (/ leng /))
+
 
 			bit_thing_t1 = transpose(reshape(solLongBitFull(2*leng+1:,i),(/yn/(2*celly), xn/cellx/)))
 			do ii = xn/cellx-2,xn/cellx
@@ -3614,6 +3649,12 @@ end if ! if j == 5
 
 			end do
 
+			! phi_calc
+			bit_thing_t1 = transpose(reshape(phiLongBitFull(1:leng),(/yn/(2*celly), xn/cellx/)))
+			phiCalc(:,:) = bit_thing_t1
+			bit_thing_t1 = transpose(reshape(phiLongBitFull(leng+1:2*leng),(/yn/(2*celly), xn/cellx/)))
+			phiCalc_a(:,:) = bit_thing_t1
+
 
 			 write(*,*) "BEGIN UPDATING _MAT ARRAYS"
 			 rhsmat(1+xn*(j/(mstep*ar)-1):xn*(j/(mstep*ar)),1:yn) = rhs0
@@ -3654,6 +3695,8 @@ end if ! if j == 5
 			 secondaryMat_d(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/(2*celly),:) = secondary_a + secondary_b
 			 soluteMat_d(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/(2*celly),:) = solute_a*(volume_ratio/(1.0+volume_ratio)) + solute_b*(1.0/(1.0+volume_ratio))
 
+			 phiCalcMat(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/(2*celly)) = phiCalc
+			 phiCalcMat_a(1+(xn/cellx)*(j/(mstep*ar)-1):(xn/cellx)*(j/(mstep*ar)),1:yn/(2*celly)) = phiCalc_a
 
 
 			 write(*,*) "...DONE UPDATING _MAT ARRAYS"
@@ -3747,6 +3790,9 @@ end if ! if j == 5
 		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat(:,:,4),kind=4), trim(path) // 'ch_s/z_med_reactive.txt' )
 		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat(:,:,5),kind=4), trim(path) // 'ch_s/z_med_cell_toggle.txt' )
 
+		! phi
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(phiCalcMat(:,:),kind=4), trim(path) // 'ch_s/z_phiCalc.txt' )
+
 
 
 
@@ -3779,6 +3825,9 @@ end if ! if j == 5
 		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat_a(:,:,3),kind=4), trim(path) // 'ch_a/z_med_v_water.txt' )
 		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat_a(:,:,4),kind=4), trim(path) // 'ch_a/z_med_reactive.txt' )
 		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(mediumMat_a(:,:,5),kind=4), trim(path) // 'ch_a/z_med_cell_toggle.txt' )
+
+		! phi
+		yep = write_matrix ( xn*tn/(cellx*mstep*ar), yn/(2*celly), real(phiCalcMat_a(:,:),kind=4), trim(path) // 'ch_a/z_phiCalc.txt' )
 
 
 
@@ -4198,16 +4247,16 @@ write(s_basalt1,'(F25.10)') primary3(4)
 write(s_glass,'(F25.10)') primary3(5)
 
 !-GEOCHEM: rate constants!
-exp_ol = "0.01"
-exp_pyr = "0.01"
-exp_plag = "1.0"
-param_exp_string = "0.005"
+exp_ol = "0.001"
+exp_pyr = "0.001"
+exp_plag = "0.01"
+param_exp_string = "0.0005"
 
 ! chamber b
 if ((primary3(5) .le. 0.0) .and. (primary3(4) .gt. 0.0) .and. (primary3(3) .gt. 0.0) .and. (primary3(2) .gt. 0.0)) then
-	exp_ol =  "0.01"
-	exp_pyr = "0.01"
-	exp_plag = "1.0"
+	exp_ol =  "0.001"
+	exp_pyr = "0.001"
+	exp_plag = "0.01"
 	!param_exp_string = "0.003"
 end if
 

@@ -6,7 +6,7 @@ save
 
 ! JDF PARAMS WITH FRACTURE AUGUST 9
 integer, parameter :: testInt = 31, xn =1801, yn = 52, altnum = 134,  cell = 1 !50000
-integer, parameter :: cellx = 20, celly = 1
+integer, parameter :: cellx = 40, celly = 1
 integer, parameter ::  g_pri = 5, g_sec = 74, g_sol = 15, g_med = 7, g_iso = 2, cstep = 500, ar = 200 ! cstep = 1000
 integer, parameter :: tn = 1000000, mstep = 100, wscale = 1, ison = 10, inertn = 10! ison = 10000, inertn = 100000
 integer, parameter :: write_factor = 25, res_factor = 300 ! res factor is how many flushes happen within t_max

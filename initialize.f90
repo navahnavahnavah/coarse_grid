@@ -37,6 +37,8 @@ real(4) :: bit_thing(xn/cellx,yn/(2*celly)), bit_thing_t(yn/(2*celly),xn/cellx),
 real(4) :: solute_fine(xn,yn,g_sol), solute_fine_a(xn,yn,g_sol), solute_fine_b(xn,yn,g_sol)
 ! trial 04/29
 real(4) :: bit_thing_a(xn/cellx,yn/(2*celly)), bit_thing_b(xn/cellx,yn/(2*celly))
+real(4) :: phiCalc(xn/cellx,yn/(2*celly)), phiCalc_a(xn/cellx,yn/(2*celly))
+real(4) :: phiCalcMat(xn*tn/(cellx*(mstep*ar)),yn/(2*celly)), phiCalcMat_a(xn*tn/(cellx*(mstep*ar)),yn/(2*celly))
 
 ! CHAMBER INPUT STUFF
 real(4) :: primary_a(xn/cellx,yn/(2*celly),g_pri), primaryMat_a(xn*tn/(cellx*(mstep*ar)),yn/(2*celly),g_pri)
@@ -287,9 +289,9 @@ ki=2.0/(1000.0*4186.0)
 ! t_vol_a = 0.0112 - 0.00112
 ! t_vol_b = 0.00112
 
-t_vol_s = 0.112
-t_vol_a = 0.112! - 0.0112/2.0
-t_vol_b = 0.112!/2.0
+t_vol_s = 0.012
+t_vol_a = 0.008! - 0.0112/2.0
+t_vol_b = 0.004!/2.0
 
 ! primary minerals [mol]
 primary(:,:,:) = 0.0
