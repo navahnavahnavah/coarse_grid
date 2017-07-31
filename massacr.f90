@@ -3353,7 +3353,8 @@ end if ! if j == 5
 			if (t(j) .gt. 2.512e13) then
 				write(*,*) "past 0.8 myr"
 
-				if (floor((t(j-mstep)-2.512e13)/9.42e11) .lt. floor((t(j)-2.512e13)/9.42e11)) then
+				! if (floor((t(j-mstep)-2.512e13)/9.42e11) .lt. floor((t(j)-2.512e13)/9.42e11)) then
+				if (floor((t(j-mstep)-2.512e13)/18.84e11) .lt. floor((t(j)-2.512e13)/18.84e11)) then
 					write(*,*) "moving cells now..."
 
 					do i = 1,g_pri
@@ -4249,16 +4250,16 @@ write(s_basalt1,'(F25.10)') primary3(4)
 write(s_glass,'(F25.10)') primary3(5)
 
 !-GEOCHEM: rate constants!
-exp_ol = "0.005"
-exp_pyr = "0.005"
-exp_plag = "0.05"
-param_exp_string = "0.0025"
+exp_ol = "0.0025"
+exp_pyr = "0.0025"
+exp_plag = "0.025"
+param_exp_string = "0.00125"
 
 ! chamber b
 if ((primary3(5) .le. 0.0) .and. (primary3(4) .gt. 0.0) .and. (primary3(3) .gt. 0.0) .and. (primary3(2) .gt. 0.0)) then
-	exp_ol =  "0.005"
-	exp_pyr = "0.005"
-	exp_plag = "0.05"
+	exp_ol =  "0.0025"
+	exp_pyr = "0.0025"
+	exp_plag = "0.025"
 	!param_exp_string = "0.003"
 end if
 
