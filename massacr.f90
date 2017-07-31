@@ -286,10 +286,10 @@ PROGRAM main
   REAL(4) :: secLong((xn/cellx)*(yn/(2*celly)),g_sec), secLocal(3*(xn/cellx)*(yn/(2*celly))/22,g_sec)
   REAL(4) :: solLong((xn/cellx)*(yn/(2*celly)),g_sol), solLocal(3*(xn/cellx)*(yn/(2*celly))/22,g_sol)
   REAL(4) :: medLong((xn/cellx)*(yn/(2*celly)),g_med), medLocal(3*(xn/cellx)*(yn/(2*celly))/22,g_med)
-  REAL(4) :: priLongBit(3*(xn/cellx)*(yn/(2*celly))) !, priLocalBit(3*(xn/cellx)*(yn/(2*celly)))
-  REAL(4) :: secLongBit(3*(xn/cellx)*(yn/(2*celly))) !, secLocalBit(3*(xn/cellx)*(yn/(2*celly)))
-  REAL(4) :: solLongBit(3*(xn/cellx)*(yn/(2*celly))) !, solLocalBit(3*(xn/cellx)*(yn/(2*celly)))
-  REAL(4) :: medLongBit(3*(xn/cellx)*(yn/(2*celly))) !, medLocalBit(3*(xn/cellx)*(yn/(2*celly)))
+  REAL(4) :: priLongBit(3*(xn/cellx)*(yn/(2*celly)))
+  REAL(4) :: secLongBit(3*(xn/cellx)*(yn/(2*celly)))
+  REAL(4) :: solLongBit(3*(xn/cellx)*(yn/(2*celly)))
+  REAL(4) :: medLongBit(3*(xn/cellx)*(yn/(2*celly)))
 
   REAL(4) :: sol_coarse_long((xn/cellx)*(yn/(2*celly)))
   REAL(4) :: sol_coarse_long_local((xn/cellx)*(yn/(2*celly)))
@@ -322,16 +322,9 @@ PROGRAM main
   INTEGER(KIND=4) :: id, all=134
   CHARACTER(LEN=5000) :: line
   CHARACTER(len=7000) :: inputz0
-  !real(4) :: alter(1,167)
-  !real(4), allocatable :: outmat(:,:)
   REAL(4) :: outmat(4,134)
-  ! REAL GRABS
   REAL(4) :: temp3, timestep3, primary3(5), secondary3(74), solute3(15), medium3(7) ! important information
   REAL(4) :: water
-
-  ! MIGRATING ALTERATION STUFF
-
-
 
   ! STRINGS
   CHARACTER(len=25) :: s_verm_ca, s_analcime, s_phillipsite, s_clinozoisite, s_verm_na
@@ -372,10 +365,7 @@ PROGRAM main
 
 
   CHARACTER(len=49000) :: L5
-  !character(len=6) :: L5
 
-
-  ! MOVE DOWN
   param_tra = 10.0**11
   param_xb = 10.0**(-2.0)
 
@@ -471,18 +461,18 @@ PROGRAM main
        &"SOLUTION_SPECIES" //NEW_LINE('')// &
        &"" //NEW_LINE('')// &
        &"" //NEW_LINE('')// &
-       
+
        &"H2O + 0.01e- = H2O-0.01" //NEW_LINE('')// &
        &"	log_k -9" //NEW_LINE('')// &
-       
+
        &"Al+3 =  Al+3 " //NEW_LINE('')// &
        &"	-llnl_gamma	9.0000	" //NEW_LINE('')// &
        &"	log_k 0" //NEW_LINE('')// &
        &"	-delta_H	0	kJ/mol	# 	Al+3" //NEW_LINE('')// &
        &"#	Enthalpy of formation:	-128.681 kcal/mol" //NEW_LINE('')// &
        &"-Vm  -3.3404  -17.1108  14.9917  -2.0716  2.8711 9 # supcrt" //NEW_LINE('')// &
-       
-       
+
+
        &"Ca+2 =  Ca+2 " //NEW_LINE('')// &
        &"	-llnl_gamma	6.0000	" //NEW_LINE('')// &
        &"	log_k 0" //NEW_LINE('')// &
@@ -490,8 +480,8 @@ PROGRAM main
        &"#	Enthalpy of formation:	-129.8 kcal/mol" //NEW_LINE('')// &
        !&"	-millero -19.69 0.1058 -0.001256 1.617 -0.075 0.0008262" //NEW_LINE('')// &
        &"-Vm  -0.3456  -7.252  6.149  -2.479  1.239  5  1.60  -57.1  -6.12e-3  1 # supcrt modified" //NEW_LINE('')// &
-       
-       
+
+
        &"Cl- =  Cl- " //NEW_LINE('')// &
        &"	-llnl_gamma	3.0000	" //NEW_LINE('')// &
        &"	log_k 0" //NEW_LINE('')// &
@@ -499,40 +489,40 @@ PROGRAM main
        &"#	Enthalpy of formation:	-39.933 kcal/mol" //NEW_LINE('')// &
        !&"	-millero 16.37 0.0896 -0.001264 -1.494 0.034 -0.000621" //NEW_LINE('')// &
        &"-Vm  4.465  4.801  4.325  -2.847  1.748  0  -0.331  20.16  0  1 # supcrt modified" //NEW_LINE('')// &
-       
-       
+
+
        &"e- =  e- " //NEW_LINE('')// &
        &"	log_k 0" //NEW_LINE('')// &
        &"	-delta_H	0	kJ/mol		e-" //NEW_LINE('')// &
        &"#	Enthalpy of formation:	-0 kJ/mol" //NEW_LINE('')// &
-       
+
        &"Fe+2 =  Fe+2 " //NEW_LINE('')// &
        &"	-llnl_gamma	6.0000	" //NEW_LINE('')// &
        &"	log_k 0" //NEW_LINE('')// &
        &"	-delta_H	0	kJ/mol	# 	Fe+2" //NEW_LINE('')// &
        &"#	Enthalpy of formation:	-22.05 kcal/mol" //NEW_LINE('')// &
        &"-Vm  -0.3255  -9.687  1.536  -2.379  0.3033  5.5  -4.21e-2  37.96  0  1 # supcrt modified" //NEW_LINE('')// &
-       
-       
+
+
        &"H+ =  H+ " //NEW_LINE('')// &
        &"	-llnl_gamma	9.0000	" //NEW_LINE('')// &
        &"	log_k 0" //NEW_LINE('')// &
        &"	-delta_H	0	kJ/mol	# 	H+" //NEW_LINE('')// &
        &"#	Enthalpy of formation:	-0 kJ/mol" //NEW_LINE('')// &
-       
+
        &"HCO3- =  HCO3- " //NEW_LINE('')// &
        &"	-llnl_gamma	4.0000	" //NEW_LINE('')// &
        &"	log_k 0" //NEW_LINE('')// &
        &"	-delta_H	0	kJ/mol	# 	HCO3-" //NEW_LINE('')// &
        !&"-Vm  5.224  0  0  -5.85  5.126  0  0.404  110  -5.74e-3  1 # supcrt modified" //NEW_LINE('')// &
        ! not entirely sure about carbonate vs. bicarbonate decision here...
-       
+
        ! &"CO3-2 =  CO3-2 " //NEW_LINE('')// &
        ! &"	-llnl_gamma	5.4	" //NEW_LINE('')// &
        ! &"	log_k 0" //NEW_LINE('')// &
        ! &"	-delta_H	0	kJ/mol	# 	CO3-2" //NEW_LINE('')// &
        ! &"-Vm  5.224  0  0  -5.85  5.126  0  0.404  110  -5.74e-3  1 # supcrt modified" //NEW_LINE('')// &
-       
+
        &"#	Enthalpy of formation:	-164.898 kcal/mol" //NEW_LINE('')// &
        &"K+ =  K+ " //NEW_LINE('')// &
        &"	-llnl_gamma	3.0000	" //NEW_LINE('')// &
@@ -541,7 +531,7 @@ PROGRAM main
        &"#	Enthalpy of formation:	-60.27 kcal/mol" //NEW_LINE('')// &
        !&"	-millero 7.26 0.0892 -0.000736 2.722 -0.101 0.00151" //NEW_LINE('')// &
        &"-Vm  3.322  -1.473  6.534  -2.712  9.06e-2  3.5  0  29.7  0  1 # supcrt modified" //NEW_LINE('')// &
-       
+
        &"Mg+2 =  Mg+2 " //NEW_LINE('')// &
        &"	-llnl_gamma	8.0000	" //NEW_LINE('')// &
        &"	log_k 0" //NEW_LINE('')// &
@@ -549,7 +539,7 @@ PROGRAM main
        &"#	Enthalpy of formation:	-111.367 kcal/mol" //NEW_LINE('')// &
        !&"	-millero -22.32 0.0868 -0.0016 2.017 -0.125 0.001457" //NEW_LINE('')// &
        &"-Vm  -1.410  -8.6  11.13  -2.39  1.332  5.5  1.29  -32.9  -5.86e-3  1 # supcrt modified" //NEW_LINE('')// &
-       
+
        &"Na+ =  Na+ " //NEW_LINE('')// &
        &"	-llnl_gamma	4.0000	" //NEW_LINE('')// &
        &"	log_k 0" //NEW_LINE('')// &
@@ -557,7 +547,7 @@ PROGRAM main
        &"#	Enthalpy of formation:	-57.433 kcal/mol" //NEW_LINE('')// &
        !&"	-millero -3.46 0.1092 -0.000768 2.698 -0.106 0.001651" //NEW_LINE('')// &
        &"-Vm  1.403  -2.285  4.419  -2.726  -5.125e-5  4.0  0.162  47.67  -3.09e-3  0.725 # sup" //NEW_LINE('')// &
-       
+
        &"H2O =  H2O " //NEW_LINE('')// &
        &"	-llnl_gamma	3.0000	" //NEW_LINE('')// &
        &"        log_k   0" //NEW_LINE('')// &
@@ -570,8 +560,8 @@ PROGRAM main
        &"#	Enthalpy of formation:	-217.4 kcal/mol" //NEW_LINE('')// &
        !&"	-millero 9.26 0.284 -0.003808 0.4348 -0.0099143 -8.4762e-05" //NEW_LINE('')// &
        &"-Vm  8.0  2.51  -42.5 5.41  4.23 0 0 0 0 1 # supcrt modified" //NEW_LINE('')// &
-       
-       
+
+
        &"SiO2 =  SiO2 " //NEW_LINE('')// &
        &"	-llnl_gamma	3.0000	" //NEW_LINE('')// &
        &"	log_k 0" //NEW_LINE('')// &
@@ -579,7 +569,7 @@ PROGRAM main
        &"#	Enthalpy of formation:	-209.775 kcal/mol" //NEW_LINE('')// &
        !&"-Vm  10.5  1.7  20  -2.7  0.1291 # supcrt + 2*H2O in a1" //NEW_LINE('')// &
        ! not sure of ion vs. sio2 here
-       
+
        &"2H2O =  O2 + 4H+ + 4e-  " //NEW_LINE('')// &
        &"	-CO2_llnl_gamma" //NEW_LINE('')// &
        &" 	log_k      -85.9951" //NEW_LINE('')// &
@@ -588,7 +578,7 @@ PROGRAM main
        &"        -analytic   38.0229    7.99407E-03   -2.7655e+004  -1.4506e+001  199838.45" //NEW_LINE('')// &
        &"#	Range:  0-300" //NEW_LINE('')// &
        &"-Vm  5.7889  6.3536  3.2528  -3.0417  -0.3943 # supcrt" //NEW_LINE('')// &
-       
+
        &"" //NEW_LINE('')// &
        &" 1.0000 SO4-- + 1.0000 H+  =  HS- +2.0000 O2  " //NEW_LINE('')// &
        &"        -llnl_gamma           3.5    " //NEW_LINE('')// &
@@ -598,7 +588,7 @@ PROGRAM main
        &"        -analytic 2.6251e+001 3.9525e-002 -4.5443e+004 -1.1107e+001 3.1843e+005" //NEW_LINE('')// &
        &"#       -Range:  0-300" //NEW_LINE('')// &
        !&"-Vm 8.2 9.2590  2.1108  -3.1618 1.1748  0 -0.3 15 0 1 # supcrt modified" //NEW_LINE('')// &
-       
+
        &"" //NEW_LINE('')// &
        &" .5000 O2 + 2.0000 HS-  = S2--  + H2O" //NEW_LINE('')// &
        &"#2 HS- = S2-- +2 H+ + 2e-" //NEW_LINE('')// &
@@ -610,7 +600,7 @@ PROGRAM main
        &"	-mass_balance	S(-2)2" //NEW_LINE('')// &
        &"#       -Range:  0-300" //NEW_LINE('')// &
        &"#	-add_logk	Log_K_O2	0.5" //NEW_LINE('')// &
-       
+
        &"" //NEW_LINE('')// &
        &"2.0000 H+  + 2.0000 SO3--  = S2O3--  + O2  + H2O" //NEW_LINE('')// &
        &"        -llnl_gamma           4.0    " //NEW_LINE('')// &
@@ -619,7 +609,7 @@ PROGRAM main
        &"#	Enthalpy of formation:	-0 kcal/mol" //NEW_LINE('')// &
        &"        -analytic  0.77679E+02    0.65761E-01   -0.15438E+05   -0.34651E+02   -0.24092E+03" //NEW_LINE('')// &
        &"#       -Range:  0-300" //NEW_LINE('')// &
-       
+
        ! ! new
        ! &"CO3-2 + H+ = HCO3-" //NEW_LINE('')// &
        ! &" 	-log_k	10.329" //NEW_LINE('')// &
@@ -633,7 +623,7 @@ PROGRAM main
        ! &"	-delta_h -5.738	kcal" //NEW_LINE('')// &
        ! &"  -analytic	464.1965	0.09344813	-26986.16	-165.75951	2248628.9" //NEW_LINE('')// &
        ! &"-Vm  21.78  -49.4  -91.7  31.96 # supcrt modified" //NEW_LINE('')// &
-       
+
        ! &" H+  + HCO3-  + H2O  = CH4 + 2.0000 O2" //NEW_LINE('')// &
        ! &"        -llnl_gamma           3.0    " //NEW_LINE('')// &
        ! &"        log_k            -144.1412" //NEW_LINE('')// &
@@ -643,13 +633,13 @@ PROGRAM main
        ! &"#       -Range:  0-300" //NEW_LINE('')// &
        !&"-Vm 7.7" //NEW_LINE('')// &
        ! unsure but unimportant
-       
-       
+
+
        ! &" CO3-2 + 10 H+ + 8 e- = CH4 + 3 H2O" //NEW_LINE('')// &
        ! &"        -log_k	41.071" //NEW_LINE('')// &
        ! &"	-delta_h -61.039 kcal" //NEW_LINE('')// &
        ! &"	-Vm 7.7" //NEW_LINE('')// &
-       
+
        ! &"" //NEW_LINE('')// &
        ! &" 2.0000 H+  + 2.0000 HCO3-  + H2O  = C2H6  + 3.5000 O2" //NEW_LINE('')// &
        ! &"        -llnl_gamma           3.0    " //NEW_LINE('')// &
@@ -658,7 +648,7 @@ PROGRAM main
        ! &"#	Enthalpy of formation:	-0 kcal/mol" //NEW_LINE('')// &
        ! &"        -analytic    0.10777E+02    0.72105E-01   -0.67489E+05   -0.13915E+02   -0.10531E+04" //NEW_LINE('')// &
        ! &"#       -Range:  0-300" //NEW_LINE('')// &
-       
+
        ! &"" //NEW_LINE('')// &
        ! &" 2.000 H+  + 2.0000 HCO3-  = C2H4 + 3.0000 O2" //NEW_LINE('')// &
        ! &"        -llnl_gamma           3.0    " //NEW_LINE('')// &
@@ -667,7 +657,7 @@ PROGRAM main
        ! &"#	Enthalpy of formation:	24.65 kcal/mol" //NEW_LINE('')// &
        ! &"        -analytic    -0.30329E+02    0.71187E-01   -0.73140E+05    0.00000E+00    0.00000E+00" //NEW_LINE('')// &
        ! &"#       -Range:  0-300" //NEW_LINE('')// &
-       
+
        &"" //NEW_LINE('')// &
        ! &" 1.0000 HCO3- + 1.0000 H+  =  CO +1.0000 H2O +0.5000 O2 " //NEW_LINE('')// &
        ! &"        -llnl_gamma           3.0    " //NEW_LINE('')// &
@@ -676,7 +666,7 @@ PROGRAM main
        ! &"#	Enthalpy of formation:	-28.91 kcal/mol" //NEW_LINE('')// &
        ! &"        -analytic 1.0028e+002 4.6877e-002 -1.8062e+004 -4.0263e+001 3.8031e+005" //NEW_LINE('')// &
        ! &"#       -Range:  0-300" //NEW_LINE('')// &
-       
+
        &" 1.0000 Cl- + 0.5000 O2  =  ClO-   " //NEW_LINE('')// &
        &"        -llnl_gamma           4.0    " //NEW_LINE('')// &
        &"        log_k           -15.1014" //NEW_LINE('')// &
@@ -684,7 +674,7 @@ PROGRAM main
        &"#	Enthalpy of formation:	-25.6 kcal/mol" //NEW_LINE('')// &
        &"        -analytic 6.1314e+001 3.4812e-003 -6.0952e+003 -2.3043e+001 -9.5128e+001" //NEW_LINE('')// &
        &"#       -Range:  0-300" //NEW_LINE('')// &
-       
+
        &"" //NEW_LINE('')// &
        &" 1.0000 O2 + 1.0000 Cl-  =  ClO2-   " //NEW_LINE('')// &
        &"        -llnl_gamma           4.0    " //NEW_LINE('')// &
@@ -693,7 +683,7 @@ PROGRAM main
        &"#	Enthalpy of formation:	-15.9 kcal/mol" //NEW_LINE('')// &
        &"        -analytic 3.3638e+000 -6.1675e-003 -4.9726e+003 -2.0467e+000 -2.5769e+005" //NEW_LINE('')// &
        &"#       -Range:  0-300" //NEW_LINE('')// &
-       
+
        &"" //NEW_LINE('')// &
        &" 1.5000 O2 + 1.0000 Cl-  =  ClO3-   " //NEW_LINE('')// &
        &"        -llnl_gamma           3.5    " //NEW_LINE('')// &
@@ -702,7 +692,7 @@ PROGRAM main
        &"#	Enthalpy of formation:	-24.85 kcal/mol" //NEW_LINE('')// &
        &"        -analytic 2.8852e+001 -4.8281e-003 -4.6779e+003 -1.0772e+001 -2.0783e+005" //NEW_LINE('')// &
        &"#       -Range:  0-300" //NEW_LINE('')// &
-       
+
        &"" //NEW_LINE('')// &
        &" 2.0000 O2 + 1.0000 Cl-  =  ClO4-   " //NEW_LINE('')// &
        &"        -llnl_gamma           3.5    " //NEW_LINE('')// &
@@ -711,7 +701,7 @@ PROGRAM main
        &"#	Enthalpy of formation:	-30.91 kcal/mol" //NEW_LINE('')// &
        &"        -analytic 7.0280e+001 -6.8927e-005 -5.5690e+003 -2.6446e+001 -1.6596e+005" //NEW_LINE('')// &
        &"#       -Range:  0-300" //NEW_LINE('')// &
-       
+
        &" 1.0000 H+ + 1.0000 Fe++ + 0.2500 O2  =  Fe+++ +0.5000 H2O " //NEW_LINE('')// &
        &"        -llnl_gamma           9.0    " //NEW_LINE('')// &
        &"        log_k           +8.4899" //NEW_LINE('')// &
@@ -719,7 +709,7 @@ PROGRAM main
        &"#	Enthalpy of formation:	-11.85 kcal/mol" //NEW_LINE('')// &
        &"        -analytic -1.7808e+001 -1.1753e-002 4.7609e+003 5.5866e+000 7.4295e+001" //NEW_LINE('')// &
        &"#       -Range:  0-300" //NEW_LINE('')// &
-       
+
        &"" //NEW_LINE('')// &
        &" 1.0000 H2O  =  H2 +0.5000 O2   " //NEW_LINE('')// &
        &"	-CO2_llnl_gamma" //NEW_LINE('')// &
@@ -728,7 +718,7 @@ PROGRAM main
        &"#	Enthalpy of formation:	-1 kcal/mol" //NEW_LINE('')// &
        &"        -analytic 6.6835e+001 1.7172e-002 -1.8849e+004 -2.4092e+001 4.2501e+005" //NEW_LINE('')// &
        &"#       -Range:  0-300" //NEW_LINE('')// &
-       
+
        &"" //NEW_LINE('')// &
        &" 1.0000 SO4-- + 1.0000 H+ + 0.5000 O2  =  HSO5-  " //NEW_LINE('')// &
        &"        -llnl_gamma           4.0    " //NEW_LINE('')// &
@@ -737,7 +727,7 @@ PROGRAM main
        &"#	Enthalpy of formation:	-185.38 kcal/mol" //NEW_LINE('')// &
        &"        -analytic 5.9944e+001 3.0904e-002 -7.7494e+003 -2.4420e+001 -1.2094e+002" //NEW_LINE('')// &
        &"#       -Range:  0-300" //NEW_LINE('')// &
-       
+
        &" 2.0000 H+  + 2.0000 SO3--  = S2O4--  + .500 O2  + H2O" //NEW_LINE('')// &
        &"        -llnl_gamma           5.0    " //NEW_LINE('')// &
        &"#        log_k           -25.2075" //NEW_LINE('')// &
@@ -748,7 +738,7 @@ PROGRAM main
        &"	-analytic	-2.3172e2	2.0393e-3	-7.1011e0	8.3239e1	9.4155e-1" //NEW_LINE('')// &
        &"#	changed 3/23/04, corrected to supcrt temperature dependence, GMA" //NEW_LINE('')// &
        &"#       -Range:  0-300" //NEW_LINE('')// &
-       
+
        &"" //NEW_LINE('')// &
        &"# 2.0000 SO3--  + .500 O2  + 2.0000 H+  = S2O6--  + H2O" //NEW_LINE('')// &
        &"#  H2O = .5 O2 + 2H+ + 2e- " //NEW_LINE('')// &
@@ -760,7 +750,7 @@ PROGRAM main
        &"        -analytic 0.14458E+03    0.61449E-01    0.71877E+04   -0.58657E+02    0.11211E+03" //NEW_LINE('')// &
        &"#       -Range:  0-300" //NEW_LINE('')// &
        &"	-add_logk  Log_K_O2	0.5" //NEW_LINE('')// &
-       
+
        &"" //NEW_LINE('')// &
        &" 2.0000 SO3--  + 1.500 O2  + 2.0000 H+  = S2O8--  + H2O" //NEW_LINE('')// &
        &"        -llnl_gamma           4.0    " //NEW_LINE('')// &
@@ -769,7 +759,7 @@ PROGRAM main
        &"#	Enthalpy of formation:	-0 kcal/mol" //NEW_LINE('')// &
        &"        -analytic 0.18394E+03    0.60414E-01    0.13864E+05   -0.71804E+02    0.21628E+03" //NEW_LINE('')// &
        &"#       -Range:  0-300" //NEW_LINE('')// &
-       
+
        &"" //NEW_LINE('')// &
        &"O2 + H+ + 3.0000 HS-  = S3--  + 2.0000 H2O" //NEW_LINE('')// &
        &"# 2H2O = O2 + 4H+ + 4e-" //NEW_LINE('')// &
@@ -782,7 +772,7 @@ PROGRAM main
        &"	-mass_balance	S(-2)3" //NEW_LINE('')// &
        &"#       -Range:  0-300" //NEW_LINE('')// &
        &"#	-add_logk  Log_K_O2	1.0" //NEW_LINE('')// &
-       
+
        &"" //NEW_LINE('')// &
        &"# 3.0000 SO3--  + 4.0000 H+  = S3O6-- + .500 O2 + 2.0000 H2O" //NEW_LINE('')// &
        &"# .5 O2 + 2H+ + 2e- = H2O" //NEW_LINE('')// &
@@ -794,7 +784,7 @@ PROGRAM main
        &"        -analytic 0.23664E+03    0.12702E+00   -0.10110E+05   -0.99715E+02   -0.15783E+03" //NEW_LINE('')// &
        &"#       -Range:  0-300" //NEW_LINE('')// &
        &"	-add_logk	Log_K_O2	-0.5" //NEW_LINE('')// &
-       
+
        &"" //NEW_LINE('')// &
        &"1.5000 O2 + 2.0000 H+ + 4.0000 HS-  = S4--  + 3.0000 H2O" //NEW_LINE('')// &
        &"#4 HS- = S4-- + 4H+ + 6e-" //NEW_LINE('')// &
@@ -806,7 +796,7 @@ PROGRAM main
        &"	-mass_balance	S(-2)4" //NEW_LINE('')// &
        &"#       -Range:  0-300" //NEW_LINE('')// &
        &"#	-add_logk	Log_K_O2	1.5" //NEW_LINE('')// &
-       
+
        &"" //NEW_LINE('')// &
        &"# 4.0000 SO3-- + 6.0000 H+  = S4O6-- + 1.500 O2 + 3.0000 H2O" //NEW_LINE('')// &
        &"4 SO3-- + 12 H+ + 6e- = S4O6-- + 6H2O" //NEW_LINE('')// &
@@ -817,7 +807,7 @@ PROGRAM main
        &"        -analytic 0.32239E+03    0.19555E+00   -0.23617E+05   -0.13729E+03   -0.36862E+03" //NEW_LINE('')// &
        &"#       -Range:  0-300" //NEW_LINE('')// &
        &"	-add_logk	Log_K_O2	-1.5" //NEW_LINE('')// &
-       
+
        &"" //NEW_LINE('')// &
        &"2.0000 O2 + 3.0000 H+  + 5.0000 HS-  = S5--  + 4.0000 H2O" //NEW_LINE('')// &
        &"#5 HS- = S5-- + 5H+ + 8e-" //NEW_LINE('')// &
@@ -829,7 +819,7 @@ PROGRAM main
        &"	-mass_balance	S(-2)5" //NEW_LINE('')// &
        &"#       -Range:  0-300" //NEW_LINE('')// &
        &"#	-add_logk	Log_K_O2	2" //NEW_LINE('')// &
-       
+
        &"" //NEW_LINE('')// &
        &"# 5.0000 SO3-- + 8.0000 H+  = S5O6-- + 2.5000 O2 + 4.0000 H2O" //NEW_LINE('')// &
        &"# 2.5O2 + 10 H+ + 10e- = 5H2O" //NEW_LINE('')// &
@@ -841,7 +831,7 @@ PROGRAM main
        &"        -analytic 0.42074E+03    0.25833E+00   -0.43878E+05   -0.18178E+03   -0.68480E+03" //NEW_LINE('')// &
        &"#       -Range:  0-300" //NEW_LINE('')// &
        &"	-add_logk	Log_K_O2	-2.5" //NEW_LINE('')// &
-       
+
        ! &"" //NEW_LINE('')// &
        ! &"# 1.0000 H+  + HCO3-  + HS-  + NH3 = SCN-  + 3.0000 H2O" //NEW_LINE('')// &
        ! &"#        -llnl_gamma           3.5    " //NEW_LINE('')// &
@@ -850,7 +840,7 @@ PROGRAM main
        ! &"##	Enthalpy of formation:	-0 kcal/mol" //NEW_LINE('')// &
        ! &"#        -analytic  0.16539E+03    0.49623E-01   -0.44624E+04   -0.65544E+02   -0.69680E+02" //NEW_LINE('')// &
        ! &"##       -Range:  0-300" //NEW_LINE('')// &
-       
+
        &"" //NEW_LINE('')// &
        &" 1.0000 SO4--  =  SO3-- +0.5000 O2   " //NEW_LINE('')// &
        &"        -llnl_gamma           4.5    " //NEW_LINE('')// &
@@ -859,7 +849,7 @@ PROGRAM main
        &"#	Enthalpy of formation:	-151.9 kcal/mol" //NEW_LINE('')// &
        &"        -analytic -1.3771e+001 6.5102e-004 -1.3330e+004 4.7164e+000 -2.0800e+002" //NEW_LINE('')// &
        &"#       -Range:  0-300" //NEW_LINE('')// &
-       
+
        &"" //NEW_LINE('')// &
        &"2.0000 H2O + 1.0000 Al+++  =  Al(OH)2+ +2.0000 H+" //NEW_LINE('')// &
        &"        -llnl_gamma           4.0    " //NEW_LINE('')// &
@@ -868,36 +858,36 @@ PROGRAM main
        &"#	Enthalpy of formation:	-241.825 kcal/mol" //NEW_LINE('')// &
        &"        -analytic 4.4036e+001 2.0168e-002 -5.5455e+003 -1.6987e+001 -8.6545e+001" //NEW_LINE('')// &
        &"#       -Range:  0-300" //NEW_LINE('')// &
-       
-       
+
+
        &"" //NEW_LINE('')// &
        &"2.0000 SO4-- + 1.0000 Al+++  =  Al(SO4)2-" //NEW_LINE('')// &
        &"        -llnl_gamma           4.0    " //NEW_LINE('')// &
        &"        log_k           +4.9000" //NEW_LINE('')// &
        &"	-delta_H	0	      	# Not possible to calculate enthalpy of reaction	Al(SO4)2-" //NEW_LINE('')// &
        &"#	Enthalpy of formation:	-0 kcal/mol" //NEW_LINE('')// &
-       
+
        &" " //NEW_LINE('')// &
        &"28.0000 H2O + 13.0000 Al+++  =  Al13O4(OH)24+7 +32.0000 H+" //NEW_LINE('')// &
        &"        -llnl_gamma           6.0    " //NEW_LINE('')// &
        &"        log_k           -98.73" //NEW_LINE('')// &
        &"	-delta_H	0	      	# Not possible to calculate enthalpy of reaction	Al13O4(OH)24+7" //NEW_LINE('')// &
        &"#	Enthalpy of formation:	-0 kcal/mol" //NEW_LINE('')// &
-       
+
        &" " //NEW_LINE('')// &
        &"2.0000 H2O + 2.0000 Al+++  =  Al2(OH)2++++ +2.0000 H+" //NEW_LINE('')// &
        &"        -llnl_gamma           5.5    " //NEW_LINE('')// &
        &"        log_k           -7.6902" //NEW_LINE('')// &
        &"	-delta_H	0	      	# Not possible to calculate enthalpy of reaction	Al2(OH)2+4" //NEW_LINE('')// &
        &"#	Enthalpy of formation:	-0 kcal/mol" //NEW_LINE('')// &
-       
+
        &" " //NEW_LINE('')// &
        &"4.0000 H2O + 3.0000 Al+++  =  Al3(OH)4+5 +4.0000 H+" //NEW_LINE('')// &
        &"        -llnl_gamma           6.0    " //NEW_LINE('')// &
        &"        log_k           -13.8803" //NEW_LINE('')// &
        &"	-delta_H	0	      	# Not possible to calculate enthalpy of reaction	Al3(OH)4+5" //NEW_LINE('')// &
        &"#	Enthalpy of formation:	-0 kcal/mol" //NEW_LINE('')// &
-       
+
        &" " //NEW_LINE('')// &
        &"2.0000 H2O + 1.0000 Al+++  =  AlO2- +4.0000 H+" //NEW_LINE('')// &
        &"        -llnl_gamma           4.0    " //NEW_LINE('')// &
@@ -906,7 +896,7 @@ PROGRAM main
        &"#	Enthalpy of formation:	-222.079 kcal/mol" //NEW_LINE('')// &
        &"        -analytic 1.0803e+001 -3.4379e-003 -9.7391e+003 0.0000e+000 0.0000e+000" //NEW_LINE('')// &
        &"#       -Range:  0-300" //NEW_LINE('')// &
-       
+
        &"" //NEW_LINE('')// &
        &"1.0000 H2O + 1.0000 Al+++  =  AlOH++ +1.0000 H+" //NEW_LINE('')// &
        &"        -llnl_gamma           4.5    " //NEW_LINE('')// &
@@ -915,14 +905,14 @@ PROGRAM main
        &"#	Enthalpy of formation:	-185.096 kcal/mol" //NEW_LINE('')// &
        &"        -analytic -2.6224e-001 8.8816e-003 -1.8686e+003 -4.3195e-001 -2.9158e+001" //NEW_LINE('')// &
        &"#       -Range:  0-300" //NEW_LINE('')// &
-       
+
        &"" //NEW_LINE('')// &
        &"1.0000 SO4-- + 1.0000 Al+++  =  AlSO4+" //NEW_LINE('')// &
        &"        -llnl_gamma           4.0    " //NEW_LINE('')// &
        &"        log_k           +3.0100" //NEW_LINE('')// &
        &"	-delta_H	0	      	# Not possible to calculate enthalpy of reaction	AlSO4+" //NEW_LINE('')// &
        &"#	Enthalpy of formation:	-0 kcal/mol" //NEW_LINE('')// &
-       
+
        &" " //NEW_LINE('')// &
        &"1.0000 HCO3- + 1.0000 H+  =  CO2 +1.0000 H2O" //NEW_LINE('')// &
        &"        -CO2_llnl_gamma" //NEW_LINE('')// &
@@ -937,7 +927,7 @@ PROGRAM main
        ! &"	-delta_h -5.738	kcal" //NEW_LINE('')// &
        ! &"        -analytic	464.1965	0.09344813	-26986.16	-165.75951	2248628.9" //NEW_LINE('')// &
        ! &"        -Vm  21.78  -49.4  -91.7  31.96 # supcrt modified" //NEW_LINE('')// &
-       
+
        &"" //NEW_LINE('')// &
        &"1.0000 HCO3-  =  CO3-- +1.0000 H+" //NEW_LINE('')// &
        &"        -llnl_gamma           4.5    " //NEW_LINE('')// &
@@ -953,7 +943,7 @@ PROGRAM main
        &"	-delta_h -3.561	kcal" //NEW_LINE('')// &
        &"        -analytic	107.8871	0.03252849	-5151.79	-38.92561	563713.9" //NEW_LINE('')// &
        &"#       -Vm  8.615  0  -12.21 0  1.667  0  0  264  0  1 # supcrt modified" //NEW_LINE('')// &
-       
+
        &"" //NEW_LINE('')// &
        &"1.0000 HCO3- + 1.0000 Ca++  =  CaCO3 +1.0000 H+" //NEW_LINE('')// &
        &"        -llnl_gamma           3.0    " //NEW_LINE('')// &
@@ -964,7 +954,7 @@ PROGRAM main
        &"#       -Range:  0-300" //NEW_LINE('')// &
        !&"-Vm  -.2430  -8.3748  9.0417  -2.4328  -.0300 # supcrt" //NEW_LINE('')// &
        ! again
-       
+
        ! &"" //NEW_LINE('')// &
        ! &"Ca+2 + CO3-2 = CaCO3" //NEW_LINE('')// &
        ! &"        -log_k	3.224" //NEW_LINE('')// &
@@ -972,7 +962,7 @@ PROGRAM main
        ! &"        -analytic	-1228.732	-0.299440	35512.75	485.818" //NEW_LINE('')// &
        ! &"#       -Vm  -.2430  -8.3748  9.0417  -2.4328  -.0300 # supcrt" //NEW_LINE('')// &
        !
-       
+
        &"" //NEW_LINE('')// &
        &"1.0000 Cl- + 1.0000 Ca++  =  CaCl+" //NEW_LINE('')// &
        &"        -llnl_gamma           4.0    " //NEW_LINE('')// &
@@ -998,7 +988,7 @@ PROGRAM main
        ! &"        -analytic 5.5985e+001 3.4639e-002 -3.6972e+002 -2.5864e+001 -5.7859e+000" //NEW_LINE('')// &
        ! &"#       -Range:  0-300" //NEW_LINE('')// &
        ! &"-Vm  3.1911  .0104  5.7459  -2.7794  .3084 5.4 # supcrt" //NEW_LINE('')// &
-       
+
        &"" //NEW_LINE('')// &
        &"1.0000 H2O + 1.0000 Ca++  =  CaOH+ +1.0000 H+" //NEW_LINE('')// &
        &"        -llnl_gamma           4.0    " //NEW_LINE('')// &
@@ -1006,15 +996,15 @@ PROGRAM main
        &"	-delta_H	0	      	# Not possible to calculate enthalpy of reaction	CaOH+" //NEW_LINE('')// &
        &"#	Enthalpy of formation:	-0 kcal/mol" //NEW_LINE('')// &
        &" " //NEW_LINE('')// &
-       
+
        &"#Al(OH)4-            82" //NEW_LINE('')// &
        &"        Al+3 + 4H2O = Al(OH)4- + 4H+ " //NEW_LINE('')// &
        &"        log_k           -22.7" //NEW_LINE('')// &
        &"        delta_h 42.3 kcal" //NEW_LINE('')// &
        &"        -analytical     51.578          0.0     -11168.9        -14.865         0.0" //NEW_LINE('')// &
-       
-       
-       
+
+
+
        &"1.0000 SO4-- + 1.0000 Ca++  =  CaSO4" //NEW_LINE('')// &
        &"        -llnl_gamma           3.0    " //NEW_LINE('')// &
        &"        log_k           +2.1111" //NEW_LINE('')// &
@@ -1023,7 +1013,7 @@ PROGRAM main
        &"        -analytic 2.8618e+002 8.4084e-002 -7.6880e+003 -1.1449e+002 -1.2005e+002" //NEW_LINE('')// &
        &"#       -Range:  0-300" //NEW_LINE('')// &
        &"-Vm  2.7910  -.9666  6.1300  -2.7390  -.0010 # supcrt" //NEW_LINE('')// &
-       
+
        &"2.0000 H2O + 1.0000 Fe++  =  Fe(OH)2 +2.0000 H+" //NEW_LINE('')// &
        &"        -llnl_gamma           3.0    " //NEW_LINE('')// &
        &"        log_k           -20.6" //NEW_LINE('')// &
@@ -1537,14 +1527,14 @@ PROGRAM main
        ! &"        -analytic -2.0986e+002 -7.8823e-002 5.0969e+003 8.5642e+001 7.9594e+001" //NEW_LINE('')// &
        ! &"#       -Range:  0-300" //NEW_LINE('')// &
        ! &"-Vm 46.1 # 136.14 / 2.95" //NEW_LINE('')// &
-       
+
        &"" //NEW_LINE('')// &
        &"Phillipsite" //NEW_LINE('')// &
        ! &"        Na0.5K0.5AlSi3O8:H2O + 4H+ = 0.5Na+ +0.5K+ + 3H2O + Al+3 + 3SiO2" //NEW_LINE('')// &
        &"        Na0.5K0.5AlSi3O8:H2O + 7H2O = 0.5Na+ +0.5K+ + Al(OH)4- + 6H2O + 3SiO2" //NEW_LINE('')// &
        &"        log_k           -19.874" //NEW_LINE('')// &
        &"" //NEW_LINE('')// &
-       
+
        ! &"Aragonite" //NEW_LINE('')// &
        ! &"        CaCO3 +1.0000 H+  =  + 1.0000 Ca++ + 1.0000 HCO3-" //NEW_LINE('')// &
        ! &"        log_k           1.9931" //NEW_LINE('')// &
@@ -1553,7 +1543,7 @@ PROGRAM main
        ! &"        -analytic -1.4934e+002 -4.8043e-002 4.9089e+003 6.0284e+001 7.6644e+001" //NEW_LINE('')// &
        ! &"#       -Range:  0-300" //NEW_LINE('')// &
        ! !&"-Vm 34.04" //NEW_LINE('')// &
-       
+
        &"" //NEW_LINE('')// &
        &"Calcite" //NEW_LINE('')// &
        &"        CaCO3 +1.0000 H+  =  + 1.0000 Ca++ + 1.0000 HCO3-" //NEW_LINE('')// &
@@ -1563,7 +1553,7 @@ PROGRAM main
        &"        -analytic -1.4978e+002 -4.8370e-002 4.8974e+003 6.0458e+001 7.6464e+001" //NEW_LINE('')// &
        &"#       -Range:  0-300" //NEW_LINE('')// &
        !&"-Vm 36.9 cm3/mol # MW (100.09 g/mol) / rho (2.71 g/cm3)" //NEW_LINE('')// &
-       
+
        ! &"" //NEW_LINE('')// &
        !  &"Calcite" //NEW_LINE('')// &
        !  &"	CaCO3 = CO3-2 + Ca+2" //NEW_LINE('')// &
@@ -1578,7 +1568,7 @@ PROGRAM main
        !  &"	-delta_h -2.589 kcal" //NEW_LINE('')// &
        !  &"	-analytic	-171.9773	-0.077993	2903.293	71.595" //NEW_LINE('')// &
        !  &"	-Vm 34.04" //NEW_LINE('')// &
-       
+
        &"" //NEW_LINE('')// &
        &"Celadonite" //NEW_LINE('')// &
        &"        KMgAlSi4O10(OH)2 +6.0000 H+  =  + 1.0000 Al+++ + 1.0000 K+ + 1.0000 Mg++ + 4.0000 H2O + 4.0000 SiO2" //NEW_LINE('')// &
@@ -1669,7 +1659,7 @@ PROGRAM main
        ! &"        -analytic -3.1782e+002 -9.8179e-002 1.0845e+004 1.2657e+002 1.6932e+002" //NEW_LINE('')// &
        ! &"#       -Range:  0-300" //NEW_LINE('')// &
        ! &"-Vm 64.5" //NEW_LINE('')// &
-       
+
        ! &"" //NEW_LINE('')// &
        ! &"Epidote" //NEW_LINE('')// &
        ! &"        Ca2FeAl2Si3O12OH +13.0000 H+  =  + 1.0000 Fe+++ + 2.0000 Al+++ + 2.0000 Ca++ + 3.0000 SiO2 + 7.0000 H2O" //NEW_LINE('')// &
@@ -1807,7 +1797,7 @@ PROGRAM main
        ! &"        -analytic 1.3995e+001 -1.7668e-002 1.0119e+004 -8.3100e+000 1.5789e+002" //NEW_LINE('')// &
        ! &"#       -Range:  0-300" //NEW_LINE('')// &
        ! &"" //NEW_LINE('')// &
-       
+
        ! &"Magnesite" //NEW_LINE('')// &
        ! &"        MgCO3 +1.0000 H+  =  + 1.0000 HCO3- + 1.0000 Mg++" //NEW_LINE('')// &
        ! &"        log_k           2.2936" //NEW_LINE('')// &
@@ -1864,9 +1854,9 @@ PROGRAM main
        &"        -analytic 1.9601e+000 1.1342e-002 1.6051e+004 -1.4718e+001 -1.8160e+006" //NEW_LINE('')// &
        &"#       -Range:  0-300" //NEW_LINE('')// &
        &"" //NEW_LINE('')// &
-       
-       
-       
+
+
+
        ! &"Montmor-k" //NEW_LINE('')// &
        ! &"        K.33Mg.33Al1.67Si4O10(OH)2 +6.0000 H+  =  + 0.3300 K+ + 0.3300 Mg++ + 1.6700 Al+++ + 4.0000 H2O + 4.0000 SiO2" //NEW_LINE('')// &
        ! &"        log_k           2.1423" //NEW_LINE('')// &
@@ -1875,7 +1865,7 @@ PROGRAM main
        ! &"        -analytic 8.4757e+000 1.1219e-002 1.5654e+004 -1.6833e+001 -1.8386e+006" //NEW_LINE('')// &
        ! &"#       -Range:  0-300" //NEW_LINE('')// &
        ! &"" //NEW_LINE('')// &
-       
+
        &"Montmor-Mg" //NEW_LINE('')// &
        &"        Mg.495Al1.67Si4O10(OH)2 +6.0000 H+  =  + 0.4950 Mg++ + 1.6700 Al+++ + 4.0000 H2O + 4.0000 SiO2" //NEW_LINE('')// &
        &"        log_k           2.3879" //NEW_LINE('')// &
@@ -1884,7 +1874,7 @@ PROGRAM main
        &"        -analytic -6.8505e+000 9.0710e-003 1.6817e+004 -1.1887e+001 -1.8323e+006" //NEW_LINE('')// &
        &"#       -Range:  0-300" //NEW_LINE('')// &
        &"" //NEW_LINE('')// &
-       
+
        &"Montmor-Ca" //NEW_LINE('')// &
        &"        Ca.165Mg.33Al1.67Si4O10(OH)2 +6.0000 H+  =  + 0.1650 Ca++ + 0.3300 Mg++ + 1.6700 Al+++ + 4.0000 H2O + 4.0000 SiO2" //NEW_LINE('')// &
        &"        log_k           2.4952" //NEW_LINE('')// &
@@ -1893,9 +1883,9 @@ PROGRAM main
        &"        -analytic 6.0725e+000 1.0644e-002 1.6024e+004 -1.6334e+001 -1.7982e+006" //NEW_LINE('')// &
        &"#       -Range:  0-300" //NEW_LINE('')// &
        &"" //NEW_LINE('')// &
-       
-       
-       
+
+
+
        ! &"Muscovite" //NEW_LINE('')// &
        ! &"        KAl3Si3O10(OH)2 +10.0000 H+  =  + 1.0000 K+ + 3.0000 Al+++ + 3.0000 SiO2 + 6.0000 H2O" //NEW_LINE('')// &
        ! &"        log_k           13.5858" //NEW_LINE('')// &
@@ -2014,7 +2004,7 @@ PROGRAM main
        ! &"        -analytic 7.7698e-002 1.0612e-002 3.4651e+003 -4.3551e+000 -7.2138e+005" //NEW_LINE('')// &
        ! &"#       -Range:  0-300" //NEW_LINE('')// &
        ! &"-Vm 22.67" //NEW_LINE('')// &
-       
+
        &"" //NEW_LINE('')// &
        ! &"Rankinite" //NEW_LINE('')// &
        ! &"        Ca3Si2O7 +6.0000 H+  =  + 2.0000 SiO2 + 3.0000 Ca++ + 3.0000 H2O" //NEW_LINE('')// &
@@ -2066,7 +2056,7 @@ PROGRAM main
        ! &"        -analytic -1.5990e+002 -4.9361e-002 5.4947e+003 6.3032e+001 8.5787e+001" //NEW_LINE('')// &
        ! &"#       -Range:  0-300" //NEW_LINE('')// &
        ! &"-Vm 29.2" //NEW_LINE('')// &
-       
+
        &"" //NEW_LINE('')// &
        &"Smectite-high-Fe-Mg" //NEW_LINE('')// &
        ! &"#        Ca.025Na.1K.2Fe++.5Fe+++.2Mg1.15Al1.25Si3.5H2O12 +8.0000 H+  =  + 0.0250 Ca++ + 0.1000 Na+ + 0.2000 Fe+++ + 0.2000 K+ " //&
@@ -2104,7 +2094,7 @@ PROGRAM main
        ! &"        -analytic 8.5291e+001 4.6337e-002 3.9465e+004 -5.4414e+001 -3.1913e+006" //NEW_LINE('')// &
        ! &"#       -Range:  0-300" //NEW_LINE('')// &
        ! &"" //NEW_LINE('')// &
-       
+
        ! &"Fe" //NEW_LINE('')// &
        ! &"        Fe +2.0000 H+ +0.5000 O2  =  + 1.0000 Fe++ + 1.0000 H2O" //NEW_LINE('')// &
        ! &"        log_k           59.0325" //NEW_LINE('')// &
@@ -2112,18 +2102,18 @@ PROGRAM main
        ! &"# Enthalpy of formation:	0 kcal/mol" //NEW_LINE('')// &
        ! &"        -analytic -6.2882e+001 -2.0379e-002 2.0690e+004 2.3673e+001 3.2287e+002" //NEW_LINE('')// &
        ! &"#       -Range:  0-300" //NEW_LINE('')// &
-       
-       
+
+
        ! &"Ferrihydrite" //NEW_LINE('')// &
        ! &"        Fe(OH)3 + 3H+ = Fe+3 + 3H2O" //NEW_LINE('')// &
        ! &"        log_k	3.191" //NEW_LINE('')// &
        ! &"	delta_h	-73.374	kJ" //NEW_LINE('')// &
-       
+
        ! &"Fe3(OH)8" //NEW_LINE('')// &
        ! &"        Fe3(OH)8 + 8H+ = 2Fe+3 + Fe+2 + 8H2O" //NEW_LINE('')// &
        ! &"        log_k   20.222" //NEW_LINE('')// &
        ! &"	delta_h -0      kcal" //NEW_LINE('')// &
-       
+
        &"Talc" //NEW_LINE('')// &
        &"        Mg3Si4O10(OH)2 +6.0000 H+  =  + 3.0000 Mg++ + 4.0000 H2O + 4.0000 SiO2" //NEW_LINE('')// &
        &"        log_k           21.1383" //NEW_LINE('')// &
@@ -2131,13 +2121,13 @@ PROGRAM main
        &"#	Enthalpy of formation:	-1410.92 kcal/mol" //NEW_LINE('')// &
        &"        -analytic 1.1164e+001 2.4724e-002 1.9810e+004 -1.7568e+001 -1.8241e+006" //NEW_LINE('')// &
        &"#       -Range:  0-300" //NEW_LINE('')// &
-       
-       
+
+
        &"Chlorite(14A)" //NEW_LINE('')// &
        &"        Mg5Al2Si3O10(OH)8 + 16H+ = 5Mg+2 + 2Al+3 + 3.0 SiO2 + 12H2O" //NEW_LINE('')// &
        &"        log_k           68.38" //NEW_LINE('')// &
        &"delta_h -151.494 kcal" //NEW_LINE('')// &
-       
+
        &"" //NEW_LINE('')// &
        ! &"Fe(OH)2" //NEW_LINE('')// &
        ! &"        Fe(OH)2 +2.0000 H+  =  + 1.0000 Fe++ + 2.0000 H2O" //NEW_LINE('')// &
@@ -2147,7 +2137,7 @@ PROGRAM main
        ! &"        -analytic -8.6666e+001 -1.8440e-002 7.5723e+003 3.2597e+001 1.1818e+002" //NEW_LINE('')// &
        ! &"#       -Range:  0-300" //NEW_LINE('')// &
        ! &"" //NEW_LINE('')// &
-       
+
        ! CHLORITE MINERALS
        !
        ! &"Chamosite-7A" //NEW_LINE('')// &
@@ -2166,8 +2156,8 @@ PROGRAM main
        &"#	Enthalpy of formation:	-2116.96 kcal/mol" //NEW_LINE('')// &
        &"        -analytic -2.0441e+002 -6.2268e-002 3.5388e+004 6.9239e+001 5.5225e+002" //NEW_LINE('')// &
        &"#       -Range:  0-300" //NEW_LINE('')// &
-       
-       
+
+
        &"Clinochlore-7A" //NEW_LINE('')// &
        &"        Mg5Al2Si3O10(OH)8 +16.0000 H+  =  + 2.0000 Al+++ + 3.0000 SiO2 + 5.0000 Mg++ + 12.0000 H2O" //NEW_LINE('')// &
        &"        log_k           70.6124" //NEW_LINE('')// &
@@ -2175,8 +2165,8 @@ PROGRAM main
        &"#	Enthalpy of formation:	-2113.2 kcal/mol" //NEW_LINE('')// &
        &"        -analytic -2.1644e+002 -6.4187e-002 3.6548e+004 7.4123e+001 5.7037e+002" //NEW_LINE('')// &
        &"#       -Range:  0-300" //NEW_LINE('')// &
-       
-       
+
+
        ! &"Ripidolite-14A" //NEW_LINE('')// &
        ! &"        Mg3Fe2Al2Si3O10(OH)8 +16.00 H+  =  + 2.00 Al+++ + 2.00 Fe++ + 3.00 Mg++ + 3.00 SiO2 + 12.00 H2O" //NEW_LINE('')// &
        ! &"        log_k           60.9638" //NEW_LINE('')// &
@@ -2192,7 +2182,7 @@ PROGRAM main
        ! &"#	Enthalpy of formation:	-1944.56 kcal/mol" //NEW_LINE('')// &
        ! &"        -analytic -1.9557e+002 -6.3779e-002 3.3634e+004 6.7057e+001 5.2489e+002" //NEW_LINE('')// &
        ! &"#       -Range:  0-300" //NEW_LINE('')// &
-       
+
        ! &"Fe(OH)3" //NEW_LINE('')// &
        ! &"        Fe(OH)3 +3.0000 H+  =  + 1.0000 Fe+++ + 3.0000 H2O" //NEW_LINE('')// &
        ! &"        log_k           5.6556" //NEW_LINE('')// &
@@ -2201,7 +2191,7 @@ PROGRAM main
        ! &"        -analytic -1.3316e+002 -3.1284e-002 7.9753e+003 4.9052e+001 1.2449e+002" //NEW_LINE('')// &
        ! &"#       -Range:  0-300" //NEW_LINE('')// &
        ! &"" //NEW_LINE('')// &
-       
+
        ! &"Troilite" //NEW_LINE('')// &
        ! &"        FeS +1.0000 H+  =  + 1.0000 Fe++ + 1.0000 HS-" //NEW_LINE('')// &
        ! &"        log_k           -3.8184" //NEW_LINE('')// &
@@ -2233,7 +2223,7 @@ PROGRAM main
        ! &"#	Enthalpy of formation:	-1643.69 kcal/mol" //NEW_LINE('')// &
        ! &"        -analytic 2.5321e+000 -3.5886e-002 1.9902e+004 -6.2443e+000 3.1055e+002" //NEW_LINE('')// &
        ! &"#       -Range:  0-300" //NEW_LINE('')// &
-       
+
        ! MINS FROM ANOTHER DATABASE
        &"Vermiculite-Na" //NEW_LINE('')// &
        ! &"Na0.85Mg3Si3.15Al0.85O10(OH)2 = +3.000Mg+2  +0.850Na+  +0.850Al+3  -9.400H+  +3.150H4(SiO4)  -0.600H2O" //NEW_LINE('')// &
@@ -2241,7 +2231,7 @@ PROGRAM main
        &"  log_k  40.17  #" //NEW_LINE('')// &
        &"  delta_h  -354.987   kJ/mol  #" //NEW_LINE('')// &
        &"  # Enthalpy of formation:    -6139.206  kJ/mol  07VIE" //NEW_LINE('')// &
-       
+
        ! FROM SIT.dat
        &"Fe-Saponite-Ca" //NEW_LINE('')// &
        ! &"Ca0.17Fe3Al0.34Si3.66O10(OH)2 = +0.170Ca+2     +3.000Fe+2     +0.340Al+3     -7.360H+     +3.660H4(SiO4)     -2.640H2O" //NEW_LINE('')// &
@@ -2250,9 +2240,9 @@ PROGRAM main
        &"  log_k     22.43        #" //NEW_LINE('')// &
        &"  delta_h  -222.166      kJ/mol        #" //NEW_LINE('')// &
        &"  # Enthalpy of formation:             -4916.58      kJ/mol        07VIE" //NEW_LINE('')// &
-       
-       
-       
+
+
+
        ! FROM SIT.dat
        &"Fe-Saponite-Mg" //NEW_LINE('')// &
        ! &"Mg0.17Fe3Al0.34Si3.66O10(OH)2 = +0.170Mg+2     +3.000Fe+2     +0.340Al+3     -7.360H+     +3.660H4(SiO4)     -2.640H2O" //NEW_LINE('')// &
@@ -2285,14 +2275,14 @@ PROGRAM main
        &"  log_k  40.68  #" //NEW_LINE('')// &
        &"  delta_h  -378.219   kJ/mol  #" //NEW_LINE('')// &
        &"  # Enthalpy of formation:    -6147.38   kJ/mol  07VIE" //NEW_LINE('')// &
-       
-       
+
+
        &"Vermiculite-Mg" //NEW_LINE('')// &
        &"Mg0.43Mg3Si3.14Al0.86O10(OH)2 = +3.430Mg+2  +0.860Al+3  -9.440H+  +6.28H2O + 3.14SiO2  -0.560H2O" //NEW_LINE('')// &
        &"  log_k  38.8   #" //NEW_LINE('')// &
        &"  delta_h  -377.469   kJ/mol  #" //NEW_LINE('')// &
        &"  # Enthalpy of formation:    -6115.45   kJ/mol  07VIE" //NEW_LINE('')// &
-       
+
        ! &"Chalcedony" //NEW_LINE('')// &
        ! &"        SiO2  =  + 1.0000 SiO2" //NEW_LINE('')// &
        ! &"        log_k           -3.7281" //NEW_LINE('')// &
@@ -2300,8 +2290,8 @@ PROGRAM main
        ! &"#	Enthalpy of formation:	-217.282 kcal/mol" //NEW_LINE('')// &
        ! &"        -analytic -9.0068e+000 9.3241e-003 4.0535e+003 -1.0830e+000 -7.5077e+005" //NEW_LINE('')// &
        ! &"#       -Range:  0-300" //NEW_LINE('')// &
-       
-       
+
+
        &""! //NEW_LINE('')// &
 
 
@@ -2428,171 +2418,6 @@ PROGRAM main
         END DO
         h = TRANSPOSE(hTrans)
         psi = TRANSPOSE(psiTrans)
-        !
-        !
-        ! h = 275.0
-        ! psi = 0.0
-
-
-
-
-
-        !permeability = transpose(permeabilityTrans)
-        !phi = transpose(phiTrans)
-
-        !
-        ! 		! FLUID DYNAMIC MATRICES
-        ! 		OPEN(UNIT=14, FILE=trim(path) // 'transfer/hMat.txt')
-        ! 		OPEN(UNIT=15, FILE=trim(path) // 'transfer/psiMat.txt')
-        ! 		OPEN(UNIT=16, FILE=trim(path) // 'transfer/permMat.txt')
-        ! 		OPEN(UNIT=80, FILE=trim(path) // 'transfer/uMat.txt')
-        ! 		OPEN(UNIT=81, FILE=trim(path) // 'transfer/vMat.txt')
-        ! 		!OPEN(UNIT=17, FILE=trim(path) // 'phiMat.txt')
-        ! 		DO i = 1,yn*tn/(mstep*ar)
-        ! 			!write(*,*) "check"
-        ! 			READ(14,*) (checkMatF(i,ii),ii=1,xn)
-        ! 		END DO
-        ! 		hmat = transpose(checkMatF)
-        !
-        ! 		DO i = 1,yn*tn/(mstep*ar)
-        ! 			READ(15,*) (checkMatF(i,ii),ii=1,xn)
-        ! 		END DO
-        ! 		psimat = transpose(checkMatF)
-        !
-        ! 		DO i = 1,yn*tn/(mstep*ar)
-        ! 			READ(16,*) (checkMatF(i,ii),ii=1,xn)
-        ! 			!READ(17,*) (checkMatF(i,ii),ii=1,xn)
-        ! 			!phiMat = transpose(checkMatF)
-        ! 		END DO
-        ! 		permmat = transpose(checkMatF)
-        !
-        ! 		DO i = 1,yn*tn/(mstep*ar)
-        ! 			READ(80,*) (checkMatF(i,ii),ii=1,xn)
-        ! 		END DO
-        ! 		umat = transpose(checkMatF)
-        !
-        ! 		DO i = 1,yn*tn/(mstep*ar)
-        ! 			READ(81,*) (checkMatF(i,ii),ii=1,xn)
-        ! 		END DO
-        ! 		vmat = transpose(checkMatF)
-        !
-        ! 		write(*,*) 'fluid dynamic matrices'
-        !
-        !
-        ! 		! PRIMARY TIME SLICE
-        ! 		OPEN(UNIT=18, FILE=trim(path) // 'checkpoint/pri_glass.txt')
-        ! 		DO i = 1,yn/cell
-        ! 		 	READ(18,*) (primaryTrans(i,ii,5),ii=1,xn/cell)
-        ! 		END DO
-        ! 		primary(:,:,n) = transpose(primaryTrans(:,:,5))
-        ! 		write(*,*) 'primary time slices'
-        !
-        ! 		! PRIMARY MATRIX/CES
-        ! 		OPEN(UNIT=19, FILE=trim(path) // 'pri_glass.txt')
-        ! 		DO i = 1,yn*tn/(cell*mstep*ar)
-        ! 		 	READ(19,*) (checkMat(j,ii),ii=1,xn/cell)
-        ! 		END DO
-        ! 		primaryMat(:,:,5) = transpose(checkMat)
-        ! 		write(*,*) 'primary matrices'
-        !
-        !
-        ! 		! SOLUTION TIME SLICES
-        ! 		OPEN(UNIT=21, FILE=trim(path) // 'checkpoint/sol_ph.txt')
-        ! 		OPEN(UNIT=22, FILE=trim(path) // 'checkpoint/sol_alk.txt')
-        ! 		OPEN(UNIT=23, FILE=trim(path) // 'checkpoint/sol_w.txt')
-        ! 		OPEN(UNIT=24, FILE=trim(path) // 'checkpoint/sol_c.txt')
-        ! 		OPEN(UNIT=25, FILE=trim(path) // 'checkpoint/sol_ca.txt')
-        ! 		OPEN(UNIT=26, FILE=trim(path) // 'checkpoint/sol_mg.txt')
-        ! 		OPEN(UNIT=27, FILE=trim(path) // 'checkpoint/sol_na.txt')
-        ! 		OPEN(UNIT=28, FILE=trim(path) // 'checkpoint/sol_k.txt')
-        ! 		OPEN(UNIT=29, FILE=trim(path) // 'checkpoint/sol_fe.txt')
-        ! 		OPEN(UNIT=30, FILE=trim(path) // 'checkpoint/sol_s.txt')
-        ! 		OPEN(UNIT=31, FILE=trim(path) // 'checkpoint/sol_si.txt')
-        ! 		OPEN(UNIT=32, FILE=trim(path) // 'checkpoint/sol_cl.txt')
-        ! 		OPEN(UNIT=33, FILE=trim(path) // 'checkpoint/sol_al.txt')
-        ! 		OPEN(UNIT=34, FILE=trim(path) // 'checkpoint/sol_hco3.txt')
-        ! 		OPEN(UNIT=35, FILE=trim(path) // 'checkpoint/sol_co3.txt')
-        ! 		do n=1,15
-        ! 			DO i = 1,yn/cell
-        ! 			 	READ(20+n,*) (soluteTrans(i,ii,n),ii=1,xn/cell)
-        ! 			END DO
-        ! 			solute(:,:,n) = transpose(soluteTrans(:,:,n))
-        ! 		end do
-        ! 		write(*,*) 'solution time slices'
-        !
-        ! 		! SOLUTION MATRICES
-        ! 		OPEN(UNIT=36, FILE=trim(path) // 'sol_ph.txt')
-        ! 		OPEN(UNIT=37, FILE=trim(path) // 'sol_alk.txt')
-        ! 		OPEN(UNIT=38, FILE=trim(path) // 'sol_w.txt')
-        ! 		OPEN(UNIT=39, FILE=trim(path) // 'sol_c.txt')
-        ! 		OPEN(UNIT=40, FILE=trim(path) // 'sol_ca.txt')
-        ! 		OPEN(UNIT=41, FILE=trim(path) // 'sol_mg.txt')
-        ! 		OPEN(UNIT=42, FILE=trim(path) // 'sol_na.txt')
-        ! 		OPEN(UNIT=43, FILE=trim(path) // 'sol_k.txt')
-        ! 		OPEN(UNIT=44, FILE=trim(path) // 'sol_fe.txt')
-        ! 		OPEN(UNIT=45, FILE=trim(path) // 'sol_s.txt')
-        ! 		OPEN(UNIT=46, FILE=trim(path) // 'sol_si.txt')
-        ! 		OPEN(UNIT=47, FILE=trim(path) // 'sol_cl.txt')
-        ! 		OPEN(UNIT=48, FILE=trim(path) // 'sol_al.txt')
-        ! 		OPEN(UNIT=49, FILE=trim(path) // 'sol_hco3.txt')
-        ! 		OPEN(UNIT=50, FILE=trim(path) // 'sol_co3.txt')
-        ! 		do n = 1,15
-        ! 			DO i = 1,yn*tn/(cell*mstep*ar)
-        ! 			 	READ(35+n,*) (checkMat(j,ii),ii=1,xn/cell)
-        ! 			END DO
-        ! 			soluteMat(:,:,n) = transpose(checkMat)
-        ! 		end do
-        ! 		write(*,*) 'solution matrices'
-        !
-        !
-        ! 		! SECONDARY TIME SLICES
-        ! 		do i = 1,g_sec/2
-        ! 			i_unit = 50 + i
-        ! 		        if (i < 10) then
-        ! 					write(s_i,'(i1)') i
-        ! 		        else
-        ! 					write(s_i,'(i2)') i
-        ! 		        end if
-        ! 				OPEN(UNIT=i_unit, FILE=trim(path)//'checkpoint/sec'//trim(s_i)//'.txt')
-        ! 				DO j = 1,yn/cell
-        ! 				 	READ(i_unit,*) (secondaryTrans(j,ii,i),ii=1,xn/cell)
-        ! 				END DO
-        ! 				secondary(:,:,i) = transpose(secondaryTrans(:,:,i))
-        ! 		end do
-        ! 		write(*,*) 'secondary time slices'
-        !
-        ! 		! SECONDARY MATRICES
-        ! 		do i = 1,g_sec/2
-        ! 			i_unit = i_unit+1
-        ! 		        if (i < 10) then
-        ! 					write(s_i,'(i1)') i
-        ! 		        else
-        ! 					write(s_i,'(i2)') i
-        ! 		        end if
-        ! 				OPEN(UNIT=i_unit, FILE=trim(path)//'sec'//trim(s_i)//'.txt')
-        ! 				DO j = 1,yn*tn/(cell*mstep*ar)
-        ! 				 	READ(i_unit,*) (checkMat(j,ii),ii=1,xn/cell)
-        ! 				END DO
-        ! 				secondaryMat(:,:,i) = transpose(checkMat)
-        ! 		end do
-        ! 		write(*,*) 'secondary matrices'
-        !
-        ! 		! SATURATION MATRICES
-        ! 		do i = 1,g_sec/2
-        ! 			i_unit = i_unit+1
-        ! 		        if (i < 10) then
-        ! 					write(s_i,'(i1)') i
-        ! 		        else
-        ! 					write(s_i,'(i2)') i
-        ! 		        end if
-        ! 				OPEN(UNIT=i_unit, FILE=trim(path)//'sat'//trim(s_i)//'.txt')
-        ! 				DO j = 1,yn*tn/(cell*mstep*ar)
-        ! 				 	READ(i_unit,*) (checkMat(j,ii),ii=1,xn/cell)
-        ! 				END DO
-        ! 				saturationMat(:,:,i) = transpose(checkMat)
-        ! 		end do
-        ! 		write(*,*) 'saturation matrices'
-
 
         ! end restart loop
      END IF
@@ -2620,23 +2445,6 @@ PROGRAM main
      DO j = crashstep, tn
 	!do j = 2, 50
 
-
-        ! 			! JDF
-        ! 			! move altered cells
-        ! 			if ( mod(j,nint(tn*cell/(xn*2.3))) .eq. 0) then
-        ! 				write(*,*) "shift"
-        ! 				do i =2,(xn/cell)
-        ! 	 				primaryShift(i,:,:) = primary(i-1,:,:)
-        ! 	 				secondaryShift(i,:,:) = secondary(i-1,:,:)
-        ! 				end do
-        ! 				primaryShift(1,:,5) = 9.67700
-        ! 				secondaryShift(1,:,:) = 0.0
-        ! 				primary = primaryShift
-        ! 				secondary = secondaryShift
-        ! 			end if
-
-	! 		! solve thermal energy equation
-
         IF (j .EQ. crashstep) THEN
            WRITE(*,*) "STARTING STEP:" , j
            WRITE(*,*) " "
@@ -2646,7 +2454,6 @@ PROGRAM main
            WRITE(*,*) "opened"
            WRITE(8,*) 0
            CLOSE ( 8 )
-           !velocitiesCoarse0 = 0.0
         END IF
 
 
@@ -2660,7 +2467,6 @@ PROGRAM main
            WRITE(8,*) "j/mstep:" , j/mstep
            WRITE(8,*) "j:" , j
            CLOSE ( 8 )
-           !velocitiesCoarse0 = 0.0
         END IF
 
 
@@ -2676,22 +2482,13 @@ PROGRAM main
            ! 		close ( 88 )
         END IF
 
-        ! write(*,*) " "
-        ! write(*,*) " "
-        ! write(*,*) " "
-        ! write(*,*) " "
-        ! write(*,*) "j step:" , j
 
         IF (restart .NE. 1) THEN
 
-
-
            dt_bit = dt
-
 
            h = h_next(h, psi,rho,phi,u,v,frac6,temp6,dt_bit)
            h = h_bc(h)
-
 
            ! short outcrop outflow condition
            DO jj=2,yn-1
@@ -2862,22 +2659,6 @@ PROGRAM main
 
            h_adjacent = SUM(temp6(jj_base:jj_top,1))/(jj_top-jj_base+1)
 
-           ! 		write(*,*) "tube temps"
-           ! 		write(*,*) temp6(jj_base:jj_top,1)
-           !
-           ! 		write(*,*) "h_adjacent"
-           ! 		write(*,*) h_adjacent
-           !
-           ! 		write(*,*) "jj_top"
-           ! 		write(*,*) jj_top
-           !
-           ! 		write(*,*) "jj_base"
-           ! 		write(*,*) jj_base
-           !
-           ! 		write(*,*) "rho_adjacent"
-           ! 		write(*,*) rho_one(h_adjacent)
-           !
-
            IF ((j .GT. spinup-1)) THEN
               iter = 1
            END IF
@@ -2894,13 +2675,6 @@ PROGRAM main
                     !frac6(jj,1) = -param_f_por*param_f_dx*(param_f_dx*param_f_dx*rho_fluid*grav/((y_top-y_base)*viscosity*12.0))*(rho_one(h_top)*y_top - rho_one(h_base)*y_base - rho_fluid*(y_top-y_base))
                     frac6(jj,1) = -param_f_por*param_f_dx*(param_f_dx*param_f_dx*rho_one(h_base)*grav/((y_top-y_base)*viscosity*12.0))*(rho_one(h_top)*(y_top-y_top) - rho_one(h_base)*(y_base-y_top) - rho_one(param_tsw)*(y_top-y_base))
                     !frac6(jj,1) = param_f_por*psi(f_index1-1,jj) + (dx*(12.0*(1.0e-16)*1.0)/(param_f_dx*param_f_dx*param_f_dx))
-
-                    ! 					write(*,*) "full frac6 jj 1"
-                    ! 					write(*,*) frac6(jj,1)
-                    !
-                    ! 					write(*,*) "extra bit"
-                    ! 					write(*,*) (dx*(12.0*(1.0e-16)*1.0)/(param_f_dx*param_f_dx*param_f_dx))
-                    ! 					write(*,*) " "
                  END IF
               END DO
               !write(*,*) " "
@@ -2971,14 +2745,6 @@ PROGRAM main
            u_coarse(xn/cellx-1,:) = 0.0
            u_coarse(xn/cellx-2,:) = 0.0
 
-           ! 			write(*,*) "u coarse"
-           ! 			write(*,*) maxval(u_coarse)
-           !
-           ! 			write(*,*) "v coarse"
-           ! 			write(*,*) v_coarse
-           ! 			u_step_coarse = u_coarse
-           ! 			v_step_coarse = v_coarse
-
            velocities0 = velocities(psi)
            u = phi*velocities0(1:xn,1:yn)/(rho_fluid)
            v = phi*velocities0(1:xn,yn+1:2*yn)/(rho_fluid)
@@ -2998,36 +2764,24 @@ PROGRAM main
            ! stretch everything out
            !hLong = reshape(h(1:xn-1:cell,1:yn-1:cell), (/(xn/cell)*(yn/cell)/)) ! for cell > 1
            DO i = 1,g_pri
-              ! 				bit_thing = reshape(primary(:,:,i),(/xn/cellx, yn/(2*celly)/))
-              ! 				bit_thing_a = reshape(primary_a(:,:,i),(/xn/cellx, yn/(2*celly)/))
-              ! 				bit_thing_b = reshape(primary_b(:,:,i),(/xn/cellx, yn/(2*celly)/))
               priLongBitFull(:leng,i) = RESHAPE(TRANSPOSE(primary(:,:,i)), (/ leng /))
               priLongBitFull(leng+1:2*leng,i) = RESHAPE(TRANSPOSE(primary_a(:,:,i)), (/ leng /))
               priLongBitFull(2*leng+1:,i) = RESHAPE(TRANSPOSE(primary_b(:,:,i)), (/ leng /))
            END DO
 
            DO i = 1,g_sec/2
-              ! 				bit_thing = reshape(secondary(:,:,i),(/xn/cellx, yn/(2*celly)/))
-              ! 				bit_thing_a = reshape(secondary_a(:,:,i),(/xn/cellx, yn/(2*celly)/))
-              ! 				bit_thing_b = reshape(secondary_b(:,:,i),(/xn/cellx, yn/(2*celly)/))
               secLongBitFull(:leng,i) = RESHAPE(TRANSPOSE(secondary(:,:,i)), (/ leng /))
               secLongBitFull(leng+1:2*leng,i) = RESHAPE(TRANSPOSE(secondary_a(:,:,i)), (/ leng /))
               secLongBitFull(2*leng+1:,i) = RESHAPE(TRANSPOSE(secondary_b(:,:,i)), (/ leng /))
            END DO
 
            DO i = 1,g_sol
-              ! 				bit_thing = reshape(solute(:,:,i),(/xn/cellx, yn/(2*celly)/))
-              ! 				bit_thing_a = reshape(solute_a(:,:,i),(/xn/cellx, yn/(2*celly)/))
-              ! 				bit_thing_b = reshape(solute_b(:,:,i),(/xn/cellx, yn/(2*celly)/))
               solLongBitFull(:leng,i) = RESHAPE(TRANSPOSE(solute(:,:,i)), (/ leng /))
               solLongBitFull(leng+1:2*leng,i) = RESHAPE(TRANSPOSE(solute_a(:,:,i)), (/ leng /))
               solLongBitFull(2*leng+1:,i) = RESHAPE(TRANSPOSE(solute_b(:,:,i)), (/ leng /))
            END DO
 
            DO i = 1,g_med
-              ! 				bit_thing = reshape(medium(:,:,i),(/xn/cellx, yn/(2*celly)/))
-              ! 				bit_thing_a = reshape(medium_a(:,:,i),(/xn/cellx, yn/(2*celly)/))
-              ! 				bit_thing_b = reshape(medium_b(:,:,i),(/xn/cellx, yn/(2*celly)/))
               medLongBitFull(:leng,i) = RESHAPE(TRANSPOSE(medium(:,:,i)), (/ leng /))
               medLongBitFull(leng+1:2*leng,i) = RESHAPE(TRANSPOSE(medium_a(:,:,i)), (/ leng /))
               medLongBitFull(2*leng+1:,i) = RESHAPE(TRANSPOSE(medium_b(:,:,i)), (/ leng /))
@@ -3090,57 +2844,7 @@ PROGRAM main
            ! end if
 
 
-           ! if (j .gt. mstep) then
-           ! 			write(*,*) " "
-           ! 			write(*,*) "STEP" , j , "STUFF"
-           ! 			write(*,*) "BEGIN CHAMBER MIXING"
-           !
-           !
 
-           ! 			do i = 1,g_sol
-           ! 				bit_thing_t = reshape(solLongBitFull(1:len,i),(/yn/(2*celly), xn/cellx/))
-           ! 				bit_thing = transpose(bit_thing_t)
-           ! 				bit_thing_t1 = reshape(bit_thing,(/xn/cellx,yn/(2*celly)/))
-           ! 				solute(:,(yn/(2*celly))+1:,i) = bit_thing_t1
-           !
-           ! 				bit_thing_t = reshape(solLongBitFull(len+1:2*len,i),(/yn/(2*celly), xn/cellx/))
-           ! 				bit_thing = transpose(bit_thing_t)
-           ! 				bit_thing_t1 = reshape(bit_thing,(/xn/cellx,yn/(2*celly)/))
-           ! 				solute_a(:,(yn/(2*celly))+1:,i) = bit_thing_t1
-           !
-           ! 				bit_thing_t = reshape(solLongBitFull(2*len+1:,i),(/yn/(2*celly), xn/cellx/))
-           ! 				bit_thing = transpose(bit_thing_t)
-           ! 				bit_thing_t1 = reshape(bit_thing,(/xn/cellx,yn/(2*celly)/))
-           ! 				solute_b(:,(yn/(2*celly))+1:,i) = bit_thing_t1
-           ! 			end do
-           !
-
-
-           !
-           !
-           ! 			n=2 ! alk
-           ! 			solute_inter = solute_a(:,:,n)
-           ! 			solute_a(:,:,n) = solute_a(:,:,n)*(1.0-mix_ratio/volume_ratio) + solute_b(:,:,n)*mix_ratio/volume_ratio
-           ! 			solute_b(:,:,n) = solute_b(:,:,n)*(1.0-mix_ratio) + solute_inter*mix_ratio
-           !
-           ! 			do n=4,13 ! solutes
-           ! 				solute_inter = solute_a(:,:,n)
-           ! 				solute_a(:,:,n) = solute_a(:,:,n)*(1.0-mix_ratio/volume_ratio) + solute_b(:,:,n)*mix_ratio/volume_ratio
-           ! 				solute_b(:,:,n) = solute_b(:,:,n)*(1.0-mix_ratio) + solute_inter*mix_ratio
-           ! 			end do
-
-
-
-
-           !
-           !
-           !
-           ! 		write (*,*) 'begin (system_clock):   ', counti
-           ! call system_clock(counti, count_rate, count_max)
-           ! 	write(*,*) "BEGIN SENDING SOLUTES TO PROCESSORS FOR ADVECTION" !, counti
-
-
-           !-ADVECTION: send from master to slaves
 
 
            !# CALCULATE phi_coarse_calc_long (s)
@@ -3183,19 +2887,7 @@ PROGRAM main
                  ! 					end if
                  ! 				end do
                  !
-                 sol_coarse_long = solLongBitFull(:leng,sol_index(an_id)) !reshape(solute(:,:,sol_index(an_id)), (/(xn/cellx)*(yn/celly)/))
-
-                 ! !# CALCULATE phi_coarse_calc_long (s)
-                 ! do i = 1,leng
-                 ! 	phi_calc_denom = solLongBitFull(i,3)*1000.0
-                 ! 	phi_calc_denom = phi_calc_denom + (priLongBitFull(i,2)*pri_molar(2)/pri_density(2)) + (priLongBitFull(i,3)*pri_molar(3)/pri_density(3))
-                 ! 	phi_calc_denom = phi_calc_denom + (priLongBitFull(i,4)*pri_molar(4)/pri_density(4)) + (priLongBitFull(i,5)*pri_molar(5)/pri_density(5))
-                 ! 	do ii=1,g_sec/2
-                 ! 		phi_calc_denom = phi_calc_denom + (secLongBitFull(i,ii)*sec_molar(ii)/sec_density(ii))
-                 ! 	end do
-                 ! 	phi_coarse_long(i) = solLongBitFull(i,3)*1000.0 / phi_calc_denom
-                 ! end do
-                 ! phiLongBitFull(:leng) = phi_coarse_long
+                 sol_coarse_long = solLongBitFull(:leng,sol_index(an_id))
                  phi_coarse_long = phiLongBitFull(:leng)
 
 
@@ -3209,23 +2901,13 @@ PROGRAM main
                  ! 					end if
                  ! 				end do
 
-                 sol_coarse_long = solLongBitFull(leng+1:2*leng,sol_index(an_id-11)) !sol_coarse_long = reshape(solute_a(:,:,sol_index(an_id-11)), (/(xn/cellx)*(yn/celly)/))
-
-                 ! !# CALCULATE phi_coarse_calc_long (a)
-                 ! do i = 1,leng
-                 ! 	phi_calc_denom = solLongBitFull(leng+i,3)*1000.0
-                 ! 	phi_calc_denom = phi_calc_denom + (priLongBitFull(leng+i,2)*pri_molar(2)/pri_density(2)) + (priLongBitFull(leng+i,3)*pri_molar(3)/pri_density(3))
-                 ! 	phi_calc_denom = phi_calc_denom + (priLongBitFull(leng+i,4)*pri_molar(4)/pri_density(4)) + (priLongBitFull(leng+i,5)*pri_molar(5)/pri_density(5))
-                 ! 	do ii=1,g_sec/2
-                 ! 		phi_calc_denom = phi_calc_denom + (secLongBitFull(leng+i,ii)*sec_molar(ii)/sec_density(ii))
-                 ! 	end do
-                 ! 	phi_coarse_long(i) = solLongBitFull(leng+i,3)*1000.0 / phi_calc_denom
-                 ! end do
-                 ! phiLongBitFull(leng+1:2*leng) = phi_coarse_long
+                 sol_coarse_long = solLongBitFull(leng+1:2*leng,sol_index(an_id-11))
                  phi_coarse_long = phiLongBitFull(leng+1:2*leng)
 
 
               END IF
+
+              !-ADVECTION: send from master to slaves
 
               ! send an_id name
               CALL MPI_SEND( an_id, 1, MPI_INTEGER, &
@@ -3251,18 +2933,12 @@ PROGRAM main
 
            END DO
 
-           ! ! 		write (*,*) 'end (system_clock):     ', countf
-           ! call system_clock(countf, count_rate, count_max)
-           ! write(*,*) "...DONE SENDING SOLUTES TO ALL PROCESSORS" , countf - counti
-
-
            !-ADVECTION: master receives from slaves
 
            ! call system_clock(counti, count_rate, count_max)
            ! write(*,*) "BEGIN RECEIVING ADVECTED SOLUTES"
 
            DO an_id = 1, 22
-
 
               CALL MPI_RECV( sol_coarse_long, leng, MPI_DOUBLE_PRECISION, &
                    an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
@@ -3276,26 +2952,6 @@ PROGRAM main
               END IF
 
            END DO
-
-           ! call system_clock(countf, count_rate, count_max)
-           ! 	write(*,*) "...DONE RECEIVING ADVECTED SOLUTES" , countf - counti
-           !
-           !
-           !
-           ! 		do i = 1,g_sol
-           ! 			bit_thing = reshape(solute(:,(yn/(2*celly))+1:yn/celly,i),(/xn/cellx, yn/(2*celly)/))
-           ! 			bit_thing_a = reshape(solute_a(:,(yn/(2*celly))+1:yn/celly,i),(/xn/cellx, yn/(2*celly)/))
-           ! 			bit_thing_b = reshape(solute_b(:,(yn/(2*celly))+1:yn/celly,i),(/xn/cellx, yn/(2*celly)/))
-           ! 			solLongBitFull(:(xn/cellx)*(yn/(2*celly)),i) = reshape(transpose(bit_thing), (/(xn/cellx)*(yn/(2*celly))/))
-           ! 			solLongBitFull((xn/cellx)*(yn/(2*celly))+1:(2*xn/cellx)*(yn/(2*celly)),i) = reshape(transpose(bit_thing_a), (/(xn/cellx)*(yn/(2*celly))/))
-           ! 			solLongBitFull((2*xn/cellx)*(yn/(2*celly))+1:,i) = reshape(transpose(bit_thing_b), (/(xn/cellx)*(yn/(2*celly))/))
-           ! 		end do
-           !
-
-           !end if	! end if j > mstep
-
-           ! (solLongBitFull(leng+1:2*leng,3)/solLongBitFull(2*leng+1:,3))
-
 
            ! old chamber mixing
            ! solute_inter_long = solLongBitFull(leng+1:2*leng,n)
@@ -3323,15 +2979,6 @@ PROGRAM main
               solLongBitFull(leng+1:2*leng,n) = solLongBitFull(leng+1:2*leng,n)*(1.0-mix_ratio/volLongBitFull) + solLongBitFull(2*leng+1:,n)*mix_ratio/volLongBitFull ! a mix
               solLongBitFull(2*leng+1:,n) = solLongBitFull(2*leng+1:,n)*(1.0-mix_ratio) + solute_inter_long*mix_ratio
            END DO
-
-           ! write(*,*) "...DONE WITH CHAMBER MIXING"
-
-
-
-           ! call system_clock(counti, count_rate, count_max)
-           ! 	write(*,*) "BEGIN SENDING GEOCHEM TO ALL PROCESSORS"
-           !
-
 
            !-GEOCHEM: turn off aged cells
            ! num_rows = 3*(xn/cellx)*(yn/(2*celly))
@@ -3422,24 +3069,6 @@ PROGRAM main
            !# adjust RHS solutes (avoid drift?)
            DO i = 1,g_sol
 
-              ! bit_thing_t1 = transpose(reshape(solLongBitFull(1:leng,i),(/yn/(2*celly), xn/cellx/)))
-              ! do ii = xn/cellx-3,xn/cellx
-              ! 	bit_thing_t1(ii,:) = bit_thing_t1(xn/cellx-4,:)
-              ! end do
-              ! solLongBitFull(:leng,i) = reshape(transpose(bit_thing_t1(:,:)), (/ leng /))
-              !
-              ! bit_thing_t1 = transpose(reshape(solLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), xn/cellx/)))
-              ! do ii = xn/cellx-3,xn/cellx
-              ! 	bit_thing_t1(ii,:) = bit_thing_t1(xn/cellx-4,:)
-              ! end do
-              ! solLongBitFull(leng+1:2*leng,i) = reshape(transpose(bit_thing_t1(:,:)), (/ leng /))
-              !
-              ! bit_thing_t1 = transpose(reshape(solLongBitFull(2*leng+1:,i),(/yn/(2*celly), xn/cellx/)))
-              ! do ii = xn/cellx-3,xn/cellx
-              ! 	bit_thing_t1(ii,:) = bit_thing_t1(xn/cellx-4,:)
-              ! end do
-              ! solLongBitFull(2*leng+1:,i) = reshape(transpose(bit_thing_t1(:,:)), (/ leng /))
-
               bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(1:leng,i),(/yn/(2*celly), xn/cellx/)))
               DO ii = xn/cellx-2,xn/cellx
                  bit_thing_t1(ii,:) = bit_thing_t1(xn/cellx-3,:)
@@ -3512,14 +3141,9 @@ PROGRAM main
 
            END DO
 
-           ! call system_clock(countf, count_rate, count_max)
-           ! 	write(*,*) "...DONE SENDING GEOCHEM TO ALL PROCESSORS" , countf - counti
-           !
-           !-GEOCHEM: master processor receives from slaves
-           !
-           ! call system_clock(counti, count_rate, count_max)
-           ! 	write(*,*) "BEGIN RECEIVING GEOCHEM FROM ALL PROCESSORS"
 
+
+           !-GEOCHEM: master processor receives from slaves
            DO an_id = 1, num_procs - 1
 
               ! get the size of each chunk again
@@ -3566,13 +3190,7 @@ PROGRAM main
                  medLongBitFull(start_row:end_row,ii) = medLocal(1:num_rows_to_send,ii)
               END DO
 
-              !write(*,*) "DONE RECEIVING FROM PROCESSOR", an_id
-
            END DO
-
-           ! call system_clock(countf, count_rate, count_max)
-           ! write(*,*) "...DONE RECEIVING GEOCHEM FROM ALL PROCESSORS" , countf - counti
-
 
 
 
@@ -3711,19 +3329,6 @@ PROGRAM main
               ! 		 ! get new porosity
               phi_coarse = 0.1 !medium(:,:,1) ! 1.0
 
-              !
-              !yep = write_matrix(xn,yn,real(psi,kind=4),'/data/navah/ic_saturday_400/psi_'// trim(param_o_string) //"_"// trim(param_o_rhs_string) //'.txt')
-              !yep = write_matrix(xn,yn,real(h,kind=4),'/data/navah/ic_saturday_400/h_'// trim(param_o_string) //"_"// trim(param_o_rhs_string) //'.txt')
-
-
-              ! 		OPEN(UNIT=10, FILE='/data/navah/ic_tsw/h_'// trim(param_tsw_string) //'.txt')
-              ! 		OPEN(UNIT=11, FILE='/data/navah/ic_tsw/psi_ic.txt')
-
-
-
-
-              !
-              ! write(*,*) "written big step to file"
 
               ! only write to file 5 times total
               IF (MOD(j,tn/write_factor) .EQ. 0) THEN
@@ -4201,11 +3806,6 @@ PROGRAM main
         ! slave processor loops through each coarse cell
         DO m=1,num_rows_to_receive
 
-
-
-
-
-
            IF (medLocal(m,5) .EQ. 1.0) THEN
 
               ! if (my_id .eq. 2) then
@@ -4358,8 +3958,8 @@ PROGRAM main
                    &"    Alkalinity " // TRIM(s_alk) //NEW_LINE('')// &
                    &"    -water "// TRIM(s_water) // " # kg" //NEW_LINE('')// &
                                 ! &" "  //NEW_LINE('')
-                   
-                   
+
+
                                 ! &" "  //NEW_LINE('')// &
                                 ! &"PHASES 1" //NEW_LINE('')// &
                                 ! &"Basalt1" //NEW_LINE('')// &
@@ -4368,7 +3968,7 @@ PROGRAM main
                                 ! &"    CaMgSi2O6 + 4H+ = Ca+2 + Mg+2 + 2SiO2 + 2H2O" //NEW_LINE('')// &
                                 ! &"Basalt3" //NEW_LINE('')// &
                                 ! &"    NaAlSi3O8 + 4H+ = Al+3 + Na+ + 3SiO2 + 2H2O" //NEW_LINE('')// &
-                   
+
                    &" "  //NEW_LINE('')
 
 
@@ -4383,7 +3983,7 @@ PROGRAM main
               !# PHREEQ EQUILIBRIUM_PHASES
               inputz0 = TRIM(inputz0) // "EQUILIBRIUM_PHASES 1" //NEW_LINE('')// &
                                 !# GEOCHEM: secondaries
-                   
+
                    &"    Goethite " // TRIM(s_precip) // TRIM(s_goethite) // kinetics //NEW_LINE('')// &
                    &"    Celadonite " // TRIM(s_precip) // TRIM(s_celadonite) // kinetics //NEW_LINE('')// & ! mica
                    &"    Saponite-Mg " // TRIM(s_clay) // TRIM(s_saponite) // kinetics //NEW_LINE('')// & ! smectite
@@ -4404,7 +4004,7 @@ PROGRAM main
                    &"    Pyrrhotite " // TRIM(s_precip) // TRIM(s_pyrrhotite) // kinetics //NEW_LINE('')//& ! sulfide
                    &"    Fe-Saponite-Ca " // TRIM(s_clay) // TRIM(s_fe_saponite_ca) // kinetics //NEW_LINE('')// & ! sap smec
                    &"    Fe-Saponite-Mg " // TRIM(s_clay) // TRIM(s_fe_saponite_mg) // kinetics //NEW_LINE('')// &! sap smec
-                   
+
                    ! 		&"    Kaolinite " // trim(s_precip) // trim(s_kaolinite) // kinetics //NEW_LINE('')// & ! clay
                    ! 		!&"    Celadonite -5.0 " // trim(s_celadonite) // kinetics //NEW_LINE('')// & ! mica
                    ! 		!&"    Calcite " // trim(s_precip) // trim(s_calcite) // kinetics //NEW_LINE('')// & ! .135
@@ -4427,7 +4027,7 @@ PROGRAM main
                    ! ! 		&"    Scolecite " // trim(s_precip) // trim(s_scolecite) // kinetics //NEW_LINE('')// & ! zeolite
                    !   		&"   Daphnite-7a " // trim(s_precip) // trim(s_daphnite_7a) // kinetics //NEW_LINE('')// & ! chlorite
                    !   		&"   Daphnite-14a " // trim(s_precip) // trim(s_daphnite_14a) // kinetics //NEW_LINE('')! chlorite
-                   
+
                    &" "  //NEW_LINE('')
 
 
@@ -4435,7 +4035,7 @@ PROGRAM main
 
               !# PHREEQ RATES
               inputz0 = TRIM(inputz0) // "RATES" //NEW_LINE('')// &
-                   
+
                                 ! linear decrease with alteration
                    &"BGlass" //NEW_LINE('')// &
                    &"-start" //NEW_LINE('')// &
@@ -4448,30 +4048,30 @@ PROGRAM main
                    &"*(((ACT('H+')^3)/(base0))^.33333)" //NEW_LINE('')// &
                    &"    40 save rate0 * time" //NEW_LINE('')// &
                    &"-end" //NEW_LINE('')// &
-                   
+
                    &"Basalt1" //NEW_LINE('')// &
                    &"-start" //NEW_LINE('')// &
                    &"    10 rate0=M*140.7*(1.52e-5)*" // TRIM(exp_ol) //"*(" //TRIM(ol_k1)//"*(ACT('H+')^"//TRIM(ol_n1)//")*exp(-("//TRIM(ol_e1)//"/.008314)*((1.0/TK) - (1.0/298.0))) + "//TRIM(ol_k2)//"*exp(-("//TRIM(ol_e2)//"/.008314)*((1.0/TK) - (1.0/298.0))))" //NEW_LINE('')// &
                                 !&"    10 rate0=M*250.0*(1.52e-5)*" // trim(exp_pyr) //"*" //trim(pyr_k1)//"*(ACT('H+')^"//trim(pyr_n1)//")*exp(-("//trim(pyr_e1)//"/.008314)*((1.0/TK) - (1.0/298.0)))" //NEW_LINE('')// &
                    &"    20 save rate0 * time" //NEW_LINE('')// &
                    &"-end" //NEW_LINE('')// &
-                   
+
                    &"Basalt2" //NEW_LINE('')// &
                    &"-start" //NEW_LINE('')// &
                    &"    10 rate0=M*250.0*(1.52e-5)*" // TRIM(exp_pyr) //"*(" //TRIM(pyr_k1)//"*(ACT('H+')^"//TRIM(pyr_n1)//")*exp(-("//TRIM(pyr_e1)//"/.008314)*((1.0/TK) - (1.0/298.0))) + "//TRIM(pyr_k2)//"*exp(-("//TRIM(pyr_e2)//"/.008314)*((1.0/TK) - (1.0/298.0))))" //NEW_LINE('')// &
                    &"    20 save rate0 * time" //NEW_LINE('')// &
                    &"-end" //NEW_LINE('')// &
-                   
+
                    &"Basalt3" //NEW_LINE('')// &
                    &"-start" //NEW_LINE('')// &
                    &"    10 rate0=M*270.0*(1.52e-5)*" // TRIM(exp_plag) //"*" //TRIM(plag_k1)//"*(ACT('H+')^"//TRIM(plag_n1)//")*exp(-("//TRIM(plag_e1)//"/.008314)*((1.0/TK) - (1.0/298.0)))" //NEW_LINE('')// &
                    &"    20 save rate0 * time" //NEW_LINE('')// &
                    &"-end" //NEW_LINE('')// &
-                   
+
                                 ! & "Fe2O3 .149 FeO .0075 MgO .1744 K2O .002 " //&
                                 ! & "FeO .149 MgO .1744 K2O .002 " //&
-                   
-                   
+
+
                                 !# PHREEQ KINETICS
                    &"KINETICS 1" //NEW_LINE('')// &
                    &"BGlass" //NEW_LINE('')// &
@@ -4480,33 +4080,33 @@ PROGRAM main
                    & "Fe2O3 .149 MgO .1744 K2O .002 " //&
                    & "Na2O .043" //NEW_LINE('')// &
                    &"-m0 " // TRIM(s_glass) //NEW_LINE('')// &
-                   
+
                    &"Basalt1 " //NEW_LINE('')// &
                    & TRIM(param_ol_string) //NEW_LINE('')// &
                    &"-m0 " // TRIM(s_basalt1) //NEW_LINE('')// &
-                   
+
                    &"Basalt2 " //NEW_LINE('')// &
                    & TRIM(param_pyr_string) //NEW_LINE('')// &
                    &"-m0 " // TRIM(s_basalt2) //NEW_LINE('')// &
-                   
+
                    &"Basalt3 " //NEW_LINE('')// &
                    & TRIM(param_plag_string) //NEW_LINE('')// &
                    &"-m0 " // TRIM(s_basalt3) //NEW_LINE('')// &
                    &"    -step " // TRIM(s_timestep) // " in 1" //NEW_LINE('')// &
-                   
+
                    &"INCREMENTAL_REACTIONS true" //NEW_LINE('')// &
-                   
-                   
+
+
                    &"CALCULATE_VALUES" //NEW_LINE('')// &
-                   
+
                    &"R(sum)" //NEW_LINE('')// &
                    &"-start" //NEW_LINE('')// &
                    &"10 sum = 1.0" //&
                    &"" //NEW_LINE('')// &
                    &"100 SAVE sum" //NEW_LINE('')// &
                    &"-end" //NEW_LINE('')// &
-                   
-                   
+
+
                    ! 		!
                    ! 		&"R(phi)" //NEW_LINE('')// &
                    ! 		&"-start" //NEW_LINE('')// &
@@ -4517,7 +4117,7 @@ PROGRAM main
                    ! 		&"" //NEW_LINE('')// &
                    ! 		&"100 SAVE phi" //NEW_LINE('')// &
                    ! 		&"-end" //NEW_LINE('')// &
-                   
+
                                 !
                    &"R(s_sp)" //NEW_LINE('')// &
                    &"-start" //NEW_LINE('')// &
@@ -4526,12 +4126,12 @@ PROGRAM main
                    &"" //NEW_LINE('')// &
                    &"100 SAVE s_sp" //NEW_LINE('')// &
                    &"-end" //NEW_LINE('')// &
-                   
-                   
-                   
-                   
-                   
-                   
+
+
+
+
+
+
                    &"SELECTED_OUTPUT" //NEW_LINE('')// &
                    &"    -reset false" //NEW_LINE('')// &
                    &"    -high_precision true" //NEW_LINE('')// &
@@ -4549,7 +4149,7 @@ PROGRAM main
                    &"    -p phillipsite montmor-mg gismondine vermiculite-mg natrolite talc Smectite-low-Fe-Mg " //NEW_LINE('')// & ! 7
                    &"    -p prehnite chlorite(14a) scolecite Clinochlore-14A Clinochlore-7A saponite-ca" //NEW_LINE('')// & ! 6
                    &"    -p vermiculite-na pyrrhotite Fe-Saponite-Ca Fe-Saponite-Mg" //NEW_LINE('')// & ! 4
-                   
+
                    &"    -p prehnite chlorite(14a) scolecite Clinochlore-14A Clinochlore-7A saponite-ca" //NEW_LINE('')// & ! 6
                    &"    -p prehnite chlorite(14a) scolecite Clinochlore-14A Clinochlore-7A saponite-ca" //NEW_LINE('')// & ! 6
                    &"    -p prehnite chlorite(14a) scolecite Clinochlore-14A Clinochlore-7A saponite-ca" //NEW_LINE('')// & ! 6
