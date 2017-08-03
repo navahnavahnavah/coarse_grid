@@ -691,12 +691,23 @@ CONTAINS
     ! primary_a(:,14:,:) = 0.0
     ! primary_b(:,14:,:) = 0.0
 
-    medium(:,8:,5) = 0.0
-    medium_a(:,8:,5) = 0.0
-    medium_b(:,8:,5) = 0.0
-    primary(:,8:,:) = 0.0
-    primary_a(:,8:,:) = 0.0
-    primary_b(:,8:,:) = 0.0
+    !-QUICK FIX 2 CELLS HIGH ONLY
+    ! medium(:,8:,5) = 0.0
+    ! medium_a(:,8:,5) = 0.0
+    ! medium_b(:,8:,5) = 0.0
+    ! primary(:,8:,:) = 0.0
+    ! primary_a(:,8:,:) = 0.0
+    ! primary_b(:,8:,:) = 0.0
+
+    !-QUICK FIX to fix 3950, -150
+    medium(:2,8:,5) = 0.0
+    medium_a(:2,8:,5) = 0.0
+    medium_b(:2,8:,5) = 0.0
+    primary(:2,8:,:) = 0.0
+    primary_a(:2,8:,:) = 0.0
+    primary_b(:2,8:,:) = 0.0
+
+
 
     ! 	do gg=1,yn/celly
     ! 		do g =1,xn/cellx-1

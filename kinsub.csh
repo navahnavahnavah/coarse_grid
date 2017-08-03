@@ -13,8 +13,8 @@
 #PBS -N sites_x
 #
 # set the output and error files
-#PBS -o /data/navah/cg_output/mOutG.txt
-#PBS -e /data/navah/cg_output/mErrG.txt
+#PBS -o /data/navah/cg_output/sites_0_q/mOutG.txt
+#PBS -e /data/navah/cg_output/sites_0_q/mErrG.txt
 #PBS -m abe -M navah@uchicago.edu
 # set the number of nodes to use, and number of processors
 # to use per node
@@ -80,8 +80,18 @@ set PARAM_F_POR = '6e-4'
 
 
 
-set PARAM_PATH='/data/navah/cg_output/sites_u/'
-set PARAM_ISO_PATH='/data/navah/cg_output/sites_u/'
+set PARAM_PATH='/data/navah/cg_output/sites_0_q/'
+
+
+
+
+
+
+
+
+
+
+set PARAM_ISO_PATH='/data/navah/cg_output/sites_0_q/'
 
 
 echo $PARAM_PATH
