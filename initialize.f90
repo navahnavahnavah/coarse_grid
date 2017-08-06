@@ -289,9 +289,14 @@ CONTAINS
     ! t_vol_a = 0.0112 - 0.00112
     ! t_vol_b = 0.00112
 
+    ! good alk values
     t_vol_s = 0.012
     t_vol_a = 0.008! - 0.0112/2.0
     t_vol_b = 0.004!/2.0
+
+    ! t_vol_s = 0.012
+    ! t_vol_a = 0.010! - 0.0112/2.0
+    ! t_vol_b = 0.002!/2.0
 
     ! primary minerals [mol]
     primary(:,:,:) = 0.0
@@ -699,13 +704,21 @@ CONTAINS
     ! primary_a(:,8:,:) = 0.0
     ! primary_b(:,8:,:) = 0.0
 
+    ! quick fix full column, early august
+    ! medium(:2,8:,5) = 0.0
+    ! medium_a(:2,8:,5) = 0.0
+    ! medium_b(:2,8:,5) = 0.0
+    ! primary(:2,8:,:) = 0.0
+    ! primary_a(:2,8:,:) = 0.0
+    ! primary_b(:2,8:,:) = 0.0
+
     !-QUICK FIX to fix 3950, -150
-    medium(:2,8:,5) = 0.0
-    medium_a(:2,8:,5) = 0.0
-    medium_b(:2,8:,5) = 0.0
-    primary(:2,8:,:) = 0.0
-    primary_a(:2,8:,:) = 0.0
-    primary_b(:2,8:,:) = 0.0
+    medium(:2,14:,5) = 0.0
+    medium_a(:2,14:,5) = 0.0
+    medium_b(:2,14:,5) = 0.0
+    primary(:2,14:,:) = 0.0
+    primary_a(:2,14:,:) = 0.0
+    primary_b(:2,14:,:) = 0.0
 
 
 
