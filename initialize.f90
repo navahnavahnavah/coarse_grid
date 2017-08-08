@@ -9,8 +9,8 @@ MODULE initialize
   REAL(4) :: x(xn), y(yn), t(tn)
   REAL(4) :: rho0(xn,yn)
   REAL(4) :: bcx0(xn,2), bcy0(2,yn), bcxPsi(xn,2), bcyPsi(2,yn), ic0(xn,yn)
-  REAL(4) :: kMat(xn,yn), lambdaMat(xn,yn), lambdaMatW(xn,yn), porosity(xn,yn), reactive(xn,yn), reactiveCoarse(xn/cellx,yn/celly)
-  REAL(4) :: reactiveCoarse1(xn/cellx,yn/celly), reactiveCoarse2(xn/cellx,yn/celly), sedx
+  REAL(4) :: kMat(xn,yn), lambdaMat(xn,yn), lambdaMatW(xn,yn), porosity(xn,yn), reactive(xn,yn), reactiveCoarse((xn-1)/cellx,yn/celly)
+  REAL(4) :: reactiveCoarse1((xn-1)/cellx,yn/celly), reactiveCoarse2((xn-1)/cellx,yn/celly), sedx
   REAL(4) :: sed(xn), sed1(xn), sed2(xn), sed3(xn)
 
   ! EXTRA BULLSHIT
@@ -21,40 +21,40 @@ MODULE initialize
   REAL(4) :: maskP(xn,yn), maskPLong((xn-2)*((yn/2)-2)), maskPLongT((xn-2)*((yn/2)-2))
   REAL(4) :: outerBand((xn-2)*((yn/2)-2),2*((yn/2)-2) + 1), bigBand((xn-2)*((yn/2)-2),4*((yn/2)-2) + 3)
   REAL(4) :: stretch(xn,yn), stretchLong((xn-2)*(yn-2)), stretchT(xn,yn), stretchLongT((xn-2)*(yn-2))
-  REAL(4) :: u_inter(xn,yn), v_inter(xn,yn), u_step_coarse(xn/cellx,yn/celly), v_step_coarse(xn/cellx,yn/celly)
+  REAL(4) :: u_inter(xn,yn), v_inter(xn,yn), u_step_coarse((xn-1)/cellx,yn/celly), v_step_coarse((xn-1)/cellx,yn/celly)
 
   ! 05/06 INPUT STUFF
-  REAL(4) :: primary(xn/cellx,yn/(2*celly),g_pri), primaryMat(xn*tn/(cellx*(mstep*ar)),yn/(2*celly),g_pri)
-  REAL(4) :: secondary(xn/cellx,yn/(2*celly),g_sec), secondaryMat(xn*tn/(cellx*(mstep*ar)),yn/(2*celly),g_sec)
-  REAL(4) :: solute(xn/cellx,yn/(2*celly),g_sol), soluteMat(xn*tn/(cellx*(mstep*ar)),yn/(2*celly),g_sol)
-  REAL(4) :: solute_inter(xn/cellx,yn/(2*celly)), solute_inter_long((xn/cellx)*(yn/(2*celly)))
-  REAL(4) :: medium(xn/cellx,yn/(2*celly),g_med), mediumMat(xn*tn/(cellx*(mstep*ar)),yn/(2*celly),g_med)
-  REAL(4) :: saturation(xn/cellx,yn/(2*celly),g_sec/2), saturationMat(xn*tn/(cellx*(mstep*ar)),yn/(2*celly),g_sec/2)
-  REAL(4) :: checkMat(xn*tn/(cellx*(mstep*ar)),yn/(2*celly)), checkMatF(xn*tn/(cellx*(mstep*ar)),yn/(2*celly))
+  REAL(4) :: primary((xn-1)/cellx,yn/(2*celly),g_pri), primaryMat((xn-1)*tn/(cellx*(mstep*ar)),yn/(2*celly),g_pri)
+  REAL(4) :: secondary((xn-1)/cellx,yn/(2*celly),g_sec), secondaryMat((xn-1)*tn/(cellx*(mstep*ar)),yn/(2*celly),g_sec)
+  REAL(4) :: solute((xn-1)/cellx,yn/(2*celly),g_sol), soluteMat((xn-1)*tn/(cellx*(mstep*ar)),yn/(2*celly),g_sol)
+  REAL(4) :: solute_inter((xn-1)/cellx,yn/(2*celly)), solute_inter_long(((xn-1)/cellx)*(yn/(2*celly)))
+  REAL(4) :: medium((xn-1)/cellx,yn/(2*celly),g_med), mediumMat((xn-1)*tn/(cellx*(mstep*ar)),yn/(2*celly),g_med)
+  REAL(4) :: saturation((xn-1)/cellx,yn/(2*celly),g_sec/2), saturationMat((xn-1)*tn/(cellx*(mstep*ar)),yn/(2*celly),g_sec/2)
+  REAL(4) :: checkMat((xn-1)*tn/(cellx*(mstep*ar)),yn/(2*celly)), checkMatF((xn-1)*tn/(cellx*(mstep*ar)),yn/(2*celly))
   REAL(4) :: soluteOcean(g_sol), soluteOcean_a(g_sol), soluteOcean_b(g_sol), sea(g_sol)
   REAL(4) :: inter, slope, inter2, slope2, boundary, buffer, edge, edge2
-  REAL(4) :: bit_thing(xn/cellx,yn/(2*celly)), bit_thing_t(yn/(2*celly),xn/cellx), bit_thing_t1(xn/cellx,yn/(2*celly))
+  REAL(4) :: bit_thing((xn-1)/cellx,yn/(2*celly)), bit_thing_t(yn/(2*celly),(xn-1)/cellx), bit_thing_t1((xn-1)/cellx,yn/(2*celly))
   REAL(4) :: solute_fine(xn,yn,g_sol), solute_fine_a(xn,yn,g_sol), solute_fine_b(xn,yn,g_sol)
   ! trial 04/29
-  REAL(4) :: bit_thing_a(xn/cellx,yn/(2*celly)), bit_thing_b(xn/cellx,yn/(2*celly))
-  REAL(4) :: phiCalc(xn/cellx,yn/(2*celly)), phiCalc_a(xn/cellx,yn/(2*celly))
-  REAL(4) :: phiCalcMat(xn*tn/(cellx*(mstep*ar)),yn/(2*celly)), phiCalcMat_a(xn*tn/(cellx*(mstep*ar)),yn/(2*celly))
+  REAL(4) :: bit_thing_a((xn-1)/cellx,yn/(2*celly)), bit_thing_b((xn-1)/cellx,yn/(2*celly))
+  REAL(4) :: phiCalc((xn-1)/cellx,yn/(2*celly)), phiCalc_a((xn-1)/cellx,yn/(2*celly))
+  REAL(4) :: phiCalcMat((xn-1)*tn/(cellx*(mstep*ar)),yn/(2*celly)), phiCalcMat_a((xn-1)*tn/(cellx*(mstep*ar)),yn/(2*celly))
 
   ! CHAMBER INPUT STUFF
-  REAL(4) :: primary_a(xn/cellx,yn/(2*celly),g_pri), primaryMat_a(xn*tn/(cellx*(mstep*ar)),yn/(2*celly),g_pri)
-  REAL(4) :: secondary_a(xn/cellx,yn/(2*celly),g_sec), secondaryMat_a(xn*tn/(cellx*(mstep*ar)),yn/(2*celly),g_sec)
-  REAL(4) :: solute_a(xn/cellx,yn/(2*celly),g_sol), soluteMat_a(xn*tn/(cellx*(mstep*ar)),yn/(2*celly),g_sol)
-  REAL(4) :: medium_a(xn/cellx,yn/(2*celly),g_med), mediumMat_a(xn*tn/(cellx*(mstep*ar)),yn/(2*celly),g_med)
+  REAL(4) :: primary_a((xn-1)/cellx,yn/(2*celly),g_pri), primaryMat_a((xn-1)*tn/(cellx*(mstep*ar)),yn/(2*celly),g_pri)
+  REAL(4) :: secondary_a((xn-1)/cellx,yn/(2*celly),g_sec), secondaryMat_a((xn-1)*tn/(cellx*(mstep*ar)),yn/(2*celly),g_sec)
+  REAL(4) :: solute_a((xn-1)/cellx,yn/(2*celly),g_sol), soluteMat_a((xn-1)*tn/(cellx*(mstep*ar)),yn/(2*celly),g_sol)
+  REAL(4) :: medium_a((xn-1)/cellx,yn/(2*celly),g_med), mediumMat_a((xn-1)*tn/(cellx*(mstep*ar)),yn/(2*celly),g_med)
 
-  REAL(4) :: primary_b(xn/cellx,yn/(2*celly),g_pri), primaryMat_b(xn*tn/(cellx*(mstep*ar)),yn/(2*celly),g_pri)
-  REAL(4) :: secondary_b(xn/cellx,yn/(2*celly),g_sec), secondaryMat_b(xn*tn/(cellx*(mstep*ar)),yn/(2*celly),g_sec)
-  REAL(4) :: solute_b(xn/cellx,yn/(2*celly),g_sol), soluteMat_b(xn*tn/(cellx*(mstep*ar)),yn/(2*celly),g_sol)
-  REAL(4) :: medium_b(xn/cellx,yn/(2*celly),g_med), mediumMat_b(xn*tn/(cellx*(mstep*ar)),yn/(2*celly),g_med)
+  REAL(4) :: primary_b((xn-1)/cellx,yn/(2*celly),g_pri), primaryMat_b((xn-1)*tn/(cellx*(mstep*ar)),yn/(2*celly),g_pri)
+  REAL(4) :: secondary_b((xn-1)/cellx,yn/(2*celly),g_sec), secondaryMat_b((xn-1)*tn/(cellx*(mstep*ar)),yn/(2*celly),g_sec)
+  REAL(4) :: solute_b((xn-1)/cellx,yn/(2*celly),g_sol), soluteMat_b((xn-1)*tn/(cellx*(mstep*ar)),yn/(2*celly),g_sol)
+  REAL(4) :: medium_b((xn-1)/cellx,yn/(2*celly),g_med), mediumMat_b((xn-1)*tn/(cellx*(mstep*ar)),yn/(2*celly),g_med)
 
-  REAL(4) :: primaryMat_d(xn*tn/(cellx*(mstep*ar)),yn/(2*celly),g_pri)
-  REAL(4) :: secondaryMat_d(xn*tn/(cellx*(mstep*ar)),yn/(2*celly),g_sec)
-  REAL(4) :: soluteMat_d(xn*tn/(cellx*(mstep*ar)),yn/(2*celly),g_sol)
-  REAL(4) :: mediumMat_d(xn*tn/(cellx*(mstep*ar)),yn/(2*celly),g_med)
+  REAL(4) :: primaryMat_d((xn-1)*tn/(cellx*(mstep*ar)),yn/(2*celly),g_pri)
+  REAL(4) :: secondaryMat_d((xn-1)*tn/(cellx*(mstep*ar)),yn/(2*celly),g_sec)
+  REAL(4) :: soluteMat_d((xn-1)*tn/(cellx*(mstep*ar)),yn/(2*celly),g_sol)
+  REAL(4) :: mediumMat_d((xn-1)*tn/(cellx*(mstep*ar)),yn/(2*celly),g_med)
 
   REAL(4) :: t_vol_s, t_vol_a, t_vol_b
 
@@ -62,23 +62,23 @@ MODULE initialize
   REAL(4) :: pri_density(g_pri), pri_molar(g_pri)
 
   ! ! coarse/mean arrays added for super duper coarse grid 03/25/17
-  REAL(4) :: h_coarse(xn/cellx,yn/(2*celly))
-  ! real(4) :: pri_coarse(xn/cellx,yn/celly,g_pri)
-  ! real(4) :: sec_coarse(xn/cellx,yn/celly,g_sec)
-  ! real(4) :: sol_coarse(xn/cellx,yn/celly,g_sol)
-  ! real(4) :: med_coarse(xn/cellx,yn/celly,g_med)
+  REAL(4) :: h_coarse((xn-1)/cellx,yn/(2*celly))
+  ! real(4) :: pri_coarse((xn-1)/cellx,yn/celly,g_pri)
+  ! real(4) :: sec_coarse((xn-1)/cellx,yn/celly,g_sec)
+  ! real(4) :: sol_coarse((xn-1)/cellx,yn/celly,g_sol)
+  ! real(4) :: med_coarse((xn-1)/cellx,yn/celly,g_med)
   !
-  ! real(4) :: pri_coarse_a(xn/cellx,yn/celly,g_pri)
-  ! real(4) :: sec_coarse_a(xn/cellx,yn/celly,g_sec)
-  ! real(4) :: sol_coarse_a(xn/cellx,yn/celly,g_sol)
-  ! real(4) :: med_coarse_a(xn/cellx,yn/celly,g_med)
+  ! real(4) :: pri_coarse_a((xn-1)/cellx,yn/celly,g_pri)
+  ! real(4) :: sec_coarse_a((xn-1)/cellx,yn/celly,g_sec)
+  ! real(4) :: sol_coarse_a((xn-1)/cellx,yn/celly,g_sol)
+  ! real(4) :: med_coarse_a((xn-1)/cellx,yn/celly,g_med)
   !
-  ! real(4) :: pri_coarse_b(xn/cellx,yn/celly,g_pri)
-  ! real(4) :: sec_coarse_b(xn/cellx,yn/celly,g_sec)
-  ! real(4) :: sol_coarse_b(xn/cellx,yn/celly,g_sol)
-  ! real(4) :: med_coarse_b(xn/cellx,yn/celly,g_med)
+  ! real(4) :: pri_coarse_b((xn-1)/cellx,yn/celly,g_pri)
+  ! real(4) :: sec_coarse_b((xn-1)/cellx,yn/celly,g_sec)
+  ! real(4) :: sol_coarse_b((xn-1)/cellx,yn/celly,g_sol)
+  ! real(4) :: med_coarse_b((xn-1)/cellx,yn/celly,g_med)
 
-  REAL(4) :: coarse_mask(xn/cellx,yn/(2*celly)), coarse_mask_long((xn/cellx)*(yn/(2*celly)))
+  REAL(4) :: coarse_mask((xn-1)/cellx,yn/(2*celly)), coarse_mask_long(((xn-1)/cellx)*(yn/(2*celly)))
 
   REAL(4) :: volume_ratio, mix_ratio, volume_ratio_i, volume_ratio_u
   REAL(4) :: vol_i, vol_i_a, vol_i_b
@@ -98,9 +98,9 @@ MODULE initialize
 
   ! TRANSPOSED
   REAL(4) :: hTrans(yn,xn), psiTrans(yn,xn), permeabilityTrans(yn,xn), phiTrans(yn,xn)
-  REAL(4) :: primaryTrans(yn/celly,xn/cellx,g_pri), secondaryTrans(yn/celly,xn/cellx,g_sec), soluteTrans(yn/celly,xn/cellx,g_sol), mediumTrans(yn/celly,xn/cellx,g_med)
-  REAL(4) :: primaryTrans_a(yn/celly,xn/cellx,g_pri), secondaryTrans_a(yn/celly,xn/cellx,g_sec), soluteTrans_a(yn/celly,xn/cellx,g_sol), mediumTrans_a(yn/celly,xn/cellx,g_med)
-  REAL(4) :: primaryTrans_b(yn/celly,xn/cellx,g_pri), secondaryTrans_b(yn/celly,xn/cellx,g_sec), soluteTrans_b(yn/celly,xn/cellx,g_sol), mediumTrans_b(yn/celly,xn/cellx,g_med)
+  REAL(4) :: primaryTrans(yn/celly,(xn-1)/cellx,g_pri), secondaryTrans(yn/celly,(xn-1)/cellx,g_sec), soluteTrans(yn/celly,(xn-1)/cellx,g_sol), mediumTrans(yn/celly,(xn-1)/cellx,g_med)
+  REAL(4) :: primaryTrans_a(yn/celly,(xn-1)/cellx,g_pri), secondaryTrans_a(yn/celly,(xn-1)/cellx,g_sec), soluteTrans_a(yn/celly,(xn-1)/cellx,g_sol), mediumTrans_a(yn/celly,(xn-1)/cellx,g_med)
+  REAL(4) :: primaryTrans_b(yn/celly,(xn-1)/cellx,g_pri), secondaryTrans_b(yn/celly,(xn-1)/cellx,g_sec), soluteTrans_b(yn/celly,(xn-1)/cellx,g_sol), mediumTrans_b(yn/celly,(xn-1)/cellx,g_med)
   REAL(4) :: genTrans(yn,xn)
 
 
@@ -290,13 +290,13 @@ CONTAINS
     ! t_vol_b = 0.00112
 
     ! good alk values
-    t_vol_s = 0.012
-    t_vol_a = 0.008! - 0.0112/2.0
-    t_vol_b = 0.004!/2.0
-
     ! t_vol_s = 0.012
-    ! t_vol_a = 0.010! - 0.0112/2.0
-    ! t_vol_b = 0.002!/2.0
+    ! t_vol_a = 0.008! - 0.0112/2.0
+    ! t_vol_b = 0.004!/2.0
+
+    t_vol_s = 0.012
+    t_vol_a = 0.010! - 0.0112/2.0
+    t_vol_b = 0.002!/2.0
 
     ! primary minerals [mol]
     primary(:,:,:) = 0.0
@@ -647,7 +647,7 @@ CONTAINS
     ! coarse mask
     coarse_mask = 0.0
     DO gg=1,yn/(2*celly)
-       DO g =1,xn/cellx
+       DO g =1,(xn-1)/cellx
           IF (MAXVAL(maskP((g-1)*cellx+1:g*cellx,   (gg-1)*celly+1+yn/(2*celly):(gg*celly)+yn/(2*celly)  )) .GT. 0.0) THEN
              coarse_mask(g,gg) = 1.0
           END IF
@@ -704,6 +704,15 @@ CONTAINS
     ! primary_a(:,8:,:) = 0.0
     ! primary_b(:,8:,:) = 0.0
 
+    ! 3 cells high
+    medium(:,9:,5) = 0.0
+    medium_a(:,9:,5) = 0.0
+    medium_b(:,9:,5) = 0.0
+    primary(:,9:,:) = 0.0
+    primary_a(:,9:,:) = 0.0
+    primary_b(:,9:,:) = 0.0
+
+
     ! quick fix full column, early august
     ! medium(:2,8:,5) = 0.0
     ! medium_a(:2,8:,5) = 0.0
@@ -712,18 +721,18 @@ CONTAINS
     ! primary_a(:2,8:,:) = 0.0
     ! primary_b(:2,8:,:) = 0.0
 
-    !-QUICK FIX to fix 3950, -150
-    medium(:2,14:,5) = 0.0
-    medium_a(:2,14:,5) = 0.0
-    medium_b(:2,14:,5) = 0.0
-    primary(:2,14:,:) = 0.0
-    primary_a(:2,14:,:) = 0.0
-    primary_b(:2,14:,:) = 0.0
+    ! !-QUICK FIX to fix 3950, -150
+    ! medium(:2,14:,5) = 0.0
+    ! medium_a(:2,14:,5) = 0.0
+    ! medium_b(:2,14:,5) = 0.0
+    ! primary(:2,14:,:) = 0.0
+    ! primary_a(:2,14:,:) = 0.0
+    ! primary_b(:2,14:,:) = 0.0
 
 
 
     ! 	do gg=1,yn/celly
-    ! 		do g =1,xn/cellx-1
+    ! 		do g =1,(xn-1)/cellx-1
     ! 			if ((coarse_mask(g,gg) .eq. 1.0) .and. (coarse_mask(g+1,gg) .eq. 0.0)) then
     ! 		end do
     ! 	end do
@@ -814,7 +823,7 @@ CONTAINS
     !
     ! coarse mask 2
     DO gg=1,yn/(2*celly)
-       DO g =1,xn/cellx
+       DO g =1,(xn-1)/cellx
           IF (MAXVAL(permeability((g-1)*cellx+1:g*cellx,(gg-1)*celly+1+yn/(2*celly):(gg*celly)+yn/(2*celly))) .LT. param_paq) THEN
              coarse_mask(g,gg) = 0.0
           END IF
@@ -837,7 +846,7 @@ CONTAINS
        END DO
     END DO
 
-    coarse_mask_long = RESHAPE(coarse_mask,(/(xn/cellx)*(yn/(2*celly))/))
+    coarse_mask_long = RESHAPE(coarse_mask,(/((xn-1)/cellx)*(yn/(2*celly))/))
 
     ! high lambda in deep basalt
     DO gg=1,yn
