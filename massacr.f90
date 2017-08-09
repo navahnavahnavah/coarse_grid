@@ -259,7 +259,7 @@ PROGRAM main
   REAL(4) :: nusseltLocalv(xn,1), nuBar
 
   ! geochemical alteration stuff
-  REAL(4) :: alt0(1,altnum), alt_mat(3*((xn-1)/cellx)*(yn/(2*celly))/22,altnum)
+  REAL(4) :: alt0(1,altnum), alt_mat(3*((xn-1)/cellx)*(yn/(2*celly)),altnum)
   REAL(4) :: primaryShift((xn-1)/cellx,yn/celly,g_pri), secondaryShift((xn-1)/cellx,yn/celly,g_sec)
 
   ! solute transport stuff
@@ -282,10 +282,10 @@ PROGRAM main
 
   ! formatted message passing arrays
   REAL(4) :: hLong(3*((xn-1)/cellx)*(yn/(2*celly)))
-  REAL(4) :: priLong(((xn-1)/cellx)*(yn/(2*celly)),g_pri), priLocal(3*((xn-1)/cellx)*(yn/(2*celly))/22,g_pri)
-  REAL(4) :: secLong(((xn-1)/cellx)*(yn/(2*celly)),g_sec), secLocal(3*((xn-1)/cellx)*(yn/(2*celly))/22,g_sec)
-  REAL(4) :: solLong(((xn-1)/cellx)*(yn/(2*celly)),g_sol), solLocal(3*((xn-1)/cellx)*(yn/(2*celly))/22,g_sol)
-  REAL(4) :: medLong(((xn-1)/cellx)*(yn/(2*celly)),g_med), medLocal(3*((xn-1)/cellx)*(yn/(2*celly))/22,g_med)
+  REAL(4) :: priLong(((xn-1)/cellx)*(yn/(2*celly)),g_pri), priLocal(3*((xn-1)/cellx)*(yn/(2*celly)),g_pri)
+  REAL(4) :: secLong(((xn-1)/cellx)*(yn/(2*celly)),g_sec), secLocal(3*((xn-1)/cellx)*(yn/(2*celly)),g_sec)
+  REAL(4) :: solLong(((xn-1)/cellx)*(yn/(2*celly)),g_sol), solLocal(3*((xn-1)/cellx)*(yn/(2*celly)),g_sol)
+  REAL(4) :: medLong(((xn-1)/cellx)*(yn/(2*celly)),g_med), medLocal(3*((xn-1)/cellx)*(yn/(2*celly)),g_med)
   REAL(4) :: priLongBit(3*((xn-1)/cellx)*(yn/(2*celly)))
   REAL(4) :: secLongBit(3*((xn-1)/cellx)*(yn/(2*celly)))
   REAL(4) :: solLongBit(3*((xn-1)/cellx)*(yn/(2*celly)))
@@ -3225,6 +3225,10 @@ PROGRAM main
                  solLongBitFull(start_row:end_row,ii) = solLocal(1:num_rows_to_send,ii)
               END DO
 
+              write(*,*) "an_id master received" , an_id
+              write(*,*) solLongBitFull(start_row:end_row,4)
+              write(*,*) " "
+
 
               ! receive medium chunk
               DO ii = 1,g_med
@@ -3236,7 +3240,7 @@ PROGRAM main
               END DO
 
            END DO
-           write(*,*) solLongBitFull(:,4)
+
 
            write(*,*) "done receiving geochem from slaves"
 
@@ -3801,7 +3805,7 @@ PROGRAM main
 
 
 
-
+        !-GEOCHEM: slave receives from master
         ! receive size of temperature array chunk
         CALL MPI_RECV ( num_rows_to_receive, 1 , MPI_INTEGER, &
              root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
@@ -4521,6 +4525,13 @@ PROGRAM main
            CALL MPI_SEND( solLocal(:,ii), num_rows_received, MPI_DOUBLE_PRECISION, root_process, &
                 return_data_tag, MPI_COMM_WORLD, ierr)
         END DO
+
+
+        if (my_id .eq. 54) then
+            write(*,*) "my_id slave sent" , my_id
+            write(*,*) solLocal(:,4)
+            write(*,*) " "
+        end if
         !write(*,*) solLocal(:,4)
 
         ! send medium array chunk back to root process
