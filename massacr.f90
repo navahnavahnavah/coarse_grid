@@ -2301,7 +2301,7 @@ PROGRAM main
   ! ! initialize domain geometry
   ! call init()
 
-  !-initialize all processors
+  !#initialize all processors
 
 
   ! process #0 is the root process
@@ -2321,7 +2321,7 @@ PROGRAM main
   ! what to do if you are the master processor
   IF (my_id .EQ. root_process) THEN
 
-     !-Master processor does stuff
+     !#master processor does stuff
 
      ! initialize domain geometry
      CALL init()
@@ -2439,7 +2439,7 @@ PROGRAM main
 
 
 
-     !- Dynamics loop
+     !-dynamics loop
 
      ! this is the main loop that does all the solving for tn timesteps
      DO j = crashstep, tn
@@ -2711,7 +2711,7 @@ PROGRAM main
 
         IF (j .EQ. 3) THEN
 
-           !# INITIALIZE FOR GEOCHEM
+           !-INITIALIZE FOR GEOCHEM
 
            leng = ((yn/(2*celly))*((xn-1)/cellx))
 
@@ -2736,7 +2736,7 @@ PROGRAM main
            u_coarse = phi_coarse*velocities_coarse0(1:(xn-1)/cellx,1:yn/(2*celly))/(rho_fluid)
            v_coarse = phi_coarse*velocities_coarse0(1:(xn-1)/cellx,yn/(2*celly)+1:2*yn/(2*celly))/(rho_fluid)
 
-           !#EQUALIZE U_COARSE
+           !-EQUALIZE U_COARSE
 
            DO i = 1,yn/(2*celly)
               u_coarse(:,i) = SUM(u_coarse(:,i))/((xn-1)/cellx)
@@ -2847,7 +2847,7 @@ PROGRAM main
 
 
 
-           !# CALCULATE phi_coarse_calc_long (s)
+           !- CALCULATE phi_coarse_calc_long (s + a)
            DO i = 1,leng
               phi_calc_denom = 0.0
               phi_calc_denom = solLongBitFull(i,3)*1000.0
@@ -2862,7 +2862,6 @@ PROGRAM main
 
            WRITE(*,*) "done with phi_coarse_long (s)"
 
-           !# CALCULATE phi_coarse_calc_long (a)
            DO i = 1,leng
               phi_calc_denom = 0.0
               phi_calc_denom = solLongBitFull(leng+i,3)*1000.0
@@ -2892,7 +2891,7 @@ PROGRAM main
                  phi_coarse_long = phiLongBitFull(:leng)
 
 
-                 !-ADVECTION: send from master to slaves
+                 !#ADVECTION: send from master to slaves (s)
 
                  ! send an_id name
                  CALL MPI_SEND( an_id, 1, MPI_INTEGER, &
@@ -2938,7 +2937,7 @@ PROGRAM main
 
 
 
-                 !-ADVECTION: send from master to slaves
+                 !#ADVECTION: send from master to slaves (a)
 
                  ! send an_id name
                  CALL MPI_SEND( an_id, 1, MPI_INTEGER, &
@@ -2969,7 +2968,7 @@ PROGRAM main
 
               END DO
 
-           !-ADVECTION: master receives from slaves
+           !#ADVECTION: master receives from slaves
 
            ! call system_clock(counti, count_rate, count_max)
            write(*,*) "BEGIN RECEIVING ADVECTED SOLUTES"
@@ -3002,7 +3001,7 @@ PROGRAM main
            ! 	solLongBitFull(2*leng+1:,n) = solLongBitFull(2*leng+1:,n)*(1.0-mix_ratio) + solute_inter_long*mix_ratio
            ! end do
 
-           !-GEOCHEM: mixing between chambers
+           !-mixing between chambers
            DO i=1,leng
               volLongBitFull(i) = MAX(solLongBitFull(leng+i,3)/MAX(solLongBitFull(2*leng+i,3),1e-10),1e-10)
            END DO
@@ -3018,7 +3017,7 @@ PROGRAM main
               solLongBitFull(2*leng+1:,n) = solLongBitFull(2*leng+1:,n)*(1.0-mix_ratio) + solute_inter_long*mix_ratio
            END DO
 
-           !-GEOCHEM: turn off aged cells
+           !-turn off aged cells
            ! num_rows = 3*((xn-1)/cellx)*(yn/(2*celly))
            ! do n=1,num_rows
            ! 	if (t(j) .gt. 2.512e13) then
@@ -3028,7 +3027,7 @@ PROGRAM main
            ! 	end if
            ! end do
 
-           !# move aged cells
+           !-move aged cells
            num_rows = 3*((xn-1)/cellx)*(yn/(2*celly))
            !do n=1,num_rows'
            WRITE(*,*) "t j-mstep"
@@ -3108,7 +3107,7 @@ PROGRAM main
            END IF
            !end do
 
-        !    !# adjust RHS solutes (avoid drift?)
+           !-adjust RHS solutes (avoid drift?)
            DO i = 1,g_sol
 
               bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(1:leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
@@ -3134,7 +3133,7 @@ PROGRAM main
            END DO
 
 
-           !-GEOCHEM: send from master to slaves
+           !#GEOCHEM: send from master to slaves
            DO an_id = 1, num_procs - 1
 
               ! put number of rows in vector here for hLong
@@ -3187,7 +3186,7 @@ PROGRAM main
 
 
 
-           !-GEOCHEM: receives from slaves
+           !#GEOCHEM: receives from slaves
            DO an_id = 1, num_procs - 1
 
               ! get the size of each chunk again
@@ -3225,9 +3224,9 @@ PROGRAM main
                  solLongBitFull(start_row:end_row,ii) = solLocal(1:num_rows_to_send,ii)
               END DO
 
-              write(*,*) "an_id master received" , an_id
-              write(*,*) solLongBitFull(start_row:end_row,4)
-              write(*,*) " "
+            !   write(*,*) "an_id master received" , an_id
+            !   write(*,*) solLongBitFull(start_row:end_row,4)
+            !   write(*,*) " "
 
 
               ! receive medium chunk
@@ -3246,7 +3245,7 @@ PROGRAM main
 
 
 
-           !#GEOCHEM: water volume correction here
+           !-water volume correction here
 
            ! 		medium(:,:,3) = vol_i
            ! 		medium_a(:,:,3) = vol_i_a
@@ -3268,7 +3267,7 @@ PROGRAM main
            ! 		end do
 
 
-           !-GEOCHEM: add to full output arrays
+           !-add to full output arrays
            IF (MOD(j,mstep*ar) .EQ. 0) THEN
 
 
@@ -3311,9 +3310,6 @@ PROGRAM main
                  bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(2*leng+1:,i),(/yn/(2*celly), (xn-1)/cellx/)))
                  solute_b(:,:,i) = bit_thing_t1
               END DO
-
-              !# write solute b DIC
-              yep = write_matrix ( (xn-1)/cellx, yn/(2*celly), REAL(solute_b(:,:,4),kind=4), TRIM(path) // 'sol_b_dic.txt' )
 
               DO i = 1,g_med
 
@@ -3390,7 +3386,7 @@ PROGRAM main
 
                  WRITE(*,*) "BEGIN WRITING TO FILE"
 
-                 !-Write everything to file
+                 !-write everything to file
 
                  yep = write_matrix ( xn, yn, REAL(psi,kind=4), TRIM(path) // 'psi.txt' )
                  yep = write_matrix ( xn, yn, REAL(h,kind=4), TRIM(path) // 'h.txt' )
@@ -3654,13 +3650,13 @@ PROGRAM main
 
 
 
-     !-ADVECTION: slave receives message
+     !#ADVECTION: slave receives message
      CALL init_mini()
 
      leng = (yn/(2*celly))*((xn-1)/cellx)
      ! message receiving has to happen every mth step
 
-     !-GEOCHEM: primary compositions + amounts
+     !-primary compositions + amounts
 
      param_ol_string ='-f MgO 1.0 FeO 1.0 SiO2 1.0'
      !param_ol_string ='-f MgO 2.0 SiO2 1.0'
@@ -3774,7 +3770,7 @@ PROGRAM main
            !phi_coarse_local = 0.5
            !write(*,*) maxval(phi_coarse_local)
 
-           !# DO ADVECTION
+           !-do advection
            IF (an_id_local .LE. 11) THEN
               DO ii = 1,cstep
                  sol_coarse_local = solute_next_coarse(sol_coarse_local,u_coarse_local/phi_coarse_local,v_coarse_local/phi_coarse_local,sea(sol_index(an_id_local)))
@@ -3805,7 +3801,7 @@ PROGRAM main
 
 
 
-        !-GEOCHEM: slave receives from master
+        !#GEOCHEM: slave receives from master
         ! receive size of temperature array chunk
         CALL MPI_RECV ( num_rows_to_receive, 1 , MPI_INTEGER, &
              root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
@@ -3850,7 +3846,7 @@ PROGRAM main
 
 
 
-        !-GEOCHEM: slave runs geochem model
+        !-slave runs geochem model
 
         timestep3 = dt_local*mstep!/10.0
         WRITE(s_timestep,'(F25.10)') timestep3
@@ -3865,8 +3861,6 @@ PROGRAM main
               ! 	write(*,*) "	PROC 40 START LOADING"
               ! end if
 
-
-              !-GEOCHEM: slave starts
 
               primary3 = priLocal(m,:)
               secondary3 = secLocal(m,:)
@@ -3904,7 +3898,7 @@ PROGRAM main
               WRITE(s_basalt1,'(F25.10)') primary3(4)
               WRITE(s_glass,'(F25.10)') primary3(5)
 
-              !-GEOCHEM: rate constants!
+              !-rate constants!
               exp_ol = "0.005"
               exp_pyr = "0.005"
               exp_plag = "0.05"
@@ -3976,7 +3970,6 @@ PROGRAM main
               WRITE(s_fe_saponite_mg,'(F25.10)') secondary3(37) !!!
 
               ! OTHER INFORMATION TO STRINGS
-              !# s_precip, s_clay
               WRITE(s_temp,'(F25.10)') temp3
               WRITE(s_precip,'(F25.10)') medium3(2)
               WRITE(s_reactive,'(F25.10)') medium3(4)
@@ -3993,7 +3986,7 @@ PROGRAM main
 
 
 
-              !# PHREEQ SOLUTION
+              !-phreeqc solution
               inputz0 = "SOLUTION 1 " //NEW_LINE('')// &
                    &"    units   mol/kgw" //NEW_LINE('')// &
                    &"    temp" // TRIM(s_temp) //NEW_LINE('')// &
@@ -4032,10 +4025,8 @@ PROGRAM main
               !
               ! 		if (medium3(2) .eq. 0.0) then
 
-              !# PHREEQ EQUILIBRIUM_PHASES
+              !-phreeqc equilibrium phases
               inputz0 = TRIM(inputz0) // "EQUILIBRIUM_PHASES 1" //NEW_LINE('')// &
-                                !# GEOCHEM: secondaries
-
                    &"    Goethite " // TRIM(s_precip) // TRIM(s_goethite) // kinetics //NEW_LINE('')// &
                    &"    Celadonite " // TRIM(s_precip) // TRIM(s_celadonite) // kinetics //NEW_LINE('')// & ! mica
                    &"    Saponite-Mg " // TRIM(s_clay) // TRIM(s_saponite) // kinetics //NEW_LINE('')// & ! smectite
@@ -4085,7 +4076,7 @@ PROGRAM main
 
               ! 		end if
 
-              !# PHREEQ RATES
+              !-phreeqc rates
               inputz0 = TRIM(inputz0) // "RATES" //NEW_LINE('')// &
 
                                 ! linear decrease with alteration
@@ -4124,7 +4115,7 @@ PROGRAM main
                                 ! & "FeO .149 MgO .1744 K2O .002 " //&
 
 
-                                !# PHREEQ KINETICS
+                   !-phreeqc kinetics
                    &"KINETICS 1" //NEW_LINE('')// &
                    &"BGlass" //NEW_LINE('')// &
                                 ! ! seyfried JDF
@@ -4245,7 +4236,7 @@ PROGRAM main
               !   END IF
 
 
-              !-GEOCHEM: slave writes to variables
+              !-slave writes to variables
 
               ! IF (id.LT.0) THEN
               ! 	write(*,*) "weird stop?"
@@ -4506,7 +4497,7 @@ PROGRAM main
         ! 	write(*,*) "	PROC 40 START SENDING"
         ! end if
 
-        !-GEOCHEM: slave sends to master
+        !#GEOCHEM: slave sends to master
 
         ! send primary array chunk back to root process
         DO ii = 1,g_pri
@@ -4527,11 +4518,11 @@ PROGRAM main
         END DO
 
 
-        if (my_id .eq. 54) then
-            write(*,*) "my_id slave sent" , my_id
-            write(*,*) solLocal(:,4)
-            write(*,*) " "
-        end if
+        ! if (my_id .eq. 54) then
+        !     write(*,*) "my_id slave sent" , my_id
+        !     write(*,*) solLocal(:,4)
+        !     write(*,*) " "
+        ! end if
         !write(*,*) solLocal(:,4)
 
         ! send medium array chunk back to root process
