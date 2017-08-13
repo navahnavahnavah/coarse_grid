@@ -2729,8 +2729,8 @@ PROGRAM main
 
            ! 			psi_coarse(2,:) = psi_coarse(1,:)
            psi_coarse((xn-1)/cellx,:) = 0.0
-           psi_coarse((xn-1)/cellx-1,:) = 0.0
-           psi_coarse((xn-1)/cellx-2,:) = 0.0
+        !    psi_coarse((xn-1)/cellx-1,:) = 0.0
+        !    psi_coarse((xn-1)/cellx-2,:) = 0.0
 
            velocities_coarse0 = velocities_coarse(psi_coarse)
            u_coarse = phi_coarse*velocities_coarse0(1:(xn-1)/cellx,1:yn/(2*celly))/(rho_fluid)
@@ -2742,8 +2742,8 @@ PROGRAM main
               u_coarse(:,i) = SUM(u_coarse(:,i))/((xn-1)/cellx)
            END DO
            u_coarse((xn-1)/cellx,:) = 0.0
-           u_coarse((xn-1)/cellx-1,:) = 0.0
-           u_coarse((xn-1)/cellx-2,:) = 0.0
+        !    u_coarse((xn-1)/cellx-1,:) = 0.0
+        !    u_coarse((xn-1)/cellx-2,:) = 0.0
 
            velocities0 = velocities(psi)
            u = phi*velocities0(1:xn,1:yn)/(rho_fluid)
@@ -2864,13 +2864,17 @@ PROGRAM main
 
            DO i = 1,leng
               phi_calc_denom = 0.0
-              phi_calc_denom = solLongBitFull(leng+i,3)*1000.0
+              phi_calc_denom = solLongBitFull(leng+i,3)*1000.0 + solLongBitFull(2*leng+i,3)*1000.0
               phi_calc_denom = phi_calc_denom + (priLongBitFull(leng+i,2)*pri_molar(2)/pri_density(2)) + (priLongBitFull(leng+i,3)*pri_molar(3)/pri_density(3))
               phi_calc_denom = phi_calc_denom + (priLongBitFull(leng+i,4)*pri_molar(4)/pri_density(4)) + (priLongBitFull(leng+i,5)*pri_molar(5)/pri_density(5))
+              ! adding porosity of b
+              phi_calc_denom = phi_calc_denom + (priLongBitFull(2*leng+i,2)*pri_molar(2)/pri_density(2)) + (priLongBitFull(2*leng+i,3)*pri_molar(3)/pri_density(3))
+              phi_calc_denom = phi_calc_denom + (priLongBitFull(2*leng+i,4)*pri_molar(4)/pri_density(4)) + (priLongBitFull(2*leng+i,5)*pri_molar(5)/pri_density(5))
               DO ii=1,g_sec/2
                  phi_calc_denom = phi_calc_denom + (secLongBitFull(leng+i,ii)*sec_molar(ii)/sec_density(ii))
+                 phi_calc_denom = phi_calc_denom + (secLongBitFull(2*leng+i,ii)*sec_molar(ii)/sec_density(ii))
               END DO
-              phi_coarse_long(i) = solLongBitFull(leng+i,3)*1000.0 / phi_calc_denom
+              phi_coarse_long(i) = (solLongBitFull(leng+i,3)*1000.0+solLongBitFull(2*leng+i,3)*1000.0) / phi_calc_denom
            END DO
            phiLongBitFull(leng+1:2*leng) = phi_coarse_long
 
@@ -3002,20 +3006,36 @@ PROGRAM main
            ! end do
 
            !-mixing between chambers
-           DO i=1,leng
-              volLongBitFull(i) = MAX(solLongBitFull(leng+i,3)/MAX(solLongBitFull(2*leng+i,3),1e-10),1e-10)
-           END DO
-           WRITE(*,*) "made volLongBitFull"
-           n=2 ! alk
+        !    DO i=1,leng
+        !       volLongBitFull(i) = MAX(solLongBitFull(leng+i,3)/MAX(solLongBitFull(2*leng+i,3),1e-10),1e-10)
+        !    END DO
+        !    WRITE(*,*) "made volLongBitFull"
+        !    n=2 ! alk
+        !    solute_inter_long = solLongBitFull(leng+1:2*leng,n)
+        !    solLongBitFull(leng+1:2*leng,n) = solLongBitFull(leng+1:2*leng,n)*(1.0-mix_ratio/volLongBitFull) + solLongBitFull(2*leng+1:,n)*mix_ratio/volLongBitFull ! a mix
+        !    solLongBitFull(2*leng+1:,n) = solLongBitFull(2*leng+1:,n)*(1.0-mix_ratio) + solute_inter_long*mix_ratio
+           !
+        !    DO n=4,13 ! solutes
+        !       solute_inter_long = solLongBitFull(leng+1:2*leng,n)
+        !       solLongBitFull(leng+1:2*leng,n) = solLongBitFull(leng+1:2*leng,n)*(1.0-mix_ratio/volLongBitFull) + solLongBitFull(2*leng+1:,n)*mix_ratio/volLongBitFull ! a mix
+        !       solLongBitFull(2*leng+1:,n) = solLongBitFull(2*leng+1:,n)*(1.0-mix_ratio) + solute_inter_long*mix_ratio
+        !    END DO
+
+        !-new mixing between chambers
+        DO i=1,leng
+           volLongBitFull(i) = t_vol_a/t_vol_b
+        END DO
+        WRITE(*,*) "made volLongBitFull"
+        n=2 ! alk
+        solute_inter_long = solLongBitFull(leng+1:2*leng,n)
+        solLongBitFull(leng+1:2*leng,n) = solLongBitFull(leng+1:2*leng,n)*(1.0-mix_ratio/volLongBitFull) + solLongBitFull(2*leng+1:,n)*mix_ratio/volLongBitFull ! a mix
+        solLongBitFull(2*leng+1:,n) = solLongBitFull(2*leng+1:,n)*(1.0-mix_ratio) + solute_inter_long*mix_ratio
+
+        DO n=4,13 ! solutes
            solute_inter_long = solLongBitFull(leng+1:2*leng,n)
            solLongBitFull(leng+1:2*leng,n) = solLongBitFull(leng+1:2*leng,n)*(1.0-mix_ratio/volLongBitFull) + solLongBitFull(2*leng+1:,n)*mix_ratio/volLongBitFull ! a mix
            solLongBitFull(2*leng+1:,n) = solLongBitFull(2*leng+1:,n)*(1.0-mix_ratio) + solute_inter_long*mix_ratio
-
-           DO n=4,13 ! solutes
-              solute_inter_long = solLongBitFull(leng+1:2*leng,n)
-              solLongBitFull(leng+1:2*leng,n) = solLongBitFull(leng+1:2*leng,n)*(1.0-mix_ratio/volLongBitFull) + solLongBitFull(2*leng+1:,n)*mix_ratio/volLongBitFull ! a mix
-              solLongBitFull(2*leng+1:,n) = solLongBitFull(2*leng+1:,n)*(1.0-mix_ratio) + solute_inter_long*mix_ratio
-           END DO
+        END DO
 
            !-turn off aged cells
            ! num_rows = 3*((xn-1)/cellx)*(yn/(2*celly))
@@ -3045,89 +3065,97 @@ PROGRAM main
             !      WRITE(*,*) "moving cells now..."
 
             ! for x cell blocks = 4500m (cellx = 90)
+            ! stop moving after 2.7 ma, still for 0.8 ma
             IF (FLOOR((t(j-mstep)-2.512e13)/4.239e12) .LT. FLOOR((t(j)-2.512e13)/4.239e12)) THEN
+            ! if (floor((t(j-1)-2.512e13)/4.239e12) .gt. floor((t(j)-2.512e13)/4.239e12)) then
                WRITE(*,*) "moving cells now..."
 
-                 DO i = 1,g_pri
-                    bit_thing_t1 = TRANSPOSE(RESHAPE(priLongBitFull(1:leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
-                    bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                    priLongBitFull(:leng,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
+                !  DO i = 1,g_pri
+                !     bit_thing_t1 = TRANSPOSE(RESHAPE(priLongBitFull(1:leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
+                !     bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                !     priLongBitFull(:leng,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
+                !
+                !     bit_thing_t1 = TRANSPOSE(RESHAPE(priLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
+                !     bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                !     priLongBitFull(leng+1:2*leng,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
+                !
+                !     bit_thing_t1 = TRANSPOSE(RESHAPE(priLongBitFull(2*leng+1:,i),(/yn/(2*celly), (xn-1)/cellx/)))
+                !     bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                !     priLongBitFull(2*leng+1:,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
+                !  END DO
+                !
+                !  DO i = 1,g_sec
+                !     bit_thing_t1 = TRANSPOSE(RESHAPE(secLongBitFull(1:leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
+                !     bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                !     secLongBitFull(:leng,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
+                !
+                !     bit_thing_t1 = TRANSPOSE(RESHAPE(secLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
+                !     bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                !     secLongBitFull(leng+1:2*leng,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
+                !
+                !     bit_thing_t1 = TRANSPOSE(RESHAPE(secLongBitFull(2*leng+1:,i),(/yn/(2*celly), (xn-1)/cellx/)))
+                !     bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                !     secLongBitFull(2*leng+1:,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
+                !  END DO
+                !
+                ! !  bit_thing_t1 = TRANSPOSE(RESHAPE(medLongBitFull(1:leng,5),(/yn/(2*celly), (xn-1)/cellx/)))
+                ! !  bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                ! !  medLongBitFull(:leng,5) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
+                !  !
+                ! !  bit_thing_t1 = TRANSPOSE(RESHAPE(medLongBitFull(leng+1:2*leng,5),(/yn/(2*celly), (xn-1)/cellx/)))
+                ! !  bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                ! !  medLongBitFull(leng+1:2*leng,5) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
+                !  !
+                ! !  bit_thing_t1 = TRANSPOSE(RESHAPE(medLongBitFull(2*leng+1:,5),(/yn/(2*celly), (xn-1)/cellx/)))
+                ! !  bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                ! !  medLongBitFull(2*leng+1:,5) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
+                !
+                !  DO i = 1,g_sol
+                !     bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(1:leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
+                !     bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                !     solLongBitFull(:leng,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
+                !
+                !     bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
+                !     bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                !     solLongBitFull(leng+1:2*leng,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
+                !
+                !     bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(2*leng+1:,i),(/yn/(2*celly), (xn-1)/cellx/)))
+                !     bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                !     solLongBitFull(2*leng+1:,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
+                !  END DO
 
-                    bit_thing_t1 = TRANSPOSE(RESHAPE(priLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
-                    bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                    priLongBitFull(leng+1:2*leng,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
 
-                    bit_thing_t1 = TRANSPOSE(RESHAPE(priLongBitFull(2*leng+1:,i),(/yn/(2*celly), (xn-1)/cellx/)))
-                    bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                    priLongBitFull(2*leng+1:,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
-                 END DO
-
-                 DO i = 1,g_sec
-                    bit_thing_t1 = TRANSPOSE(RESHAPE(secLongBitFull(1:leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
-                    bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                    secLongBitFull(:leng,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
-
-                    bit_thing_t1 = TRANSPOSE(RESHAPE(secLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
-                    bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                    secLongBitFull(leng+1:2*leng,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
-
-                    bit_thing_t1 = TRANSPOSE(RESHAPE(secLongBitFull(2*leng+1:,i),(/yn/(2*celly), (xn-1)/cellx/)))
-                    bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                    secLongBitFull(2*leng+1:,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
-                 END DO
-
-                !  bit_thing_t1 = TRANSPOSE(RESHAPE(medLongBitFull(1:leng,5),(/yn/(2*celly), (xn-1)/cellx/)))
-                !  bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                !  medLongBitFull(:leng,5) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
-                 !
-                !  bit_thing_t1 = TRANSPOSE(RESHAPE(medLongBitFull(leng+1:2*leng,5),(/yn/(2*celly), (xn-1)/cellx/)))
-                !  bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                !  medLongBitFull(leng+1:2*leng,5) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
-                 !
-                !  bit_thing_t1 = TRANSPOSE(RESHAPE(medLongBitFull(2*leng+1:,5),(/yn/(2*celly), (xn-1)/cellx/)))
-                !  bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                !  medLongBitFull(2*leng+1:,5) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
-
-                 DO i = 1,g_sol
-                    bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(1:leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
-                    bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                    solLongBitFull(:leng,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
-
-                    bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
-                    bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                    solLongBitFull(leng+1:2*leng,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
-
-                    bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(2*leng+1:,i),(/yn/(2*celly), (xn-1)/cellx/)))
-                    bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                    solLongBitFull(2*leng+1:,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
-                 END DO
 
 
               END IF
            END IF
            !end do
 
+
            !-adjust RHS solutes (avoid drift?)
            DO i = 1,g_sol
 
               bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(1:leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
-              DO ii = (xn-1)/cellx-2,(xn-1)/cellx
-                 bit_thing_t1(ii,:) = bit_thing_t1((xn-1)/cellx-3,:)
-              END DO
+              !DO ii = (xn-1)/cellx-2,(xn-1)/cellx
+                 ii = (xn-1)/cellx
+                 bit_thing_t1(ii,:) = bit_thing_t1((xn-1)/cellx-1,:)
+              !END DO
               solLongBitFull(:leng,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
 
 
               bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
-              DO ii = (xn-1)/cellx-2,(xn-1)/cellx
-                 bit_thing_t1(ii,:) = bit_thing_t1((xn-1)/cellx-3,:)
-              END DO
+              !DO ii = (xn-1)/cellx-2,(xn-1)/cellx
+                 ii = (xn-1)/cellx
+                 bit_thing_t1(ii,:) = bit_thing_t1((xn-1)/cellx-1,:)
+              !END DO
               solLongBitFull(leng+1:2*leng,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
 
 
               bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(2*leng+1:,i),(/yn/(2*celly), (xn-1)/cellx/)))
-              DO ii = (xn-1)/cellx-2,(xn-1)/cellx
-                 bit_thing_t1(ii,:) = bit_thing_t1((xn-1)/cellx-3,:)
-              END DO
+              !DO ii = (xn-1)/cellx-2,(xn-1)/cellx
+                 ii = (xn-1)/cellx
+                 bit_thing_t1(ii,:) = bit_thing_t1((xn-1)/cellx-1,:)
+              !END DO
               solLongBitFull(2*leng+1:,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
 
            END DO
@@ -3661,7 +3689,8 @@ PROGRAM main
      param_ol_string ='-f MgO 1.0 FeO 1.0 SiO2 1.0'
      !param_ol_string ='-f MgO 2.0 SiO2 1.0'
      !param_ol_string ='-f FeO 2.0 SiO2 1.0'
-     param_pyr_string='-f CaO 1.0 MgO 1.0 SiO2 2.0'
+    param_pyr_string='-f CaO 1.0 MgO 1.0 SiO2 2.0'
+    !param_pyr_string='-f MgO 2.0 SiO2 2.0'
      param_plag_string='-f NaAlSi3O8 0.5 CaAl2Si2O8 0.5'
 
      ! 		&"-f CaO 1.0 FeO 1.0 SiO2 2.0 " //NEW_LINE('')// & ! hedenbergite
@@ -3888,6 +3917,8 @@ PROGRAM main
               WRITE(s_hco3,'(F25.10)') solute3(14)
               WRITE(s_co3,'(F25.10)') solute3(15)
 
+              !s_co2 = "0.002100"
+
               ! MEDIUM TO STRINGS
               WRITE(s_w,'(F25.10)') medium3(3) !solute3(3)
 
@@ -3911,6 +3942,11 @@ PROGRAM main
                  exp_plag = "0.05"
                  !param_exp_string = "0.003"
               END IF
+
+            !   IF ((primary3(5) .GT. 0.0) .AND. (primary3(4) .LE. 0.0) .AND. (primary3(3) .LE. 0.0) .AND. (primary3(2) .Le. 0.0)) THEN
+            !      param_exp_string = "0.00125"
+            !      !param_exp_string = "0.003"
+            !   END IF
 
               ! ! solo
               ! if ((primary3(5) .gt. 0.0) .and. (primary3(4) .gt. 0.0) .and. (primary3(3) .gt. 0.0) .and. (primary3(2) .gt. 0.0)) then
@@ -4115,6 +4151,9 @@ PROGRAM main
                                 ! & "FeO .149 MgO .1744 K2O .002 " //&
 
 
+
+
+
                    !-phreeqc kinetics
                    &"KINETICS 1" //NEW_LINE('')// &
                    &"BGlass" //NEW_LINE('')// &
@@ -4171,7 +4210,10 @@ PROGRAM main
                    &"-end" //NEW_LINE('')// &
 
 
-
+                !    !-phreeqc knobs
+                !    &"KNOBS" //NEW_LINE('')// &
+                !    !&"-tolerance 1e-6" //NEW_LINE('')// &
+                !    &"-convergence_tolerance 1e-6" //NEW_LINE('')// &
 
 
 

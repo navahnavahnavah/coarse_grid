@@ -91,9 +91,11 @@ MODULE initialize
   CHARACTER(len=300) :: param_o_string, param_w_string, param_w_rhs_string, param_h_string, param_o_rhs_string, param_tsw_string
   CHARACTER(len=300) :: param_dic_string, param_scope_string, param_trace_string, param_ch_string, param_f_dx_string, param_f_k_string
   CHARACTER(len=300) :: param_paq_string, param_ch_rhs_string, param_f_freq_string, param_f_por_string
+  CHARACTER(len=300) :: param_t_diff_string
   INTEGER :: in, crashstep, restart, param_trace
   REAL(4):: param_o, param_w, param_w_rhs, param_h, param_o_rhs, param_tsw, param_dic, param_scope, param_ch
   REAL(4) :: param_paq, param_ch_rhs, param_f_dx, param_f_k, param_f_freq, param_f_por
+  REAL(4) :: param_t_diff
 
 
   ! TRANSPOSED
@@ -198,6 +200,7 @@ CONTAINS
     CALL getarg(19,param_f_freq_string)
     CALL getarg(20,param_f_por_string)
     CALL getarg(21,iso_path)
+    CALL getarg(22,param_t_diff_string)
 
     READ (crashstring, *) crashstep
     READ (restartstring, *) restart
@@ -237,6 +240,7 @@ CONTAINS
     param_f_freq = param_f_dx/param_f_freq
 
     READ (param_f_por_string, *) param_f_por
+    READ (param_t_diff_string, *) param_t_diff
 
 
 
@@ -295,8 +299,8 @@ CONTAINS
     ! t_vol_b = 0.004!/2.0
 
     t_vol_s = 0.012
-    t_vol_a = 0.010! - 0.0112/2.0
-    t_vol_b = 0.002!/2.0
+    t_vol_a = 0.009! - 0.0112/2.0
+    t_vol_b = 0.003!/2.0
 
     ! primary minerals [mol]
     primary(:,:,:) = 0.0
@@ -426,7 +430,7 @@ CONTAINS
     !            alk dic ca mg na k  fe s   si  cl  al
 
     volume_ratio = t_vol_a/t_vol_b
-    mix_ratio = dt*mstep/tb_res
+    mix_ratio = dt*mstep/param_t_diff
 
     !soluteOcean(5) = 0.011
     !solute_fine(1:xn/4,:,5) = 0.011
