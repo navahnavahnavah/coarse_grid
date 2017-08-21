@@ -298,9 +298,9 @@ CONTAINS
     ! t_vol_a = 0.008! - 0.0112/2.0
     ! t_vol_b = 0.004!/2.0
 
-    t_vol_s = 0.012
-    t_vol_a = 0.009! - 0.0112/2.0
-    t_vol_b = 0.003!/2.0
+    t_vol_s = 0.12
+    t_vol_a = 0.09! - 0.0112/2.0
+    t_vol_b = 0.03!/2.0
 
     ! primary minerals [mol]
     primary(:,:,:) = 0.0
@@ -850,6 +850,8 @@ CONTAINS
        END DO
     END DO
 
+    !- COARSE MASK QUICK FIX
+    coarse_mask(:,9:) = 0.0
     coarse_mask_long = RESHAPE(coarse_mask,(/((xn-1)/cellx)*(yn/(2*celly))/))
 
     ! high lambda in deep basalt
