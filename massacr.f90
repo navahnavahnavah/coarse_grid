@@ -2720,7 +2720,7 @@ PROGRAM main
 
            DO ii = yn/(2*celly)+1,yn/(celly)
               DO i = 1,(xn-1)/cellx
-                 h_coarse(i,ii-yn/(2*celly)) = 310.0!SUM(h((i-1)*cellx+1:i*cellx,(ii-1)*celly+1:ii*celly))/(cellx*celly)
+                 h_coarse(i,ii-yn/(2*celly)) = SUM(h((i-1)*cellx+1:i*cellx,(ii-1)*celly+1:ii*celly))/(cellx*celly)
                  psi_coarse(i,ii-yn/(2*celly)) = psi(i*cellx,ii*celly)
               END DO
            END DO
@@ -2866,6 +2866,15 @@ PROGRAM main
                  phi_calc_denom = phi_calc_denom + (secLongBitFull(i,ii)*sec_molar(ii)/sec_density(ii))
               END DO
               phi_coarse_long(i) = solLongBitFull(i,3)*1000.0 / phi_calc_denom
+
+
+              ! stop at 5% porosity
+              if (phi_coarse_long(i) .lt. 0.05) then
+                  medLongBitFull(i,2) = 1000.0
+              else
+                  medLongBitFull(i,2) = 0.0
+              end if
+
            END DO
            phiLongBitFull(:leng) = phi_coarse_long
 
@@ -2884,8 +2893,16 @@ PROGRAM main
                  phi_calc_denom = phi_calc_denom + (secLongBitFull(2*leng+i,ii)*sec_molar(ii)/sec_density(ii))
               END DO
               phi_coarse_long(i) = ((solLongBitFull(leng+i,3)*1000.0)+(solLongBitFull(2*leng+i,3)*1000.0)) / phi_calc_denom
+
+              ! stop at 5% porosity
+              if (phi_coarse_long(leng+i) .lt. 0.05) then
+                  medLongBitFull(leng+i,2) = 1000.0
+              else
+                  medLongBitFull(leng+i,2) = 0.0
+              end if
            END DO
            phiLongBitFull(leng+1:2*leng) = phi_coarse_long
+
 
            WRITE(*,*) "done with phi_coarse_long (a)"
 
@@ -4078,38 +4095,38 @@ PROGRAM main
               inputz0 = TRIM(inputz0) // "EQUILIBRIUM_PHASES 1" //NEW_LINE('')// &
                    &"    Goethite " // TRIM(s_precip) // TRIM(s_goethite) // kinetics //NEW_LINE('')// &
                    &"    Celadonite " // TRIM(s_precip) // TRIM(s_celadonite) // kinetics //NEW_LINE('')// & ! mica
-                   &"    Saponite-Mg " // TRIM(s_clay) // TRIM(s_saponite) // kinetics //NEW_LINE('')// & ! smectite
+                   &"    Saponite-Mg " // TRIM(s_precip) // TRIM(s_saponite) // kinetics //NEW_LINE('')// & ! smectite
                    &"    Pyrite " // TRIM(s_precip) // TRIM(s_pyrite) // kinetics //NEW_LINE('')// &
-                   &"    Saponite-Na " // TRIM(s_clay) // TRIM(s_saponite_na) // kinetics //NEW_LINE('')// & ! smectite
-                   &"    Nontronite-Na " // TRIM(s_clay) // TRIM(s_nont_na) // kinetics //NEW_LINE('')// & ! smectite
-                   &"    Nontronite-Mg " // TRIM(s_clay) // TRIM(s_nont_mg) // kinetics //NEW_LINE('')// & ! smectite
+                   &"    Saponite-Na " // TRIM(s_precip) // TRIM(s_saponite_na) // kinetics //NEW_LINE('')// & ! smectite
+                   &"    Nontronite-Na " // TRIM(s_precip) // TRIM(s_nont_na) // kinetics //NEW_LINE('')// & ! smectite
+                   &"    Nontronite-Mg " // TRIM(s_precip) // TRIM(s_nont_mg) // kinetics //NEW_LINE('')// & ! smectite
                    &"    Fe-Celadonite " // TRIM(s_precip) // TRIM(s_fe_celadonite) // kinetics //NEW_LINE('')// & ! mica
-                   &"    Nontronite-Ca " // TRIM(s_clay) // TRIM(s_nont_ca) // kinetics //NEW_LINE('')// & ! smectite
+                   &"    Nontronite-Ca " // TRIM(s_precip) // TRIM(s_nont_ca) // kinetics //NEW_LINE('')// & ! smectite
                    &"    Analcime " // TRIM(s_precip) // TRIM(s_analcime) // kinetics //NEW_LINE('')// & ! zeolite
                    &"    Phillipsite " // TRIM(s_precip) // TRIM(s_phillipsite) // kinetics //NEW_LINE('')// & ! zeolite
                    &"    Natrolite " // TRIM(s_precip) // TRIM(s_natrolite) // kinetics //NEW_LINE('')// & ! zeolite
-                   &"    Talc " // TRIM(s_precip) // TRIM(s_talc) // kinetics //NEW_LINE('')// &
-                   &"    Chlorite(14A) " // TRIM(s_chlor) // TRIM(s_chlorite) // kinetics //NEW_LINE('')// & ! chlorite
-                   &"    Clinochlore-14A " // TRIM(s_chlor) // TRIM(s_clinochlore14a) // kinetics //NEW_LINE('')// & ! chlorite
-                   &"    Clinochlore-7A " // TRIM(s_chlor) // TRIM(s_clinochlore7a) // kinetics //NEW_LINE('')// & ! chlorite
-                   &"    Saponite-Ca " // TRIM(s_clay) // TRIM(s_saponite_ca) // kinetics //NEW_LINE('')// & ! smectite
+                   &"    Talc " // TRIM(s_precip) // TRIM(s_precip) // kinetics //NEW_LINE('')// &
+                   &"    Chlorite(14A) " // TRIM(s_precip) // TRIM(s_chlorite) // kinetics //NEW_LINE('')// & ! chlorite
+                   &"    Clinochlore-14A " // TRIM(s_precip) // TRIM(s_clinochlore14a) // kinetics //NEW_LINE('')// & ! chlorite
+                   &"    Clinochlore-7A " // TRIM(s_precip) // TRIM(s_clinochlore7a) // kinetics //NEW_LINE('')// & ! chlorite
+                   &"    Saponite-Ca " // TRIM(s_precip) // TRIM(s_saponite_ca) // kinetics //NEW_LINE('')// & ! smectite
                    &"    Pyrrhotite " // TRIM(s_precip) // TRIM(s_pyrrhotite) // kinetics //NEW_LINE('')//& ! sulfide
-                   &"    Fe-Saponite-Ca " // TRIM(s_clay) // TRIM(s_fe_saponite_ca) // kinetics //NEW_LINE('')// & ! sap smec
-                   &"    Fe-Saponite-Mg " // TRIM(s_clay) // TRIM(s_fe_saponite_mg) // kinetics //NEW_LINE('')// &! sap smec
+                   &"    Fe-Saponite-Ca " // TRIM(s_precip) // TRIM(s_fe_saponite_ca) // kinetics //NEW_LINE('')// & ! sap smec
+                   &"    Fe-Saponite-Mg " // TRIM(s_precip) // TRIM(s_fe_saponite_mg) // kinetics //NEW_LINE('')// &! sap smec
 
                    ! 		&"    Kaolinite " // trim(s_precip) // trim(s_kaolinite) // kinetics //NEW_LINE('')// & ! clay
                    ! 		!&"    Celadonite -5.0 " // trim(s_celadonite) // kinetics //NEW_LINE('')// & ! mica
                    ! 		!&"    Calcite " // trim(s_precip) // trim(s_calcite) // kinetics //NEW_LINE('')// & ! .135
-                   &"    Montmor-Na " // TRIM(s_clay) // TRIM(s_mont_na) // kinetics //NEW_LINE('')// & ! smectite
-                   &"    Montmor-Mg " // TRIM(s_clay) // TRIM(s_mont_mg) // kinetics //NEW_LINE('')// & ! smectite
-                   &"    Montmor-Ca " // TRIM(s_clay) // TRIM(s_mont_ca) // kinetics //NEW_LINE('')// & ! smectite
+                   &"    Montmor-Na " // TRIM(s_precip) // TRIM(s_mont_na) // kinetics //NEW_LINE('')// & ! smectite
+                   &"    Montmor-Mg " // TRIM(s_precip) // TRIM(s_mont_mg) // kinetics //NEW_LINE('')// & ! smectite
+                   &"    Montmor-Ca " // TRIM(s_precip) // TRIM(s_mont_ca) // kinetics //NEW_LINE('')// & ! smectite
                    ! ! 		&"    Clinoptilolite-Ca " // trim(s_precip) // trim(s_clinoptilolite) // kinetics //NEW_LINE('')// & ! zeolite
                    ! ! 		&"    K-Feldspar " // trim(s_precip) // trim(s_kspar) // kinetics //NEW_LINE('')// &
                    ! 		&"    Mesolite " // trim(s_precip) // trim(s_mesolite) // kinetics //NEW_LINE('')// & ! zeolite
                    ! 		&"    Smectite-high-Fe-Mg " // trim(s_precip) // trim(s_smectite) // kinetics //NEW_LINE('')// & ! smectite
- 	 	   &"    Vermiculite-Na " // TRIM(s_clay) // TRIM(s_verm_na) // kinetics //NEW_LINE('')// & ! clay
-                   &"    Vermiculite-Ca " // TRIM(s_clay) // TRIM(s_verm_ca) // kinetics //NEW_LINE('')// & ! clay
-                   &"    Vermiculite-Mg " // TRIM(s_clay) // TRIM(s_verm_mg) // kinetics //NEW_LINE('')//& ! clay
+ 	 	   &"    Vermiculite-Na " // TRIM(s_precip) // TRIM(s_verm_na) // kinetics //NEW_LINE('')// & ! clay
+                   &"    Vermiculite-Ca " // TRIM(s_precip) // TRIM(s_verm_ca) // kinetics //NEW_LINE('')// & ! clay
+                   &"    Vermiculite-Mg " // TRIM(s_precip) // TRIM(s_verm_mg) // kinetics //NEW_LINE('')//& ! clay
                    ! 		&"    Hematite 2.0 " // trim(s_hematite) // kinetics //NEW_LINE('')// &
 !!!!!!!old!! &"    Hematite " // trim(si_hematite) // trim(s_hematite) // kinetics //NEW_LINE('')// &
                    ! 		    !&"    Epidote  " // trim(s_precip) // trim(s_epidote) // kinetics //NEW_LINE('')// &
@@ -6754,9 +6771,9 @@ FUNCTION solute_next_coarse (sol, uTransport, vTransport, phiTransport, seaw)
       !solute_next_coarse(2,j) = sol0(2,j)-(qx*uTransport(2,j)/phiTransport(2,j))*(sol0(2,j)-sol0(1,j))! - qx*uTransport(2,j)*sol0(2,j)*((1.0/phiTransport(2,j))-(1.0/phiTransport(1,j)))
 
 
-    ! solute_next_coarse(2,j) = sol0(2,j) - (qx*uTransport(2,j))*(sol0(2,j)-sol0(1,j)) - qx*(uTransport(2,j)/phiTransport(2,j))*sol0(2,j)*(phiTransport(2,j)-phiTransport(1,j))
+    solute_next_coarse(2,j) = sol0(2,j) - (qx*uTransport(2,j))*(sol0(2,j)-sol0(1,j)) - qx*(uTransport(2,j)/phiTransport(2,j))*sol0(2,j)*(phiTransport(2,j)-phiTransport(1,j))
 
-    solute_next_coarse(2,j) = sol0(2,j) - (qx*0.12866E-06)*(sol0(2,j)-sol0(1,j)) - qx*(0.12866E-06/phiTransport(2,j))*sol0(2,j)*(phiTransport(2,j)-phiTransport(1,j))
+    !solute_next_coarse(2,j) = sol0(2,j) - (qx*0.12866E-06)*(sol0(2,j)-sol0(1,j)) - qx*(0.12866E-06/phiTransport(2,j))*sol0(2,j)*(phiTransport(2,j)-phiTransport(1,j))
 
      DO i = 3,(xn-1)/cellx
         IF (uTransport(i,j) .GT. 1e-9) THEN
@@ -6770,105 +6787,171 @@ FUNCTION solute_next_coarse (sol, uTransport, vTransport, phiTransport, seaw)
             !solute_next_coarse(i,j) = sol0(i,j)-(qx*uTransport(i,j)/phiTransport(i,j))*(sol0(i,j)-sol0(i-1,j))! - qx*uTransport(i,j)*sol0(i,j)*((1.0/phiTransport(i,j))-(1.0/phiTransport(i-1,j)))
 
         ! new advection scheme
-        ! solute_next_coarse(i,j) = sol0(i,j) - (qx*uTransport(i,j))*(sol0(i,j)-sol0(i-1,j)) - qx*(uTransport(i,j)/phiTransport(i,j))*sol0(i,j)*(phiTransport(i,j)-phiTransport(i-1,j))
+        solute_next_coarse(i,j) = sol0(i,j) - (qx*uTransport(i,j))*(sol0(i,j)-sol0(i-1,j)) - qx*(uTransport(i,j)/phiTransport(i,j))*sol0(i,j)*(phiTransport(i,j)-phiTransport(i-1,j))
 
-        solute_next_coarse(i,j) = sol0(i,j) - (qx*0.12866E-06)*(sol0(i,j)-sol0(i-1,j)) - qx*(0.12866E-06/phiTransport(i,j))*sol0(i,j)*(phiTransport(i,j)-phiTransport(i-1,j))
+        !solute_next_coarse(i,j) = sol0(i,j) - (qx*0.12866E-06)*(sol0(i,j)-sol0(i-1,j)) - qx*(0.12866E-06/phiTransport(i,j))*sol0(i,j)*(phiTransport(i,j)-phiTransport(i-1,j))
 
 
-        !    ! correction loop: sort of a mess
-        !    !if (i .gt. 2) then
-        !    !if (maskP(i-2,j) .ne. 0.0) then
-        !    !sigma1 = 0.0
-        !    sigma1a = (sol0(i+1,j) - sol0(i,j))/(dx*cellx)
-        !    sigma1b = 2.0*(sol0(i,j) - sol0(i-1,j))/(dx*cellx)
-           !
-        !    !if (sigma1a*sigma1b .gt. 0.0) then
-        !    !							sigma1 = minval((/abs(sigma1a), abs(sigma1b)/))
-        !    ! 							if (sigma1 .eq. abs(sigma1a)) then
-        !    ! 								sigma1 = sign(1.0,sigma1a)*sigma1
-        !    ! 							end if
-        !    ! 							if (sigma1 .eq. abs(sigma1b)) then
-        !    ! 								sigma1 = sign(1.0,sigma1b)*sigma1
-        !    ! 							end if
-        !    ! 							sig_bool_a = th_bool(sigma1 .eq. abs(sigma1a))
-        !    ! 							sig_bool_b = th_bool(sigma1 .eq. abs(sigma1b))
-        !    ! 							sigma1 = sig_bool_a*sign(1.0,sigma1a)*sigma1 + sig_bool_b*sign(1.0,sigma1b)*sigma1
-        !    sigma1 = ((MINLOC((/ABS(sigma1a), ABS(sigma1b)/),DIM=1)-1.0)*sigma1b) + ((MINLOC((/ABS(sigma1b), ABS(sigma1a)/),DIM=1)-1.0)*sigma1a)
-        !    !end if
-           !
-        !    !sigma3 = 0.0
-        !    sigma3a = 2.0*(sol0(i+1,j) - sol0(i,j))/(dx*cellx)
-        !    sigma3b = (sol0(i,j) - sol0(i-1,j))/(dx*cellx)
-           !
-        !    !if (sigma3a*sigma3b .gt. 0.0) then
-        !    !						sigma3 = minval((/abs(sigma3a), abs(sigma3b)/))
-        !    ! 						if (sigma3 .eq. abs(sigma3a)) then
-        !    ! 							sigma3 = sign(1.0,sigma3a)*sigma3
-        !    ! 						end if
-        !    ! 						if (sigma3 .eq. abs(sigma3b)) then
-        !    ! 							sigma3 = sign(1.0,sigma3b)*sigma3
-        !    ! 						end if
-        !    ! 						sig_bool_a = th_bool(sigma3 .eq. abs(sigma3a))
-        !    ! 						sig_bool_b = th_bool(sigma3 .eq. abs(sigma3b))
-        !    ! 						sigma3 = sig_bool_a*sign(1.0,sigma3a)*sigma3 + sig_bool_b*sign(1.0,sigma3b)*sigma3
-        !    sigma3 = ((MINLOC((/ABS(sigma3a), ABS(sigma3b)/),DIM=1)-1.0)*sigma3b) + ((MINLOC((/ABS(sigma3b), ABS(sigma3a)/),DIM=1)-1.0)*sigma3a)
-        !    !end if
-           !
-        !    ! choosing sigma5
-        !    sigma5 = 0.0
-        !    IF (sigma1*sigma3 .GT. 0.0) THEN
-        !       sigma5 = SIGN(1.0,sigma1)*MAXVAL((/ABS(sigma1), ABS(sigma3)/))
-        !    END IF
-           !
-        !    !sigma2 = 0.0
-        !    sigma2a = (sol0(i,j) - sol0(i-1,j))/(dx*cellx)
-        !    sigma2b = 2.0*(sol0(i-1,j) - sol0(i-2,j))/(dx*cellx)
-           !
-        !    !if (sigma2a*sigma2b .gt. 0.0) then
-        !    !						sigma2 = minval((/abs(sigma2a), abs(sigma2b)/))
-        !    ! 						if (sigma2 .eq. abs(sigma2a)) then
-        !    ! 							sigma2 = sign(1.0,sigma2a)*sigma2
-        !    ! 						end if
-        !    ! 						if (sigma2 .eq. abs(sigma2b)) then
-        !    ! 							sigma2 = sign(1.0,sigma2b)*sigma2
-        !    ! 						end if
-        !    ! 						sig_bool_a = th_bool(sigma2 .eq. abs(sigma2a))
-        !    ! 						sig_bool_b = th_bool(sigma2 .eq. abs(sigma2b))
-        !    ! 						sigma2 = sig_bool_a*sign(1.0,sigma2a)*sigma2 + sig_bool_b*sign(1.0,sigma2b)*sigma2
-        !    sigma2 = ((MINLOC((/ABS(sigma2a), ABS(sigma2b)/),DIM=1)-1.0)*sigma2b) + ((MINLOC((/ABS(sigma2b), ABS(sigma2a)/),DIM=1)-1.0)*sigma2a)
-        !    !end if
-           !
-        !    !sigma4 = 0.0
-        !    sigma4a = 2.0*(sol0(i,j) - sol0(i-1,j))/(dx*cellx)
-        !    sigma4b = (sol0(i-1,j) - sol0(i-2,j))/(dx*cellx)
-           !
-        !    !if (sigma4a*sigma4b .gt. 0.0) then
-        !    !						sigma4 = minval((/abs(sigma4a), abs(sigma4b)/))
-        !    ! 						if (sigma4 .eq. abs(sigma4a)) then
-        !    ! 							sigma4 = sign(1.0,sigma4a)*sigma4
-        !    ! 						end if
-        !    ! 						if (sigma4 .eq. abs(sigma4b)) then
-        !    ! 							sigma4 = sign(1.0,sigma4b)*sigma4
-        !    ! 						end if
-        !    ! 						sig_bool_a = th_bool(sigma4 .eq. abs(sigma4a))
-        !    ! 						sig_bool_b = th_bool(sigma4 .eq. abs(sigma4b))
-        !    ! 						sigma4 = sig_bool_a*sign(1.0,sigma4a)*sigma4 + sig_bool_b*sign(1.0,sigma4b)*sigma4
-        !    sigma4 = ((MINLOC((/ABS(sigma4a), ABS(sigma4b)/),DIM=1)-1.0)*sigma4b) + ((MINLOC((/ABS(sigma4b), ABS(sigma4a)/),DIM=1)-1.0)*sigma4a)
-        !    !end if
-           !
-           !
-        !    ! choosing sigma6
-        !    sigma6 = 0.0
-        !    IF (sigma2*sigma4 .GT. 0.0) THEN
-        !       sigma6 = SIGN(1.0,sigma2)*MAXVAL((/ABS(sigma2), ABS(sigma4)/))
-        !    END IF
-           !
-        !    ! 						write(*,*) "sigma5"
-        !    ! 						write(*,*) sigma5
-        !    ! 						write(*,*) "sigma6"
-        !    ! 						write(*,*) sigma6
-        !    correction = (uTransport(i,j)*qx*0.5) * (sigma5 - sigma6) * (dx*cellx - uTransport(i,j)*qx*dx*cellx)
-        !    solute_next_coarse(i,j) = solute_next_coarse(i,j) - correction
+           ! correction loop: sort of a mess
+           !if (i .gt. 2) then
+           !if (maskP(i-2,j) .ne. 0.0) then
+           !sigma1 = 0.0
+           sigma1a = (sol0(i+1,j) - sol0(i,j))/(dx*cellx)
+           sigma1b = 2.0*(sol0(i,j) - sol0(i-1,j))/(dx*cellx)
+
+           !if (sigma1a*sigma1b .gt. 0.0) then
+           !							sigma1 = minval((/abs(sigma1a), abs(sigma1b)/))
+           ! 							if (sigma1 .eq. abs(sigma1a)) then
+           ! 								sigma1 = sign(1.0,sigma1a)*sigma1
+           ! 							end if
+           ! 							if (sigma1 .eq. abs(sigma1b)) then
+           ! 								sigma1 = sign(1.0,sigma1b)*sigma1
+           ! 							end if
+           ! 							sig_bool_a = th_bool(sigma1 .eq. abs(sigma1a))
+           ! 							sig_bool_b = th_bool(sigma1 .eq. abs(sigma1b))
+           ! 							sigma1 = sig_bool_a*sign(1.0,sigma1a)*sigma1 + sig_bool_b*sign(1.0,sigma1b)*sigma1
+           sigma1 = ((MINLOC((/ABS(sigma1a), ABS(sigma1b)/),DIM=1)-1.0)*sigma1b) + ((MINLOC((/ABS(sigma1b), ABS(sigma1a)/),DIM=1)-1.0)*sigma1a)
+           !end if
+
+           !sigma3 = 0.0
+           sigma3a = 2.0*(sol0(i+1,j) - sol0(i,j))/(dx*cellx)
+           sigma3b = (sol0(i,j) - sol0(i-1,j))/(dx*cellx)
+
+           !if (sigma3a*sigma3b .gt. 0.0) then
+           !						sigma3 = minval((/abs(sigma3a), abs(sigma3b)/))
+           ! 						if (sigma3 .eq. abs(sigma3a)) then
+           ! 							sigma3 = sign(1.0,sigma3a)*sigma3
+           ! 						end if
+           ! 						if (sigma3 .eq. abs(sigma3b)) then
+           ! 							sigma3 = sign(1.0,sigma3b)*sigma3
+           ! 						end if
+           ! 						sig_bool_a = th_bool(sigma3 .eq. abs(sigma3a))
+           ! 						sig_bool_b = th_bool(sigma3 .eq. abs(sigma3b))
+           ! 						sigma3 = sig_bool_a*sign(1.0,sigma3a)*sigma3 + sig_bool_b*sign(1.0,sigma3b)*sigma3
+           sigma3 = ((MINLOC((/ABS(sigma3a), ABS(sigma3b)/),DIM=1)-1.0)*sigma3b) + ((MINLOC((/ABS(sigma3b), ABS(sigma3a)/),DIM=1)-1.0)*sigma3a)
+           !end if
+
+           ! choosing sigma5
+           sigma5 = 0.0
+           IF (sigma1*sigma3 .GT. 0.0) THEN
+              sigma5 = SIGN(1.0,sigma1)*MAXVAL((/ABS(sigma1), ABS(sigma3)/))
+           END IF
+
+           !sigma2 = 0.0
+           sigma2a = (sol0(i,j) - sol0(i-1,j))/(dx*cellx)
+           sigma2b = 2.0*(sol0(i-1,j) - sol0(i-2,j))/(dx*cellx)
+
+           !if (sigma2a*sigma2b .gt. 0.0) then
+           !						sigma2 = minval((/abs(sigma2a), abs(sigma2b)/))
+           ! 						if (sigma2 .eq. abs(sigma2a)) then
+           ! 							sigma2 = sign(1.0,sigma2a)*sigma2
+           ! 						end if
+           ! 						if (sigma2 .eq. abs(sigma2b)) then
+           ! 							sigma2 = sign(1.0,sigma2b)*sigma2
+           ! 						end if
+           ! 						sig_bool_a = th_bool(sigma2 .eq. abs(sigma2a))
+           ! 						sig_bool_b = th_bool(sigma2 .eq. abs(sigma2b))
+           ! 						sigma2 = sig_bool_a*sign(1.0,sigma2a)*sigma2 + sig_bool_b*sign(1.0,sigma2b)*sigma2
+           sigma2 = ((MINLOC((/ABS(sigma2a), ABS(sigma2b)/),DIM=1)-1.0)*sigma2b) + ((MINLOC((/ABS(sigma2b), ABS(sigma2a)/),DIM=1)-1.0)*sigma2a)
+           !end if
+
+           !sigma4 = 0.0
+           sigma4a = 2.0*(sol0(i,j) - sol0(i-1,j))/(dx*cellx)
+           sigma4b = (sol0(i-1,j) - sol0(i-2,j))/(dx*cellx)
+
+           !if (sigma4a*sigma4b .gt. 0.0) then
+           !						sigma4 = minval((/abs(sigma4a), abs(sigma4b)/))
+           ! 						if (sigma4 .eq. abs(sigma4a)) then
+           ! 							sigma4 = sign(1.0,sigma4a)*sigma4
+           ! 						end if
+           ! 						if (sigma4 .eq. abs(sigma4b)) then
+           ! 							sigma4 = sign(1.0,sigma4b)*sigma4
+           ! 						end if
+           ! 						sig_bool_a = th_bool(sigma4 .eq. abs(sigma4a))
+           ! 						sig_bool_b = th_bool(sigma4 .eq. abs(sigma4b))
+           ! 						sigma4 = sig_bool_a*sign(1.0,sigma4a)*sigma4 + sig_bool_b*sign(1.0,sigma4b)*sigma4
+           sigma4 = ((MINLOC((/ABS(sigma4a), ABS(sigma4b)/),DIM=1)-1.0)*sigma4b) + ((MINLOC((/ABS(sigma4b), ABS(sigma4a)/),DIM=1)-1.0)*sigma4a)
+           !end if
+
+
+           ! choosing sigma6
+           sigma6 = 0.0
+           IF (sigma2*sigma4 .GT. 0.0) THEN
+              sigma6 = SIGN(1.0,sigma2)*MAXVAL((/ABS(sigma2), ABS(sigma4)/))
+           END IF
+
+           ! 						write(*,*) "sigma5"
+           ! 						write(*,*) sigma5
+           ! 						write(*,*) "sigma6"
+           ! 						write(*,*) sigma6
+           correction = (uTransport(i,j)*qx*0.5) * (sigma5 - sigma6) * (dx*cellx - uTransport(i,j)*qx*dx*cellx)
+           solute_next_coarse(i,j) = solute_next_coarse(i,j) - correction
+
+
+
+
+
+
+
+
+
+
+
+
+           ! second term correction?
+           !if (i .gt. 2) then
+           !if (maskP(i-2,j) .ne. 0.0) then
+           !sigma1 = 0.0
+           sigma1a = (phiTransport(i+1,j) - phiTransport(i,j))/(dx*cellx)
+           sigma1b = 2.0*(phiTransport(i,j) - phiTransport(i-1,j))/(dx*cellx)
+
+
+           sigma1 = ((MINLOC((/ABS(sigma1a), ABS(sigma1b)/),DIM=1)-1.0)*sigma1b) + ((MINLOC((/ABS(sigma1b), ABS(sigma1a)/),DIM=1)-1.0)*sigma1a)
+           !end if
+
+           !sigma3 = 0.0
+           sigma3a = 2.0*(phiTransport(i+1,j) - phiTransport(i,j))/(dx*cellx)
+           sigma3b = (phiTransport(i,j) - phiTransport(i-1,j))/(dx*cellx)
+
+
+           sigma3 = ((MINLOC((/ABS(sigma3a), ABS(sigma3b)/),DIM=1)-1.0)*sigma3b) + ((MINLOC((/ABS(sigma3b), ABS(sigma3a)/),DIM=1)-1.0)*sigma3a)
+           !end if
+
+           ! choosing sigma5
+           sigma5 = 0.0
+           IF (sigma1*sigma3 .GT. 0.0) THEN
+              sigma5 = SIGN(1.0,sigma1)*MAXVAL((/ABS(sigma1), ABS(sigma3)/))
+           END IF
+
+           !sigma2 = 0.0
+           sigma2a = (phiTransport(i,j) - phiTransport(i-1,j))/(dx*cellx)
+           sigma2b = 2.0*(phiTransport(i-1,j) - phiTransport(i-2,j))/(dx*cellx)
+
+
+           sigma2 = ((MINLOC((/ABS(sigma2a), ABS(sigma2b)/),DIM=1)-1.0)*sigma2b) + ((MINLOC((/ABS(sigma2b), ABS(sigma2a)/),DIM=1)-1.0)*sigma2a)
+           !end if
+
+           !sigma4 = 0.0
+           sigma4a = 2.0*(phiTransport(i,j) - phiTransport(i-1,j))/(dx*cellx)
+           sigma4b = (phiTransport(i-1,j) - phiTransport(i-2,j))/(dx*cellx)
+
+
+           sigma4 = ((MINLOC((/ABS(sigma4a), ABS(sigma4b)/),DIM=1)-1.0)*sigma4b) + ((MINLOC((/ABS(sigma4b), ABS(sigma4a)/),DIM=1)-1.0)*sigma4a)
+           !end if
+
+
+           ! choosing sigma6
+           sigma6 = 0.0
+           IF (sigma2*sigma4 .GT. 0.0) THEN
+              sigma6 = SIGN(1.0,sigma2)*MAXVAL((/ABS(sigma2), ABS(sigma4)/))
+           END IF
+
+           ! 						write(*,*) "sigma5"
+           ! 						write(*,*) sigma5
+           ! 						write(*,*) "sigma6"
+           ! 						write(*,*) sigma6
+           correction = ((uTransport(i,j)/phiTransport(i,j))*sol0(i,j)*qx*0.5) * (sigma5 - sigma6) * (dx*cellx - (uTransport(i,j)/phiTransport(i,j))*sol0(i,j)*qx*dx*cellx)
+           solute_next_coarse(i,j) = solute_next_coarse(i,j) - correction
 
 
 
