@@ -2748,10 +2748,9 @@ PROGRAM main
 
         ! SAME VELOCITY ON ALL 3 ROWS
         DO i = 3,yn/(2*celly)-1
-            if ((u_coarse(5,i) .gt. 0.0) .and. (u_coarse(5,i+1) .eq. 0.0)) then
-            u_coarse(:,i-1) = u_coarse(5,i)
-            u_coarse(:,i-2) = u_coarse(5,i)
-            end if
+           if ((u_coarse(5,i) .gt. 0.0) .and. (u_coarse(5,i+1) .eq. 0.0)) then
+           u_coarse(:,i-1) = u_coarse(5,i)
+           u_coarse(:,i-2) = u_coarse(5,i)
         END DO
 
            velocities0 = velocities(psi)
@@ -3804,7 +3803,7 @@ PROGRAM main
            sol_coarse_local = TRANSPOSE(RESHAPE(sol_coarse_long_local,(/yn/(2*celly),(xn-1)/cellx/)))
            u_coarse_local = RESHAPE(u_coarse_long_local,(/(xn-1)/cellx,yn/(2*celly)/))
            v_coarse_local = RESHAPE(v_coarse_long_local,(/(xn-1)/cellx,yn/(2*celly)/))
-           phi_coarse_local = TRANSPOSE(RESHAPE(phi_coarse_long_local,(/yn/(2*celly),(xn-1)/cellx/)))
+           phi_coarse_local = RESHAPE(phi_coarse_long_local,(/(xn-1)/cellx,yn/(2*celly)/))
            !phi_coarse_local = 0.5
            !write(*,*) maxval(phi_coarse_local)
 
@@ -6752,12 +6751,7 @@ FUNCTION solute_next_coarse (sol, uTransport, vTransport, phiTransport, seaw)
   DO j = 1,yn/(2*celly)
      ! do i = 2,xn-1
       !solute_next_coarse(2,j) = sol0(2,j)-(qx*uTransport(2,j)/phiTransport(2,j))*(sol0(2,j)-sol0(1,j))! - qx*uTransport(2,j)*sol0(2,j)*((1.0/phiTransport(2,j))-(1.0/phiTransport(1,j)))
-
-
-    ! solute_next_coarse(2,j) = sol0(2,j) - (qx*uTransport(2,j))*(sol0(2,j)-sol0(1,j)) - qx*(uTransport(2,j)/phiTransport(2,j))*sol0(2,j)*(phiTransport(2,j)-phiTransport(1,j))
-
-    solute_next_coarse(2,j) = sol0(2,j) - (qx*0.12866E-06)*(sol0(2,j)-sol0(1,j)) - qx*(0.12866E-06/phiTransport(2,j))*sol0(2,j)*(phiTransport(2,j)-phiTransport(1,j))
-
+    solute_next_coarse(2,j) = sol0(2,j) - (qx*uTransport(2,j))*(sol0(2,j)-sol0(1,j)) - qx*(uTransport(2,j)/phiTransport(2,j))*sol0(2,j)*(phiTransport(2,j)-phiTransport(1,j))
      DO i = 3,(xn-1)/cellx
         IF (uTransport(i,j) .GT. 1e-9) THEN
            !do i = 3,f_index1-2
@@ -6768,11 +6762,7 @@ FUNCTION solute_next_coarse (sol, uTransport, vTransport, phiTransport, seaw)
            !if (uTransport(i,j) .gt. 0.0) then
            ! upwind including LHS value
             !solute_next_coarse(i,j) = sol0(i,j)-(qx*uTransport(i,j)/phiTransport(i,j))*(sol0(i,j)-sol0(i-1,j))! - qx*uTransport(i,j)*sol0(i,j)*((1.0/phiTransport(i,j))-(1.0/phiTransport(i-1,j)))
-
-        ! new advection scheme
-        ! solute_next_coarse(i,j) = sol0(i,j) - (qx*uTransport(i,j))*(sol0(i,j)-sol0(i-1,j)) - qx*(uTransport(i,j)/phiTransport(i,j))*sol0(i,j)*(phiTransport(i,j)-phiTransport(i-1,j))
-
-        solute_next_coarse(i,j) = sol0(i,j) - (qx*0.12866E-06)*(sol0(i,j)-sol0(i-1,j)) - qx*(0.12866E-06/phiTransport(i,j))*sol0(i,j)*(phiTransport(i,j)-phiTransport(i-1,j))
+        solute_next_coarse(i,j) = sol0(i,j) - (qx*uTransport(i,j))*(sol0(i,j)-sol0(i-1,j)) - qx*(uTransport(i,j)/phiTransport(i,j))*sol0(i,j)*(phiTransport(i,j)-phiTransport(i-1,j))
 
 
         !    ! correction loop: sort of a mess
