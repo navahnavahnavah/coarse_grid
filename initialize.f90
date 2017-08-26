@@ -298,9 +298,9 @@ CONTAINS
     ! t_vol_a = 0.008! - 0.0112/2.0
     ! t_vol_b = 0.004!/2.0
 
-    t_vol_s = 0.012
-    t_vol_a = 0.009! - 0.0112/2.0
-    t_vol_b = 0.003!/2.0
+    t_vol_s = 0.012*1.5
+    t_vol_a = 0.009*1.5! - 0.0112/2.0
+    t_vol_b = 0.003*1.5!/2.0
 
     ! primary minerals [mol]
     primary(:,:,:) = 0.0

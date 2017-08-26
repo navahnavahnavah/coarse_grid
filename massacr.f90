@@ -2868,12 +2868,12 @@ PROGRAM main
               phi_coarse_long(i) = solLongBitFull(i,3)*1000.0 / phi_calc_denom
 
 
-              ! stop at 5% porosity
-              if (phi_coarse_long(i) .lt. 0.05) then
-                  medLongBitFull(i,2) = 1000.0
-              else
-                  medLongBitFull(i,2) = 0.0
-              end if
+            !   ! stop at 5% porosity
+            !   if (phi_coarse_long(i) .lt. 0.05) then
+            !       medLongBitFull(i,2) = 1000.0
+            !   else
+            !       medLongBitFull(i,2) = 0.0
+            !   end if
 
            END DO
            phiLongBitFull(:leng) = phi_coarse_long
@@ -2894,12 +2894,12 @@ PROGRAM main
               END DO
               phi_coarse_long(i) = ((solLongBitFull(leng+i,3)*1000.0)+(solLongBitFull(2*leng+i,3)*1000.0)) / phi_calc_denom
 
-              ! stop at 5% porosity
-              if (phi_coarse_long(leng+i) .lt. 0.05) then
-                  medLongBitFull(leng+i,2) = 1000.0
-              else
-                  medLongBitFull(leng+i,2) = 0.0
-              end if
+            !   ! stop at 5% porosity
+            !   if (phi_coarse_long(i) .lt. 0.05) then
+            !       medLongBitFull(leng+i,2) = 1000.0
+            !   else
+            !       medLongBitFull(leng+i,2) = 0.0
+            !   end if
            END DO
            phiLongBitFull(leng+1:2*leng) = phi_coarse_long
 
@@ -3054,12 +3054,12 @@ PROGRAM main
         WRITE(*,*) "made volLongBitFull"
         n=2 ! alk
         solute_inter_long = solLongBitFull(leng+1:2*leng,n)
-        solLongBitFull(leng+1:2*leng,n) = solLongBitFull(leng+1:2*leng,n)*(1.0-mix_ratio/volLongBitFull) + solLongBitFull(2*leng+1:,n)*mix_ratio/volLongBitFull ! a mix
+        solLongBitFull(leng+1:2*leng,n) = solLongBitFull(leng+1:2*leng,n)*(1.0-mix_ratio/volLongBitFull) + solLongBitFull(2*leng+1:,n)*mix_ratio/volLongBitFull
         solLongBitFull(2*leng+1:,n) = solLongBitFull(2*leng+1:,n)*(1.0-mix_ratio) + solute_inter_long*mix_ratio
 
         DO n=4,13 ! solutes
            solute_inter_long = solLongBitFull(leng+1:2*leng,n)
-           solLongBitFull(leng+1:2*leng,n) = solLongBitFull(leng+1:2*leng,n)*(1.0-mix_ratio/volLongBitFull) + solLongBitFull(2*leng+1:,n)*mix_ratio/volLongBitFull ! a mix
+           solLongBitFull(leng+1:2*leng,n) = solLongBitFull(leng+1:2*leng,n)*(1.0-mix_ratio/volLongBitFull) + solLongBitFull(2*leng+1:,n)*mix_ratio/volLongBitFull
            solLongBitFull(2*leng+1:,n) = solLongBitFull(2*leng+1:,n)*(1.0-mix_ratio) + solute_inter_long*mix_ratio
         END DO
 
@@ -4089,7 +4089,7 @@ PROGRAM main
               ! 			&"    K-Feldspar " // trim(s_precip) // trim(s_kspar) // kinetics //NEW_LINE('')
               ! 		end if
               !
-              ! 		if (medium3(2) .eq. 0.0) then
+               		if (medium3(2) .eq. 0.0) then
 
               !-phreeqc equilibrium phases
               inputz0 = TRIM(inputz0) // "EQUILIBRIUM_PHASES 1" //NEW_LINE('')// &
@@ -4105,7 +4105,7 @@ PROGRAM main
                    &"    Analcime " // TRIM(s_precip) // TRIM(s_analcime) // kinetics //NEW_LINE('')// & ! zeolite
                    &"    Phillipsite " // TRIM(s_precip) // TRIM(s_phillipsite) // kinetics //NEW_LINE('')// & ! zeolite
                    &"    Natrolite " // TRIM(s_precip) // TRIM(s_natrolite) // kinetics //NEW_LINE('')// & ! zeolite
-                   &"    Talc " // TRIM(s_precip) // TRIM(s_precip) // kinetics //NEW_LINE('')// &
+                   &"    Talc " // TRIM(s_precip) // TRIM(s_talc) // kinetics //NEW_LINE('')// &
                    &"    Chlorite(14A) " // TRIM(s_precip) // TRIM(s_chlorite) // kinetics //NEW_LINE('')// & ! chlorite
                    &"    Clinochlore-14A " // TRIM(s_precip) // TRIM(s_clinochlore14a) // kinetics //NEW_LINE('')// & ! chlorite
                    &"    Clinochlore-7A " // TRIM(s_precip) // TRIM(s_clinochlore7a) // kinetics //NEW_LINE('')// & ! chlorite
@@ -4114,15 +4114,15 @@ PROGRAM main
                    &"    Fe-Saponite-Ca " // TRIM(s_precip) // TRIM(s_fe_saponite_ca) // kinetics //NEW_LINE('')// & ! sap smec
                    &"    Fe-Saponite-Mg " // TRIM(s_precip) // TRIM(s_fe_saponite_mg) // kinetics //NEW_LINE('')// &! sap smec
 
-                   ! 		&"    Kaolinite " // trim(s_precip) // trim(s_kaolinite) // kinetics //NEW_LINE('')// & ! clay
+
                    ! 		!&"    Celadonite -5.0 " // trim(s_celadonite) // kinetics //NEW_LINE('')// & ! mica
                    ! 		!&"    Calcite " // trim(s_precip) // trim(s_calcite) // kinetics //NEW_LINE('')// & ! .135
                    &"    Montmor-Na " // TRIM(s_precip) // TRIM(s_mont_na) // kinetics //NEW_LINE('')// & ! smectite
                    &"    Montmor-Mg " // TRIM(s_precip) // TRIM(s_mont_mg) // kinetics //NEW_LINE('')// & ! smectite
                    &"    Montmor-Ca " // TRIM(s_precip) // TRIM(s_mont_ca) // kinetics //NEW_LINE('')// & ! smectite
-                   ! ! 		&"    Clinoptilolite-Ca " // trim(s_precip) // trim(s_clinoptilolite) // kinetics //NEW_LINE('')// & ! zeolite
-                   ! ! 		&"    K-Feldspar " // trim(s_precip) // trim(s_kspar) // kinetics //NEW_LINE('')// &
-                   ! 		&"    Mesolite " // trim(s_precip) // trim(s_mesolite) // kinetics //NEW_LINE('')// & ! zeolite
+
+
+
                    ! 		&"    Smectite-high-Fe-Mg " // trim(s_precip) // trim(s_smectite) // kinetics //NEW_LINE('')// & ! smectite
  	 	   &"    Vermiculite-Na " // TRIM(s_precip) // TRIM(s_verm_na) // kinetics //NEW_LINE('')// & ! clay
                    &"    Vermiculite-Ca " // TRIM(s_precip) // TRIM(s_verm_ca) // kinetics //NEW_LINE('')// & ! clay
@@ -4137,10 +4137,15 @@ PROGRAM main
                    !   		&"   Daphnite-7a " // trim(s_precip) // trim(s_daphnite_7a) // kinetics //NEW_LINE('')// & ! chlorite
                    !   		&"   Daphnite-14a " // trim(s_precip) // trim(s_daphnite_14a) // kinetics //NEW_LINE('')! chlorite
 
+                    		&"    Kaolinite " // trim(s_precip) // trim(s_kaolinite) // kinetics //NEW_LINE('')// & ! clay
+                    		&"    Clinoptilolite-Ca " // trim(s_precip) // trim(s_clinoptilolite) // kinetics //NEW_LINE('')// & ! zeolite
+                    		&"    K-Feldspar " // trim(s_precip) // trim(s_kspar) // kinetics //NEW_LINE('')// &
+                    		!&"    Mesolite " // trim(s_precip) // trim(s_mesolite) // kinetics //NEW_LINE('')// & ! zeolite
+
                    &" "  //NEW_LINE('')
 
 
-              ! 		end if
+               		end if
 
               !-phreeqc rates
               inputz0 = TRIM(inputz0) // "RATES" //NEW_LINE('')// &
@@ -4534,12 +4539,16 @@ PROGRAM main
 
            END IF ! end if-cell-is-on loop (medLocl 5 == 1)
 
+           if (medium3(2) .eq. 0.0) then
+           !secLocal = 0.0
+           DO ii=1,g_sec/2
+              secLocal(m,ii) = alt_mat(m,2*ii+14)
+           END DO
+           end if
+
         END DO ! end m = 1,num rows, ran chem for each row and populated local arrays
 
-        secLocal = 0.0
-        DO m=1,g_sec/2
-           secLocal(:,m) = alt_mat(:,2*m+14)
-        END DO
+
 
         medLocal(:,1) = 0.0
         DO m=1,g_sec/2
