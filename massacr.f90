@@ -324,7 +324,7 @@ PROGRAM main
   CHARACTER(LEN=5000) :: line
   CHARACTER(len=7000) :: inputz0
   REAL(4) :: outmat(4,134)
-  REAL(4) :: temp3, timestep3, primary3(5), secondary3(74), solute3(15), medium3(7) ! important information
+  REAL(4) :: temp3, timestep3, primary3(5), secondary3(80), solute3(15), medium3(7) ! important information
   REAL(4) :: water
 
   ! STRINGS
@@ -1602,23 +1602,23 @@ PROGRAM main
        ! &"#	Enthalpy of formation:	-697.413 kcal/mol" //NEW_LINE('')// &
        ! &"        -analytic -2.3783e+002 -7.1026e-002 1.7752e+004 8.7147e+001 2.7707e+002" //NEW_LINE('')// &
        ! &"#       -Range:  0-300" //NEW_LINE('')// &
-       ! &"" //NEW_LINE('')// &
-       ! &"Daphnite-14A" //NEW_LINE('')// &
-       ! &"        Fe5AlAlSi3O10(OH)8 +16.0000 H+  =  + 2.0000 Al+++ + 3.0000 SiO2 + 5.0000 Fe++ + 12.0000 H2O" //NEW_LINE('')// &
-       ! &"        log_k           52.2821" //NEW_LINE('')// &
-       ! &"	-delta_H	-517.561	kJ/mol	# 	Daphnite-14A" //NEW_LINE('')// &
-       ! &"#	Enthalpy of formation:	-1693.04 kcal/mol" //NEW_LINE('')// &
-       ! &"        -analytic -1.5261e+002 -6.1392e-002 2.8283e+004 5.1788e+001 4.4137e+002" //NEW_LINE('')// &
-       ! &"#       -Range:  0-300" //NEW_LINE('')// &
-       ! &"" //NEW_LINE('')// &
-       ! &"Daphnite-7A" //NEW_LINE('')// &
-       ! &"        Fe5AlAlSi3O10(OH)8 +16.0000 H+  =  + 2.0000 Al+++ + 3.0000 SiO2 + 5.0000 Fe++ + 12.0000 H2O" //NEW_LINE('')// &
-       ! &"        log_k           55.6554" //NEW_LINE('')// &
-       ! &"	-delta_H	-532.326	kJ/mol	# 	Daphnite-7A" //NEW_LINE('')// &
-       ! &"#	Enthalpy of formation:	-1689.51 kcal/mol" //NEW_LINE('')// &
-       ! &"        -analytic -1.6430e+002 -6.3160e-002 2.9499e+004 5.6442e+001 4.6035e+002" //NEW_LINE('')// &
-       ! &"#       -Range:  0-300" //NEW_LINE('')// &
-       ! &"" //NEW_LINE('')// &
+       &"" //NEW_LINE('')// &
+       &"Daphnite-14A" //NEW_LINE('')// &
+       &"        Fe5AlAlSi3O10(OH)8 +16.0000 H+  =  + 2.0000 Al+++ + 3.0000 SiO2 + 5.0000 Fe++ + 12.0000 H2O" //NEW_LINE('')// &
+       &"        log_k           52.2821" //NEW_LINE('')// &
+       &"	-delta_H	-517.561	kJ/mol	# 	Daphnite-14A" //NEW_LINE('')// &
+       &"#	Enthalpy of formation:	-1693.04 kcal/mol" //NEW_LINE('')// &
+       &"        -analytic -1.5261e+002 -6.1392e-002 2.8283e+004 5.1788e+001 4.4137e+002" //NEW_LINE('')// &
+       &"#       -Range:  0-300" //NEW_LINE('')// &
+       &"" //NEW_LINE('')// &
+       &"Daphnite-7A" //NEW_LINE('')// &
+       &"        Fe5AlAlSi3O10(OH)8 +16.0000 H+  =  + 2.0000 Al+++ + 3.0000 SiO2 + 5.0000 Fe++ + 12.0000 H2O" //NEW_LINE('')// &
+       &"        log_k           55.6554" //NEW_LINE('')// &
+       &"	-delta_H	-532.326	kJ/mol	# 	Daphnite-7A" //NEW_LINE('')// &
+       &"#	Enthalpy of formation:	-1689.51 kcal/mol" //NEW_LINE('')// &
+       &"        -analytic -1.6430e+002 -6.3160e-002 2.9499e+004 5.6442e+001 4.6035e+002" //NEW_LINE('')// &
+       &"#       -Range:  0-300" //NEW_LINE('')// &
+       &"" //NEW_LINE('')// &
        ! &"Dawsonite" //NEW_LINE('')// &
        ! &"        NaAlCO3(OH)2 +3.0000 H+  =  + 1.0000 Al+++ + 1.0000 HCO3- + 1.0000 Na+ + 2.0000 H2O" //NEW_LINE('')// &
        ! &"        log_k           4.3464" //NEW_LINE('')// &
@@ -1661,14 +1661,14 @@ PROGRAM main
        ! &"#       -Range:  0-300" //NEW_LINE('')// &
        ! &"-Vm 64.5" //NEW_LINE('')// &
 
-       ! &"" //NEW_LINE('')// &
-       ! &"Epidote" //NEW_LINE('')// &
-       ! &"        Ca2FeAl2Si3O12OH +13.0000 H+  =  + 1.0000 Fe+++ + 2.0000 Al+++ + 2.0000 Ca++ + 3.0000 SiO2 + 7.0000 H2O" //NEW_LINE('')// &
-       ! &"        log_k           32.9296" //NEW_LINE('')// &
-       ! &"	-delta_H	-386.451	kJ/mol	# 	Epidote" //NEW_LINE('')// &
-       ! &"#	Enthalpy of formation:	-1543.99 kcal/mol" //NEW_LINE('')// &
-       ! &"        -analytic -2.6187e+001 -3.6436e-002 1.9351e+004 3.3671e+000 -3.0319e+005" //NEW_LINE('')// &
-       ! &"#       -Range:  0-300" //NEW_LINE('')// &
+       &"" //NEW_LINE('')// &
+       &"Epidote" //NEW_LINE('')// &
+       &"        Ca2FeAl2Si3O12OH +13.0000 H+  =  + 1.0000 Fe+++ + 2.0000 Al+++ + 2.0000 Ca++ + 3.0000 SiO2 + 7.0000 H2O" //NEW_LINE('')// &
+       &"        log_k           32.9296" //NEW_LINE('')// &
+       &"	-delta_H	-386.451	kJ/mol	# 	Epidote" //NEW_LINE('')// &
+       &"#	Enthalpy of formation:	-1543.99 kcal/mol" //NEW_LINE('')// &
+       &"        -analytic -2.6187e+001 -3.6436e-002 1.9351e+004 3.3671e+000 -3.0319e+005" //NEW_LINE('')// &
+       &"#       -Range:  0-300" //NEW_LINE('')// &
        ! &"" //NEW_LINE('')// &
        ! &"Ettringite" //NEW_LINE('')// &
        ! &"        Ca6Al2(SO4)3(OH)12:26H2O +12.0000 H+  =  + 2.0000 Al+++ + 3.0000 SO4-- + 6.0000 Ca++ + 38.0000 H2O" //NEW_LINE('')// &
@@ -1703,12 +1703,12 @@ PROGRAM main
        ! &"        -analytic 2.9983e+001 5.5272e-003 2.3427e+004 -1.3879e+001 -8.9461e+005" //NEW_LINE('')// &
        ! &"#       -Range:  0-300" //NEW_LINE('')// &
        ! &"" //NEW_LINE('')// &
-       ! &"Gismondine" //NEW_LINE('')// &
-       ! &"        Ca2Al4Si4O16:9H2O +16.0000 H+  =  + 2.0000 Ca++ + 4.0000 Al+++ + 4.0000 SiO2 + 17.0000 H2O" //NEW_LINE('')// &
-       ! &"        log_k           41.7170" //NEW_LINE('')// &
-       ! &"	-delta_H	0	      	# Not possible to calculate enthalpy of reaction	Gismondine" //NEW_LINE('')// &
-       ! &"#	Enthalpy of formation:	0 kcal/mol" //NEW_LINE('')// &
-       ! &"" //NEW_LINE('')// &
+       &"Gismondine" //NEW_LINE('')// &
+       &"        Ca2Al4Si4O16:9H2O +16.0000 H+  =  + 2.0000 Ca++ + 4.0000 Al+++ + 4.0000 SiO2 + 17.0000 H2O" //NEW_LINE('')// &
+       &"        log_k           41.7170" //NEW_LINE('')// &
+       &"	-delta_H	0	      	# Not possible to calculate enthalpy of reaction	Gismondine" //NEW_LINE('')// &
+       &"#	Enthalpy of formation:	0 kcal/mol" //NEW_LINE('')// &
+       &"" //NEW_LINE('')// &
        &"Goethite" //NEW_LINE('')// &
        &"        FeOOH +3.0000 H+  =  + 1.0000 Fe+++ + 2.0000 H2O" //NEW_LINE('')// &
        &"        log_k           0.5345" //NEW_LINE('')// &
@@ -2328,7 +2328,8 @@ PROGRAM main
      CALL init()
 
 
-
+     !-diss_toggle
+     diss_toggle = 0
 
      permeability0 = permeability
      phi_coarse = .1
@@ -2457,6 +2458,8 @@ PROGRAM main
            CLOSE ( 8 )
         END IF
 
+        write(*,*) "j = ", j
+
 
         IF (MOD(j,mstep*10) .EQ. 0) THEN
            WRITE(*,*) "STARTING STEP:" , j
@@ -2471,17 +2474,21 @@ PROGRAM main
         END IF
 
 
+        ! write(*,*) "error string"
 
+        ! ! IF (MOD(j,mstep/10) .EQ. 0) THEN
+        ! IF (MOD(j,mstep) .EQ. 0) THEN
+        !    WRITE(*,*) "WRITING TO DYNAMIC SUB STEP"
+        !    WRITE(*,*) " "
+        !    WRITE(*,*) " "
+        !    WRITE(*,*) " "
+        !    ! 		OPEN(UNIT=88, status = 'replace', FILE=trim(path_final) // 'dynamicSubStep.txt')
+        !    ! 		write(88,*) mod(j,mstep)
+        !    ! 		close ( 88 )
+        ! END IF
 
-        IF (MOD(j,mstep/10) .EQ. 0) THEN
-           WRITE(*,*) "WRITING TO DYNAMIC SUB STEP"
-           WRITE(*,*) " "
-           WRITE(*,*) " "
-           WRITE(*,*) " "
-           ! 		OPEN(UNIT=88, status = 'replace', FILE=trim(path_final) // 'dynamicSubStep.txt')
-           ! 		write(88,*) mod(j,mstep)
-           ! 		close ( 88 )
-        END IF
+        ! write(*,*) "error string"
+        write(*,*) "error string"
 
 
         IF (restart .NE. 1) THEN
@@ -2710,6 +2717,8 @@ PROGRAM main
 
         END IF ! end if restart .ne. 1
 
+        write(*,*) "error string 2"
+
         IF (j .EQ. 3) THEN
 
            !-INITIALIZE FOR GEOCHEM
@@ -2868,12 +2877,12 @@ PROGRAM main
               phi_coarse_long(i) = solLongBitFull(i,3)*1000.0 / phi_calc_denom
 
 
-            !   ! stop at 5% porosity
-            !   if (phi_coarse_long(i) .lt. 0.05) then
-            !       medLongBitFull(i,2) = 1000.0
-            !   else
-            !       medLongBitFull(i,2) = 0.0
-            !   end if
+              ! stop at 5% porosity
+              if (phi_coarse_long(i) .lt. 0.08) then
+                  medLongBitFull(i,2) = 1000.0
+              else
+                  medLongBitFull(i,2) = 0.0
+              end if
 
            END DO
            phiLongBitFull(:leng) = phi_coarse_long
@@ -2894,12 +2903,12 @@ PROGRAM main
               END DO
               phi_coarse_long(i) = ((solLongBitFull(leng+i,3)*1000.0)+(solLongBitFull(2*leng+i,3)*1000.0)) / phi_calc_denom
 
-            !   ! stop at 5% porosity
-            !   if (phi_coarse_long(i) .lt. 0.05) then
-            !       medLongBitFull(leng+i,2) = 1000.0
-            !   else
-            !       medLongBitFull(leng+i,2) = 0.0
-            !   end if
+              ! stop at 5% porosity
+              if (phi_coarse_long(i) .lt. 0.08) then
+                  medLongBitFull(leng+i,2) = 1000.0
+              else
+                  medLongBitFull(leng+i,2) = 0.0
+              end if
            END DO
            phiLongBitFull(leng+1:2*leng) = phi_coarse_long
 
@@ -3096,59 +3105,72 @@ PROGRAM main
             ! if (floor((t(j-1)-2.512e13)/4.239e12) .gt. floor((t(j)-2.512e13)/4.239e12)) then
                WRITE(*,*) "moving cells now..."
 
-                !  DO i = 1,g_pri
-                !     bit_thing_t1 = TRANSPOSE(RESHAPE(priLongBitFull(1:leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
-                !     bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                !     priLongBitFull(:leng,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
-                !
-                !     bit_thing_t1 = TRANSPOSE(RESHAPE(priLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
-                !     bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                !     priLongBitFull(leng+1:2*leng,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
-                !
-                !     bit_thing_t1 = TRANSPOSE(RESHAPE(priLongBitFull(2*leng+1:,i),(/yn/(2*celly), (xn-1)/cellx/)))
-                !     bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                !     priLongBitFull(2*leng+1:,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
-                !  END DO
-                !
-                !  DO i = 1,g_sec
-                !     bit_thing_t1 = TRANSPOSE(RESHAPE(secLongBitFull(1:leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
-                !     bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                !     secLongBitFull(:leng,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
-                !
-                !     bit_thing_t1 = TRANSPOSE(RESHAPE(secLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
-                !     bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                !     secLongBitFull(leng+1:2*leng,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
-                !
-                !     bit_thing_t1 = TRANSPOSE(RESHAPE(secLongBitFull(2*leng+1:,i),(/yn/(2*celly), (xn-1)/cellx/)))
-                !     bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                !     secLongBitFull(2*leng+1:,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
-                !  END DO
-                !
-                ! !  bit_thing_t1 = TRANSPOSE(RESHAPE(medLongBitFull(1:leng,5),(/yn/(2*celly), (xn-1)/cellx/)))
-                ! !  bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                ! !  medLongBitFull(:leng,5) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
-                !  !
-                ! !  bit_thing_t1 = TRANSPOSE(RESHAPE(medLongBitFull(leng+1:2*leng,5),(/yn/(2*celly), (xn-1)/cellx/)))
-                ! !  bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                ! !  medLongBitFull(leng+1:2*leng,5) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
-                !  !
-                ! !  bit_thing_t1 = TRANSPOSE(RESHAPE(medLongBitFull(2*leng+1:,5),(/yn/(2*celly), (xn-1)/cellx/)))
-                ! !  bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                ! !  medLongBitFull(2*leng+1:,5) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
-                !
-                !  DO i = 1,g_sol
-                !     bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(1:leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
-                !     bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                !     solLongBitFull(:leng,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
-                !
-                !     bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
-                !     bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                !     solLongBitFull(leng+1:2*leng,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
-                !
-                !     bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(2*leng+1:,i),(/yn/(2*celly), (xn-1)/cellx/)))
-                !     bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                !     solLongBitFull(2*leng+1:,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
-                !  END DO
+                 DO i = 1,g_pri
+                    bit_thing_t1 = TRANSPOSE(RESHAPE(priLongBitFull(1:leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
+                    bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                    priLongBitFull(:leng,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
+
+                    bit_thing_t1 = TRANSPOSE(RESHAPE(priLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
+                    bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                    priLongBitFull(leng+1:2*leng,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
+
+                    bit_thing_t1 = TRANSPOSE(RESHAPE(priLongBitFull(2*leng+1:,i),(/yn/(2*celly), (xn-1)/cellx/)))
+                    bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                    priLongBitFull(2*leng+1:,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
+                 END DO
+
+                 DO i = 1,g_sec
+                    bit_thing_t1 = TRANSPOSE(RESHAPE(secLongBitFull(1:leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
+                    bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                    secLongBitFull(:leng,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
+
+                    bit_thing_t1 = TRANSPOSE(RESHAPE(secLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
+                    bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                    secLongBitFull(leng+1:2*leng,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
+
+                    bit_thing_t1 = TRANSPOSE(RESHAPE(secLongBitFull(2*leng+1:,i),(/yn/(2*celly), (xn-1)/cellx/)))
+                    bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                    secLongBitFull(2*leng+1:,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
+                 END DO
+
+                !  bit_thing_t1 = TRANSPOSE(RESHAPE(medLongBitFull(1:leng,5),(/yn/(2*celly), (xn-1)/cellx/)))
+                !  bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                !  medLongBitFull(:leng,5) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
+                 !
+                !  bit_thing_t1 = TRANSPOSE(RESHAPE(medLongBitFull(leng+1:2*leng,5),(/yn/(2*celly), (xn-1)/cellx/)))
+                !  bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                !  medLongBitFull(leng+1:2*leng,5) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
+                 !
+                !  bit_thing_t1 = TRANSPOSE(RESHAPE(medLongBitFull(2*leng+1:,5),(/yn/(2*celly), (xn-1)/cellx/)))
+                !  bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                !  medLongBitFull(2*leng+1:,5) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
+
+                 DO i = 1,g_sol
+                    bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(1:leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
+                    bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                    solLongBitFull(:leng,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
+
+                    bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
+                    bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                    solLongBitFull(leng+1:2*leng,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
+
+                    bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(2*leng+1:,i),(/yn/(2*celly), (xn-1)/cellx/)))
+                    bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                    solLongBitFull(2*leng+1:,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
+                 END DO
+
+
+                 bit_thing_t1 = TRANSPOSE(RESHAPE(medLongBitFull(1:leng,2),(/yn/(2*celly), (xn-1)/cellx/)))
+                 bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                 medLongBitFull(:leng,2) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
+
+                 bit_thing_t1 = TRANSPOSE(RESHAPE(medLongBitFull(leng+1:2*leng,2),(/yn/(2*celly), (xn-1)/cellx/)))
+                 bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                 medLongBitFull(leng+1:2*leng,2) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
+
+                 bit_thing_t1 = TRANSPOSE(RESHAPE(medLongBitFull(2*leng+1:,2),(/yn/(2*celly), (xn-1)/cellx/)))
+                 bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                 medLongBitFull(2*leng+1:,2) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
 
 
 
@@ -3715,9 +3737,13 @@ PROGRAM main
      param_ol_string ='-f MgO 1.0 FeO 1.0 SiO2 1.0'
      !param_ol_string ='-f MgO 2.0 SiO2 1.0'
      !param_ol_string ='-f FeO 2.0 SiO2 1.0'
-    param_pyr_string='-f CaO 1.0 MgO 1.0 SiO2 2.0'
-    !param_pyr_string='-f MgO 2.0 SiO2 2.0'
-     param_plag_string='-f NaAlSi3O8 0.5 CaAl2Si2O8 0.5'
+
+
+    !param_pyr_string='-f CaO 1.0 MgO 1.0 SiO2 2.0'
+    param_pyr_string='-f MgO 2.0 SiO2 2.0'
+
+    ! param_plag_string='-f NaAlSi3O8 0.5 CaAl2Si2O8 0.5'
+    param_plag_string='-f NaAlSi3O8 1.0'
 
      ! 		&"-f CaO 1.0 FeO 1.0 SiO2 2.0 " //NEW_LINE('')// & ! hedenbergite
      ! 		&"-f CaO 1.0 MgO 1.0 SiO2 2.0 " //NEW_LINE('')// & ! diopside
@@ -4034,6 +4060,9 @@ PROGRAM main
               WRITE(s_pyrrhotite,'(F25.10)') secondary3(35)
               WRITE(s_fe_saponite_ca,'(F25.10)') secondary3(36) !!!
               WRITE(s_fe_saponite_mg,'(F25.10)') secondary3(37) !!!
+              WRITE(s_daphnite_7a,'(F25.10)') secondary3(38) !!!
+              WRITE(s_daphnite_14a,'(F25.10)') secondary3(39) !!!
+              WRITE(s_epidote,'(F25.10)') secondary3(40) !!!
 
               ! OTHER INFORMATION TO STRINGS
               WRITE(s_temp,'(F25.10)') temp3
@@ -4095,7 +4124,7 @@ PROGRAM main
               inputz0 = TRIM(inputz0) // "EQUILIBRIUM_PHASES 1" //NEW_LINE('')// &
                    &"    Goethite " // TRIM(s_precip) // TRIM(s_goethite) // kinetics //NEW_LINE('')// &
                    &"    Celadonite " // TRIM(s_precip) // TRIM(s_celadonite) // kinetics //NEW_LINE('')// & ! mica
-                   &"    Saponite-Mg " // TRIM(s_precip) // TRIM(s_saponite) // kinetics //NEW_LINE('')// & ! smectite
+                   !&"    Saponite-Mg " // TRIM(s_precip) // TRIM(s_saponite) // kinetics //NEW_LINE('')// & ! smectite
                    &"    Pyrite " // TRIM(s_precip) // TRIM(s_pyrite) // kinetics //NEW_LINE('')// &
                    &"    Saponite-Na " // TRIM(s_precip) // TRIM(s_saponite_na) // kinetics //NEW_LINE('')// & ! smectite
                    &"    Nontronite-Na " // TRIM(s_precip) // TRIM(s_nont_na) // kinetics //NEW_LINE('')// & ! smectite
@@ -4129,18 +4158,20 @@ PROGRAM main
                    &"    Vermiculite-Mg " // TRIM(s_precip) // TRIM(s_verm_mg) // kinetics //NEW_LINE('')//& ! clay
                    ! 		&"    Hematite 2.0 " // trim(s_hematite) // kinetics //NEW_LINE('')// &
 !!!!!!!old!! &"    Hematite " // trim(si_hematite) // trim(s_hematite) // kinetics //NEW_LINE('')// &
-                   ! 		    !&"    Epidote  " // trim(s_precip) // trim(s_epidote) // kinetics //NEW_LINE('')// &
-                   ! 		   &"    Gismondine " // trim(s_precip) // trim(s_gismondine) // kinetics //NEW_LINE('')// & ! zeolite
-                   ! 		&"    Smectite-low-Fe-Mg 0.0 " // trim(s_smectite_low) // kinetics //NEW_LINE('')// & ! smectite
-                   ! 		  &"    Prehnite " // trim(s_precip) // trim(s_prehnite) // kinetics //NEW_LINE('')// &
-                   ! ! 		&"    Scolecite " // trim(s_precip) // trim(s_scolecite) // kinetics //NEW_LINE('')// & ! zeolite
-                   !   		&"   Daphnite-7a " // trim(s_precip) // trim(s_daphnite_7a) // kinetics //NEW_LINE('')// & ! chlorite
-                   !   		&"   Daphnite-14a " // trim(s_precip) // trim(s_daphnite_14a) // kinetics //NEW_LINE('')! chlorite
+                    		    &"    Epidote  " // trim(s_precip) // trim(s_epidote) // kinetics //NEW_LINE('')// &
 
-                    		&"    Kaolinite " // trim(s_precip) // trim(s_kaolinite) // kinetics //NEW_LINE('')// & ! clay
+                   ! 		&"    Smectite-low-Fe-Mg 0.0 " // trim(s_smectite_low) // kinetics //NEW_LINE('')// & ! smectite
+
+                      		&"   Daphnite-7a " // trim(s_precip) // trim(s_daphnite_7a) // kinetics //NEW_LINE('')// & ! chlorite
+                      		&"   Daphnite-14a " // trim(s_precip) // trim(s_daphnite_14a) // kinetics //NEW_LINE('')// &! chlorite
+
+                    		!&"    Kaolinite " // trim(s_precip) // trim(s_kaolinite) // kinetics //NEW_LINE('')// & ! clay
                     		&"    Clinoptilolite-Ca " // trim(s_precip) // trim(s_clinoptilolite) // kinetics //NEW_LINE('')// & ! zeolite
                     		&"    K-Feldspar " // trim(s_precip) // trim(s_kspar) // kinetics //NEW_LINE('')// &
                     		!&"    Mesolite " // trim(s_precip) // trim(s_mesolite) // kinetics //NEW_LINE('')// & ! zeolite
+                            &"    Prehnite " // trim(s_precip) // trim(s_prehnite) // kinetics //NEW_LINE('')// &
+                          &"    Scolecite " // trim(s_precip) // trim(s_scolecite) // kinetics //NEW_LINE('')// & ! zeolite
+                          &"    Gismondine " // trim(s_precip) // trim(s_gismondine) // kinetics //NEW_LINE('')// & ! zeolite
 
                    &" "  //NEW_LINE('')
 
@@ -4270,7 +4301,7 @@ PROGRAM main
                    &"    -p prehnite chlorite(14a) scolecite Clinochlore-14A Clinochlore-7A saponite-ca" //NEW_LINE('')// & ! 6
                    &"    -p vermiculite-na pyrrhotite Fe-Saponite-Ca Fe-Saponite-Mg" //NEW_LINE('')// & ! 4
 
-                   &"    -p prehnite chlorite(14a) scolecite Clinochlore-14A Clinochlore-7A saponite-ca" //NEW_LINE('')// & ! 6
+                   &"    -p Daphnite-7a Daphnite-14a Epidote Clinochlore-14A Clinochlore-7A saponite-ca" //NEW_LINE('')// & ! 6
                    &"    -p prehnite chlorite(14a) scolecite Clinochlore-14A Clinochlore-7A saponite-ca" //NEW_LINE('')// & ! 6
                    &"    -p prehnite chlorite(14a) scolecite Clinochlore-14A Clinochlore-7A saponite-ca" //NEW_LINE('')// & ! 6
                    &"    -s kaolinite" //NEW_LINE('')// &		! 1
