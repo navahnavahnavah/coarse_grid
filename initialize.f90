@@ -56,6 +56,8 @@ MODULE initialize
   REAL(4) :: soluteMat_d((xn-1)*tn/(cellx*(mstep*ar)),yn/(2*celly),g_sol)
   REAL(4) :: mediumMat_d((xn-1)*tn/(cellx*(mstep*ar)),yn/(2*celly),g_med)
 
+
+
   REAL(4) :: t_vol_s, t_vol_a, t_vol_b
 
   REAL(4) :: sec_density(g_sec/2), sec_molar(g_sec/2)
@@ -892,7 +894,7 @@ CONTAINS
     medium_a(1,:,5) = 0.0
     medium_b(1,:,5) = 0.0
 
-    coarse_mask_long = RESHAPE(coarse_mask,(/((xn-1)/cellx)*(yn/(2*celly))/))
+    coarse_mask_long = RESHAPE(TRANSPOSE(coarse_mask),(/((xn-1)/cellx)*(yn/(2*celly))/))
 
 
 

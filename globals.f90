@@ -54,7 +54,9 @@ MODULE globals
   INTEGER :: vfe1=24, vfe2 = 16
   INTEGER :: diss_toggle
   REAL(4) :: precip_th=0.0
-  CHARACTER(len=25) :: ph_fix = "10.0^-7.5"
+  !CHARACTER(len=25) :: ph_fix = "10.0^-7.5"
+  REAL(4) :: ph_count
+  REAL(4) :: ph_sum
 CONTAINS
 
 

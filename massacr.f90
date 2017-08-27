@@ -287,6 +287,7 @@ PROGRAM main
   REAL(4) :: secLong(((xn-1)/cellx)*(yn/(2*celly)),g_sec), secLocal(3*((xn-1)/cellx)*(yn/(2*celly)),g_sec)
   REAL(4) :: solLong(((xn-1)/cellx)*(yn/(2*celly)),g_sol), solLocal(3*((xn-1)/cellx)*(yn/(2*celly)),g_sol)
   REAL(4) :: medLong(((xn-1)/cellx)*(yn/(2*celly)),g_med), medLocal(3*((xn-1)/cellx)*(yn/(2*celly)),g_med)
+  REAL(4) :: ph_fix_Local(3*((xn-1)/cellx)*(yn/(2*celly)))
   REAL(4) :: priLongBit(3*((xn-1)/cellx)*(yn/(2*celly)))
   REAL(4) :: secLongBit(3*((xn-1)/cellx)*(yn/(2*celly)))
   REAL(4) :: solLongBit(3*((xn-1)/cellx)*(yn/(2*celly)))
@@ -307,6 +308,12 @@ PROGRAM main
   REAL(4) :: medLongBitFull(3*((xn-1)/cellx)*(yn/(2*celly)),g_med)
   REAL(4) :: phiLongBitFull(3*((xn-1)/cellx)*(yn/(2*celly)))
 
+  REAL(4) :: ph_fix((xn-1)/cellx,yn/(2*celly))
+  REAL(4) :: ph_fix_a((xn-1)/cellx,yn/(2*celly))
+  REAL(4) :: ph_fix_b((xn-1)/cellx,yn/(2*celly))
+
+  REAL(4) :: ph_fix_LongBitFull(3*((xn-1)/cellx)*(yn/(2*celly)))
+
   ! chamber stuff
   REAL(4) :: priLong_a(((xn-1)/cellx)*(yn/(2*celly)),g_pri)
   REAL(4) :: secLong_a(((xn-1)/cellx)*(yn/(2*celly)),g_sec)
@@ -324,7 +331,7 @@ PROGRAM main
   CHARACTER(LEN=5000) :: line
   CHARACTER(len=7000) :: inputz0
   REAL(4) :: outmat(4,134)
-  REAL(4) :: temp3, timestep3, primary3(5), secondary3(80), solute3(15), medium3(7) ! important information
+  REAL(4) :: temp3, timestep3, primary3(5), secondary3(80), solute3(15), medium3(7), ph_fix3 ! important information
   REAL(4) :: water
 
   ! STRINGS
@@ -350,7 +357,7 @@ PROGRAM main
   CHARACTER(len=25) :: s_ph, s_ca, s_mg, s_na, s_k, s_fe, s_s, s_si, s_cl, s_al, s_alk, s_co2 ! solutes
   CHARACTER(len=25) :: s_hco3, s_co3, s_pe
   CHARACTER(len=25) :: s_water, s_w, s_reactive ! medium
-  CHARACTER(len=25) :: s_basalt1, s_basalt2, s_basalt3, s_precip, s_clay, s_chlor
+  CHARACTER(len=25) :: s_basalt1, s_basalt2, s_basalt3, s_precip, s_clay, s_chlor, s_ph_fix
 
 
   ! NEWER GEOCHEM
@@ -2488,7 +2495,7 @@ PROGRAM main
         ! END IF
 
         ! write(*,*) "error string"
-        write(*,*) "error string"
+        !write(*,*) "error string"
 
 
         IF (restart .NE. 1) THEN
@@ -2717,7 +2724,7 @@ PROGRAM main
 
         END IF ! end if restart .ne. 1
 
-        write(*,*) "error string 2"
+        !write(*,*) "error string 2"
 
         IF (j .EQ. 3) THEN
 
@@ -3209,6 +3216,51 @@ PROGRAM main
         !    END DO
 
 
+        !- calculate ph_fix
+
+        ph_fix_LongBitFull = 0.0
+
+        ph_count = 0.0
+        ph_sum = 0.0
+        DO i = 1,leng
+            if (coarse_mask_long(i) .eq. 1.0) then
+                ph_count = ph_count + 1
+                ph_sum = ph_sum + 10.0**(-1.0*solLongBitFull(i,1))
+            end if
+        END DO
+        ph_sum = -1.0*LOG10(ph_sum/ph_count)
+        ph_fix_LongBitFull(1:leng) = ph_sum
+        write(*,*) "pH sum" , ph_sum
+
+
+        ph_count = 0.0
+        ph_sum = 0.0
+        DO i = 1,leng
+            if (coarse_mask_long(leng+i) .eq. 1.0) then
+                ph_count = ph_count + 1
+                ph_sum = ph_sum + 10.0**(-1.0*solLongBitFull(leng+i,1))
+            end if
+        END DO
+        ph_sum = -1.0*LOG10(ph_sum/ph_count)
+        ph_fix_LongBitFull(leng+1:2*leng) = ph_sum
+        write(*,*) "pH sum" , ph_sum
+
+
+        ph_count = 0.0
+        ph_sum = 0.0
+        DO i = 1,leng
+            if (coarse_mask_long(2*leng+i) .eq. 1.0) then
+                ph_count = ph_count + 1
+                ph_sum = ph_sum + 10.0**(-1.0*solLongBitFull(2*leng+i,1))
+            end if
+        END DO
+        ph_sum = -1.0*LOG10(ph_sum/ph_count)
+        ph_fix_LongBitFull(2*leng:) = ph_sum
+        write(*,*) "pH sum" , ph_sum
+
+
+
+
            !#GEOCHEM: send from master to slaves
            DO an_id = 1, num_procs - 1
 
@@ -3230,6 +3282,10 @@ PROGRAM main
 
               ! send temperature array chunk to processor an_id
               CALL MPI_SEND( hLong(start_row), num_rows_to_send, MPI_DOUBLE_PRECISION, &
+                   an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+
+              ! send ph_fix array chunk to processor an_id
+              CALL MPI_SEND( ph_fix_LongBitFull(start_row), num_rows_to_send, MPI_DOUBLE_PRECISION, &
                    an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 
               ! send primary array chunk to processor an_id
@@ -3896,6 +3952,10 @@ PROGRAM main
              root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
         num_rows_received = num_rows_to_receive
 
+        ! receive temperature array chunk, save in local hLocal
+        CALL MPI_RECV ( ph_fix_Local, num_rows_to_receive, MPI_DOUBLE_PRECISION, &
+             root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+
         ! receive primary array chunk, save in local priLocal
         DO ii = 1,g_pri
            CALL MPI_RECV ( priLocal(:,ii), num_rows_to_receive, MPI_DOUBLE_PRECISION, &
@@ -3948,6 +4008,7 @@ PROGRAM main
               solute3 = solLocal(m,:)
               medium3 = medLocal(m,:)
               temp3 = hLocal(m)-273.0
+              ph_fix3 = ph_fix_Local(m)
               IF (temp3 .GE. 300.0) THEN
                  temp3 = 299.0
               END IF
@@ -4070,6 +4131,7 @@ PROGRAM main
               WRITE(s_reactive,'(F25.10)') medium3(4)
               s_clay = "0.0"
               s_chlor = "0.0"
+              WRITE(s_ph_fix,'(F25.10)') ph_fix3
 
               ! ----------------------------------%%
               ! INITIAL AQUEOUS PHASE CONSITUENTS
@@ -4127,10 +4189,10 @@ PROGRAM main
                    !&"    Saponite-Mg " // TRIM(s_precip) // TRIM(s_saponite) // kinetics //NEW_LINE('')// & ! smectite
                    &"    Pyrite " // TRIM(s_precip) // TRIM(s_pyrite) // kinetics //NEW_LINE('')// &
                    !&"    Saponite-Na " // TRIM(s_precip) // TRIM(s_saponite_na) // kinetics //NEW_LINE('')// & ! smectite
-                   !&"    Nontronite-Na " // TRIM(s_precip) // TRIM(s_nont_na) // kinetics //NEW_LINE('')// & ! smectite
-                   !&"    Nontronite-Mg " // TRIM(s_precip) // TRIM(s_nont_mg) // kinetics //NEW_LINE('')// & ! smectite
+                   &"    Nontronite-Na " // TRIM(s_precip) // TRIM(s_nont_na) // kinetics //NEW_LINE('')// & ! smectite
+                   &"    Nontronite-Mg " // TRIM(s_precip) // TRIM(s_nont_mg) // kinetics //NEW_LINE('')// & ! smectite
                    &"    Fe-Celadonite " // TRIM(s_precip) // TRIM(s_fe_celadonite) // kinetics //NEW_LINE('')// & ! mica
-                   !&"    Nontronite-Ca " // TRIM(s_precip) // TRIM(s_nont_ca) // kinetics //NEW_LINE('')// & ! smectite
+                   &"    Nontronite-Ca " // TRIM(s_precip) // TRIM(s_nont_ca) // kinetics //NEW_LINE('')// & ! smectite
                    &"    Analcime " // TRIM(s_precip) // TRIM(s_analcime) // kinetics //NEW_LINE('')// & ! zeolite
                    &"    Phillipsite " // TRIM(s_precip) // TRIM(s_phillipsite) // kinetics //NEW_LINE('')// & ! zeolite
                    &"    Natrolite " // TRIM(s_precip) // TRIM(s_natrolite) // kinetics //NEW_LINE('')// & ! zeolite
@@ -4152,7 +4214,7 @@ PROGRAM main
 
 
 
-                   ! 		&"    Smectite-high-Fe-Mg " // trim(s_precip) // trim(s_smectite) // kinetics //NEW_LINE('')// & ! smectite
+                    		&"    Smectite-high-Fe-Mg " // trim(s_precip) // trim(s_smectite) // kinetics //NEW_LINE('')// & ! smectite
  	 	   &"    Vermiculite-Na " // TRIM(s_precip) // TRIM(s_verm_na) // kinetics //NEW_LINE('')// & ! clay
                    &"    Vermiculite-Ca " // TRIM(s_precip) // TRIM(s_verm_ca) // kinetics //NEW_LINE('')// & ! clay
                    &"    Vermiculite-Mg " // TRIM(s_precip) // TRIM(s_verm_mg) // kinetics //NEW_LINE('')//& ! clay
@@ -4191,7 +4253,7 @@ PROGRAM main
                 !    &"*(((ACT('H+')^3)/(base0))^.33333)" //NEW_LINE('')// &
 
                 &"    30 rate0=M*110.0*(1.52e-5)*" // TRIM(param_exp_string) // "*(1.0e4)*(2.51189e-6)*exp(-25.5/(.008314*TK))" // &
-                &"*(((("//TRIM(ph_fix)//")^3)/(base0))^.33333)" //NEW_LINE('')// &
+                &"*((((10.0^-"//TRIM(s_ph_fix)//")^3)/(base0))^.33333)" //NEW_LINE('')// &
                    &"    40 save rate0 * time" //NEW_LINE('')// &
                    &"-end" //NEW_LINE('')// &
 
@@ -4200,7 +4262,7 @@ PROGRAM main
 
                 !    &"    10 rate0=M*140.7*(1.52e-5)*" // TRIM(exp_ol) //"*(" //TRIM(ol_k1)//"*(ACT('H+')^"//TRIM(ol_n1)//")*exp(-("//TRIM(ol_e1)//"/.008314)*((1.0/TK) - (1.0/298.0))) + "//TRIM(ol_k2)//"*exp(-("//TRIM(ol_e2)//"/.008314)*((1.0/TK) - (1.0/298.0))))" //NEW_LINE('')// &
 
-                &"    10 rate0=M*140.7*(1.52e-5)*" // TRIM(exp_ol) //"*(" //TRIM(ol_k1)//"*(("//TRIM(ph_fix)//")^"//TRIM(ol_n1)//")*exp(-("//TRIM(ol_e1)//"/.008314)*((1.0/TK) - (1.0/298.0))) + "//TRIM(ol_k2)//"*exp(-("//TRIM(ol_e2)//"/.008314)*((1.0/TK) - (1.0/298.0))))" //NEW_LINE('')// &
+                &"    10 rate0=M*140.7*(1.52e-5)*" // TRIM(exp_ol) //"*(" //TRIM(ol_k1)//"*((10.0^-"//TRIM(s_ph_fix)//")^"//TRIM(ol_n1)//")*exp(-("//TRIM(ol_e1)//"/.008314)*((1.0/TK) - (1.0/298.0))) + "//TRIM(ol_k2)//"*exp(-("//TRIM(ol_e2)//"/.008314)*((1.0/TK) - (1.0/298.0))))" //NEW_LINE('')// &
 
                    &"    20 save rate0 * time" //NEW_LINE('')// &
                    &"-end" //NEW_LINE('')// &
@@ -4210,7 +4272,7 @@ PROGRAM main
 
                 !    &"    10 rate0=M*250.0*(1.52e-5)*" // TRIM(exp_pyr) //"*(" //TRIM(pyr_k1)//"*(ACT('H+')^"//TRIM(pyr_n1)//")*exp(-("//TRIM(pyr_e1)//"/.008314)*((1.0/TK) - (1.0/298.0))) + "//TRIM(pyr_k2)//"*exp(-("//TRIM(pyr_e2)//"/.008314)*((1.0/TK) - (1.0/298.0))))" //NEW_LINE('')// &
 
-                &"    10 rate0=M*250.0*(1.52e-5)*" // TRIM(exp_pyr) //"*(" //TRIM(pyr_k1)//"*(("//TRIM(ph_fix)//")^"//TRIM(pyr_n1)//")*exp(-("//TRIM(pyr_e1)//"/.008314)*((1.0/TK) - (1.0/298.0))) + "//TRIM(pyr_k2)//"*exp(-("//TRIM(pyr_e2)//"/.008314)*((1.0/TK) - (1.0/298.0))))" //NEW_LINE('')// &
+                &"    10 rate0=M*250.0*(1.52e-5)*" // TRIM(exp_pyr) //"*(" //TRIM(pyr_k1)//"*((10.0^-"//TRIM(s_ph_fix)//")^"//TRIM(pyr_n1)//")*exp(-("//TRIM(pyr_e1)//"/.008314)*((1.0/TK) - (1.0/298.0))) + "//TRIM(pyr_k2)//"*exp(-("//TRIM(pyr_e2)//"/.008314)*((1.0/TK) - (1.0/298.0))))" //NEW_LINE('')// &
 
                    &"    20 save rate0 * time" //NEW_LINE('')// &
                    &"-end" //NEW_LINE('')// &
@@ -4218,7 +4280,7 @@ PROGRAM main
                    &"Basalt3" //NEW_LINE('')// &
                    &"-start" //NEW_LINE('')// &
                 !    &"    10 rate0=M*270.0*(1.52e-5)*" // TRIM(exp_plag) //"*" //TRIM(plag_k1)//"*(ACT('H+')^"//TRIM(plag_n1)//")*exp(-("//TRIM(plag_e1)//"/.008314)*((1.0/TK) - (1.0/298.0)))" //NEW_LINE('')// &
-                &"    10 rate0=M*270.0*(1.52e-5)*" // TRIM(exp_plag) //"*"//TRIM(plag_k1)//"*(("//TRIM(ph_fix)//")^"//TRIM(plag_n1)//")*exp(-("//TRIM(plag_e1)//"/.008314)*((1.0/TK) - (1.0/298.0)))" //NEW_LINE('')// &
+                &"    10 rate0=M*270.0*(1.52e-5)*" // TRIM(exp_plag) //"*"//TRIM(plag_k1)//"*((10.0^-"//TRIM(s_ph_fix)//")^"//TRIM(plag_n1)//")*exp(-("//TRIM(plag_e1)//"/.008314)*((1.0/TK) - (1.0/298.0)))" //NEW_LINE('')// &
                    &"    20 save rate0 * time" //NEW_LINE('')// &
                    &"-end" //NEW_LINE('')// &
 
