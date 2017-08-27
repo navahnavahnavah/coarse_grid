@@ -474,7 +474,7 @@ CONTAINS
     ! write(*,*) "coarse" , solute(:,:,5)
 
     medium(:,:,1) = .1          ! phiCoarse
-    medium(:,:,2) = 0.0         ! precip (saturation state)
+    medium(:,:,2) = precip_th         ! precip (saturation state)
     medium(:,:,3) = t_vol_s       ! water_volume
     vol_i = medium(1,1,3)
     medium(:,:,4) = 0.01        ! reactive fraction now!
@@ -484,7 +484,7 @@ CONTAINS
 
 
     medium_a(:,:,1) = .1          ! phiCoarse
-    medium_a(:,:,2) = 0.0         ! precip (saturation state)
+    medium_a(:,:,2) = precip_th         ! precip (saturation state)
     medium_a(:,:,3) = t_vol_a       ! water_volume
     vol_i_a = medium_a(1,1,3)
     medium_a(:,:,4) = 0.01        ! reactive fraction now!
@@ -493,7 +493,7 @@ CONTAINS
     medium_a(:,:,7) = 0.0         ! y-coord
 
     medium_b(:,:,1) = .1          ! phiCoarse
-    medium_b(:,:,2) = 0.0         ! precip (saturation state)
+    medium_b(:,:,2) = precip_th         ! precip (saturation state)
     medium_b(:,:,3) = t_vol_b     ! water_volume
     vol_i_b = medium_b(1,1,3)
     medium_b(:,:,4) = 0.01        ! reactive fraction now!

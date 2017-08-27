@@ -365,7 +365,7 @@ PROGRAM main
   CHARACTER(len=25) :: exp_plag1, exp_plag2, exp_plag3, exp_plag
 
 
-  CHARACTER(len=49000) :: L5
+  CHARACTER(len=79000) :: L5
 
   param_tra = 10.0**11
   param_xb = 10.0**(-2.0)
@@ -2881,7 +2881,7 @@ PROGRAM main
               if (phi_coarse_long(i) .lt. 0.08) then
                   medLongBitFull(i,2) = 1000.0
               else
-                  medLongBitFull(i,2) = 0.0
+                  medLongBitFull(i,2) = precip_th
               end if
 
            END DO
@@ -2907,7 +2907,7 @@ PROGRAM main
               if (phi_coarse_long(i) .lt. 0.08) then
                   medLongBitFull(leng+i,2) = 1000.0
               else
-                  medLongBitFull(leng+i,2) = 0.0
+                  medLongBitFull(leng+i,2) = precip_th
               end if
            END DO
            phiLongBitFull(leng+1:2*leng) = phi_coarse_long
@@ -4118,7 +4118,7 @@ PROGRAM main
               ! 			&"    K-Feldspar " // trim(s_precip) // trim(s_kspar) // kinetics //NEW_LINE('')
               ! 		end if
               !
-               		if (medium3(2) .eq. 0.0) then
+               		if (medium3(2) .eq. precip_th) then
 
               !-phreeqc equilibrium phases
               inputz0 = TRIM(inputz0) // "EQUILIBRIUM_PHASES 1" //NEW_LINE('')// &
@@ -4126,11 +4126,11 @@ PROGRAM main
                    &"    Celadonite " // TRIM(s_precip) // TRIM(s_celadonite) // kinetics //NEW_LINE('')// & ! mica
                    !&"    Saponite-Mg " // TRIM(s_precip) // TRIM(s_saponite) // kinetics //NEW_LINE('')// & ! smectite
                    &"    Pyrite " // TRIM(s_precip) // TRIM(s_pyrite) // kinetics //NEW_LINE('')// &
-                   &"    Saponite-Na " // TRIM(s_precip) // TRIM(s_saponite_na) // kinetics //NEW_LINE('')// & ! smectite
-                   &"    Nontronite-Na " // TRIM(s_precip) // TRIM(s_nont_na) // kinetics //NEW_LINE('')// & ! smectite
-                   &"    Nontronite-Mg " // TRIM(s_precip) // TRIM(s_nont_mg) // kinetics //NEW_LINE('')// & ! smectite
+                   !&"    Saponite-Na " // TRIM(s_precip) // TRIM(s_saponite_na) // kinetics //NEW_LINE('')// & ! smectite
+                   !&"    Nontronite-Na " // TRIM(s_precip) // TRIM(s_nont_na) // kinetics //NEW_LINE('')// & ! smectite
+                   !&"    Nontronite-Mg " // TRIM(s_precip) // TRIM(s_nont_mg) // kinetics //NEW_LINE('')// & ! smectite
                    &"    Fe-Celadonite " // TRIM(s_precip) // TRIM(s_fe_celadonite) // kinetics //NEW_LINE('')// & ! mica
-                   &"    Nontronite-Ca " // TRIM(s_precip) // TRIM(s_nont_ca) // kinetics //NEW_LINE('')// & ! smectite
+                   !&"    Nontronite-Ca " // TRIM(s_precip) // TRIM(s_nont_ca) // kinetics //NEW_LINE('')// & ! smectite
                    &"    Analcime " // TRIM(s_precip) // TRIM(s_analcime) // kinetics //NEW_LINE('')// & ! zeolite
                    &"    Phillipsite " // TRIM(s_precip) // TRIM(s_phillipsite) // kinetics //NEW_LINE('')// & ! zeolite
                    &"    Natrolite " // TRIM(s_precip) // TRIM(s_natrolite) // kinetics //NEW_LINE('')// & ! zeolite
@@ -4187,29 +4187,38 @@ PROGRAM main
                                 ! &"    10 rate0=M*110.0*(1.52e-5)*" // trim(param_exp_string) // "*(CALC_VALUE('R(sum)'))*(1.0e4)*(2.51189e-6)*exp(-25.5/(.008314*TK))" // &
                    &"		10 base0 = 1e-10" //NEW_LINE('')// &
                    &"		20 if (ACT('Al+3') > 1e-10) then base0 = ACT('Al+3')" //NEW_LINE('')// &
-                   &"    30 rate0=M*110.0*(1.52e-5)*" // TRIM(param_exp_string) // "*(1.0e4)*(2.51189e-6)*exp(-25.5/(.008314*TK))" // &
-                                !&"    10 rate0=M*110.0*(1.52e-5)*(1.0e4)*(2.51189e-6)*exp(-25.5/(.008314*TK))" // &
-                                ! &"*(((ACT('H+')^3)/(TOT('Al')))^.33333)" //NEW_LINE('')// &
-                   &"*(((ACT('H+')^3)/(base0))^.33333)" //NEW_LINE('')// &
+                !    &"    30 rate0=M*110.0*(1.52e-5)*" // TRIM(param_exp_string) // "*(1.0e4)*(2.51189e-6)*exp(-25.5/(.008314*TK))" // &
+                !    &"*(((ACT('H+')^3)/(base0))^.33333)" //NEW_LINE('')// &
+
+                &"    30 rate0=M*110.0*(1.52e-5)*" // TRIM(param_exp_string) // "*(1.0e4)*(2.51189e-6)*exp(-25.5/(.008314*TK))" // &
+                &"*(((("//TRIM(ph_fix)//")^3)/(base0))^.33333)" //NEW_LINE('')// &
                    &"    40 save rate0 * time" //NEW_LINE('')// &
                    &"-end" //NEW_LINE('')// &
 
                    &"Basalt1" //NEW_LINE('')// &
                    &"-start" //NEW_LINE('')// &
-                   &"    10 rate0=M*140.7*(1.52e-5)*" // TRIM(exp_ol) //"*(" //TRIM(ol_k1)//"*(ACT('H+')^"//TRIM(ol_n1)//")*exp(-("//TRIM(ol_e1)//"/.008314)*((1.0/TK) - (1.0/298.0))) + "//TRIM(ol_k2)//"*exp(-("//TRIM(ol_e2)//"/.008314)*((1.0/TK) - (1.0/298.0))))" //NEW_LINE('')// &
-                                !&"    10 rate0=M*250.0*(1.52e-5)*" // trim(exp_pyr) //"*" //trim(pyr_k1)//"*(ACT('H+')^"//trim(pyr_n1)//")*exp(-("//trim(pyr_e1)//"/.008314)*((1.0/TK) - (1.0/298.0)))" //NEW_LINE('')// &
+
+                !    &"    10 rate0=M*140.7*(1.52e-5)*" // TRIM(exp_ol) //"*(" //TRIM(ol_k1)//"*(ACT('H+')^"//TRIM(ol_n1)//")*exp(-("//TRIM(ol_e1)//"/.008314)*((1.0/TK) - (1.0/298.0))) + "//TRIM(ol_k2)//"*exp(-("//TRIM(ol_e2)//"/.008314)*((1.0/TK) - (1.0/298.0))))" //NEW_LINE('')// &
+
+                &"    10 rate0=M*140.7*(1.52e-5)*" // TRIM(exp_ol) //"*(" //TRIM(ol_k1)//"*(("//TRIM(ph_fix)//")^"//TRIM(ol_n1)//")*exp(-("//TRIM(ol_e1)//"/.008314)*((1.0/TK) - (1.0/298.0))) + "//TRIM(ol_k2)//"*exp(-("//TRIM(ol_e2)//"/.008314)*((1.0/TK) - (1.0/298.0))))" //NEW_LINE('')// &
+
                    &"    20 save rate0 * time" //NEW_LINE('')// &
                    &"-end" //NEW_LINE('')// &
 
                    &"Basalt2" //NEW_LINE('')// &
                    &"-start" //NEW_LINE('')// &
-                   &"    10 rate0=M*250.0*(1.52e-5)*" // TRIM(exp_pyr) //"*(" //TRIM(pyr_k1)//"*(ACT('H+')^"//TRIM(pyr_n1)//")*exp(-("//TRIM(pyr_e1)//"/.008314)*((1.0/TK) - (1.0/298.0))) + "//TRIM(pyr_k2)//"*exp(-("//TRIM(pyr_e2)//"/.008314)*((1.0/TK) - (1.0/298.0))))" //NEW_LINE('')// &
+
+                !    &"    10 rate0=M*250.0*(1.52e-5)*" // TRIM(exp_pyr) //"*(" //TRIM(pyr_k1)//"*(ACT('H+')^"//TRIM(pyr_n1)//")*exp(-("//TRIM(pyr_e1)//"/.008314)*((1.0/TK) - (1.0/298.0))) + "//TRIM(pyr_k2)//"*exp(-("//TRIM(pyr_e2)//"/.008314)*((1.0/TK) - (1.0/298.0))))" //NEW_LINE('')// &
+
+                &"    10 rate0=M*250.0*(1.52e-5)*" // TRIM(exp_pyr) //"*(" //TRIM(pyr_k1)//"*(("//TRIM(ph_fix)//")^"//TRIM(pyr_n1)//")*exp(-("//TRIM(pyr_e1)//"/.008314)*((1.0/TK) - (1.0/298.0))) + "//TRIM(pyr_k2)//"*exp(-("//TRIM(pyr_e2)//"/.008314)*((1.0/TK) - (1.0/298.0))))" //NEW_LINE('')// &
+
                    &"    20 save rate0 * time" //NEW_LINE('')// &
                    &"-end" //NEW_LINE('')// &
 
                    &"Basalt3" //NEW_LINE('')// &
                    &"-start" //NEW_LINE('')// &
-                   &"    10 rate0=M*270.0*(1.52e-5)*" // TRIM(exp_plag) //"*" //TRIM(plag_k1)//"*(ACT('H+')^"//TRIM(plag_n1)//")*exp(-("//TRIM(plag_e1)//"/.008314)*((1.0/TK) - (1.0/298.0)))" //NEW_LINE('')// &
+                !    &"    10 rate0=M*270.0*(1.52e-5)*" // TRIM(exp_plag) //"*" //TRIM(plag_k1)//"*(ACT('H+')^"//TRIM(plag_n1)//")*exp(-("//TRIM(plag_e1)//"/.008314)*((1.0/TK) - (1.0/298.0)))" //NEW_LINE('')// &
+                &"    10 rate0=M*270.0*(1.52e-5)*" // TRIM(exp_plag) //"*"//TRIM(plag_k1)//"*(("//TRIM(ph_fix)//")^"//TRIM(plag_n1)//")*exp(-("//TRIM(plag_e1)//"/.008314)*((1.0/TK) - (1.0/298.0)))" //NEW_LINE('')// &
                    &"    20 save rate0 * time" //NEW_LINE('')// &
                    &"-end" //NEW_LINE('')// &
 
@@ -4294,12 +4303,12 @@ PROGRAM main
                    &"    -molalities HCO3-" //NEW_LINE('')// &
                    &"    -water true" //NEW_LINE('')// &
                    &"    -alkalinity" //NEW_LINE('')// &
-                   &"    -p kaolinite saponite-mg celadonite Clinoptilolite-Ca pyrite montmor-na goethite" //NEW_LINE('')// & ! 7
-                   &"    -p Smectite-high-Fe-Mg calcite k-feldspar saponite-na nontronite-na nontronite-mg" //NEW_LINE('')// & ! 6
-                   &"    -p fe-celadonite nontronite-ca mesolite hematite montmor-ca vermiculite-ca analcime" //NEW_LINE('')// & ! 7
-                   &"    -p phillipsite montmor-mg gismondine vermiculite-mg natrolite talc Smectite-low-Fe-Mg " //NEW_LINE('')// & ! 7
-                   &"    -p prehnite chlorite(14a) scolecite Clinochlore-14A Clinochlore-7A saponite-ca" //NEW_LINE('')// & ! 6
-                   &"    -p vermiculite-na pyrrhotite Fe-Saponite-Ca Fe-Saponite-Mg" //NEW_LINE('')// & ! 4
+                   &"    -p Kaolinite Saponite-Mg Celadonite Clinoptilolite-Ca Pyrite Montmor-Na Goethite" //NEW_LINE('')// & ! 7
+                   &"    -p Smectite-high-Fe-Mg Calcite K-Feldspar Saponite-Na Nontronite-Na Nontronite-Mg" //NEW_LINE('')// & ! 6
+                   &"    -p Fe-Celadonite Nontronite-Ca Mesolite Hematite Montmor-Ca Vermiculite-Ca Analcime" //NEW_LINE('')// & ! 7
+                   &"    -p Phillipsite Montmor-Mg Gismondine Vermiculite-Mg Natrolite Talc Smectite-low-Fe-Mg " //NEW_LINE('')// & ! 7
+                   &"    -p Prehnite Chlorite(14a) scolecite Clinochlore-14A Clinochlore-7A Saponite-Ca" //NEW_LINE('')// & ! 6
+                   &"    -p Vermiculite-Na Pyrrhotite Fe-Saponite-Ca Fe-Saponite-Mg" //NEW_LINE('')// & ! 4
 
                    &"    -p Daphnite-7a Daphnite-14a Epidote Clinochlore-14A Clinochlore-7A saponite-ca" //NEW_LINE('')// & ! 6
                    &"    -p prehnite chlorite(14a) scolecite Clinochlore-14A Clinochlore-7A saponite-ca" //NEW_LINE('')// & ! 6
@@ -4570,7 +4579,7 @@ PROGRAM main
 
            END IF ! end if-cell-is-on loop (medLocl 5 == 1)
 
-           if (medium3(2) .eq. 0.0) then
+           if (medium3(2) .eq. precip_th) then
            !secLocal = 0.0
            DO ii=1,g_sec/2
               secLocal(m,ii) = alt_mat(m,2*ii+14)
@@ -6399,6 +6408,11 @@ FUNCTION solute_next (sol, uTransport, vTransport, seaw)
            ! 			end if
            !
         END IF ! end mod thing
+
+        ! if ((solute_next(i,j) .gt. sol0(i,j)*1.1) .and. (solute_next(i,j) .gt. sol0(i-1,j)*1.1)) then
+        !     solute_next(i,j) = sol0(i,j)
+        ! end if
+
      END DO
      !solute_next(xn-1,j) = sol0(xn-1,j) - qx*uTransport(xn-1,j)*( sol0(xn-1,j) - sol0(xn-2,j) )
   END DO
