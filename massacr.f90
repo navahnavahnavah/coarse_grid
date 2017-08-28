@@ -2736,8 +2736,14 @@ PROGRAM main
 
            DO ii = yn/(2*celly)+1,yn/(celly)
               DO i = 1,(xn-1)/cellx
-                 h_coarse(i,ii-yn/(2*celly)) = SUM(h((i-1)*cellx+1:i*cellx,(ii-1)*celly+1:ii*celly))/(cellx*celly)
+                 !h_coarse(i,ii-yn/(2*celly)) = SUM(h((i-1)*cellx+1:i*cellx,(ii-1)*celly+1:ii*celly))/(cellx*celly)
                  psi_coarse(i,ii-yn/(2*celly)) = psi(i*cellx,ii*celly)
+              END DO
+           END DO
+
+           DO ii = yn/(2*celly)+1,yn/(celly)
+              DO i = 1,((xn-1)/cellx)/2
+                  h_coarse(2*i-1:2*i,ii-yn/(2*celly)) = SUM(h((i-1)*cellx*2+1:i*cellx*2,(ii-1)*celly+1:ii*celly))/(2*cellx*celly)
               END DO
            END DO
 
@@ -3236,7 +3242,7 @@ PROGRAM main
         ph_count = 0.0
         ph_sum = 0.0
         DO i = 1,leng
-            if (coarse_mask_long(leng+i) .eq. 1.0) then
+            if (coarse_mask_long(i) .eq. 1.0) then
                 ph_count = ph_count + 1
                 ph_sum = ph_sum + 10.0**(-1.0*solLongBitFull(leng+i,1))
             end if
@@ -3249,7 +3255,7 @@ PROGRAM main
         ph_count = 0.0
         ph_sum = 0.0
         DO i = 1,leng
-            if (coarse_mask_long(2*leng+i) .eq. 1.0) then
+            if (coarse_mask_long(i) .eq. 1.0) then
                 ph_count = ph_count + 1
                 ph_sum = ph_sum + 10.0**(-1.0*solLongBitFull(2*leng+i,1))
             end if
@@ -3667,7 +3673,7 @@ PROGRAM main
                     DO i = 1,(xn-1)*tn/(cellx*mstep*ar)
                        soluteMat_d(i,ii,1) = -1.0*LOG10((volume_ratio/(1.0+volume_ratio))*10.0**(-1.0*soluteMat_a(i,ii,1)) + (1.0/(1.0+volume_ratio))*10.0**(-1.0*soluteMat_b(i,ii,1)))
                     END DO
-		 END DO
+		         END DO
 
 
                  yep = write_matrix ( (xn-1)*tn/(cellx*mstep*ar), yn/(2*celly), REAL(soluteMat_d(:,:,1),kind=4), TRIM(path) // 'ch_d/z_sol_ph.txt' )
@@ -3903,7 +3909,7 @@ PROGRAM main
            sol_coarse_local = TRANSPOSE(RESHAPE(sol_coarse_long_local,(/yn/(2*celly),(xn-1)/cellx/)))
            u_coarse_local = RESHAPE(u_coarse_long_local,(/(xn-1)/cellx,yn/(2*celly)/))
            v_coarse_local = RESHAPE(v_coarse_long_local,(/(xn-1)/cellx,yn/(2*celly)/))
-           phi_coarse_local = TRANSPOSE(RESHAPE(phi_coarse_long_local,(/yn/(2*celly),(xn-1)/cellx/)))
+           phi_coarse_local = TRANSPOSE(RESHAPE(phi_coarse_long_local,(/yn/(2*celly),(xn-1)/cellx/))) ! this is where the phi transpose bug was
            !phi_coarse_local = 0.5
            !write(*,*) maxval(phi_coarse_local)
 
@@ -4621,17 +4627,23 @@ PROGRAM main
               ! 	write(*,*) "	PROC 40 START ASSEMBLING"
               ! end if
 
+              if (alt0(1,2) .GT. 1.0) then
+
               solLocal(m,:) = (/ alt0(1,2), alt0(1,3), alt0(1,4), alt0(1,5), alt0(1,6), &
                    alt0(1,7), alt0(1,8), alt0(1,9), alt0(1,10), alt0(1,11), alt0(1,12), &
                    alt0(1,13), alt0(1,14), alt0(1,15), 0.0/)
 
+
+
               priLocal(m,:) = (/ 0.0*alt0(1,136), alt0(1,127), alt0(1,129), alt0(1,131), alt0(1,133)/)
+
+              end if
 
               !
               ! 				medLocal(m,3) = alt0(1,4)
               !
               IF (alt0(1,2) .LT. 1.0) THEN
-                 medLocal(m,5) = 0.0
+                 !medLocal(m,5) = 0.0
                  solLocal(m,:) = (/ solute3(1), solute3(2), solute3(3), solute3(4), solute3(5), &
                       solute3(6), solute3(7), solute3(8), solute3(9), solute3(10), solute3(11), &
                       solute3(12), solute3(13), solute3(14), 0.0/)
@@ -4641,11 +4653,15 @@ PROGRAM main
 
            END IF ! end if-cell-is-on loop (medLocl 5 == 1)
 
-           if (medium3(2) .eq. precip_th) then
-           !secLocal = 0.0
-           DO ii=1,g_sec/2
-              secLocal(m,ii) = alt_mat(m,2*ii+14)
-           END DO
+           if (alt0(1,2) .GT. 1.0) then
+
+               if (medium3(2) .eq. precip_th) then
+               !secLocal = 0.0
+               DO ii=1,g_sec/2
+                  secLocal(m,ii) = alt_mat(m,2*ii+14)
+               END DO
+               end if
+
            end if
 
         END DO ! end m = 1,num rows, ran chem for each row and populated local arrays
@@ -6817,7 +6833,7 @@ FUNCTION solute_next_coarse (sol, uTransport, vTransport, phiTransport, seaw)
   ! end do
 
   sol(1,:) = seaw!(4.0/3.0)*sol(2,:) - (1.0/3.0)*sol(3,:)
-  !sol((xn-1)/cellx,:) = seaw
+  sol((xn-1)/cellx,:) = sol((xn-1)/cellx-1,:)
   !sol((xn-1)/cellx,:) = (4.0/3.0)*sol((xn-1)/cellx-1,:) - (1.0/3.0)*sol((xn-1)/cellx-2,:)
 
 
@@ -6891,7 +6907,7 @@ FUNCTION solute_next_coarse (sol, uTransport, vTransport, phiTransport, seaw)
 
     !solute_next_coarse(2,j) = sol0(2,j) - (qx*0.12866E-06)*(sol0(2,j)-sol0(1,j)) - qx*(0.12866E-06/phiTransport(2,j))*sol0(2,j)*(phiTransport(2,j)-phiTransport(1,j))
 
-     DO i = 3,(xn-1)/cellx
+     DO i = 3,(xn-1)/cellx-1
         IF (uTransport(i,j) .GT. 1e-9) THEN
            !do i = 3,f_index1-2
 
