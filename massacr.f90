@@ -327,10 +327,10 @@ PROGRAM main
 
 
 
-  INTEGER(KIND=4) :: id, all=134
+  INTEGER(KIND=4) :: id, all=136
   CHARACTER(LEN=5000) :: line
   CHARACTER(len=7000) :: inputz0
-  REAL(4) :: outmat(4,134)
+  REAL(4) :: outmat(4,136)
   REAL(4) :: temp3, timestep3, primary3(5), secondary3(80), solute3(15), medium3(7), ph_fix3 ! important information
   REAL(4) :: water
 
@@ -2736,16 +2736,18 @@ PROGRAM main
 
            DO ii = yn/(2*celly)+1,yn/(celly)
               DO i = 1,(xn-1)/cellx
-                 !h_coarse(i,ii-yn/(2*celly)) = SUM(h((i-1)*cellx+1:i*cellx,(ii-1)*celly+1:ii*celly))/(cellx*celly)
+                 h_coarse(i,ii-yn/(2*celly)) = SUM(h((i-1)*cellx+1:i*cellx,(ii-1)*celly+1:ii*celly))/(cellx*celly)
                  psi_coarse(i,ii-yn/(2*celly)) = psi(i*cellx,ii*celly)
               END DO
            END DO
 
-           DO ii = yn/(2*celly)+1,yn/(celly)
-              DO i = 1,((xn-1)/cellx)/2
-                  h_coarse(2*i-1:2*i,ii-yn/(2*celly)) = SUM(h((i-1)*cellx*2+1:i*cellx*2,(ii-1)*celly+1:ii*celly))/(2*cellx*celly)
-              END DO
-           END DO
+        !    DO ii = yn/(2*celly)+1,yn/(celly)
+        !       DO i = 1,((xn-1)/cellx)/2
+        !           h_coarse(2*i-1:2*i,ii-yn/(2*celly)) = SUM(h((i-1)*cellx*2+1:i*cellx*2,(ii-1)*celly+1:ii*celly))/(2*cellx*celly)
+        !       END DO
+        !    END DO
+
+           !h_coarse = 360.0
 
 
            hLong = (/ RESHAPE(TRANSPOSE(h_coarse), (/ leng /)), RESHAPE(TRANSPOSE(h_coarse), (/ leng /)), RESHAPE(TRANSPOSE(h_coarse), (/ leng /)) /) ! for cell = 1
@@ -2775,6 +2777,7 @@ PROGRAM main
             u_coarse(:,i-2) = u_coarse(5,i)
             end if
         END DO
+        !u_coarse = u_coarse/1.5
 
            velocities0 = velocities(psi)
            u = phi*velocities0(1:xn,1:yn)/(rho_fluid)
@@ -2892,7 +2895,7 @@ PROGRAM main
 
               ! stop at 5% porosity
               if (phi_coarse_long(i) .lt. 0.08) then
-                  medLongBitFull(i,2) = 1000.0
+                  medLongBitFull(i,2) = precip_th!1000.0
               else
                   medLongBitFull(i,2) = precip_th
               end if
@@ -2918,7 +2921,7 @@ PROGRAM main
 
               ! stop at 5% porosity
               if (phi_coarse_long(i) .lt. 0.08) then
-                  medLongBitFull(leng+i,2) = 1000.0
+                  medLongBitFull(leng+i,2) = precip_th!1000.0
               else
                   medLongBitFull(leng+i,2) = precip_th
               end if
@@ -3098,10 +3101,10 @@ PROGRAM main
            !-move aged cells
            num_rows = 3*((xn-1)/cellx)*(yn/(2*celly))
            !do n=1,num_rows'
-           WRITE(*,*) "t j-mstep"
-           WRITE(*,*) t(j-mstep)
-           WRITE(*,*) "t j"
-           WRITE(*,*) t(j)
+        !    WRITE(*,*) "t j-mstep"
+        !    WRITE(*,*) t(j-mstep)
+        !    WRITE(*,*) "t j"
+        !    WRITE(*,*) t(j)
            ! if (t(j) .gt. 2.512e13) then
            IF (t(j) .LT. 8.478e13) THEN
               WRITE(*,*) "past 0.8 myr"
@@ -3114,7 +3117,7 @@ PROGRAM main
 
             ! for x cell blocks = 4500m (cellx = 90)
             ! stop moving after 2.7 ma, still for 0.8 ma
-            IF (FLOOR((t(j-mstep)-2.512e13)/4.239e12) .LT. FLOOR((t(j)-2.512e13)/4.239e12)) THEN
+            IF (FLOOR((t(j-mstep+1)-2.512e13)/4.239e12) .LT. FLOOR((t(j+1)-2.512e13)/4.239e12)) THEN
             ! if (floor((t(j-1)-2.512e13)/4.239e12) .gt. floor((t(j)-2.512e13)/4.239e12)) then
                WRITE(*,*) "moving cells now..."
 
@@ -3560,6 +3563,8 @@ PROGRAM main
 
                  END IF ! end write only if restart ne 1
 
+                 write(*,*) "done writing basics"
+
 
                  ! solute concentrations
                  yep = write_matrix ( (xn-1)*tn/(cellx*mstep*ar), yn/(2*celly), REAL(soluteMat(:,:,1),kind=4), TRIM(path) // 'ch_s/z_sol_ph.txt' )
@@ -3593,7 +3598,7 @@ PROGRAM main
                  ! phi
                  yep = write_matrix ( (xn-1)*tn/(cellx*mstep*ar), yn/(2*celly), REAL(phiCalcMat(:,:),kind=4), TRIM(path) // 'ch_s/z_phiCalc.txt' )
 
-
+                 write(*,*) "done writing ch_s sol, med"
 
 
 
@@ -3630,7 +3635,7 @@ PROGRAM main
                  yep = write_matrix ( (xn-1)*tn/(cellx*mstep*ar), yn/(2*celly), REAL(phiCalcMat_a(:,:),kind=4), TRIM(path) // 'ch_a/z_phiCalc.txt' )
 
 
-
+                 write(*,*) "done writing ch_a sol, med"
 
 
 
@@ -3666,10 +3671,12 @@ PROGRAM main
                  yep = write_matrix ( (xn-1)*tn/(cellx*mstep*ar), yn/(2*celly), REAL(mediumMat_b(:,:,5),kind=4), TRIM(path) // 'ch_b/z_med_cell_toggle.txt' )
 
 
+                 write(*,*) "done writing ch_b sol, med"
 
                  ! solute concentrations
 
-                 DO ii = (yn/(2*celly))+1,yn/celly
+                !  DO ii = (yn/(2*celly))+1,yn/(2*celly)
+                DO ii = 1,yn/(2*celly)
                     DO i = 1,(xn-1)*tn/(cellx*mstep*ar)
                        soluteMat_d(i,ii,1) = -1.0*LOG10((volume_ratio/(1.0+volume_ratio))*10.0**(-1.0*soluteMat_a(i,ii,1)) + (1.0/(1.0+volume_ratio))*10.0**(-1.0*soluteMat_b(i,ii,1)))
                     END DO
@@ -3697,7 +3704,7 @@ PROGRAM main
                  yep = write_matrix ( (xn-1)*tn/(cellx*mstep*ar), yn/(2*celly), REAL(primaryMat_d(:,:,4),kind=4), TRIM(path) // 'ch_d/z_pri_ol.txt' )
                  yep = write_matrix ( (xn-1)*tn/(cellx*mstep*ar), yn/(2*celly), REAL(primaryMat_d(:,:,5),kind=4), TRIM(path) // 'ch_d/z_pri_glass.txt' )
 
-
+                 write(*,*) "done writing ch_d sol, med"
 
 
 
@@ -3718,6 +3725,8 @@ PROGRAM main
                        yep = write_matrix((xn-1)*tn/(cellx*mstep*ar),yn/(2*celly),REAL(secondaryMat(:,:,i),kind=4),TRIM(path)//'ch_s/z_sec'//TRIM(s_i)//'.txt')
                     END IF
 
+                    write(*,*) "done writing ch_s sec"
+
                     IF (MAXVAL(secondaryMat_a(:,:,i)) .GT. 0.0) THEN
                        WRITE(*,*) i
 
@@ -3728,6 +3737,8 @@ PROGRAM main
                        END IF
                        yep = write_matrix((xn-1)*tn/(cellx*mstep*ar),yn/(2*celly),REAL(secondaryMat_a(:,:,i),kind=4),TRIM(path)//'ch_a/z_sec'//TRIM(s_i)//'.txt')
                     END IF
+
+                    write(*,*) "done writing ch_a sec"
 
                     IF (MAXVAL(secondaryMat_b(:,:,i)) .GT. 0.0) THEN
                        WRITE(*,*) i
@@ -3740,6 +3751,8 @@ PROGRAM main
                        yep = write_matrix((xn-1)*tn/(cellx*mstep*ar),yn/(2*celly),REAL(secondaryMat_b(:,:,i),kind=4),TRIM(path)//'ch_b/z_sec'//TRIM(s_i)//'.txt')
                     END IF
 
+                    write(*,*) "done writing ch_b sec"
+
                     IF (MAXVAL(secondaryMat_d(:,:,i)) .GT. 0.0) THEN
                        WRITE(*,*) i
 
@@ -3750,6 +3763,8 @@ PROGRAM main
                        END IF
                        yep = write_matrix((xn-1)*tn/(cellx*mstep*ar),yn/(2*celly),REAL(secondaryMat_d(:,:,i),kind=4),TRIM(path)//'ch_d/z_sec'//TRIM(s_i)//'.txt')
                     END IF
+
+                    write(*,*) "done writing ch_d sec"
 
                  END DO
 
@@ -4019,6 +4034,10 @@ PROGRAM main
                  temp3 = 299.0
               END IF
 
+            !   if (solute3(2) .gt. solute3(4)) then
+            !       write(*,*) "alk/dic" , medium3(6), medium3(7)
+            !   end if
+
               ! SOLUTES TO STRINGS
               WRITE(s_ph,'(F25.10)') solute3(1)
               WRITE(s_alk,'(F25.10)') solute3(2)
@@ -4253,14 +4272,23 @@ PROGRAM main
                    &"BGlass" //NEW_LINE('')// &
                    &"-start" //NEW_LINE('')// &
                                 ! &"    10 rate0=M*110.0*(1.52e-5)*" // trim(param_exp_string) // "*(CALC_VALUE('R(sum)'))*(1.0e4)*(2.51189e-6)*exp(-25.5/(.008314*TK))" // &
-                   &"		10 base0 = 1e-10" //NEW_LINE('')// &
-                   &"		20 if (ACT('Al+3') > 1e-10) then base0 = ACT('Al+3')" //NEW_LINE('')// &
-                !    &"    30 rate0=M*110.0*(1.52e-5)*" // TRIM(param_exp_string) // "*(1.0e4)*(2.51189e-6)*exp(-25.5/(.008314*TK))" // &
-                !    &"*(((ACT('H+')^3)/(base0))^.33333)" //NEW_LINE('')// &
+                !    &"		10 base0 = 1e-10" //NEW_LINE('')// &
+                !    &"		20 if (ACT('Al+3') > 1e-10) then base0 = ACT('Al+3')" //NEW_LINE('')// &
+                ! !    &"    30 rate0=M*110.0*(1.52e-5)*" // TRIM(param_exp_string) // "*(1.0e4)*(2.51189e-6)*exp(-25.5/(.008314*TK))" // &
+                ! !    &"*(((ACT('H+')^3)/(base0))^.33333)" //NEW_LINE('')// &
+                !
+                ! &"    30 rate0=M*110.0*(1.52e-5)*" // TRIM(param_exp_string) // "*(1.0e4)*(2.51189e-6)*exp(-25.5/(.008314*TK))" // &
+                ! &"*((((10.0^-"//TRIM(s_ph_fix)//")^3)/(base0))^.33333)" //NEW_LINE('')// &
+                ! &"    40 save rate0 * time" //NEW_LINE('')// &
+                ! &"-end" //NEW_LINE('')// &
 
-                &"    30 rate0=M*110.0*(1.52e-5)*" // TRIM(param_exp_string) // "*(1.0e4)*(2.51189e-6)*exp(-25.5/(.008314*TK))" // &
-                &"*((((10.0^-"//TRIM(s_ph_fix)//")^3)/(base0))^.33333)" //NEW_LINE('')// &
-                   &"    40 save rate0 * time" //NEW_LINE('')// &
+
+             !    &"    30 rate0=M*110.0*(1.52e-5)*" // TRIM(param_exp_string) // "*(1.0e4)*(2.51189e-6)*exp(-25.5/(.008314*TK))" // &
+             !    &"*(((ACT('H+')^3)/(base0))^.33333)" //NEW_LINE('')// &
+
+             &"    10 rate0=M*110.0*(1.52e-5)*" // TRIM(param_exp_string) // "*(1.0e4)*(2.51189e-6)*exp(-25.5/(.008314*TK))" // &
+             &"*((((10.0^-"//TRIM(s_ph_fix)//")^3)/(1e-10))^.33333)" //NEW_LINE('')// &
+                   &"    20 save rate0 * time" //NEW_LINE('')// &
                    &"-end" //NEW_LINE('')// &
 
                    &"Basalt1" //NEW_LINE('')// &
@@ -4536,12 +4564,12 @@ PROGRAM main
               DO i=1,GetSelectedOutputStringLineCount(id)
                  CALL GetSelectedOutputStringLine(id, i, line)
                  ! HEADER BITS YOU MAY WANT
-                 ! 	if (i .eq. 1) then
-                 !  	   write(12,*) trim(line)
-                 ! ! 	   !if ((medium3(6) .gt. 24000.0) .and. (medium3(7) .gt. -100.0)) then
-                 ! ! 	   write(*,*) trim(line) ! PRINT LABELS FOR EVERY FIELD (USEFUL)
-                 ! ! 	   !end if
-                 ! 	end if
+                !  	if (i .eq. 1) then
+                !   	   write(12,*) trim(line)
+                !  ! 	   !if ((medium3(6) .gt. 24000.0) .and. (medium3(7) .gt. -100.0)) then
+                !   	   write(*,*) trim(line) ! PRINT LABELS FOR EVERY FIELD (USEFUL)
+                !  ! 	   !end if
+                !  	end if
 
                  ! MEAT
                  IF (i .GT. 1) THEN
@@ -6833,7 +6861,7 @@ FUNCTION solute_next_coarse (sol, uTransport, vTransport, phiTransport, seaw)
   ! end do
 
   sol(1,:) = seaw!(4.0/3.0)*sol(2,:) - (1.0/3.0)*sol(3,:)
-  sol((xn-1)/cellx,:) = sol((xn-1)/cellx-1,:)
+  !sol((xn-1)/cellx,:) = sol((xn-1)/cellx-1,:)
   !sol((xn-1)/cellx,:) = (4.0/3.0)*sol((xn-1)/cellx-1,:) - (1.0/3.0)*sol((xn-1)/cellx-2,:)
 
 
@@ -6905,9 +6933,13 @@ FUNCTION solute_next_coarse (sol, uTransport, vTransport, phiTransport, seaw)
 
     solute_next_coarse(2,j) = sol0(2,j) - (qx*uTransport(2,j))*(sol0(2,j)-sol0(1,j)) - qx*(uTransport(2,j)/phiTransport(2,j))*sol0(2,j)*(phiTransport(2,j)-phiTransport(1,j))
 
+    solute_next_coarse((xn-1)/cellx,j) = sol0((xn-1)/cellx,j) - (qx*uTransport((xn-1)/cellx,j))*(sol0((xn-1)/cellx,j)-sol0((xn-1)/cellx-1,j)) - qx*(uTransport((xn-1)/cellx,j)/phiTransport((xn-1)/cellx,j))*sol0((xn-1)/cellx,j)*(phiTransport((xn-1)/cellx,j)-phiTransport((xn-1)/cellx-1,j))
+
+    solute_next_coarse((xn-1)/cellx-1,j) = sol0((xn-1)/cellx-1,j) - (qx*uTransport((xn-1)/cellx-1,j))*(sol0((xn-1)/cellx-1,j)-sol0((xn-1)/cellx-2,j)) - qx*(uTransport((xn-1)/cellx-1,j)/phiTransport((xn-1)/cellx-1,j))*sol0((xn-1)/cellx-1,j)*(phiTransport((xn-1)/cellx-1,j)-phiTransport((xn-1)/cellx-2,j))
+
     !solute_next_coarse(2,j) = sol0(2,j) - (qx*0.12866E-06)*(sol0(2,j)-sol0(1,j)) - qx*(0.12866E-06/phiTransport(2,j))*sol0(2,j)*(phiTransport(2,j)-phiTransport(1,j))
 
-     DO i = 3,(xn-1)/cellx-1
+     DO i = 3,(xn-1)/cellx-2
         IF (uTransport(i,j) .GT. 1e-9) THEN
            !do i = 3,f_index1-2
 
@@ -6921,9 +6953,11 @@ FUNCTION solute_next_coarse (sol, uTransport, vTransport, phiTransport, seaw)
         ! new advection scheme
         solute_next_coarse(i,j) = sol0(i,j) - (qx*uTransport(i,j))*(sol0(i,j)-sol0(i-1,j)) - qx*(uTransport(i,j)/phiTransport(i,j))*sol0(i,j)*(phiTransport(i,j)-phiTransport(i-1,j))
 
+        ! solute_next_coarse(i,j) = sol0(i,j) - (qx*uTransport(i,j))*(sol0(i,j)-sol0(i-1,j)) - qx*(uTransport(i,j)/((phiTransport(i,j)+phiTransport(i-1,j))/2.0))*sol0(i,j)*(phiTransport(i,j)-phiTransport(i-1,j))
+
         !solute_next_coarse(i,j) = sol0(i,j) - (qx*0.12866E-06)*(sol0(i,j)-sol0(i-1,j)) - qx*(0.12866E-06/phiTransport(i,j))*sol0(i,j)*(phiTransport(i,j)-phiTransport(i-1,j))
 
-
+           !
            ! correction loop: sort of a mess
            !if (i .gt. 2) then
            !if (maskP(i-2,j) .ne. 0.0) then

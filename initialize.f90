@@ -162,7 +162,7 @@ CONTAINS
     !         1    2       3     4         5      6       7       8      9     10    11   12      13      14      15
 
     sol_index = (/2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13/)
-    !            alk dic ca mg na k  fe s   si  cl  al
+    !           alk dic ca mg na k  fe s   si  cl  al
 
     RETURN
 
@@ -462,7 +462,8 @@ CONTAINS
     END DO
 
     sol_index = (/2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13/)
-    !            alk dic ca mg na k  fe s   si  cl  al
+    !           alk dic ca mg na k  fe s   si  cl  al
+    !             1  2  3  4  5  6  7  8   9   10  11
 
     volume_ratio = t_vol_a/t_vol_b
     mix_ratio = dt*mstep/param_t_diff

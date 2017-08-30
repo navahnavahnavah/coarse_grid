@@ -5,7 +5,7 @@ MODULE globals
 
 
   ! JDF PARAMS WITH FRACTURE AUGUST 9
-  INTEGER, PARAMETER :: testInt = 31, xn =1801, yn = 52, altnum = 134,  cell = 1 !50000
+  INTEGER, PARAMETER :: testInt = 31, xn =1801, yn = 52, altnum = 136,  cell = 1 !50000
   INTEGER, PARAMETER :: cellx = 90, celly = 1
   INTEGER, PARAMETER ::  g_pri = 5, g_sec = 80, g_sol = 15, g_med = 7, g_iso = 2, cstep = 50, ar = 200 ! cstep = 1000
   INTEGER, PARAMETER :: tn = 100000, mstep = 10, wscale = 1, ison = 10, inertn = 10! ison = 10000, inertn = 100000
