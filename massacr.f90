@@ -2758,8 +2758,10 @@ PROGRAM main
         !    psi_coarse((xn-1)/cellx-2,:) = 0.0
 
            velocities_coarse0 = velocities_coarse(psi_coarse)
-           u_coarse = phi_coarse*velocities_coarse0(1:(xn-1)/cellx,1:yn/(2*celly))/(rho_fluid)
-           v_coarse = phi_coarse*velocities_coarse0(1:(xn-1)/cellx,yn/(2*celly)+1:2*yn/(2*celly))/(rho_fluid)
+        !    u_coarse = phi_coarse*velocities_coarse0(1:(xn-1)/cellx,1:yn/(2*celly))/(rho_fluid)
+        !    v_coarse = phi_coarse*velocities_coarse0(1:(xn-1)/cellx,yn/(2*celly)+1:2*yn/(2*celly))/(rho_fluid)
+        u_coarse = velocities_coarse0(1:(xn-1)/cellx,1:yn/(2*celly))/(rho_fluid)
+        v_coarse = velocities_coarse0(1:(xn-1)/cellx,yn/(2*celly)+1:2*yn/(2*celly))/(rho_fluid)
 
            !-EQUALIZE U_COARSE
 
@@ -3233,7 +3235,7 @@ PROGRAM main
         ph_sum = 0.0
         DO i = 1,leng
             if (coarse_mask_long(i) .eq. 1.0) then
-                ph_count = ph_count + 1
+                ph_count = ph_count + 1.0
                 ph_sum = ph_sum + 10.0**(-1.0*solLongBitFull(i,1))
             end if
         END DO
@@ -3246,7 +3248,7 @@ PROGRAM main
         ph_sum = 0.0
         DO i = 1,leng
             if (coarse_mask_long(i) .eq. 1.0) then
-                ph_count = ph_count + 1
+                ph_count = ph_count + 1.0
                 ph_sum = ph_sum + 10.0**(-1.0*solLongBitFull(leng+i,1))
             end if
         END DO
@@ -3259,12 +3261,12 @@ PROGRAM main
         ph_sum = 0.0
         DO i = 1,leng
             if (coarse_mask_long(i) .eq. 1.0) then
-                ph_count = ph_count + 1
+                ph_count = ph_count + 1.0
                 ph_sum = ph_sum + 10.0**(-1.0*solLongBitFull(2*leng+i,1))
             end if
         END DO
         ph_sum = -1.0*LOG10(ph_sum/ph_count)
-        ph_fix_LongBitFull(2*leng:) = ph_sum
+        ph_fix_LongBitFull(2*leng+1:) = ph_sum
         write(*,*) "pH sum" , ph_sum
 
 
@@ -3725,7 +3727,7 @@ PROGRAM main
                        yep = write_matrix((xn-1)*tn/(cellx*mstep*ar),yn/(2*celly),REAL(secondaryMat(:,:,i),kind=4),TRIM(path)//'ch_s/z_sec'//TRIM(s_i)//'.txt')
                     END IF
 
-                    write(*,*) "done writing ch_s sec"
+                    !write(*,*) "done writing ch_s sec"
 
                     IF (MAXVAL(secondaryMat_a(:,:,i)) .GT. 0.0) THEN
                        WRITE(*,*) i
@@ -3738,7 +3740,7 @@ PROGRAM main
                        yep = write_matrix((xn-1)*tn/(cellx*mstep*ar),yn/(2*celly),REAL(secondaryMat_a(:,:,i),kind=4),TRIM(path)//'ch_a/z_sec'//TRIM(s_i)//'.txt')
                     END IF
 
-                    write(*,*) "done writing ch_a sec"
+                    !write(*,*) "done writing ch_a sec"
 
                     IF (MAXVAL(secondaryMat_b(:,:,i)) .GT. 0.0) THEN
                        WRITE(*,*) i
@@ -3751,7 +3753,7 @@ PROGRAM main
                        yep = write_matrix((xn-1)*tn/(cellx*mstep*ar),yn/(2*celly),REAL(secondaryMat_b(:,:,i),kind=4),TRIM(path)//'ch_b/z_sec'//TRIM(s_i)//'.txt')
                     END IF
 
-                    write(*,*) "done writing ch_b sec"
+                    !write(*,*) "done writing ch_b sec"
 
                     IF (MAXVAL(secondaryMat_d(:,:,i)) .GT. 0.0) THEN
                        WRITE(*,*) i
@@ -3764,13 +3766,13 @@ PROGRAM main
                        yep = write_matrix((xn-1)*tn/(cellx*mstep*ar),yn/(2*celly),REAL(secondaryMat_d(:,:,i),kind=4),TRIM(path)//'ch_d/z_sec'//TRIM(s_i)//'.txt')
                     END IF
 
-                    write(*,*) "done writing ch_d sec"
+                    !write(*,*) "done writing ch_d sec"
 
                  END DO
 
 
                  WRITE(*,*) "...DONE WRITING TO FILE"
-              END IF ! end only write to file 5 times total
+             END IF ! end only write to file 50 times total
 
 
            END IF ! end if (mod(j,mstep*ar) .eq. 0)
@@ -6930,14 +6932,20 @@ FUNCTION solute_next_coarse (sol, uTransport, vTransport, phiTransport, seaw)
      ! do i = 2,xn-1
       !solute_next_coarse(2,j) = sol0(2,j)-(qx*uTransport(2,j)/phiTransport(2,j))*(sol0(2,j)-sol0(1,j))! - qx*uTransport(2,j)*sol0(2,j)*((1.0/phiTransport(2,j))-(1.0/phiTransport(1,j)))
 
+    ! right before i looked at more equations (never mind no real changes?)
+    ! solute_next_coarse(2,j) = sol0(2,j) - (qx*uTransport(2,j))*(sol0(2,j)-sol0(1,j)) - qx*(uTransport(2,j)/phiTransport(2,j))*sol0(2,j)*(phiTransport(2,j)-phiTransport(1,j))
+    !
+    ! solute_next_coarse((xn-1)/cellx,j) = sol0((xn-1)/cellx,j) - (qx*uTransport((xn-1)/cellx,j))*(sol0((xn-1)/cellx,j)-sol0((xn-1)/cellx-1,j)) - qx*(uTransport((xn-1)/cellx,j)/phiTransport((xn-1)/cellx,j))*sol0((xn-1)/cellx,j)*(phiTransport((xn-1)/cellx,j)-phiTransport((xn-1)/cellx-1,j))
+    !
+    ! solute_next_coarse((xn-1)/cellx-1,j) = sol0((xn-1)/cellx-1,j) - (qx*uTransport((xn-1)/cellx-1,j))*(sol0((xn-1)/cellx-1,j)-sol0((xn-1)/cellx-2,j)) - qx*(uTransport((xn-1)/cellx-1,j)/phiTransport((xn-1)/cellx-1,j))*sol0((xn-1)/cellx-1,j)*(phiTransport((xn-1)/cellx-1,j)-phiTransport((xn-1)/cellx-2,j))
+
+    !solute_next_coarse(2,j) = sol0(2,j) - (qx*0.12866E-06)*(sol0(2,j)-sol0(1,j)) - qx*(0.12866E-06/phiTransport(2,j))*sol0(2,j)*(phiTransport(2,j)-phiTransport(1,j))
 
     solute_next_coarse(2,j) = sol0(2,j) - (qx*uTransport(2,j))*(sol0(2,j)-sol0(1,j)) - qx*(uTransport(2,j)/phiTransport(2,j))*sol0(2,j)*(phiTransport(2,j)-phiTransport(1,j))
 
     solute_next_coarse((xn-1)/cellx,j) = sol0((xn-1)/cellx,j) - (qx*uTransport((xn-1)/cellx,j))*(sol0((xn-1)/cellx,j)-sol0((xn-1)/cellx-1,j)) - qx*(uTransport((xn-1)/cellx,j)/phiTransport((xn-1)/cellx,j))*sol0((xn-1)/cellx,j)*(phiTransport((xn-1)/cellx,j)-phiTransport((xn-1)/cellx-1,j))
 
     solute_next_coarse((xn-1)/cellx-1,j) = sol0((xn-1)/cellx-1,j) - (qx*uTransport((xn-1)/cellx-1,j))*(sol0((xn-1)/cellx-1,j)-sol0((xn-1)/cellx-2,j)) - qx*(uTransport((xn-1)/cellx-1,j)/phiTransport((xn-1)/cellx-1,j))*sol0((xn-1)/cellx-1,j)*(phiTransport((xn-1)/cellx-1,j)-phiTransport((xn-1)/cellx-2,j))
-
-    !solute_next_coarse(2,j) = sol0(2,j) - (qx*0.12866E-06)*(sol0(2,j)-sol0(1,j)) - qx*(0.12866E-06/phiTransport(2,j))*sol0(2,j)*(phiTransport(2,j)-phiTransport(1,j))
 
      DO i = 3,(xn-1)/cellx-2
         IF (uTransport(i,j) .GT. 1e-9) THEN
