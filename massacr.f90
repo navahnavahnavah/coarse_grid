@@ -2740,6 +2740,7 @@ PROGRAM main
                  psi_coarse(i,ii-yn/(2*celly)) = psi(i*cellx,ii*celly)
               END DO
            END DO
+           !h_coarse((xn-1)/cellx,:) = h_coarse(((xn-1)/cellx)-1,:)
 
         !    DO ii = yn/(2*celly)+1,yn/(celly)
         !       DO i = 1,((xn-1)/cellx)/2
@@ -2955,19 +2956,19 @@ PROGRAM main
                       an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 
                  ! send long sol coarse
-                 CALL MPI_SEND( sol_coarse_long, leng, MPI_DOUBLE_PRECISION, &
+                 CALL MPI_SEND( sol_coarse_long, leng, MPI_REAL4, &
                       an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 
                  ! send long u coarse
-                 CALL MPI_SEND( u_coarse_long, leng, MPI_DOUBLE_PRECISION, &
+                 CALL MPI_SEND( u_coarse_long, leng, MPI_REAL4, &
                       an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 
                  ! send long v coarse
-                 CALL MPI_SEND( v_coarse_long, leng, MPI_DOUBLE_PRECISION, &
+                 CALL MPI_SEND( v_coarse_long, leng, MPI_REAL4, &
                       an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 
                  ! send long phi coarse
-                 CALL MPI_SEND( phi_coarse_long, leng, MPI_DOUBLE_PRECISION, &
+                 CALL MPI_SEND( phi_coarse_long, leng, MPI_REAL4, &
                       an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 
 
@@ -3001,19 +3002,19 @@ PROGRAM main
                       an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 
                  ! send long sol coarse
-                 CALL MPI_SEND( sol_coarse_long, leng, MPI_DOUBLE_PRECISION, &
+                 CALL MPI_SEND( sol_coarse_long, leng, MPI_REAL4, &
                       an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 
                  ! send long u coarse
-                 CALL MPI_SEND( u_coarse_long, leng, MPI_DOUBLE_PRECISION, &
+                 CALL MPI_SEND( u_coarse_long, leng, MPI_REAL4, &
                       an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 
                  ! send long v coarse
-                 CALL MPI_SEND( v_coarse_long, leng, MPI_DOUBLE_PRECISION, &
+                 CALL MPI_SEND( v_coarse_long, leng, MPI_REAL4, &
                       an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 
                  ! send long phi coarse
-                 CALL MPI_SEND( phi_coarse_long, leng, MPI_DOUBLE_PRECISION, &
+                 CALL MPI_SEND( phi_coarse_long, leng, MPI_REAL4, &
                       an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 
 
@@ -3032,7 +3033,7 @@ PROGRAM main
 
            DO an_id = 1, 22
 
-              CALL MPI_RECV( sol_coarse_long, leng, MPI_DOUBLE_PRECISION, &
+              CALL MPI_RECV( sol_coarse_long, leng, MPI_REAL4, &
                    an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
 
               IF (an_id .LE. 11) THEN
@@ -3062,6 +3063,9 @@ PROGRAM main
         !    DO i=1,leng
         !       volLongBitFull(i) = MAX(solLongBitFull(leng+i,3)/MAX(solLongBitFull(2*leng+i,3),1e-10),1e-10)
         !    END DO
+        DO i=1,leng
+           volLongBitFull(i) = solLongBitFull(leng+i,3)/solLongBitFull(2*leng+i,3)
+        END DO
         !    WRITE(*,*) "made volLongBitFull"
         !    n=2 ! alk
         !    solute_inter_long = solLongBitFull(leng+1:2*leng,n)
@@ -3074,10 +3078,10 @@ PROGRAM main
         !       solLongBitFull(2*leng+1:,n) = solLongBitFull(2*leng+1:,n)*(1.0-mix_ratio) + solute_inter_long*mix_ratio
         !    END DO
 
-        !-new mixing between chambers
-        DO i=1,leng
-           volLongBitFull(i) = t_vol_a/t_vol_b
-        END DO
+        ! !-new mixing between chambers
+        ! DO i=1,leng
+        !    volLongBitFull(i) = t_vol_a/t_vol_b
+        ! END DO
         WRITE(*,*) "made volLongBitFull"
         n=2 ! alk
         solute_inter_long = solLongBitFull(leng+1:2*leng,n)
@@ -3288,38 +3292,38 @@ PROGRAM main
                    an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 
               ! send timestep to processor an_id
-              CALL MPI_SEND( dt, 1, MPI_DOUBLE_PRECISION, &
+              CALL MPI_SEND( dt, 1, MPI_REAL4, &
                    an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 
               ! send temperature array chunk to processor an_id
-              CALL MPI_SEND( hLong(start_row), num_rows_to_send, MPI_DOUBLE_PRECISION, &
+              CALL MPI_SEND( hLong(start_row), num_rows_to_send, MPI_REAL4, &
                    an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 
               ! send ph_fix array chunk to processor an_id
-              CALL MPI_SEND( ph_fix_LongBitFull(start_row), num_rows_to_send, MPI_DOUBLE_PRECISION, &
+              CALL MPI_SEND( ph_fix_LongBitFull(start_row), num_rows_to_send, MPI_REAL4, &
                    an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 
               ! send primary array chunk to processor an_id
               DO ii = 1,g_pri
-                 CALL MPI_SEND( priLongBitFull(start_row,ii), num_rows_to_send, MPI_DOUBLE_PRECISION, &
+                 CALL MPI_SEND( priLongBitFull(start_row,ii), num_rows_to_send, MPI_REAL4, &
                       an_id, send_data_tag, MPI_COMM_WORLD, ierr)
               END DO
 
               ! send secondary array chunk to processor an_id
               DO ii = 1,g_sec
-                 CALL MPI_SEND( secLongBitFull(start_row,ii), num_rows_to_send, MPI_DOUBLE_PRECISION, &
+                 CALL MPI_SEND( secLongBitFull(start_row,ii), num_rows_to_send, MPI_REAL4, &
                       an_id, send_data_tag, MPI_COMM_WORLD, ierr)
               END DO
 
               ! send solute array chunk to processor an_id
               DO ii = 1,g_sol
-                 CALL MPI_SEND( solLongBitFull(start_row,ii), num_rows_to_send, MPI_DOUBLE_PRECISION, &
+                 CALL MPI_SEND( solLongBitFull(start_row,ii), num_rows_to_send, MPI_REAL4, &
                       an_id, send_data_tag, MPI_COMM_WORLD, ierr)
               END DO
 
               ! send medium array chunk to processor an_id
               DO ii = 1,g_med
-                 CALL MPI_SEND( medLongBitFull(start_row,ii), num_rows_to_send, MPI_DOUBLE_PRECISION, &
+                 CALL MPI_SEND( medLongBitFull(start_row,ii), num_rows_to_send, MPI_REAL4, &
                       an_id, send_data_tag, MPI_COMM_WORLD, ierr)
               END DO
 
@@ -3343,7 +3347,7 @@ PROGRAM main
               ! receive primary chunk
               DO ii = 1,g_pri
                  ! receive it
-                 CALL MPI_RECV( priLocal(:,ii), num_rows_to_send, MPI_DOUBLE_PRECISION, &
+                 CALL MPI_RECV( priLocal(:,ii), num_rows_to_send, MPI_REAL4, &
                       an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
                  ! fill it
                  priLongBitFull(start_row:end_row,ii) = priLocal(1:num_rows_to_send,ii)
@@ -3352,19 +3356,29 @@ PROGRAM main
               ! receive secondary chunk
               DO ii = 1,g_sec/2
                  ! receive it
-                 CALL MPI_RECV( secLocal(:,ii), num_rows_to_send, MPI_DOUBLE_PRECISION, &
+                 CALL MPI_RECV( secLocal(:,ii), num_rows_to_send, MPI_REAL4, &
                       an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
                  ! fill it
                  secLongBitFull(start_row:end_row,ii) = secLocal(1:num_rows_to_send,ii)
               END DO
 
               ! receive solute chunk
-              DO ii = 1,g_sol
+              CALL MPI_RECV( solLocal(:,3), num_rows_to_send, MPI_REAL4, &
+                   an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+              ! fill it
+              !solLongBitFull(start_row:end_row,ii) = solLocal(1:num_rows_to_send,ii)
+
+              CALL MPI_RECV( solLocal(:,2), num_rows_to_send, MPI_REAL4, &
+                   an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+              solLongBitFull(start_row:end_row,2) = solLocal(1:num_rows_to_send,2)*solLocal(1:num_rows_to_send,3)/(solLongBitFull(start_row:end_row,3))
+
+              DO ii = 4,g_sol
                  ! receive it
-                 CALL MPI_RECV( solLocal(:,ii), num_rows_to_send, MPI_DOUBLE_PRECISION, &
+                 CALL MPI_RECV( solLocal(:,ii), num_rows_to_send, MPI_REAL4, &
                       an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
                  ! fill it
-                 solLongBitFull(start_row:end_row,ii) = solLocal(1:num_rows_to_send,ii)
+                 !solLongBitFull(start_row:end_row,ii) = solLocal(1:num_rows_to_send,ii)
+                 solLongBitFull(start_row:end_row,ii) = solLocal(1:num_rows_to_send,ii)*solLocal(1:num_rows_to_send,3)/(solLongBitFull(start_row:end_row,3))
               END DO
 
             !   write(*,*) "an_id master received" , an_id
@@ -3375,7 +3389,7 @@ PROGRAM main
               ! receive medium chunk
               DO ii = 1,g_med
                  ! receive it
-                 CALL MPI_RECV( medLocal(:,ii), num_rows_to_send, MPI_DOUBLE_PRECISION, &
+                 CALL MPI_RECV( medLocal(:,ii), num_rows_to_send, MPI_REAL4, &
                       an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
                  ! fill it
                  medLongBitFull(start_row:end_row,ii) = medLocal(1:num_rows_to_send,ii)
@@ -3905,19 +3919,19 @@ PROGRAM main
                 root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
 
            ! receive solute long for advection
-           CALL MPI_RECV ( sol_coarse_long_local, ((xn-1)/cellx)*(yn/(2*celly)), MPI_DOUBLE_PRECISION, &
+           CALL MPI_RECV ( sol_coarse_long_local, ((xn-1)/cellx)*(yn/(2*celly)), MPI_REAL4, &
                 root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
 
            ! receive u long for advection
-           CALL MPI_RECV ( u_coarse_long_local, ((xn-1)/cellx)*(yn/(2*celly)), MPI_DOUBLE_PRECISION, &
+           CALL MPI_RECV ( u_coarse_long_local, ((xn-1)/cellx)*(yn/(2*celly)), MPI_REAL4, &
                 root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
 
            ! receive v long for advection
-           CALL MPI_RECV ( v_coarse_long_local, ((xn-1)/cellx)*(yn/(2*celly)), MPI_DOUBLE_PRECISION, &
+           CALL MPI_RECV ( v_coarse_long_local, ((xn-1)/cellx)*(yn/(2*celly)), MPI_REAL4, &
                 root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
 
            ! receive phi long for advection
-           CALL MPI_RECV ( phi_coarse_long_local, ((xn-1)/cellx)*(yn/(2*celly)), MPI_DOUBLE_PRECISION, &
+           CALL MPI_RECV ( phi_coarse_long_local, ((xn-1)/cellx)*(yn/(2*celly)), MPI_REAL4, &
                 root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
 
            write(*,*) "advection proc my_id" , my_id , an_id_local
@@ -3946,7 +3960,7 @@ PROGRAM main
            sol_coarse_long_local = RESHAPE(TRANSPOSE(sol_coarse_local),(/((xn-1)/cellx)*(yn/(2*celly))/))
 
            ! send advected solutes back :)
-           CALL MPI_SEND( sol_coarse_long_local, ((xn-1)/cellx)*(yn/(2*celly)), MPI_DOUBLE_PRECISION, root_process, &
+           CALL MPI_SEND( sol_coarse_long_local, ((xn-1)/cellx)*(yn/(2*celly)), MPI_REAL4, root_process, &
                 return_data_tag, MPI_COMM_WORLD, ierr)
 
         END IF ! end if my_id .le. 22
@@ -3967,42 +3981,42 @@ PROGRAM main
              root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
 
         ! receive timestep size
-        CALL MPI_RECV ( dt_local, 1 , MPI_DOUBLE_PRECISION, &
+        CALL MPI_RECV ( dt_local, 1 , MPI_REAL4, &
              root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
 
         ! receive temperature array chunk, save in local hLocal
-        CALL MPI_RECV ( hLocal, num_rows_to_receive, MPI_DOUBLE_PRECISION, &
+        CALL MPI_RECV ( hLocal(1), num_rows_to_receive, MPI_REAL4, &
              root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
         num_rows_received = num_rows_to_receive
 
         ! receive temperature array chunk, save in local hLocal
-        CALL MPI_RECV ( ph_fix_Local, num_rows_to_receive, MPI_DOUBLE_PRECISION, &
+        CALL MPI_RECV ( ph_fix_Local(1), num_rows_to_receive, MPI_REAL4, &
              root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
 
         ! receive primary array chunk, save in local priLocal
         DO ii = 1,g_pri
-           CALL MPI_RECV ( priLocal(:,ii), num_rows_to_receive, MPI_DOUBLE_PRECISION, &
+           CALL MPI_RECV ( priLocal(1,ii), num_rows_to_receive, MPI_REAL4, &
                 root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
            ! 			priLocal(:,ii) = priLocalBit
         END DO
 
         ! receive secondary array chunk, save in local secLocal
         DO ii = 1,g_sec
-           CALL MPI_RECV ( secLocal(:,ii), num_rows_to_receive, MPI_DOUBLE_PRECISION, &
+           CALL MPI_RECV ( secLocal(1,ii), num_rows_to_receive, MPI_REAL4, &
                 root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
            ! 			secLocal(:,ii) = secLocalBit
         END DO
 
         ! receive solute chunk, save in local solLocal
         DO ii = 1,g_sol
-           CALL MPI_RECV ( solLocal(:,ii), num_rows_to_receive, MPI_DOUBLE_PRECISION, &
+           CALL MPI_RECV ( solLocal(1,ii), num_rows_to_receive, MPI_REAL4, &
                 root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
            ! 			solLocal(:,ii) = solLocalBit
         END DO
 
         ! receive medium chunk, save in local solLocal
         DO ii = 1,g_med
-           CALL MPI_RECV ( medLocal(:,ii), num_rows_to_receive, MPI_DOUBLE_PRECISION, &
+           CALL MPI_RECV ( medLocal(1,ii), num_rows_to_receive, MPI_REAL4, &
                 root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
            ! 			medLocal(:,ii) = medLocalBit
         END DO
@@ -4730,19 +4744,25 @@ PROGRAM main
 
         ! send primary array chunk back to root process
         DO ii = 1,g_pri
-           CALL MPI_SEND( priLocal(:,ii), num_rows_received, MPI_DOUBLE_PRECISION, root_process, &
+           CALL MPI_SEND( priLocal(1,ii), num_rows_received, MPI_REAL4, root_process, &
                 return_data_tag, MPI_COMM_WORLD, ierr)
         END DO
 
         ! send secondary array chunk back to root process
         DO ii = 1,g_sec/2
-           CALL MPI_SEND( secLocal(:,ii), num_rows_received, MPI_DOUBLE_PRECISION, root_process, &
+           CALL MPI_SEND( secLocal(1,ii), num_rows_received, MPI_REAL4, root_process, &
                 return_data_tag, MPI_COMM_WORLD, ierr)
         END DO
 
         ! send solute array chunk back to root process
-        DO ii = 1,g_sol
-           CALL MPI_SEND( solLocal(:,ii), num_rows_received, MPI_DOUBLE_PRECISION, root_process, &
+        CALL MPI_SEND( solLocal(1,3), num_rows_received, MPI_REAL4, root_process, &
+             return_data_tag, MPI_COMM_WORLD, ierr)
+
+        CALL MPI_SEND( solLocal(1,2), num_rows_received, MPI_REAL4, root_process, &
+             return_data_tag, MPI_COMM_WORLD, ierr)
+
+        DO ii = 4,g_sol
+           CALL MPI_SEND( solLocal(1,ii), num_rows_received, MPI_REAL4, root_process, &
                 return_data_tag, MPI_COMM_WORLD, ierr)
         END DO
 
@@ -4756,7 +4776,7 @@ PROGRAM main
 
         ! send medium array chunk back to root process
         DO ii = 1,g_med
-           CALL MPI_SEND( medLocal(:,ii), num_rows_received, MPI_DOUBLE_PRECISION, root_process, &
+           CALL MPI_SEND( medLocal(1,ii), num_rows_received, MPI_REAL4, root_process, &
                 return_data_tag, MPI_COMM_WORLD, ierr)
         END DO
 
@@ -6925,6 +6945,8 @@ FUNCTION solute_next_coarse (sol, uTransport, vTransport, phiTransport, seaw)
      END DO
   END DO
 
+  !sol((xn-1)/cellx,:) = (4.0/3.0)*sol((xn-1)/cellx-1,:) - (1.0/3.0)*sol((xn-1)/cellx-2,:)
+
   sol0 = sol
   solute_next_coarse = sol
 
@@ -6941,13 +6963,29 @@ FUNCTION solute_next_coarse (sol, uTransport, vTransport, phiTransport, seaw)
 
     !solute_next_coarse(2,j) = sol0(2,j) - (qx*0.12866E-06)*(sol0(2,j)-sol0(1,j)) - qx*(0.12866E-06/phiTransport(2,j))*sol0(2,j)*(phiTransport(2,j)-phiTransport(1,j))
 
-    solute_next_coarse(2,j) = sol0(2,j) - (qx*uTransport(2,j))*(sol0(2,j)-sol0(1,j)) - qx*(uTransport(2,j)/phiTransport(2,j))*sol0(2,j)*(phiTransport(2,j)-phiTransport(1,j))
 
-    solute_next_coarse((xn-1)/cellx,j) = sol0((xn-1)/cellx,j) - (qx*uTransport((xn-1)/cellx,j))*(sol0((xn-1)/cellx,j)-sol0((xn-1)/cellx-1,j)) - qx*(uTransport((xn-1)/cellx,j)/phiTransport((xn-1)/cellx,j))*sol0((xn-1)/cellx,j)*(phiTransport((xn-1)/cellx,j)-phiTransport((xn-1)/cellx-1,j))
 
-    solute_next_coarse((xn-1)/cellx-1,j) = sol0((xn-1)/cellx-1,j) - (qx*uTransport((xn-1)/cellx-1,j))*(sol0((xn-1)/cellx-1,j)-sol0((xn-1)/cellx-2,j)) - qx*(uTransport((xn-1)/cellx-1,j)/phiTransport((xn-1)/cellx-1,j))*sol0((xn-1)/cellx-1,j)*(phiTransport((xn-1)/cellx-1,j)-phiTransport((xn-1)/cellx-2,j))
 
-     DO i = 3,(xn-1)/cellx-2
+
+
+
+
+
+
+
+
+
+
+
+    solute_next_coarse(2,j) = sol0(2,j) - (qx*uTransport(2,j))*(sol0(2,j)-sol0(1,j))! - qx*(uTransport(2,j)/phiTransport(2,j))*sol0(2,j)*(phiTransport(2,j)-phiTransport(1,j))
+
+    ! solute_next_coarse((xn-1)/cellx,j) = sol0((xn-1)/cellx,j) - (qx*uTransport((xn-1)/cellx,j))*(sol0((xn-1)/cellx,j)-sol0((xn-1)/cellx-1,j)) - qx*(uTransport((xn-1)/cellx,j)/phiTransport((xn-1)/cellx,j))*sol0((xn-1)/cellx,j)*(phiTransport((xn-1)/cellx,j)-phiTransport((xn-1)/cellx-1,j))
+
+    solute_next_coarse((xn-1)/cellx,j) = (4.0/3.0)*sol0((xn-1)/cellx-1,j) - (1.0/3.0)*sol0((xn-1)/cellx-2,j)
+
+    ! solute_next_coarse((xn-1)/cellx-1,j) = sol0((xn-1)/cellx-1,j) - (qx*uTransport((xn-1)/cellx-1,j))*(sol0((xn-1)/cellx-1,j)-sol0((xn-1)/cellx-2,j)) - qx*(uTransport((xn-1)/cellx-1,j)/phiTransport((xn-1)/cellx-1,j))*sol0((xn-1)/cellx-1,j)*(phiTransport((xn-1)/cellx-1,j)-phiTransport((xn-1)/cellx-2,j))
+
+     DO i = 3,(xn-1)/cellx-1
         IF (uTransport(i,j) .GT. 1e-9) THEN
            !do i = 3,f_index1-2
 
@@ -6959,7 +6997,7 @@ FUNCTION solute_next_coarse (sol, uTransport, vTransport, phiTransport, seaw)
             !solute_next_coarse(i,j) = sol0(i,j)-(qx*uTransport(i,j)/phiTransport(i,j))*(sol0(i,j)-sol0(i-1,j))! - qx*uTransport(i,j)*sol0(i,j)*((1.0/phiTransport(i,j))-(1.0/phiTransport(i-1,j)))
 
         ! new advection scheme
-        solute_next_coarse(i,j) = sol0(i,j) - (qx*uTransport(i,j))*(sol0(i,j)-sol0(i-1,j)) - qx*(uTransport(i,j)/phiTransport(i,j))*sol0(i,j)*(phiTransport(i,j)-phiTransport(i-1,j))
+        solute_next_coarse(i,j) = sol0(i,j) - (qx*uTransport(i,j))*(sol0(i,j)-sol0(i-1,j))! - qx*(uTransport(i,j)/phiTransport(i,j))*sol0(i,j)*(phiTransport(i,j)-phiTransport(i-1,j))
 
         ! solute_next_coarse(i,j) = sol0(i,j) - (qx*uTransport(i,j))*(sol0(i,j)-sol0(i-1,j)) - qx*(uTransport(i,j)/((phiTransport(i,j)+phiTransport(i-1,j))/2.0))*sol0(i,j)*(phiTransport(i,j)-phiTransport(i-1,j))
 
@@ -7071,66 +7109,66 @@ FUNCTION solute_next_coarse (sol, uTransport, vTransport, phiTransport, seaw)
 
 
 
-
-           ! second term correction?
-           !if (i .gt. 2) then
-           !if (maskP(i-2,j) .ne. 0.0) then
-           !sigma1 = 0.0
-           sigma1a = (phiTransport(i+1,j) - phiTransport(i,j))/(dx*cellx)
-           sigma1b = 2.0*(phiTransport(i,j) - phiTransport(i-1,j))/(dx*cellx)
-
-
-           sigma1 = ((MINLOC((/ABS(sigma1a), ABS(sigma1b)/),DIM=1)-1.0)*sigma1b) + ((MINLOC((/ABS(sigma1b), ABS(sigma1a)/),DIM=1)-1.0)*sigma1a)
-           !end if
-
-           !sigma3 = 0.0
-           sigma3a = 2.0*(phiTransport(i+1,j) - phiTransport(i,j))/(dx*cellx)
-           sigma3b = (phiTransport(i,j) - phiTransport(i-1,j))/(dx*cellx)
-
-
-           sigma3 = ((MINLOC((/ABS(sigma3a), ABS(sigma3b)/),DIM=1)-1.0)*sigma3b) + ((MINLOC((/ABS(sigma3b), ABS(sigma3a)/),DIM=1)-1.0)*sigma3a)
-           !end if
-
-           ! choosing sigma5
-           sigma5 = 0.0
-           IF (sigma1*sigma3 .GT. 0.0) THEN
-              sigma5 = SIGN(1.0,sigma1)*MAXVAL((/ABS(sigma1), ABS(sigma3)/))
-           END IF
-
-           !sigma2 = 0.0
-           sigma2a = (phiTransport(i,j) - phiTransport(i-1,j))/(dx*cellx)
-           sigma2b = 2.0*(phiTransport(i-1,j) - phiTransport(i-2,j))/(dx*cellx)
-
-
-           sigma2 = ((MINLOC((/ABS(sigma2a), ABS(sigma2b)/),DIM=1)-1.0)*sigma2b) + ((MINLOC((/ABS(sigma2b), ABS(sigma2a)/),DIM=1)-1.0)*sigma2a)
-           !end if
-
-           !sigma4 = 0.0
-           sigma4a = 2.0*(phiTransport(i,j) - phiTransport(i-1,j))/(dx*cellx)
-           sigma4b = (phiTransport(i-1,j) - phiTransport(i-2,j))/(dx*cellx)
-
-
-           sigma4 = ((MINLOC((/ABS(sigma4a), ABS(sigma4b)/),DIM=1)-1.0)*sigma4b) + ((MINLOC((/ABS(sigma4b), ABS(sigma4a)/),DIM=1)-1.0)*sigma4a)
-           !end if
-
-
-           ! choosing sigma6
-           sigma6 = 0.0
-           IF (sigma2*sigma4 .GT. 0.0) THEN
-              sigma6 = SIGN(1.0,sigma2)*MAXVAL((/ABS(sigma2), ABS(sigma4)/))
-           END IF
-
-           ! 						write(*,*) "sigma5"
-           ! 						write(*,*) sigma5
-           ! 						write(*,*) "sigma6"
-           ! 						write(*,*) sigma6
-           correction = ((uTransport(i,j)/phiTransport(i,j))*sol0(i,j)*qx*0.5) * (sigma5 - sigma6) * (dx*cellx - (uTransport(i,j)/phiTransport(i,j))*sol0(i,j)*qx*dx*cellx)
-           solute_next_coarse(i,j) = solute_next_coarse(i,j) - correction
-
-
-
-
-
+           !
+        !    ! second term correction?
+        !    !if (i .gt. 2) then
+        !    !if (maskP(i-2,j) .ne. 0.0) then
+        !    !sigma1 = 0.0
+        !    sigma1a = (phiTransport(i+1,j) - phiTransport(i,j))/(dx*cellx)
+        !    sigma1b = 2.0*(phiTransport(i,j) - phiTransport(i-1,j))/(dx*cellx)
+           !
+           !
+        !    sigma1 = ((MINLOC((/ABS(sigma1a), ABS(sigma1b)/),DIM=1)-1.0)*sigma1b) + ((MINLOC((/ABS(sigma1b), ABS(sigma1a)/),DIM=1)-1.0)*sigma1a)
+        !    !end if
+           !
+        !    !sigma3 = 0.0
+        !    sigma3a = 2.0*(phiTransport(i+1,j) - phiTransport(i,j))/(dx*cellx)
+        !    sigma3b = (phiTransport(i,j) - phiTransport(i-1,j))/(dx*cellx)
+           !
+           !
+        !    sigma3 = ((MINLOC((/ABS(sigma3a), ABS(sigma3b)/),DIM=1)-1.0)*sigma3b) + ((MINLOC((/ABS(sigma3b), ABS(sigma3a)/),DIM=1)-1.0)*sigma3a)
+        !    !end if
+           !
+        !    ! choosing sigma5
+        !    sigma5 = 0.0
+        !    IF (sigma1*sigma3 .GT. 0.0) THEN
+        !       sigma5 = SIGN(1.0,sigma1)*MAXVAL((/ABS(sigma1), ABS(sigma3)/))
+        !    END IF
+           !
+        !    !sigma2 = 0.0
+        !    sigma2a = (phiTransport(i,j) - phiTransport(i-1,j))/(dx*cellx)
+        !    sigma2b = 2.0*(phiTransport(i-1,j) - phiTransport(i-2,j))/(dx*cellx)
+           !
+           !
+        !    sigma2 = ((MINLOC((/ABS(sigma2a), ABS(sigma2b)/),DIM=1)-1.0)*sigma2b) + ((MINLOC((/ABS(sigma2b), ABS(sigma2a)/),DIM=1)-1.0)*sigma2a)
+        !    !end if
+           !
+        !    !sigma4 = 0.0
+        !    sigma4a = 2.0*(phiTransport(i,j) - phiTransport(i-1,j))/(dx*cellx)
+        !    sigma4b = (phiTransport(i-1,j) - phiTransport(i-2,j))/(dx*cellx)
+           !
+           !
+        !    sigma4 = ((MINLOC((/ABS(sigma4a), ABS(sigma4b)/),DIM=1)-1.0)*sigma4b) + ((MINLOC((/ABS(sigma4b), ABS(sigma4a)/),DIM=1)-1.0)*sigma4a)
+        !    !end if
+           !
+           !
+        !    ! choosing sigma6
+        !    sigma6 = 0.0
+        !    IF (sigma2*sigma4 .GT. 0.0) THEN
+        !       sigma6 = SIGN(1.0,sigma2)*MAXVAL((/ABS(sigma2), ABS(sigma4)/))
+        !    END IF
+           !
+        !    ! 						write(*,*) "sigma5"
+        !    ! 						write(*,*) sigma5
+        !    ! 						write(*,*) "sigma6"
+        !    ! 						write(*,*) sigma6
+        !    correction = ((uTransport(i,j)/phiTransport(i,j))*sol0(i,j)*qx*0.5) * (sigma5 - sigma6) * (dx*cellx - (uTransport(i,j)/phiTransport(i,j))*sol0(i,j)*qx*dx*cellx)
+        !    solute_next_coarse(i,j) = solute_next_coarse(i,j) - correction
+           !
+           !
+           !
+           !
+           !
 
 
 
@@ -7273,7 +7311,7 @@ FUNCTION solute_next_coarse (sol, uTransport, vTransport, phiTransport, seaw)
   END DO
 
 
-  sol = solute_next_coarse
+  !sol = solute_next_coarse
 
 
   !

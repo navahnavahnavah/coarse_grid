@@ -7,8 +7,8 @@ MODULE globals
   ! JDF PARAMS WITH FRACTURE AUGUST 9
   INTEGER, PARAMETER :: testInt = 31, xn =1801, yn = 52, altnum = 136,  cell = 1 !50000
   INTEGER, PARAMETER :: cellx = 90, celly = 1
-  INTEGER, PARAMETER ::  g_pri = 5, g_sec = 80, g_sol = 15, g_med = 7, g_iso = 2, cstep = 500, ar = 10000 ! cstep = 1000
-  INTEGER, PARAMETER :: tn = 1000000, mstep = 20, wscale = 1, ison = 10, inertn = 10! ison = 10000, inertn = 100000
+  INTEGER, PARAMETER ::  g_pri = 5, g_sec = 80, g_sol = 15, g_med = 7, g_iso = 2, cstep = 500, ar = 200 ! cstep = 1000
+  INTEGER, PARAMETER :: tn = 1000000, mstep = 100, wscale = 1, ison = 10, inertn = 10! ison = 10000, inertn = 100000
   INTEGER, PARAMETER :: write_factor = 25, res_factor = 300 ! res factor is how many flushes happen within t_max
   INTEGER :: active_cells
   INTEGER, PARAMETER :: particle_sat = 1, inert_sat = 10
