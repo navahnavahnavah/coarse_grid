@@ -2778,6 +2778,10 @@ PROGRAM main
             if ((u_coarse(5,i) .gt. 0.0) .and. (u_coarse(5,i+1) .eq. 0.0)) then
             u_coarse(:,i-1) = u_coarse(5,i)
             u_coarse(:,i-2) = u_coarse(5,i)
+            u_coarse(:,i-3) = u_coarse(5,i)
+            u_coarse(:,i-4) = u_coarse(5,i)
+            u_coarse(:,i-5) = u_coarse(5,i)
+            u_coarse(:,i-6) = u_coarse(5,i)
             end if
         END DO
         !u_coarse = u_coarse/1.5
@@ -3231,47 +3235,187 @@ PROGRAM main
         !    END DO
 
 
-        !- calculate ph_fix
+        !- calculate ph_fix (entire domain)
+
+        ! ph_fix_LongBitFull = 0.0
+        !
+        ! ph_count = 0.0
+        ! ph_sum = 0.0
+        ! DO i = 1,leng
+        !     if (coarse_mask_long(i) .eq. 1.0) then
+        !         ph_count = ph_count + 1.0
+        !         ph_sum = ph_sum + 10.0**(-1.0*solLongBitFull(i,1))
+        !     end if
+        ! END DO
+        ! ph_sum = -1.0*LOG10(ph_sum/ph_count)
+        ! ph_fix_LongBitFull(1:leng) = ph_sum
+        ! write(*,*) "pH sum" , ph_sum
+        !
+        !
+        ! ph_count = 0.0
+        ! ph_sum = 0.0
+        ! DO i = 1,leng
+        !     if (coarse_mask_long(i) .eq. 1.0) then
+        !         ph_count = ph_count + 1.0
+        !         ph_sum = ph_sum + 10.0**(-1.0*solLongBitFull(leng+i,1))
+        !     end if
+        ! END DO
+        ! ph_sum = -1.0*LOG10(ph_sum/ph_count)
+        ! ph_fix_LongBitFull(leng+1:2*leng) = ph_sum
+        ! write(*,*) "pH sum" , ph_sum
+        !
+        !
+        ! ph_count = 0.0
+        ! ph_sum = 0.0
+        ! DO i = 1,leng
+        !     if (coarse_mask_long(i) .eq. 1.0) then
+        !         ph_count = ph_count + 1.0
+        !         ph_sum = ph_sum + 10.0**(-1.0*solLongBitFull(2*leng+i,1))
+        !     end if
+        ! END DO
+        ! ph_sum = -1.0*LOG10(ph_sum/ph_count)
+        ! ph_fix_LongBitFull(2*leng+1:) = ph_sum
+        ! write(*,*) "pH sum" , ph_sum
+
+
+        ! !- calculate ph_fix (stratified)
+        !
+        ! ph_fix_LongBitFull = 0.0
+        !
+        ! ph_fix = 0.0
+        ! bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(1:leng,1),(/yn/(2*celly), (xn-1)/cellx/)))
+        !
+        ! DO ii = 1,yn/(2*celly)
+        !     ph_count = 0.0
+        !     ph_sum = 0.0
+        !     DO i = 1,(xn-1)/cellx
+        !         if (coarse_mask(i,ii) .eq. 1.0) then
+        !             ph_count = ph_count + 1.0
+        !             ph_sum = ph_sum + 10.0**(-1.0*bit_thing_t1(i,ii))
+        !         end if
+        !     END DO
+        !     if (ph_sum/ph_count .gt. 0.0) then
+        !         ph_sum = -1.0*LOG10(ph_sum/ph_count)
+        !         ph_fix(:,ii) = ph_sum
+        !     end if
+        ! END DO
+        !
+        !
+        ! ph_fix_a = 0.0
+        ! bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(leng+1:2*leng,1),(/yn/(2*celly), (xn-1)/cellx/)))
+        !
+        ! DO ii = 1,yn/(2*celly)
+        !     ph_count = 0.0
+        !     ph_sum = 0.0
+        !     DO i = 1,(xn-1)/cellx
+        !         if (coarse_mask(i,ii) .eq. 1.0) then
+        !             ph_count = ph_count + 1.0
+        !             ph_sum = ph_sum + 10.0**(-1.0*bit_thing_t1(i,ii))
+        !         end if
+        !     END DO
+        !     if (ph_sum/ph_count .gt. 0.0) then
+        !         ph_sum = -1.0*LOG10(ph_sum/ph_count)
+        !         ph_fix_a(:,ii) = ph_sum
+        !     end if
+        ! END DO
+        !
+        !
+        ! ph_fix_b = 0.0
+        ! bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(2*leng+1:,1),(/yn/(2*celly), (xn-1)/cellx/)))
+        !
+        ! DO ii = 1,yn/(2*celly)
+        !     ph_count = 0.0
+        !     ph_sum = 0.0
+        !     DO i = 1,(xn-1)/cellx
+        !         if (coarse_mask(i,ii) .eq. 1.0) then
+        !             ph_count = ph_count + 1.0
+        !             ph_sum = ph_sum + 10.0**(-1.0*bit_thing_t1(i,ii))
+        !         end if
+        !     END DO
+        !     if (ph_sum/ph_count .gt. 0.0) then
+        !         ph_sum = -1.0*LOG10(ph_sum/ph_count)
+        !         ph_fix_b(:,ii) = ph_sum
+        !     end if
+        ! END DO
+        !
+        !
+        ! ph_fix_LongBitFull(:leng) = RESHAPE(TRANSPOSE(ph_fix(:,:)), (/ leng /))
+        ! ph_fix_LongBitFull(leng+1:2*leng) = RESHAPE(TRANSPOSE(ph_fix_a(:,:)), (/ leng /))
+        ! ph_fix_LongBitFull(2*leng+1:) = RESHAPE(TRANSPOSE(ph_fix_b(:,:)), (/ leng /))
+
+
+
+        !- calculate ph_fix (upwind)
 
         ph_fix_LongBitFull = 0.0
 
-        ph_count = 0.0
-        ph_sum = 0.0
-        DO i = 1,leng
-            if (coarse_mask_long(i) .eq. 1.0) then
-                ph_count = ph_count + 1.0
-                ph_sum = ph_sum + 10.0**(-1.0*solLongBitFull(i,1))
-            end if
+        ph_fix = 0.0
+        bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(1:leng,1),(/yn/(2*celly), (xn-1)/cellx/)))
+
+        DO ii = 1,yn/(2*celly)
+            ph_count = 0.0
+            ph_sum = 0.0
+            DO i = 1,(xn-1)/cellx
+                if (coarse_mask(i,ii) .eq. 1.0) then
+                    ph_count = ph_count + 1.0
+                    ph_sum = ph_sum + 10.0**(-1.0*bit_thing_t1(i,ii))
+
+                    if (ph_sum/ph_count .gt. 0.0) then
+                        ph_fix(i,ii) = -1.0*LOG10(ph_sum/ph_count)
+                    end if
+
+                end if
+            END DO
+
         END DO
-        ph_sum = -1.0*LOG10(ph_sum/ph_count)
-        ph_fix_LongBitFull(1:leng) = ph_sum
-        write(*,*) "pH sum" , ph_sum
 
 
-        ph_count = 0.0
-        ph_sum = 0.0
-        DO i = 1,leng
-            if (coarse_mask_long(i) .eq. 1.0) then
-                ph_count = ph_count + 1.0
-                ph_sum = ph_sum + 10.0**(-1.0*solLongBitFull(leng+i,1))
-            end if
+        ph_fix_a = 0.0
+        bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(leng+1:2*leng,1),(/yn/(2*celly), (xn-1)/cellx/)))
+
+        DO ii = 1,yn/(2*celly)
+            ph_count = 0.0
+            ph_sum = 0.0
+            DO i = 1,(xn-1)/cellx
+                if (coarse_mask(i,ii) .eq. 1.0) then
+                    ph_count = ph_count + 1.0
+                    ph_sum = ph_sum + 10.0**(-1.0*bit_thing_t1(i,ii))
+
+                    if (ph_sum/ph_count .gt. 0.0) then
+                        ph_fix_a(i,ii) = -1.0*LOG10(ph_sum/ph_count)
+                    end if
+
+                end if
+            END DO
         END DO
-        ph_sum = -1.0*LOG10(ph_sum/ph_count)
-        ph_fix_LongBitFull(leng+1:2*leng) = ph_sum
-        write(*,*) "pH sum" , ph_sum
 
 
-        ph_count = 0.0
-        ph_sum = 0.0
-        DO i = 1,leng
-            if (coarse_mask_long(i) .eq. 1.0) then
-                ph_count = ph_count + 1.0
-                ph_sum = ph_sum + 10.0**(-1.0*solLongBitFull(2*leng+i,1))
-            end if
+        ph_fix_b = 0.0
+        bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(2*leng+1:,1),(/yn/(2*celly), (xn-1)/cellx/)))
+
+        DO ii = 1,yn/(2*celly)
+            ph_count = 0.0
+            ph_sum = 0.0
+            DO i = 1,(xn-1)/cellx
+                if (coarse_mask(i,ii) .eq. 1.0) then
+                    ph_count = ph_count + 1.0
+                    ph_sum = ph_sum + 10.0**(-1.0*bit_thing_t1(i,ii))
+
+                    if (ph_sum/ph_count .gt. 0.0) then
+                        ph_fix_b(i,ii) = -1.0*LOG10(ph_sum/ph_count)
+                    end if
+
+                end if
+            END DO
+
         END DO
-        ph_sum = -1.0*LOG10(ph_sum/ph_count)
-        ph_fix_LongBitFull(2*leng+1:) = ph_sum
-        write(*,*) "pH sum" , ph_sum
+
+
+        ph_fix_LongBitFull(:leng) = RESHAPE(TRANSPOSE(ph_fix(:,:)), (/ leng /))
+        ph_fix_LongBitFull(leng+1:2*leng) = RESHAPE(TRANSPOSE(ph_fix_a(:,:)), (/ leng /))
+        ph_fix_LongBitFull(2*leng+1:) = RESHAPE(TRANSPOSE(ph_fix_b(:,:)), (/ leng /))
+
+
 
 
 
@@ -3498,6 +3642,15 @@ PROGRAM main
               phiCalc_a(:,:) = bit_thing_t1
 
 
+              ! pH fix
+              bit_thing_t1 = TRANSPOSE(RESHAPE(ph_fix_LongBitFull(1:leng),(/yn/(2*celly), (xn-1)/cellx/)))
+              ph_fix(:,:) = bit_thing_t1
+              bit_thing_t1 = TRANSPOSE(RESHAPE(ph_fix_LongBitFull(leng+1:2*leng),(/yn/(2*celly), (xn-1)/cellx/)))
+              ph_fix_a(:,:) = bit_thing_t1
+              bit_thing_t1 = TRANSPOSE(RESHAPE(ph_fix_LongBitFull(2*leng+1:),(/yn/(2*celly), (xn-1)/cellx/)))
+              ph_fix_b(:,:) = bit_thing_t1
+
+
               WRITE(*,*) "BEGIN UPDATING _MAT ARRAYS"
               rhsmat(1+xn*(j/(mstep*ar)-1):xn*(j/(mstep*ar)),1:yn) = rhs0
               rhomat(1+xn*(j/(mstep*ar)-1):xn*(j/(mstep*ar)),1:yn) = rho
@@ -3539,6 +3692,10 @@ PROGRAM main
 
               phiCalcMat(1+((xn-1)/cellx)*(j/(mstep*ar)-1):((xn-1)/cellx)*(j/(mstep*ar)),1:yn/(2*celly)) = phiCalc
               phiCalcMat_a(1+((xn-1)/cellx)*(j/(mstep*ar)-1):((xn-1)/cellx)*(j/(mstep*ar)),1:yn/(2*celly)) = phiCalc_a
+
+              ph_fixMat(1+((xn-1)/cellx)*(j/(mstep*ar)-1):((xn-1)/cellx)*(j/(mstep*ar)),1:yn/(2*celly)) = ph_fix
+              ph_fixMat_a(1+((xn-1)/cellx)*(j/(mstep*ar)-1):((xn-1)/cellx)*(j/(mstep*ar)),1:yn/(2*celly)) = ph_fix_a
+              ph_fixMat_b(1+((xn-1)/cellx)*(j/(mstep*ar)-1):((xn-1)/cellx)*(j/(mstep*ar)),1:yn/(2*celly)) = ph_fix_b
 
 
               WRITE(*,*) "...DONE UPDATING _MAT ARRAYS"
@@ -3624,6 +3781,9 @@ PROGRAM main
                  ! phi
                  yep = write_matrix ( (xn-1)*tn/(cellx*mstep*ar), yn/(2*celly), REAL(phiCalcMat(:,:),kind=4), TRIM(path) // 'ch_s/z_phiCalc.txt' )
 
+                 ! ph_fix
+                 yep = write_matrix ( (xn-1)*tn/(cellx*mstep*ar), yn/(2*celly), REAL(ph_fixMat(:,:),kind=4), TRIM(path) // 'ch_s/z_ph_fix.txt' )
+
                  write(*,*) "done writing ch_s sol, med"
 
 
@@ -3660,6 +3820,9 @@ PROGRAM main
                  ! phi
                  yep = write_matrix ( (xn-1)*tn/(cellx*mstep*ar), yn/(2*celly), REAL(phiCalcMat_a(:,:),kind=4), TRIM(path) // 'ch_a/z_phiCalc.txt' )
 
+                 ! ph_fix
+                 yep = write_matrix ( (xn-1)*tn/(cellx*mstep*ar), yn/(2*celly), REAL(ph_fixMat_a(:,:),kind=4), TRIM(path) // 'ch_a/z_ph_fix.txt' )
+
 
                  write(*,*) "done writing ch_a sol, med"
 
@@ -3695,6 +3858,9 @@ PROGRAM main
                  yep = write_matrix ( (xn-1)*tn/(cellx*mstep*ar), yn/(2*celly), REAL(mediumMat_b(:,:,3),kind=4), TRIM(path) // 'ch_b/z_med_v_water.txt' )
                  yep = write_matrix ( (xn-1)*tn/(cellx*mstep*ar), yn/(2*celly), REAL(mediumMat_b(:,:,4),kind=4), TRIM(path) // 'ch_b/z_med_reactive.txt' )
                  yep = write_matrix ( (xn-1)*tn/(cellx*mstep*ar), yn/(2*celly), REAL(mediumMat_b(:,:,5),kind=4), TRIM(path) // 'ch_b/z_med_cell_toggle.txt' )
+
+                 ! ph_fix
+                 yep = write_matrix ( (xn-1)*tn/(cellx*mstep*ar), yn/(2*celly), REAL(ph_fixMat_b(:,:),kind=4), TRIM(path) // 'ch_b/z_ph_fix.txt' )
 
 
                  write(*,*) "done writing ch_b sol, med"
@@ -4237,7 +4403,7 @@ PROGRAM main
               inputz0 = TRIM(inputz0) // "EQUILIBRIUM_PHASES 1" //NEW_LINE('')// &
                    &"    Goethite " // TRIM(s_precip) // TRIM(s_goethite) // kinetics //NEW_LINE('')// &
                    &"    Celadonite " // TRIM(s_precip) // TRIM(s_celadonite) // kinetics //NEW_LINE('')// & ! mica
-                   !&"    Saponite-Mg " // TRIM(s_precip) // TRIM(s_saponite) // kinetics //NEW_LINE('')// & ! smectite
+                   &"    Saponite-Mg " // TRIM(s_precip) // TRIM(s_saponite) // kinetics //NEW_LINE('')// & ! smectite
                    &"    Pyrite " // TRIM(s_precip) // TRIM(s_pyrite) // kinetics //NEW_LINE('')// &
                    !&"    Saponite-Na " // TRIM(s_precip) // TRIM(s_saponite_na) // kinetics //NEW_LINE('')// & ! smectite
                    &"    Nontronite-Na " // TRIM(s_precip) // TRIM(s_nont_na) // kinetics //NEW_LINE('')// & ! smectite
@@ -4259,7 +4425,7 @@ PROGRAM main
 
                    ! 		!&"    Celadonite -5.0 " // trim(s_celadonite) // kinetics //NEW_LINE('')// & ! mica
                    ! 		!&"    Calcite " // trim(s_precip) // trim(s_calcite) // kinetics //NEW_LINE('')// & ! .135
-                   &"    Montmor-Na " // TRIM(s_precip) // TRIM(s_mont_na) // kinetics //NEW_LINE('')// & ! smectite
+                   !&"    Montmor-Na " // TRIM(s_precip) // TRIM(s_mont_na) // kinetics //NEW_LINE('')// & ! smectite
                    &"    Montmor-Mg " // TRIM(s_precip) // TRIM(s_mont_mg) // kinetics //NEW_LINE('')// & ! smectite
                    &"    Montmor-Ca " // TRIM(s_precip) // TRIM(s_mont_ca) // kinetics //NEW_LINE('')// & ! smectite
 
@@ -4269,6 +4435,7 @@ PROGRAM main
  	 	   &"    Vermiculite-Na " // TRIM(s_precip) // TRIM(s_verm_na) // kinetics //NEW_LINE('')// & ! clay
                    &"    Vermiculite-Ca " // TRIM(s_precip) // TRIM(s_verm_ca) // kinetics //NEW_LINE('')// & ! clay
                    &"    Vermiculite-Mg " // TRIM(s_precip) // TRIM(s_verm_mg) // kinetics //NEW_LINE('')//& ! clay
+                   &"    Hematite " // TRIM(s_precip) // TRIM(s_hematite) // kinetics //NEW_LINE('')//& ! iron oxide
                    ! 		&"    Hematite 2.0 " // trim(s_hematite) // kinetics //NEW_LINE('')// &
 !!!!!!!old!! &"    Hematite " // trim(si_hematite) // trim(s_hematite) // kinetics //NEW_LINE('')// &
                     		    &"    Epidote  " // trim(s_precip) // trim(s_epidote) // kinetics //NEW_LINE('')// &
@@ -4280,11 +4447,11 @@ PROGRAM main
 
                     		!&"    Kaolinite " // trim(s_precip) // trim(s_kaolinite) // kinetics //NEW_LINE('')// & ! clay
                     		&"    Clinoptilolite-Ca " // trim(s_precip) // trim(s_clinoptilolite) // kinetics //NEW_LINE('')// & ! zeolite
-                    		&"    K-Feldspar " // trim(s_precip) // trim(s_kspar) // kinetics //NEW_LINE('')// &
+                    		!&"    K-Feldspar " // trim(s_precip) // trim(s_kspar) // kinetics //NEW_LINE('')// &
                     		!&"    Mesolite " // trim(s_precip) // trim(s_mesolite) // kinetics //NEW_LINE('')// & ! zeolite
                             &"    Prehnite " // trim(s_precip) // trim(s_prehnite) // kinetics //NEW_LINE('')// &
                           &"    Scolecite " // trim(s_precip) // trim(s_scolecite) // kinetics //NEW_LINE('')// & ! zeolite
-                          &"    Gismondine " // trim(s_precip) // trim(s_gismondine) // kinetics //NEW_LINE('')// & ! zeolite
+                          !&"    Gismondine " // trim(s_precip) // trim(s_gismondine) // kinetics //NEW_LINE('')// & ! zeolite
 
                    &" "  //NEW_LINE('')
 
@@ -6887,13 +7054,6 @@ FUNCTION solute_next_coarse (sol, uTransport, vTransport, phiTransport, seaw)
   ! call init_mini()
 
 
-  ! do i = 1,xn
-  ! 	do j = 1,yn
-  ! 		if ((maskP(i,j) .eq. 0.0)) then
-  ! 			sol(i,j) = seaw
-  ! 		end if
-  ! 	end do
-  ! end do
 
   sol(1,:) = seaw!(4.0/3.0)*sol(2,:) - (1.0/3.0)*sol(3,:)
   !sol((xn-1)/cellx,:) = sol((xn-1)/cellx-1,:)
@@ -6905,58 +7065,10 @@ FUNCTION solute_next_coarse (sol, uTransport, vTransport, phiTransport, seaw)
   qx = dt*mstep/(cstep*dx*cellx)
   qy = dt*mstep/(cstep*dy*celly)
 
-  !write(*,*) "qx, qy" , qx , qy
-
-  ! uLong = reshape(uTransport(2:xn-1,1:yn), (/(xn-2)*(yn-0)/))
-  ! !! transpose coarse needed!
-  ! vLong = reshape(transpose(vTransport(1:xn,2:yn-1)), (/(xn-0)*(yn-2)/))
 
   uTransport(1,:) = 0.0
-  !uTransport(xn,:) = 0.0
-
-  ! write(*,*) qx*maxval(abs(uTransport))
-  ! write(*,*) qy*maxval(abs(vTransport))
 
 
-
-  DO i = 1,(xn-1)/cellx
-
-     ! 	if (i .eq. f_index1-1) then
-     ! 		sol(i,:) = (4.0/3.0)*sol(i-1,:) - (1.0/3.0)*sol(i-2,:)
-     ! 		do j = yn/2,yn
-     ! 			sol(i+1:,j) = sol(i,j)
-     ! 		end do
-     !
-     ! 	end if
-
-     DO j = 1,yn/(2*celly)
-
-        ! 		if ((maskP(i,j) .eq. 0.0)) then
-        ! 			sol(i,j) = seaw
-        ! 		end if
-
-        ! 		if ((coarse_mask(i,j) .eq. 5.0)) then
-        !
-        ! 			if (uTransport(i,j) .lt. 0.0) then
-        ! 				sol(i+1,j) = seaw
-        ! 				uTransport(i+1,j) = uTransport(i,j)
-        ! 			else
-        ! 				sol(i+1,j) = (4.0/3.0)*sol(i,j) - (1.0/3.0)*sol(i-1,j)
-        ! 			end if
-        !
-        ! 		end if
-
-
-        ! 		if ((maskP(i,j) .eq. 10.0) .or. (maskP(i,j) .eq. 170.5)) then
-        ! 			if (uTransport(i,j) .gt. 0.0) then
-        ! 				sol(i-1,j) = seaw
-        ! 				uTransport(i-1,j) = uTransport(i,j)
-        ! 			else
-        ! 				sol(i-1,j) = (4.0/3.0)*sol(i,j) - (1.0/3.0)*sol(i+1,j)
-        ! 			end if
-        ! 		end if
-     END DO
-  END DO
 
   !sol((xn-1)/cellx,:) = (4.0/3.0)*sol((xn-1)/cellx-1,:) - (1.0/3.0)*sol((xn-1)/cellx-2,:)
 

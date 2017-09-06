@@ -39,6 +39,7 @@ MODULE initialize
   REAL(4) :: bit_thing_a((xn-1)/cellx,yn/(2*celly)), bit_thing_b((xn-1)/cellx,yn/(2*celly))
   REAL(4) :: phiCalc((xn-1)/cellx,yn/(2*celly)), phiCalc_a((xn-1)/cellx,yn/(2*celly))
   REAL(4) :: phiCalcMat((xn-1)*tn/(cellx*(mstep*ar)),yn/(2*celly)), phiCalcMat_a((xn-1)*tn/(cellx*(mstep*ar)),yn/(2*celly))
+  REAL(4) :: ph_fixMat((xn-1)*tn/(cellx*(mstep*ar)),yn/(2*celly)), ph_fixMat_a((xn-1)*tn/(cellx*(mstep*ar)),yn/(2*celly)), ph_fixMat_b((xn-1)*tn/(cellx*(mstep*ar)),yn/(2*celly))
 
   ! CHAMBER INPUT STUFF
   REAL(4) :: primary_a((xn-1)/cellx,yn/(2*celly),g_pri), primaryMat_a((xn-1)*tn/(cellx*(mstep*ar)),yn/(2*celly),g_pri)
@@ -744,13 +745,21 @@ CONTAINS
     ! primary_a(:,8:,:) = 0.0
     ! primary_b(:,8:,:) = 0.0
 
-    ! 3 cells high
-    medium(:,9:,5) = 0.0
-    medium_a(:,9:,5) = 0.0
-    medium_b(:,9:,5) = 0.0
-    primary(:,9:,:) = 0.0
-    primary_a(:,9:,:) = 0.0
-    primary_b(:,9:,:) = 0.0
+    ! ! 3 cells high
+    ! medium(:,9:,5) = 0.0
+    ! medium_a(:,9:,5) = 0.0
+    ! medium_b(:,9:,5) = 0.0
+    ! primary(:,9:,:) = 0.0
+    ! primary_a(:,9:,:) = 0.0
+    ! primary_b(:,9:,:) = 0.0
+
+    ! 7 cells high
+    medium(:,13:,5) = 0.0
+    medium_a(:,13:,5) = 0.0
+    medium_b(:,13:,5) = 0.0
+    primary(:,13:,:) = 0.0
+    primary_a(:,13:,:) = 0.0
+    primary_b(:,13:,:) = 0.0
 
 
     ! quick fix full column, early august
@@ -887,7 +896,7 @@ CONTAINS
     END DO
 
     !- COARSE MASK QUICK FIX
-    coarse_mask(:,9:) = 0.0
+    coarse_mask(:,13:) = 0.0
 
     ! LHS COARSE MASK QUICK FIX
     coarse_mask(1,:) = 0.0
