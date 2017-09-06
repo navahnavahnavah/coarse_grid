@@ -3372,6 +3372,16 @@ PROGRAM main
                    an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
               solLongBitFull(start_row:end_row,2) = solLocal(1:num_rows_to_send,2)*solLocal(1:num_rows_to_send,3)/(solLongBitFull(start_row:end_row,3))
 
+
+              CALL MPI_RECV( solLocal(:,1), num_rows_to_send, MPI_REAL4, &
+                   an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+                   do ii=start_row,end_row
+                       solLongBitFull(ii,1) = -1.0*LOG10(10.0**(-1.0*solLocal(ii-start_row+1,1))*solLocal(ii-start_row+1,3)/(solLongBitFull(ii,3)))
+                   end do
+
+
+              !10.0**(-1.0*solLongBitFull(2*leng+i,1))
+
               DO ii = 4,g_sol
                  ! receive it
                  CALL MPI_RECV( solLocal(:,ii), num_rows_to_send, MPI_REAL4, &
@@ -4759,6 +4769,9 @@ PROGRAM main
              return_data_tag, MPI_COMM_WORLD, ierr)
 
         CALL MPI_SEND( solLocal(1,2), num_rows_received, MPI_REAL4, root_process, &
+             return_data_tag, MPI_COMM_WORLD, ierr)
+
+        CALL MPI_SEND( solLocal(1,1), num_rows_received, MPI_REAL4, root_process, &
              return_data_tag, MPI_COMM_WORLD, ierr)
 
         DO ii = 4,g_sol
