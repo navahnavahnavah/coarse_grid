@@ -10,7 +10,7 @@
 # you want to run.
 #
 # set the name of the job
-#PBS -N sites_2
+#PBS -N sites_7
 #
 # set the output and error files
 #PBS -o /data/navah/cg_output/mOutG.txt
@@ -19,11 +19,28 @@
 # set the number of nodes to use, and number of processors
 # to use per node
 
+##PBS -l nodes=compute-0-0:ppn=12+compute-0-1:ppn=12
+##PBS -l nodes=compute-0-2:ppn=12+compute-0-3:ppn=12
+##PBS -l nodes=compute-0-4:ppn=12+compute-1-0:ppn=12
+##PBS -l nodes=compute-1-1:ppn=12+compute-1-2:ppn=12
+##PBS -l nodes=compute-1-3:ppn=12+compute-1-4:ppn=12
+##PBS -l nodes=compute-1-5:ppn=12+compute-1-7:ppn=12
 
-##PBS -l nodes=compute-0-0:ppn=11+compute-0-1:ppn=11+compute-0-2:ppn=11+compute-0-3:ppn=11
-#PBS -l nodes=compute-0-4:ppn=11+compute-1-0:ppn=11+compute-1-1:ppn=11+compute-1-2:ppn=11
-##PBS -l nodes=compute-1-3:ppn=11+compute-1-4:ppn=11+compute-1-5:ppn=11
-##PBS -l nodes=compute-1-6:ppn=11+compute-1-9:ppn=11+compute-1-10:ppn=11
+
+##PBS -l nodes=compute-1-8:ppn=12+compute-1-9:ppn=12
+
+
+##PBS -l nodes=compute-0-0:ppn=11+compute-0-1:ppn=11+compute-0-2:ppn=11
+##PBS -l nodes=compute-0-3:ppn=11+compute-0-4:ppn=11+compute-1-0:ppn=11
+#PBS -l nodes=compute-1-1:ppn=11+compute-1-2:ppn=11+compute-1-3:ppn=11
+##PBS -l nodes=compute-1-4:ppn=11+compute-1-5:ppn=11+compute-1-7:ppn=11
+##PBS -l nodes=compute-1-8:ppn=11+compute-1-9:ppn=11+compute-1-10:ppn=3
+
+
+##PBS -l nodes=compute-1-5:ppn=3+compute-1-6:ppn=3+compute-1-7:ppn=3+compute-1-8:ppn=3+compute-1-9:ppn=3+compute-1-10:ppn=3+compute-1-3:ppn=3+compute-1-1:ppn=3
+
+
+#####+compute-1-9:ppn=11+compute-1-10:ppn=11
 
 
 ##PBS -l nodes=compute-0-0:ppn=11+compute-0-1:ppn=11+compute-0-2:ppn=11+compute-0-3:ppn=11+compute-0-4:ppn=11+compute-1-0:ppn=11+compute-1-1:ppn=11+compute-1-2:ppn=11+compute-1-3:ppn=11+compute-1-4:ppn=11+compute-1-5:ppn=11+compute-1-6:ppn=11+compute-1-7:ppn=11+compute-1-8:ppn=11+compute-1-9:ppn=11
@@ -77,11 +94,12 @@ set PARAM_F_K = '1e-5'
 #set PARAM_F_FREQ = '0.0005'
 set PARAM_F_FREQ = '20'
 set PARAM_F_POR = '6e-4'
-set PARAM_T_DIFF = '2e10'
+set PARAM_T_DIFF = '4e10'
+set PARAM_B_G = '50'
 
 
 
-set PARAM_PATH='/data/navah/cg_output/sites_2_j/'
+set PARAM_PATH='/data/navah/cg_output/sites_7_u/'
 #set PARAM_PATH='/data/navah/cg_output/medium_vel_sites/med_c_no_heat/'
 
 
@@ -166,7 +184,7 @@ find ${PARAM_PATH}'ch_d/' -name '*.txt' -exec rm -f {} \;
 # find $PARAM_PATH + 'ch_a/' -name '*.txt' -exec rm -f {} \;
 # find $PARAM_PATH + 'ch_b/' -name '*.txt' -exec rm -f {} \;
 ##wait
-${LAUNCH} -n {$NCPU} -hostfile ${PBS_NODEFILE} --nooversubscribe ${WORKDIR}/${PROGNAME} ${PARAM_RESTART} ${PARAM_PATH} ${PARAM_PATH} ${PARAM_CRASHSTEP} ${PARAM_O} ${PARAM_W} ${PARAM_W_RHS} ${PARAM_H} ${PARAM_O_RHS} ${PARAM_TSW} ${PARAM_DIC} ${PARAM_SCOPE} ${PARAM_TRACE} ${PARAM_CH} ${PARAM_PAQ} ${PARAM_CH_RHS} ${PARAM_F_DX} ${PARAM_F_K} ${PARAM_F_FREQ} ${PARAM_F_POR} ${PARAM_ISO_PATH} ${PARAM_T_DIFF}
+${LAUNCH} -n {$NCPU} -hostfile ${PBS_NODEFILE} --nooversubscribe ${WORKDIR}/${PROGNAME} ${PARAM_RESTART} ${PARAM_PATH} ${PARAM_PATH} ${PARAM_CRASHSTEP} ${PARAM_O} ${PARAM_W} ${PARAM_W_RHS} ${PARAM_H} ${PARAM_O_RHS} ${PARAM_TSW} ${PARAM_DIC} ${PARAM_SCOPE} ${PARAM_TRACE} ${PARAM_CH} ${PARAM_PAQ} ${PARAM_CH_RHS} ${PARAM_F_DX} ${PARAM_F_K} ${PARAM_F_FREQ} ${PARAM_F_POR} ${PARAM_ISO_PATH} ${PARAM_T_DIFF} ${PARAM_B_G}
 # ${LAUNCH} -n {$NCPU} -hostfile ${PBS_NODEFILE} --nooversubscribe ${WORKDIR}/${PROGNAME} ${PARAM_RESTART} ${SCRDIR} ${PARAM_PATH} ${PARAM_CRASHSTEP} ${PARAM_O} ${PARAM_W} ${PARAM_W_RHS} ${PARAM_H} ${PARAM_O_RHS} ${PARAM_TSW} ${PARAM_DIC} ${PARAM_SCOPE} ${PARAM_TRACE} ${PARAM_CH} ${PARAM_PAQ} ${PARAM_CH_RHS} ${PARAM_F_DX} ${PARAM_F_K} ${PARAM_F_FREQ} ${PARAM_F_POR}
 
 # wait

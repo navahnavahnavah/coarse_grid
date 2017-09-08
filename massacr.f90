@@ -2740,6 +2740,12 @@ PROGRAM main
                  psi_coarse(i,ii-yn/(2*celly)) = psi(i*cellx,ii*celly)
               END DO
            END DO
+
+           DO i = 1,yn/(2*celly)
+              h_coarse(:,i) = SUM(h_coarse(:,i))/((xn-1)/cellx)
+           END DO
+
+
            !h_coarse((xn-1)/cellx,:) = h_coarse(((xn-1)/cellx)-1,:)
 
         !    DO ii = yn/(2*celly)+1,yn/(celly)
@@ -3237,8 +3243,8 @@ PROGRAM main
 
         !- calculate ph_fix (entire domain)
 
-        ! ph_fix_LongBitFull = 0.0
-        !
+        ph_fix_LongBitFull = 0.0
+
         ! ph_count = 0.0
         ! ph_sum = 0.0
         ! DO i = 1,leng
@@ -3278,8 +3284,8 @@ PROGRAM main
         ! write(*,*) "pH sum" , ph_sum
 
 
-        ! !- calculate ph_fix (stratified)
-        !
+        !- calculate ph_fix (stratified)
+
         ! ph_fix_LongBitFull = 0.0
         !
         ! ph_fix = 0.0
@@ -3337,83 +3343,83 @@ PROGRAM main
         !         ph_fix_b(:,ii) = ph_sum
         !     end if
         ! END DO
-        !
-        !
-        ! ph_fix_LongBitFull(:leng) = RESHAPE(TRANSPOSE(ph_fix(:,:)), (/ leng /))
-        ! ph_fix_LongBitFull(leng+1:2*leng) = RESHAPE(TRANSPOSE(ph_fix_a(:,:)), (/ leng /))
-        ! ph_fix_LongBitFull(2*leng+1:) = RESHAPE(TRANSPOSE(ph_fix_b(:,:)), (/ leng /))
-
-
-
-        !- calculate ph_fix (upwind)
-
-        ph_fix_LongBitFull = 0.0
-
-        ph_fix = 0.0
-        bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(1:leng,1),(/yn/(2*celly), (xn-1)/cellx/)))
-
-        DO ii = 1,yn/(2*celly)
-            ph_count = 0.0
-            ph_sum = 0.0
-            DO i = 1,(xn-1)/cellx
-                if (coarse_mask(i,ii) .eq. 1.0) then
-                    ph_count = ph_count + 1.0
-                    ph_sum = ph_sum + 10.0**(-1.0*bit_thing_t1(i,ii))
-
-                    if (ph_sum/ph_count .gt. 0.0) then
-                        ph_fix(i,ii) = -1.0*LOG10(ph_sum/ph_count)
-                    end if
-
-                end if
-            END DO
-
-        END DO
-
-
-        ph_fix_a = 0.0
-        bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(leng+1:2*leng,1),(/yn/(2*celly), (xn-1)/cellx/)))
-
-        DO ii = 1,yn/(2*celly)
-            ph_count = 0.0
-            ph_sum = 0.0
-            DO i = 1,(xn-1)/cellx
-                if (coarse_mask(i,ii) .eq. 1.0) then
-                    ph_count = ph_count + 1.0
-                    ph_sum = ph_sum + 10.0**(-1.0*bit_thing_t1(i,ii))
-
-                    if (ph_sum/ph_count .gt. 0.0) then
-                        ph_fix_a(i,ii) = -1.0*LOG10(ph_sum/ph_count)
-                    end if
-
-                end if
-            END DO
-        END DO
-
-
-        ph_fix_b = 0.0
-        bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(2*leng+1:,1),(/yn/(2*celly), (xn-1)/cellx/)))
-
-        DO ii = 1,yn/(2*celly)
-            ph_count = 0.0
-            ph_sum = 0.0
-            DO i = 1,(xn-1)/cellx
-                if (coarse_mask(i,ii) .eq. 1.0) then
-                    ph_count = ph_count + 1.0
-                    ph_sum = ph_sum + 10.0**(-1.0*bit_thing_t1(i,ii))
-
-                    if (ph_sum/ph_count .gt. 0.0) then
-                        ph_fix_b(i,ii) = -1.0*LOG10(ph_sum/ph_count)
-                    end if
-
-                end if
-            END DO
-
-        END DO
 
 
         ph_fix_LongBitFull(:leng) = RESHAPE(TRANSPOSE(ph_fix(:,:)), (/ leng /))
         ph_fix_LongBitFull(leng+1:2*leng) = RESHAPE(TRANSPOSE(ph_fix_a(:,:)), (/ leng /))
         ph_fix_LongBitFull(2*leng+1:) = RESHAPE(TRANSPOSE(ph_fix_b(:,:)), (/ leng /))
+
+
+
+        !- calculate ph_fix (upwind)
+
+        ! ph_fix_LongBitFull = 0.0
+        !
+        ! ph_fix = 0.0
+        ! bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(1:leng,1),(/yn/(2*celly), (xn-1)/cellx/)))
+        !
+        ! DO ii = 1,yn/(2*celly)
+        !     ph_count = 0.0
+        !     ph_sum = 0.0
+        !     DO i = 1,(xn-1)/cellx
+        !         if (coarse_mask(i,ii) .eq. 1.0) then
+        !             ph_count = ph_count + 1.0
+        !             ph_sum = ph_sum + 10.0**(-1.0*bit_thing_t1(i,ii))
+        !
+        !             if (ph_sum/ph_count .gt. 0.0) then
+        !                 ph_fix(i,ii) = -1.0*LOG10(ph_sum/ph_count)
+        !             end if
+        !
+        !         end if
+        !     END DO
+        !
+        ! END DO
+        !
+        !
+        ! ph_fix_a = 0.0
+        ! bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(leng+1:2*leng,1),(/yn/(2*celly), (xn-1)/cellx/)))
+        !
+        ! DO ii = 1,yn/(2*celly)
+        !     ph_count = 0.0
+        !     ph_sum = 0.0
+        !     DO i = 1,(xn-1)/cellx
+        !         if (coarse_mask(i,ii) .eq. 1.0) then
+        !             ph_count = ph_count + 1.0
+        !             ph_sum = ph_sum + 10.0**(-1.0*bit_thing_t1(i,ii))
+        !
+        !             if (ph_sum/ph_count .gt. 0.0) then
+        !                 ph_fix_a(i,ii) = -1.0*LOG10(ph_sum/ph_count)
+        !             end if
+        !
+        !         end if
+        !     END DO
+        ! END DO
+        !
+        !
+        ! ph_fix_b = 0.0
+        ! bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(2*leng+1:,1),(/yn/(2*celly), (xn-1)/cellx/)))
+        !
+        ! DO ii = 1,yn/(2*celly)
+        !     ph_count = 0.0
+        !     ph_sum = 0.0
+        !     DO i = 1,(xn-1)/cellx
+        !         if (coarse_mask(i,ii) .eq. 1.0) then
+        !             ph_count = ph_count + 1.0
+        !             ph_sum = ph_sum + 10.0**(-1.0*bit_thing_t1(i,ii))
+        !
+        !             if (ph_sum/ph_count .gt. 0.0) then
+        !                 ph_fix_b(i,ii) = -1.0*LOG10(ph_sum/ph_count)
+        !             end if
+        !
+        !         end if
+        !     END DO
+        !
+        ! END DO
+        !
+        !
+        ! ph_fix_LongBitFull(:leng) = RESHAPE(TRANSPOSE(ph_fix(:,:)), (/ leng /))
+        ! ph_fix_LongBitFull(leng+1:2*leng) = RESHAPE(TRANSPOSE(ph_fix_a(:,:)), (/ leng /))
+        ! ph_fix_LongBitFull(2*leng+1:) = RESHAPE(TRANSPOSE(ph_fix_b(:,:)), (/ leng /))
 
 
 
@@ -4461,35 +4467,39 @@ PROGRAM main
               !-phreeqc rates
               inputz0 = TRIM(inputz0) // "RATES" //NEW_LINE('')// &
 
+                          ! &"    10 rate0=M*110.0*(1.52e-5)*" // trim(param_exp_string) // "*(CALC_VALUE('R(sum)'))*(1.0e4)*(2.51189e-6)*exp(-25.5/(.008314*TK))" // &
+
+              !
+              ! &"    30 rate0=M*110.0*(1.52e-5)*" // TRIM(param_exp_string) // "*(1.0e4)*(2.51189e-6)*exp(-25.5/(.008314*TK))" // &
+              ! &"*((((10.0^-"//TRIM(s_ph_fix)//")^3)/(base0))^.33333)" //NEW_LINE('')// &
+
                                 ! linear decrease with alteration
                    &"BGlass" //NEW_LINE('')// &
                    &"-start" //NEW_LINE('')// &
-                                ! &"    10 rate0=M*110.0*(1.52e-5)*" // trim(param_exp_string) // "*(CALC_VALUE('R(sum)'))*(1.0e4)*(2.51189e-6)*exp(-25.5/(.008314*TK))" // &
-                !    &"		10 base0 = 1e-10" //NEW_LINE('')// &
-                !    &"		20 if (ACT('Al+3') > 1e-10) then base0 = ACT('Al+3')" //NEW_LINE('')// &
-                ! !    &"    30 rate0=M*110.0*(1.52e-5)*" // TRIM(param_exp_string) // "*(1.0e4)*(2.51189e-6)*exp(-25.5/(.008314*TK))" // &
-                ! !    &"*(((ACT('H+')^3)/(base0))^.33333)" //NEW_LINE('')// &
-                !
-                ! &"    30 rate0=M*110.0*(1.52e-5)*" // TRIM(param_exp_string) // "*(1.0e4)*(2.51189e-6)*exp(-25.5/(.008314*TK))" // &
-                ! &"*((((10.0^-"//TRIM(s_ph_fix)//")^3)/(base0))^.33333)" //NEW_LINE('')// &
-                ! &"    40 save rate0 * time" //NEW_LINE('')// &
-                ! &"-end" //NEW_LINE('')// &
+
+                   &"		10 base0 = 1e-8" //NEW_LINE('')// &
+                   &"		20 if (ACT('Al+3') > 1e-8) then base0 = ACT('Al+3')" //NEW_LINE('')// &
+                   &"    30 rate0=M*110.0*(1.52e-5)*" // TRIM(param_exp_string) // "*(1.0e4)*(2.51189e-6)*exp(-25.5/(.008314*TK))" // &
+                   &"*(((ACT('H+')^3)/(base0))^.33333)" //NEW_LINE('')// &
+
+                &"    40 save rate0 * time" //NEW_LINE('')// &
+                &"-end" //NEW_LINE('')// &
 
 
              !    &"    30 rate0=M*110.0*(1.52e-5)*" // TRIM(param_exp_string) // "*(1.0e4)*(2.51189e-6)*exp(-25.5/(.008314*TK))" // &
              !    &"*(((ACT('H+')^3)/(base0))^.33333)" //NEW_LINE('')// &
 
-             &"    10 rate0=M*110.0*(1.52e-5)*" // TRIM(param_exp_string) // "*(1.0e4)*(2.51189e-6)*exp(-25.5/(.008314*TK))" // &
-             &"*((((10.0^-"//TRIM(s_ph_fix)//")^3)/(1e-10))^.33333)" //NEW_LINE('')// &
-                   &"    20 save rate0 * time" //NEW_LINE('')// &
-                   &"-end" //NEW_LINE('')// &
+            !  &"    10 rate0=M*110.0*(1.52e-5)*" // TRIM(param_exp_string) // "*(1.0e4)*(2.51189e-6)*exp(-25.5/(.008314*TK))" // &
+            !  &"*((((10.0^-"//TRIM(s_ph_fix)//")^3)/(1e-10))^.33333)" //NEW_LINE('')// &
+            !        &"    20 save rate0 * time" //NEW_LINE('')// &
+            !        &"-end" //NEW_LINE('')// &
 
                    &"Basalt1" //NEW_LINE('')// &
                    &"-start" //NEW_LINE('')// &
 
-                !    &"    10 rate0=M*140.7*(1.52e-5)*" // TRIM(exp_ol) //"*(" //TRIM(ol_k1)//"*(ACT('H+')^"//TRIM(ol_n1)//")*exp(-("//TRIM(ol_e1)//"/.008314)*((1.0/TK) - (1.0/298.0))) + "//TRIM(ol_k2)//"*exp(-("//TRIM(ol_e2)//"/.008314)*((1.0/TK) - (1.0/298.0))))" //NEW_LINE('')// &
+                   &"    10 rate0=M*140.7*(1.52e-5)*" // TRIM(exp_ol) //"*(" //TRIM(ol_k1)//"*(ACT('H+')^"//TRIM(ol_n1)//")*exp(-("//TRIM(ol_e1)//"/.008314)*((1.0/TK) - (1.0/298.0))) + "//TRIM(ol_k2)//"*exp(-("//TRIM(ol_e2)//"/.008314)*((1.0/TK) - (1.0/298.0))))" //NEW_LINE('')// &
 
-                &"    10 rate0=M*140.7*(1.52e-5)*" // TRIM(exp_ol) //"*(" //TRIM(ol_k1)//"*((10.0^-"//TRIM(s_ph_fix)//")^"//TRIM(ol_n1)//")*exp(-("//TRIM(ol_e1)//"/.008314)*((1.0/TK) - (1.0/298.0))) + "//TRIM(ol_k2)//"*exp(-("//TRIM(ol_e2)//"/.008314)*((1.0/TK) - (1.0/298.0))))" //NEW_LINE('')// &
+                ! &"    10 rate0=M*140.7*(1.52e-5)*" // TRIM(exp_ol) //"*(" //TRIM(ol_k1)//"*((10.0^-"//TRIM(s_ph_fix)//")^"//TRIM(ol_n1)//")*exp(-("//TRIM(ol_e1)//"/.008314)*((1.0/TK) - (1.0/298.0))) + "//TRIM(ol_k2)//"*exp(-("//TRIM(ol_e2)//"/.008314)*((1.0/TK) - (1.0/298.0))))" //NEW_LINE('')// &
 
                    &"    20 save rate0 * time" //NEW_LINE('')// &
                    &"-end" //NEW_LINE('')// &
@@ -4497,17 +4507,17 @@ PROGRAM main
                    &"Basalt2" //NEW_LINE('')// &
                    &"-start" //NEW_LINE('')// &
 
-                !    &"    10 rate0=M*250.0*(1.52e-5)*" // TRIM(exp_pyr) //"*(" //TRIM(pyr_k1)//"*(ACT('H+')^"//TRIM(pyr_n1)//")*exp(-("//TRIM(pyr_e1)//"/.008314)*((1.0/TK) - (1.0/298.0))) + "//TRIM(pyr_k2)//"*exp(-("//TRIM(pyr_e2)//"/.008314)*((1.0/TK) - (1.0/298.0))))" //NEW_LINE('')// &
+                   &"    10 rate0=M*250.0*(1.52e-5)*" // TRIM(exp_pyr) //"*(" //TRIM(pyr_k1)//"*(ACT('H+')^"//TRIM(pyr_n1)//")*exp(-("//TRIM(pyr_e1)//"/.008314)*((1.0/TK) - (1.0/298.0))) + "//TRIM(pyr_k2)//"*exp(-("//TRIM(pyr_e2)//"/.008314)*((1.0/TK) - (1.0/298.0))))" //NEW_LINE('')// &
 
-                &"    10 rate0=M*250.0*(1.52e-5)*" // TRIM(exp_pyr) //"*(" //TRIM(pyr_k1)//"*((10.0^-"//TRIM(s_ph_fix)//")^"//TRIM(pyr_n1)//")*exp(-("//TRIM(pyr_e1)//"/.008314)*((1.0/TK) - (1.0/298.0))) + "//TRIM(pyr_k2)//"*exp(-("//TRIM(pyr_e2)//"/.008314)*((1.0/TK) - (1.0/298.0))))" //NEW_LINE('')// &
+                ! &"    10 rate0=M*250.0*(1.52e-5)*" // TRIM(exp_pyr) //"*(" //TRIM(pyr_k1)//"*((10.0^-"//TRIM(s_ph_fix)//")^"//TRIM(pyr_n1)//")*exp(-("//TRIM(pyr_e1)//"/.008314)*((1.0/TK) - (1.0/298.0))) + "//TRIM(pyr_k2)//"*exp(-("//TRIM(pyr_e2)//"/.008314)*((1.0/TK) - (1.0/298.0))))" //NEW_LINE('')// &
 
                    &"    20 save rate0 * time" //NEW_LINE('')// &
                    &"-end" //NEW_LINE('')// &
 
                    &"Basalt3" //NEW_LINE('')// &
                    &"-start" //NEW_LINE('')// &
-                !    &"    10 rate0=M*270.0*(1.52e-5)*" // TRIM(exp_plag) //"*" //TRIM(plag_k1)//"*(ACT('H+')^"//TRIM(plag_n1)//")*exp(-("//TRIM(plag_e1)//"/.008314)*((1.0/TK) - (1.0/298.0)))" //NEW_LINE('')// &
-                &"    10 rate0=M*270.0*(1.52e-5)*" // TRIM(exp_plag) //"*"//TRIM(plag_k1)//"*((10.0^-"//TRIM(s_ph_fix)//")^"//TRIM(plag_n1)//")*exp(-("//TRIM(plag_e1)//"/.008314)*((1.0/TK) - (1.0/298.0)))" //NEW_LINE('')// &
+                   &"    10 rate0=M*270.0*(1.52e-5)*" // TRIM(exp_plag) //"*" //TRIM(plag_k1)//"*(ACT('H+')^"//TRIM(plag_n1)//")*exp(-("//TRIM(plag_e1)//"/.008314)*((1.0/TK) - (1.0/298.0)))" //NEW_LINE('')// &
+                ! &"    10 rate0=M*270.0*(1.52e-5)*" // TRIM(exp_plag) //"*"//TRIM(plag_k1)//"*((10.0^-"//TRIM(s_ph_fix)//")^"//TRIM(plag_n1)//")*exp(-("//TRIM(plag_e1)//"/.008314)*((1.0/TK) - (1.0/298.0)))" //NEW_LINE('')// &
                    &"    20 save rate0 * time" //NEW_LINE('')// &
                    &"-end" //NEW_LINE('')// &
 
@@ -7104,9 +7114,9 @@ FUNCTION solute_next_coarse (sol, uTransport, vTransport, phiTransport, seaw)
 
     solute_next_coarse(2,j) = sol0(2,j) - (qx*uTransport(2,j))*(sol0(2,j)-sol0(1,j))! - qx*(uTransport(2,j)/phiTransport(2,j))*sol0(2,j)*(phiTransport(2,j)-phiTransport(1,j))
 
-    ! solute_next_coarse((xn-1)/cellx,j) = sol0((xn-1)/cellx,j) - (qx*uTransport((xn-1)/cellx,j))*(sol0((xn-1)/cellx,j)-sol0((xn-1)/cellx-1,j)) - qx*(uTransport((xn-1)/cellx,j)/phiTransport((xn-1)/cellx,j))*sol0((xn-1)/cellx,j)*(phiTransport((xn-1)/cellx,j)-phiTransport((xn-1)/cellx-1,j))
+     solute_next_coarse((xn-1)/cellx,j) = sol0((xn-1)/cellx,j) - (qx*uTransport((xn-1)/cellx,j))*(sol0((xn-1)/cellx,j)-sol0((xn-1)/cellx-1,j))! - qx*(uTransport((xn-1)/cellx,j)/phiTransport((xn-1)/cellx,j))*sol0((xn-1)/cellx,j)*(phiTransport((xn-1)/cellx,j)-phiTransport((xn-1)/cellx-1,j))
 
-    solute_next_coarse((xn-1)/cellx,j) = (4.0/3.0)*sol0((xn-1)/cellx-1,j) - (1.0/3.0)*sol0((xn-1)/cellx-2,j)
+    !solute_next_coarse((xn-1)/cellx,j) = (4.0/3.0)*sol0((xn-1)/cellx-1,j) - (1.0/3.0)*sol0((xn-1)/cellx-2,j)
 
     ! solute_next_coarse((xn-1)/cellx-1,j) = sol0((xn-1)/cellx-1,j) - (qx*uTransport((xn-1)/cellx-1,j))*(sol0((xn-1)/cellx-1,j)-sol0((xn-1)/cellx-2,j)) - qx*(uTransport((xn-1)/cellx-1,j)/phiTransport((xn-1)/cellx-1,j))*sol0((xn-1)/cellx-1,j)*(phiTransport((xn-1)/cellx-1,j)-phiTransport((xn-1)/cellx-2,j))
 

@@ -94,11 +94,11 @@ MODULE initialize
   CHARACTER(len=300) :: param_o_string, param_w_string, param_w_rhs_string, param_h_string, param_o_rhs_string, param_tsw_string
   CHARACTER(len=300) :: param_dic_string, param_scope_string, param_trace_string, param_ch_string, param_f_dx_string, param_f_k_string
   CHARACTER(len=300) :: param_paq_string, param_ch_rhs_string, param_f_freq_string, param_f_por_string
-  CHARACTER(len=300) :: param_t_diff_string
+  CHARACTER(len=300) :: param_t_diff_string, param_b_g_string
   INTEGER :: in, crashstep, restart, param_trace
   REAL(4):: param_o, param_w, param_w_rhs, param_h, param_o_rhs, param_tsw, param_dic, param_scope, param_ch
   REAL(4) :: param_paq, param_ch_rhs, param_f_dx, param_f_k, param_f_freq, param_f_por
-  REAL(4) :: param_t_diff
+  REAL(4) :: param_t_diff, param_b_g
 
 
   ! TRANSPOSED
@@ -204,6 +204,7 @@ CONTAINS
     CALL getarg(20,param_f_por_string)
     CALL getarg(21,iso_path)
     CALL getarg(22,param_t_diff_string)
+    CALL getarg(23,param_b_g_string)
 
     READ (crashstring, *) crashstep
     READ (restartstring, *) restart
@@ -244,6 +245,8 @@ CONTAINS
 
     READ (param_f_por_string, *) param_f_por
     READ (param_t_diff_string, *) param_t_diff
+    READ (param_b_g_string, *) param_b_g
+    param_b_g = param_b_g / 100.0
 
 
 
@@ -347,14 +350,14 @@ CONTAINS
     primary_a(:,:,2) = 0.0   ! plag
     primary_a(:,:,3) = 0.0   ! pyr
     primary_a(:,:,4) = 0.0   ! ol
-    primary_a(:,:,5) = 0.5  ! basaltic glass
+    primary_a(:,:,5) = 1.0 - param_b_g  ! basaltic glass
 
     primary_b(:,:,:) = 0.0
     primary_b(:,:,1) = 0.0  ! feldspar
     primary_b(:,:,2) = 0.1 ! plag
     primary_b(:,:,3) = 0.1 ! pyr
     primary_b(:,:,4) = 0.95068 ! ol
-    primary_b(:,:,5) = 0.5  ! basaltic glass
+    primary_b(:,:,5) = param_b_g  ! basaltic glass
 
 
 
