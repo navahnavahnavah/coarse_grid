@@ -10,7 +10,7 @@
 # you want to run.
 #
 # set the name of the job
-#PBS -N sites_7
+#PBS -N sites_8
 #
 # set the output and error files
 #PBS -o /data/navah/cg_output/mOutG.txt
@@ -99,7 +99,7 @@ set PARAM_B_G = '50'
 
 
 
-set PARAM_PATH='/data/navah/cg_output/sites_7_u/'
+set PARAM_PATH='/data/navah/cg_output/sites_8_c/'
 #set PARAM_PATH='/data/navah/cg_output/medium_vel_sites/med_c_no_heat/'
 
 

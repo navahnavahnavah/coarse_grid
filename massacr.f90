@@ -4269,7 +4269,7 @@ PROGRAM main
               exp_ol = "0.005"
               exp_pyr = "0.005"
               exp_plag = "0.05"
-              param_exp_string = "0.0025"
+              param_exp_string = "0.00025"
 
             !   exp_ol = "0.0"
             !   exp_pyr = "0.0"
@@ -4477,10 +4477,11 @@ PROGRAM main
                    &"BGlass" //NEW_LINE('')// &
                    &"-start" //NEW_LINE('')// &
 
-                   &"		10 base0 = 1e-8" //NEW_LINE('')// &
-                   &"		20 if (ACT('Al+3') > 1e-8) then base0 = ACT('Al+3')" //NEW_LINE('')// &
+                   &"		10 base0 = 1e-14" //NEW_LINE('')// &
+                   &"		20 if (ACT('Al+3') > 1e-14) then base0 = ACT('Al+3')" //NEW_LINE('')// &
                    &"    30 rate0=M*110.0*(1.52e-5)*" // TRIM(param_exp_string) // "*(1.0e4)*(2.51189e-6)*exp(-25.5/(.008314*TK))" // &
-                   &"*(((ACT('H+')^3)/(base0))^.33333)" //NEW_LINE('')// &
+                    &"*(((ACT('H+')^3)/(base0))^.33333)" //NEW_LINE('')// &
+                !&"*(((ACT('H+')^3)/(ACT('Al+3')))^.33333)" //NEW_LINE('')// &
 
                 &"    40 save rate0 * time" //NEW_LINE('')// &
                 &"-end" //NEW_LINE('')// &
