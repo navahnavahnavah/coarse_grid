@@ -4212,9 +4212,11 @@ PROGRAM main
         WRITE(s_timestep,'(F25.10)') timestep3
 
         ! slave processor loops through each coarse cell
+        m_count = 0
         DO m=1,num_rows_to_receive
 
            IF (medLocal(m,5) .EQ. 1.0) THEN
+               m_count = m_count + 1
 
               ! if (my_id .eq. 2) then
               ! 	call system_clock(counti, count_rate, count_max)
@@ -4266,10 +4268,10 @@ PROGRAM main
               WRITE(s_glass,'(F25.10)') primary3(5)
 
               !-rate constants!
-              exp_ol = "0.05"
+              exp_ol = "0.0375"
               exp_pyr = "0.005"
               exp_plag = "0.05"
-              param_exp_string = "0.00025"
+              param_exp_string = "0.000125"
 
             !   exp_ol = "0.0"
             !   exp_pyr = "0.0"
@@ -4278,7 +4280,7 @@ PROGRAM main
 
               ! chamber b
               IF ((primary3(5) .LE. 0.0) .AND. (primary3(4) .GT. 0.0) .AND. (primary3(3) .GT. 0.0) .AND. (primary3(2) .GT. 0.0)) THEN
-                 exp_ol =  "0.05"
+                 exp_ol =  "0.0375"
                  exp_pyr = "0.005"
                  exp_plag = "0.05"
               END IF
@@ -4885,6 +4887,7 @@ PROGRAM main
 
            END IF ! end if-cell-is-on loop (medLocl 5 == 1)
 
+
            if (alt0(1,2) .GT. 1.0) then
 
                if (medium3(2) .eq. precip_th) then
@@ -4897,7 +4900,7 @@ PROGRAM main
            end if
 
         END DO ! end m = 1,num rows, ran chem for each row and populated local arrays
-
+        write(*,*) my_id, m_count
 
 
         medLocal(:,1) = 0.0

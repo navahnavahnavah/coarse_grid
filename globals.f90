@@ -57,6 +57,7 @@ MODULE globals
   !CHARACTER(len=25) :: ph_fix = "10.0^-7.5"
   REAL(4) :: ph_count
   REAL(4) :: ph_sum
+  INTEGER :: m_count
 CONTAINS
 
 
