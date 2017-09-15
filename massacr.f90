@@ -2335,6 +2335,17 @@ PROGRAM main
      CALL init()
 
 
+     do an_id = 1,num_procs - 1
+        par_rounds = active_coarse * 3 / (num_procs - 1)
+        end_loop = par_rounds
+        if (an_id .LE. mod(active_coarse*3,num_procs-1)) then
+            end_loop = end_loop + 1
+        end if
+        ! send end_loop to processor an_id
+        CALL MPI_SEND( end_loop, 1, MPI_INTEGER, an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+    end do
+
+
      !-diss_toggle
      diss_toggle = 0
 
@@ -3519,8 +3530,8 @@ PROGRAM main
         !    END DO
 
         par_rounds = active_coarse * 3 / (num_procs - 1)
-        write(*,*) "active_coarse" , active_coarse
-        write(*,*) "par_rounds" , par_rounds
+        ! write(*,*) "active_coarse" , active_coarse
+        ! write(*,*) "par_rounds" , par_rounds
 
         last_active = 0
 
@@ -3532,7 +3543,7 @@ PROGRAM main
             DO WHILE (an_id .LE. num_procs - 1)
 
                 if (medLongBitFull(start_row,5) .EQ. 1.0) then
-                    write(*,*) "sending index start_row: " , start_row , "on processor: " , an_id
+                    !write(*,*) "sending index start_row: " , start_row , "on processor: " , an_id
 
                     ! send everything on an_id
 
@@ -3635,12 +3646,14 @@ PROGRAM main
             END DO ! while an_id .LE. num_procs - 1
 
 
-            last_active = start_row
+            last_active = start_row - 1
 
         END DO ! 1, par_rounds
 
 
         IF (mod(active_coarse*3,num_procs-1) .GT. 0) THEN
+
+            write(*,*) "mod(active_coarse*3,num_procs-1)" , mod(active_coarse*3,num_procs-1)
 
             an_id = 1
             start_row = last_active + 1
@@ -3648,7 +3661,7 @@ PROGRAM main
             DO WHILE (an_id .LE. mod(active_coarse*3,num_procs-1))
 
                 if (medLongBitFull(start_row,5) .EQ. 1.0) then
-                    write(*,*) "(remainder) sending index start_row: " , start_row , "on processor: " , an_id
+                    !write(*,*) "(remainder) sending index start_row: " , start_row , "on processor: " , an_id
 
                     ! send everything on an_id
 
@@ -4312,6 +4325,10 @@ PROGRAM main
      !#ADVECTION: slave receives message
      CALL init_mini()
 
+     ! receive timestep size
+     CALL MPI_RECV ( end_loop, 1 , MPI_INTEGER, root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+     write(*,*) "my_id: " , my_id , "end loop is: " , end_loop
+
      leng = (yn/(2*celly))*((xn-1)/cellx)
      ! message receiving has to happen every mth step
 
@@ -4400,7 +4417,7 @@ PROGRAM main
      !kinetics = " "
 
 
-     DO jj = 1, tn/mstep
+     DO jj = 1, end_loop*tn/mstep
 
         ! IF (my_id .LE. 22) THEN
         !
@@ -5236,7 +5253,7 @@ PROGRAM main
         !#GEOCHEM: slave sends to master
 
         ! send primary array chunk back to root process
-        !write(*,*) "BEGIN sending to master from" , my_id
+        write(*,*) "BEGIN sending to master from" , my_id
         DO ii = 1,g_pri
            CALL MPI_SEND( priLocal(1,ii), 1, MPI_REAL4, root_process, &
                 return_data_tag, MPI_COMM_WORLD, ierr)

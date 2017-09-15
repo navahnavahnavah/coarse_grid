@@ -59,7 +59,7 @@ MODULE globals
   REAL(4) :: ph_sum
   INTEGER :: m_count
   INTEGER :: par_rounds, par_round, par_current, last_active
-  INTEGER :: active_coarse
+  INTEGER :: active_coarse, end_loop
 CONTAINS
 
 
