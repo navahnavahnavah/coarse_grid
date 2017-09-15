@@ -17,7 +17,7 @@ MODULE globals
   INTEGER :: cstep_num
   REAL(4) :: u_1d
   REAL(4) :: x_min = 0.0, x_max = 90000.0, y_min = -1250.0, y_max = 25.0 !y_min = -1650.0, y_max = 25.0
-  REAL(4) :: t_min = 0.0, t_max = 1.02e14!23.55e13 !9.42e13 !
+  REAL(4) :: t_min = 0.0, t_max = 1.02e13!23.55e13 !9.42e13 !
   REAL(4) :: ki = .76, ra = 100.0, viscosity = .001, cp = 1173.0, alpha =4.0e-4, k, calc0, psi_round, psi_round2 !alpha =4.0e-5 !cp = 1175.0
   INTEGER :: thresh=0, theta0
   REAL(4) :: in_left1, in_left2, in_right1, in_right2, in_left3, in_right3, max_left, max_right, fac_left, fac_right

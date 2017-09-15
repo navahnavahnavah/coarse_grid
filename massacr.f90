@@ -253,7 +253,7 @@ PROGRAM main
   INTEGER :: ncid
   INTEGER :: x_dimid, y_dimid, t_dimid, h_dimid, u_dimid, v_dimid
   INTEGER :: x_varid, y_varid, t_varid, h_varid, u_varid, v_varid
-  INTEGER :: i, j, ii, m, n, jj
+  INTEGER :: i, j, ii, m, n, jj, jjj
   REAL(4) :: yep
 
   ! benchmark stuff
@@ -2769,6 +2769,7 @@ PROGRAM main
 
 
            hLong = (/ RESHAPE(TRANSPOSE(h_coarse), (/ leng /)), RESHAPE(TRANSPOSE(h_coarse), (/ leng /)), RESHAPE(TRANSPOSE(h_coarse), (/ leng /)) /) ! for cell = 1
+        !hLong = (/ RESHAPE(h_coarse, (/ leng /)), RESHAPE(h_coarse, (/ leng /)), RESHAPE(h_coarse, (/ leng /)) /)
 
            ! 			psi_coarse(2,:) = psi_coarse(1,:)
            psi_coarse((xn-1)/cellx,:) = 0.0
@@ -2822,39 +2823,39 @@ PROGRAM main
            ! stretch everything out
            !hLong = reshape(h(1:xn-1:cell,1:yn-1:cell), (/(xn/cell)*(yn/cell)/)) ! for cell > 1
            DO i = 1,g_pri
-            !   priLongBitFull(:leng,i) = RESHAPE(TRANSPOSE(primary(:,:,i)), (/ leng /))
-            !   priLongBitFull(leng+1:2*leng,i) = RESHAPE(TRANSPOSE(primary_a(:,:,i)), (/ leng /))
-            !   priLongBitFull(2*leng+1:,i) = RESHAPE(TRANSPOSE(primary_b(:,:,i)), (/ leng /))
-              priLongBitFull(:leng,i) = RESHAPE(primary(:,:,i), (/ leng /))
-              priLongBitFull(leng+1:2*leng,i) = RESHAPE(primary_a(:,:,i), (/ leng /))
-              priLongBitFull(2*leng+1:,i) = RESHAPE(primary_b(:,:,i), (/ leng /))
+              priLongBitFull(:leng,i) = RESHAPE(TRANSPOSE(primary(:,:,i)), (/ leng /))
+              priLongBitFull(leng+1:2*leng,i) = RESHAPE(TRANSPOSE(primary_a(:,:,i)), (/ leng /))
+              priLongBitFull(2*leng+1:,i) = RESHAPE(TRANSPOSE(primary_b(:,:,i)), (/ leng /))
+            !   priLongBitFull(:leng,i) = RESHAPE(primary(:,:,i), (/ leng /))
+            !   priLongBitFull(leng+1:2*leng,i) = RESHAPE(primary_a(:,:,i), (/ leng /))
+            !   priLongBitFull(2*leng+1:,i) = RESHAPE(primary_b(:,:,i), (/ leng /))
            END DO
 
            DO i = 1,g_sec/2
-            !   secLongBitFull(:leng,i) = RESHAPE(TRANSPOSE(secondary(:,:,i)), (/ leng /))
-            !   secLongBitFull(leng+1:2*leng,i) = RESHAPE(TRANSPOSE(secondary_a(:,:,i)), (/ leng /))
-            !   secLongBitFull(2*leng+1:,i) = RESHAPE(TRANSPOSE(secondary_b(:,:,i)), (/ leng /))
-            secLongBitFull(:leng,i) = RESHAPE(secondary(:,:,i), (/ leng /))
-            secLongBitFull(leng+1:2*leng,i) = RESHAPE(secondary_a(:,:,i), (/ leng /))
-            secLongBitFull(2*leng+1:,i) = RESHAPE(secondary_b(:,:,i), (/ leng /))
+              secLongBitFull(:leng,i) = RESHAPE(TRANSPOSE(secondary(:,:,i)), (/ leng /))
+              secLongBitFull(leng+1:2*leng,i) = RESHAPE(TRANSPOSE(secondary_a(:,:,i)), (/ leng /))
+              secLongBitFull(2*leng+1:,i) = RESHAPE(TRANSPOSE(secondary_b(:,:,i)), (/ leng /))
+            ! secLongBitFull(:leng,i) = RESHAPE(secondary(:,:,i), (/ leng /))
+            ! secLongBitFull(leng+1:2*leng,i) = RESHAPE(secondary_a(:,:,i), (/ leng /))
+            ! secLongBitFull(2*leng+1:,i) = RESHAPE(secondary_b(:,:,i), (/ leng /))
            END DO
 
            DO i = 1,g_sol
-            !   solLongBitFull(:leng,i) = RESHAPE(TRANSPOSE(solute(:,:,i)), (/ leng /))
-            !   solLongBitFull(leng+1:2*leng,i) = RESHAPE(TRANSPOSE(solute_a(:,:,i)), (/ leng /))
-            !   solLongBitFull(2*leng+1:,i) = RESHAPE(TRANSPOSE(solute_b(:,:,i)), (/ leng /))
-            solLongBitFull(:leng,i) = RESHAPE(solute(:,:,i), (/ leng /))
-            solLongBitFull(leng+1:2*leng,i) = RESHAPE(solute_a(:,:,i), (/ leng /))
-            solLongBitFull(2*leng+1:,i) = RESHAPE(solute_b(:,:,i), (/ leng /))
+              solLongBitFull(:leng,i) = RESHAPE(TRANSPOSE(solute(:,:,i)), (/ leng /))
+              solLongBitFull(leng+1:2*leng,i) = RESHAPE(TRANSPOSE(solute_a(:,:,i)), (/ leng /))
+              solLongBitFull(2*leng+1:,i) = RESHAPE(TRANSPOSE(solute_b(:,:,i)), (/ leng /))
+            ! solLongBitFull(:leng,i) = RESHAPE(solute(:,:,i), (/ leng /))
+            ! solLongBitFull(leng+1:2*leng,i) = RESHAPE(solute_a(:,:,i), (/ leng /))
+            ! solLongBitFull(2*leng+1:,i) = RESHAPE(solute_b(:,:,i), (/ leng /))
            END DO
 
            DO i = 1,g_med
-            !   medLongBitFull(:leng,i) = RESHAPE(TRANSPOSE(medium(:,:,i)), (/ leng /))
-            !   medLongBitFull(leng+1:2*leng,i) = RESHAPE(TRANSPOSE(medium_a(:,:,i)), (/ leng /))
-            !   medLongBitFull(2*leng+1:,i) = RESHAPE(TRANSPOSE(medium_b(:,:,i)), (/ leng /))
-            medLongBitFull(:leng,i) = RESHAPE(medium(:,:,i), (/ leng /))
-            medLongBitFull(leng+1:2*leng,i) = RESHAPE(medium_a(:,:,i), (/ leng /))
-            medLongBitFull(2*leng+1:,i) = RESHAPE(medium_b(:,:,i), (/ leng /))
+              medLongBitFull(:leng,i) = RESHAPE(TRANSPOSE(medium(:,:,i)), (/ leng /))
+              medLongBitFull(leng+1:2*leng,i) = RESHAPE(TRANSPOSE(medium_a(:,:,i)), (/ leng /))
+              medLongBitFull(2*leng+1:,i) = RESHAPE(TRANSPOSE(medium_b(:,:,i)), (/ leng /))
+            ! medLongBitFull(:leng,i) = RESHAPE(medium(:,:,i), (/ leng /))
+            ! medLongBitFull(leng+1:2*leng,i) = RESHAPE(medium_a(:,:,i), (/ leng /))
+            ! medLongBitFull(2*leng+1:,i) = RESHAPE(medium_b(:,:,i), (/ leng /))
            END DO
 
 
@@ -2967,6 +2968,9 @@ PROGRAM main
 
            WRITE(*,*) "done with phi_coarse_long (a)"
 
+           call system_clock(counti, count_rate, count_max)
+           write(*,*) "about to send advection..."
+
            DO an_id = 1, 11
 
               !IF (an_id .LE. 11) THEN
@@ -2981,56 +2985,56 @@ PROGRAM main
                  sol_coarse_long = solLongBitFull(:leng,sol_index(an_id))
                  phi_coarse_long = phiLongBitFull(:leng)
 
-               ! reshape them all
+            !    ! reshape them all
             !    sol_coarse_local = TRANSPOSE(RESHAPE(sol_coarse_long,(/yn/(2*celly),(xn-1)/cellx/)))
             !    u_coarse_local = RESHAPE(u_coarse_long,(/(xn-1)/cellx,yn/(2*celly)/))
             !    v_coarse_local = RESHAPE(v_coarse_long,(/(xn-1)/cellx,yn/(2*celly)/))
             !    phi_coarse_local = TRANSPOSE(RESHAPE(phi_coarse_long,(/yn/(2*celly),(xn-1)/cellx/)))
-            sol_coarse_local = RESHAPE(sol_coarse_long,(/(xn-1)/cellx,yn/(2*celly)/))
-            u_coarse_local = RESHAPE(u_coarse_long,(/(xn-1)/cellx,yn/(2*celly)/))
-            v_coarse_local = RESHAPE(v_coarse_long,(/(xn-1)/cellx,yn/(2*celly)/))
-            phi_coarse_local = RESHAPE(phi_coarse_long,(/(xn-1)/cellx,yn/(2*celly)/))
+            ! ! sol_coarse_local = RESHAPE(sol_coarse_long,(/(xn-1)/cellx,yn/(2*celly)/))
+            ! ! u_coarse_local = RESHAPE(u_coarse_long,(/(xn-1)/cellx,yn/(2*celly)/))
+            ! ! v_coarse_local = RESHAPE(v_coarse_long,(/(xn-1)/cellx,yn/(2*celly)/))
+            ! ! phi_coarse_local = RESHAPE(phi_coarse_long,(/(xn-1)/cellx,yn/(2*celly)/))
 
-               DO ii = 1,cstep
-                 sol_coarse_local = solute_next_coarse(sol_coarse_local,u_coarse_local,v_coarse_local,phi_coarse_local,sea(sol_index(an_id)))
-              END DO
-
-              !sol_coarse_long_local = RESHAPE(TRANSPOSE(sol_coarse_local),(/((xn-1)/cellx)*(yn/(2*celly))/))
-              sol_coarse_long_local = RESHAPE(sol_coarse_local,(/((xn-1)/cellx)*(yn/(2*celly))/))
-
-              IF (an_id .LE. 11) THEN
-                 solLongBitFull(:leng,sol_index(an_id)) = sol_coarse_long_local
-              END IF
+            !    DO ii = 1,cstep
+            !      sol_coarse_local = solute_next_coarse(sol_coarse_local,u_coarse_local,v_coarse_local,phi_coarse_local,sea(sol_index(an_id)))
+            !   END DO
+              !
+            !   sol_coarse_long_local = RESHAPE(TRANSPOSE(sol_coarse_local),(/((xn-1)/cellx)*(yn/(2*celly))/))
+            !   !sol_coarse_long_local = RESHAPE(sol_coarse_local,(/((xn-1)/cellx)*(yn/(2*celly))/))
+              !
+            !   IF (an_id .LE. 11) THEN
+            !      solLongBitFull(:leng,sol_index(an_id)) = sol_coarse_long_local
+            !   END IF
 
 
 
 
                  !#ADVECTION: send from master to slaves (s)
 
-                !  ! send an_id name
-                !  CALL MPI_SEND( an_id, 1, MPI_INTEGER, &
-                !       an_id, send_data_tag, MPI_COMM_WORLD, ierr)
-                 !
-                !  ! send long sol coarse
-                !  CALL MPI_SEND( sol_coarse_long, leng, MPI_REAL4, &
-                !       an_id, send_data_tag, MPI_COMM_WORLD, ierr)
-                 !
-                !  ! send long u coarse
-                !  CALL MPI_SEND( u_coarse_long, leng, MPI_REAL4, &
-                !       an_id, send_data_tag, MPI_COMM_WORLD, ierr)
-                 !
-                !  ! send long v coarse
-                !  CALL MPI_SEND( v_coarse_long, leng, MPI_REAL4, &
-                !       an_id, send_data_tag, MPI_COMM_WORLD, ierr)
-                 !
-                !  ! send long phi coarse
-                !  CALL MPI_SEND( phi_coarse_long, leng, MPI_REAL4, &
-                !       an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+                 ! send an_id name
+                 CALL MPI_SEND( an_id, 1, MPI_INTEGER, &
+                      an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+
+                 ! send long sol coarse
+                 CALL MPI_SEND( sol_coarse_long, leng, MPI_REAL4, &
+                      an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+
+                 ! send long u coarse
+                 CALL MPI_SEND( u_coarse_long, leng, MPI_REAL4, &
+                      an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+
+                 ! send long v coarse
+                 CALL MPI_SEND( v_coarse_long, leng, MPI_REAL4, &
+                      an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+
+                 ! send long phi coarse
+                 CALL MPI_SEND( phi_coarse_long, leng, MPI_REAL4, &
+                      an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 
 
               !END IF
 
-            !   write(*,*) "sent to first set" , an_id
+               write(*,*) "sent to first set" , an_id
 
             END DO
 
@@ -3050,57 +3054,57 @@ PROGRAM main
                  phi_coarse_long = phiLongBitFull(leng+1:2*leng)
 
 
-                 ! reshape them all
+                !  ! reshape them all
                 !  sol_coarse_local = TRANSPOSE(RESHAPE(sol_coarse_long,(/yn/(2*celly),(xn-1)/cellx/)))
                 !  u_coarse_local = RESHAPE(u_coarse_long,(/(xn-1)/cellx,yn/(2*celly)/))
                 !  v_coarse_local = RESHAPE(v_coarse_long,(/(xn-1)/cellx,yn/(2*celly)/))
                 !  phi_coarse_local = TRANSPOSE(RESHAPE(phi_coarse_long,(/yn/(2*celly),(xn-1)/cellx/)))
-                sol_coarse_local = RESHAPE(sol_coarse_long,(/(xn-1)/cellx,yn/(2*celly)/))
-                u_coarse_local = RESHAPE(u_coarse_long,(/(xn-1)/cellx,yn/(2*celly)/))
-                v_coarse_local = RESHAPE(v_coarse_long,(/(xn-1)/cellx,yn/(2*celly)/))
-                phi_coarse_local = RESHAPE(phi_coarse_long,(/(xn-1)/cellx,yn/(2*celly)/))
+                ! ! sol_coarse_local = RESHAPE(sol_coarse_long,(/(xn-1)/cellx,yn/(2*celly)/))
+                ! ! u_coarse_local = RESHAPE(u_coarse_long,(/(xn-1)/cellx,yn/(2*celly)/))
+                ! ! v_coarse_local = RESHAPE(v_coarse_long,(/(xn-1)/cellx,yn/(2*celly)/))
+                ! ! phi_coarse_local = RESHAPE(phi_coarse_long,(/(xn-1)/cellx,yn/(2*celly)/))
 
 
-                 DO ii = 1,cstep
-                 sol_coarse_local = solute_next_coarse(sol_coarse_local,u_coarse_local,v_coarse_local,phi_coarse_local,sea(sol_index(an_id-11)))
-             END DO
-
-            !  sol_coarse_long_local = RESHAPE(TRANSPOSE(sol_coarse_local),(/((xn-1)/cellx)*(yn/(2*celly))/))
-            sol_coarse_long_local = RESHAPE(sol_coarse_local,(/((xn-1)/cellx)*(yn/(2*celly))/))
-
-
-              IF (an_id .GT. 11) THEN
-                 solLongBitFull(leng+1:2*leng,sol_index(an_id-11)) = sol_coarse_long_local
-              END IF
+            !      DO ii = 1,cstep
+            !      sol_coarse_local = solute_next_coarse(sol_coarse_local,u_coarse_local,v_coarse_local,phi_coarse_local,sea(sol_index(an_id-11)))
+            !  END DO
+            !
+            !   sol_coarse_long_local = RESHAPE(TRANSPOSE(sol_coarse_local),(/((xn-1)/cellx)*(yn/(2*celly))/))
+            ! !sol_coarse_long_local = RESHAPE(sol_coarse_local,(/((xn-1)/cellx)*(yn/(2*celly))/))
+            !
+            !
+            !   IF (an_id .GT. 11) THEN
+            !      solLongBitFull(leng+1:2*leng,sol_index(an_id-11)) = sol_coarse_long_local
+            !   END IF
 
 
 
                 !  !#ADVECTION: send from master to slaves (a)
                  !
-                !  ! send an_id name
-                !  CALL MPI_SEND( an_id, 1, MPI_INTEGER, &
-                !       an_id, send_data_tag, MPI_COMM_WORLD, ierr)
-                 !
-                !  ! send long sol coarse
-                !  CALL MPI_SEND( sol_coarse_long, leng, MPI_REAL4, &
-                !       an_id, send_data_tag, MPI_COMM_WORLD, ierr)
-                 !
-                !  ! send long u coarse
-                !  CALL MPI_SEND( u_coarse_long, leng, MPI_REAL4, &
-                !       an_id, send_data_tag, MPI_COMM_WORLD, ierr)
-                 !
-                !  ! send long v coarse
-                !  CALL MPI_SEND( v_coarse_long, leng, MPI_REAL4, &
-                !       an_id, send_data_tag, MPI_COMM_WORLD, ierr)
-                 !
-                !  ! send long phi coarse
-                !  CALL MPI_SEND( phi_coarse_long, leng, MPI_REAL4, &
-                !       an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+                 ! send an_id name
+                 CALL MPI_SEND( an_id, 1, MPI_INTEGER, &
+                      an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+
+                 ! send long sol coarse
+                 CALL MPI_SEND( sol_coarse_long, leng, MPI_REAL4, &
+                      an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+
+                 ! send long u coarse
+                 CALL MPI_SEND( u_coarse_long, leng, MPI_REAL4, &
+                      an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+
+                 ! send long v coarse
+                 CALL MPI_SEND( v_coarse_long, leng, MPI_REAL4, &
+                      an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+
+                 ! send long phi coarse
+                 CALL MPI_SEND( phi_coarse_long, leng, MPI_REAL4, &
+                      an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 
 
               !END IF
 
-            !   write(*,*) "sent to second set" , an_id
+               write(*,*) "sent to second set" , an_id
 
               !write(*,*) "DONE SENDING SOLUTE TO PROCESSOR", an_id
 
@@ -3111,20 +3115,23 @@ PROGRAM main
            ! call system_clock(counti, count_rate, count_max)
            !write(*,*) "BEGIN RECEIVING ADVECTED SOLUTES"
 
-        !    DO an_id = 1, 22
-           !
-        !       CALL MPI_RECV( sol_coarse_long, leng, MPI_REAL4, &
-        !            an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
-           !
-        !     !   IF (an_id .LE. 11) THEN
-        !     !      solLongBitFull(:leng,sol_index(an_id)) = sol_coarse_long
-        !     !   END IF
-           !
-        !     !   IF (an_id .GT. 11) THEN
-        !     !      solLongBitFull(leng+1:2*leng,sol_index(an_id-11)) = sol_coarse_long
-        !     !   END IF
-           !
-        !    END DO
+           DO an_id = 1, 22
+
+              CALL MPI_RECV( sol_coarse_long, leng, MPI_REAL4, &
+                   an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+
+              IF (an_id .LE. 11) THEN
+                 solLongBitFull(:leng,sol_index(an_id)) = sol_coarse_long
+              END IF
+
+              IF (an_id .GT. 11) THEN
+                 solLongBitFull(leng+1:2*leng,sol_index(an_id-11)) = sol_coarse_long
+              END IF
+
+           END DO
+
+           call system_clock(countf, count_rate, count_max)
+           write(*,*) "...advection done" , countf - counti
 
            !write(*,*) "END RECEIVING ADVECTED SOLUTES"
 
@@ -3208,53 +3215,53 @@ PROGRAM main
                WRITE(*,*) "moving cells now..."
 
                  DO i = 1,g_pri
-                    ! bit_thing_t1 = TRANSPOSE(RESHAPE(priLongBitFull(1:leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
-                    ! bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                    ! priLongBitFull(:leng,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
-                    !
-                    ! bit_thing_t1 = TRANSPOSE(RESHAPE(priLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
-                    ! bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                    ! priLongBitFull(leng+1:2*leng,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
-                    !
-                    ! bit_thing_t1 = TRANSPOSE(RESHAPE(priLongBitFull(2*leng+1:,i),(/yn/(2*celly), (xn-1)/cellx/)))
-                    ! bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                    ! priLongBitFull(2*leng+1:,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
-                    bit_thing_t1 = RESHAPE(priLongBitFull(1:leng,i),(/(xn-1)/cellx,yn/(2*celly)/))
+                    bit_thing_t1 = TRANSPOSE(RESHAPE(priLongBitFull(1:leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
                     bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                    priLongBitFull(:leng,i) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
+                    priLongBitFull(:leng,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
 
-                    bit_thing_t1 = RESHAPE(priLongBitFull(leng+1:2*leng,i),(/(xn-1)/cellx,yn/(2*celly)/))
+                    bit_thing_t1 = TRANSPOSE(RESHAPE(priLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
                     bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                    priLongBitFull(leng+1:2*leng,i) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
+                    priLongBitFull(leng+1:2*leng,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
 
-                    bit_thing_t1 = RESHAPE(priLongBitFull(2*leng+1:,i),(/(xn-1)/cellx,yn/(2*celly)/))
+                    bit_thing_t1 = TRANSPOSE(RESHAPE(priLongBitFull(2*leng+1:,i),(/yn/(2*celly), (xn-1)/cellx/)))
                     bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                    priLongBitFull(2*leng+1:,i) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
+                    priLongBitFull(2*leng+1:,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
+                    ! bit_thing_t1 = RESHAPE(priLongBitFull(1:leng,i),(/(xn-1)/cellx,yn/(2*celly)/))
+                    ! bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                    ! priLongBitFull(:leng,i) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
+                    !
+                    ! bit_thing_t1 = RESHAPE(priLongBitFull(leng+1:2*leng,i),(/(xn-1)/cellx,yn/(2*celly)/))
+                    ! bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                    ! priLongBitFull(leng+1:2*leng,i) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
+                    !
+                    ! bit_thing_t1 = RESHAPE(priLongBitFull(2*leng+1:,i),(/(xn-1)/cellx,yn/(2*celly)/))
+                    ! bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                    ! priLongBitFull(2*leng+1:,i) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
                  END DO
 
                  DO i = 1,g_sec
-                    ! bit_thing_t1 = TRANSPOSE(RESHAPE(secLongBitFull(1:leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
-                    ! bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                    ! secLongBitFull(:leng,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
-                    !
-                    ! bit_thing_t1 = TRANSPOSE(RESHAPE(secLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
-                    ! bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                    ! secLongBitFull(leng+1:2*leng,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
-                    !
-                    ! bit_thing_t1 = TRANSPOSE(RESHAPE(secLongBitFull(2*leng+1:,i),(/yn/(2*celly), (xn-1)/cellx/)))
-                    ! bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                    ! secLongBitFull(2*leng+1:,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
-                    bit_thing_t1 = RESHAPE(secLongBitFull(1:leng,i),(/(xn-1)/cellx,yn/(2*celly)/))
+                    bit_thing_t1 = TRANSPOSE(RESHAPE(secLongBitFull(1:leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
                     bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                    secLongBitFull(:leng,i) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
+                    secLongBitFull(:leng,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
 
-                    bit_thing_t1 = RESHAPE(secLongBitFull(leng+1:2*leng,i),(/(xn-1)/cellx,yn/(2*celly)/))
+                    bit_thing_t1 = TRANSPOSE(RESHAPE(secLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
                     bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                    secLongBitFull(leng+1:2*leng,i) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
+                    secLongBitFull(leng+1:2*leng,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
 
-                    bit_thing_t1 = RESHAPE(secLongBitFull(2*leng+1:,i),(/(xn-1)/cellx,yn/(2*celly)/))
+                    bit_thing_t1 = TRANSPOSE(RESHAPE(secLongBitFull(2*leng+1:,i),(/yn/(2*celly), (xn-1)/cellx/)))
                     bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                    secLongBitFull(2*leng+1:,i) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
+                    secLongBitFull(2*leng+1:,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
+                    ! bit_thing_t1 = RESHAPE(secLongBitFull(1:leng,i),(/(xn-1)/cellx,yn/(2*celly)/))
+                    ! bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                    ! secLongBitFull(:leng,i) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
+                    !
+                    ! bit_thing_t1 = RESHAPE(secLongBitFull(leng+1:2*leng,i),(/(xn-1)/cellx,yn/(2*celly)/))
+                    ! bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                    ! secLongBitFull(leng+1:2*leng,i) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
+                    !
+                    ! bit_thing_t1 = RESHAPE(secLongBitFull(2*leng+1:,i),(/(xn-1)/cellx,yn/(2*celly)/))
+                    ! bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                    ! secLongBitFull(2*leng+1:,i) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
                  END DO
 
                 !  bit_thing_t1 = TRANSPOSE(RESHAPE(medLongBitFull(1:leng,5),(/yn/(2*celly), (xn-1)/cellx/)))
@@ -3270,53 +3277,53 @@ PROGRAM main
                 !  medLongBitFull(2*leng+1:,5) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
 
                  DO i = 1,g_sol
-                    ! bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(1:leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
-                    ! bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                    ! solLongBitFull(:leng,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
-                    !
-                    ! bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
-                    ! bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                    ! solLongBitFull(leng+1:2*leng,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
-                    !
-                    ! bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(2*leng+1:,i),(/yn/(2*celly), (xn-1)/cellx/)))
-                    ! bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                    ! solLongBitFull(2*leng+1:,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
-                    bit_thing_t1 = RESHAPE(solLongBitFull(1:leng,i),(/(xn-1)/cellx,yn/(2*celly)/))
+                    bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(1:leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
                     bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                    solLongBitFull(:leng,i) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
+                    solLongBitFull(:leng,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
 
-                    bit_thing_t1 = RESHAPE(solLongBitFull(leng+1:2*leng,i),(/(xn-1)/cellx,yn/(2*celly)/))
+                    bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
                     bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                    solLongBitFull(leng+1:2*leng,i) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
+                    solLongBitFull(leng+1:2*leng,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
 
-                    bit_thing_t1 = RESHAPE(solLongBitFull(2*leng+1:,i),(/(xn-1)/cellx,yn/(2*celly)/))
+                    bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(2*leng+1:,i),(/yn/(2*celly), (xn-1)/cellx/)))
                     bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                    solLongBitFull(2*leng+1:,i) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
+                    solLongBitFull(2*leng+1:,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
+                    ! bit_thing_t1 = RESHAPE(solLongBitFull(1:leng,i),(/(xn-1)/cellx,yn/(2*celly)/))
+                    ! bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                    ! solLongBitFull(:leng,i) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
+                    !
+                    ! bit_thing_t1 = RESHAPE(solLongBitFull(leng+1:2*leng,i),(/(xn-1)/cellx,yn/(2*celly)/))
+                    ! bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                    ! solLongBitFull(leng+1:2*leng,i) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
+                    !
+                    ! bit_thing_t1 = RESHAPE(solLongBitFull(2*leng+1:,i),(/(xn-1)/cellx,yn/(2*celly)/))
+                    ! bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                    ! solLongBitFull(2*leng+1:,i) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
                  END DO
 
 
-                !  bit_thing_t1 = TRANSPOSE(RESHAPE(medLongBitFull(1:leng,2),(/yn/(2*celly), (xn-1)/cellx/)))
-                !  bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                !  medLongBitFull(:leng,2) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
-                 !
-                !  bit_thing_t1 = TRANSPOSE(RESHAPE(medLongBitFull(leng+1:2*leng,2),(/yn/(2*celly), (xn-1)/cellx/)))
-                !  bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                !  medLongBitFull(leng+1:2*leng,2) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
-                 !
-                !  bit_thing_t1 = TRANSPOSE(RESHAPE(medLongBitFull(2*leng+1:,2),(/yn/(2*celly), (xn-1)/cellx/)))
-                !  bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                !  medLongBitFull(2*leng+1:,2) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
-                bit_thing_t1 = RESHAPE(medLongBitFull(1:leng,2),(/(xn-1)/cellx,yn/(2*celly)/))
-                bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                medLongBitFull(:leng,2) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
+                 bit_thing_t1 = TRANSPOSE(RESHAPE(medLongBitFull(1:leng,2),(/yn/(2*celly), (xn-1)/cellx/)))
+                 bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                 medLongBitFull(:leng,2) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
 
-                bit_thing_t1 = RESHAPE(medLongBitFull(leng+1:2*leng,2),(/(xn-1)/cellx,yn/(2*celly)/))
-                bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                medLongBitFull(leng+1:2*leng,2) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
+                 bit_thing_t1 = TRANSPOSE(RESHAPE(medLongBitFull(leng+1:2*leng,2),(/yn/(2*celly), (xn-1)/cellx/)))
+                 bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                 medLongBitFull(leng+1:2*leng,2) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
 
-                bit_thing_t1 = RESHAPE(medLongBitFull(2*leng+1:,2),(/(xn-1)/cellx,yn/(2*celly)/))
-                bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                medLongBitFull(2*leng+1:,2) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
+                 bit_thing_t1 = TRANSPOSE(RESHAPE(medLongBitFull(2*leng+1:,2),(/yn/(2*celly), (xn-1)/cellx/)))
+                 bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                 medLongBitFull(2*leng+1:,2) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
+                ! bit_thing_t1 = RESHAPE(medLongBitFull(1:leng,2),(/(xn-1)/cellx,yn/(2*celly)/))
+                ! bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                ! medLongBitFull(:leng,2) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
+                !
+                ! bit_thing_t1 = RESHAPE(medLongBitFull(leng+1:2*leng,2),(/(xn-1)/cellx,yn/(2*celly)/))
+                ! bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                ! medLongBitFull(leng+1:2*leng,2) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
+                !
+                ! bit_thing_t1 = RESHAPE(medLongBitFull(2*leng+1:,2),(/(xn-1)/cellx,yn/(2*celly)/))
+                ! bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                ! medLongBitFull(2*leng+1:,2) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
 
 
 
@@ -3459,12 +3466,12 @@ PROGRAM main
         ! END DO
 
 
-        ! ph_fix_LongBitFull(:leng) = RESHAPE(TRANSPOSE(ph_fix(:,:)), (/ leng /))
-        ! ph_fix_LongBitFull(leng+1:2*leng) = RESHAPE(TRANSPOSE(ph_fix_a(:,:)), (/ leng /))
-        ! ph_fix_LongBitFull(2*leng+1:) = RESHAPE(TRANSPOSE(ph_fix_b(:,:)), (/ leng /))
-        ph_fix_LongBitFull(:leng) = RESHAPE(ph_fix(:,:), (/ leng /))
-        ph_fix_LongBitFull(leng+1:2*leng) = RESHAPE(ph_fix_a(:,:), (/ leng /))
-        ph_fix_LongBitFull(2*leng+1:) = RESHAPE(ph_fix_b(:,:), (/ leng /))
+        ph_fix_LongBitFull(:leng) = RESHAPE(TRANSPOSE(ph_fix(:,:)), (/ leng /))
+        ph_fix_LongBitFull(leng+1:2*leng) = RESHAPE(TRANSPOSE(ph_fix_a(:,:)), (/ leng /))
+        ph_fix_LongBitFull(2*leng+1:) = RESHAPE(TRANSPOSE(ph_fix_b(:,:)), (/ leng /))
+        ! ph_fix_LongBitFull(:leng) = RESHAPE(ph_fix(:,:), (/ leng /))
+        ! ph_fix_LongBitFull(leng+1:2*leng) = RESHAPE(ph_fix_a(:,:), (/ leng /))
+        ! ph_fix_LongBitFull(2*leng+1:) = RESHAPE(ph_fix_b(:,:), (/ leng /))
 
 
 
@@ -3612,6 +3619,9 @@ PROGRAM main
             DO WHILE (an_id .LE. num_procs - 1)
 
                 if (medLongBitFull(start_row,5) .EQ. 1.0) then
+
+                    call system_clock(counti, count_rate, count_max)
+
                     !write(*,*) "sending index start_row: " , start_row , "on processor: " , an_id
 
                     ! send everything on an_id
@@ -3645,6 +3655,9 @@ PROGRAM main
                        CALL MPI_SEND( medLongBitFull(start_row,ii), 1, MPI_REAL4, an_id, send_data_tag, MPI_COMM_WORLD, ierr)
                     END DO
 
+                    call system_clock(countf, count_rate, count_max)
+                    write(*,*) "send time to" , an_id , countf - counti
+
 
                     an_id = an_id + 1
 
@@ -3665,6 +3678,8 @@ PROGRAM main
 
                 if (medLongBitFull(start_row,5) .EQ. 1.0) then
                     !write(*,*) "receiving index start_row: " , start_row , "from processor: " , an_id
+
+                    call system_clock(counti, count_rate, count_max)
 
                     ! receive primary chunk
                     DO ii = 1,g_pri
@@ -3705,6 +3720,9 @@ PROGRAM main
                        ! fill it
                        medLongBitFull(start_row,ii) = medLocal(1,ii)
                     END DO
+
+                    call system_clock(countf, count_rate, count_max)
+                    write(*,*) "receive time from" , an_id , countf - counti
 
                     an_id = an_id + 1
 
@@ -3982,114 +4000,114 @@ PROGRAM main
               !leng = (yn/(2*celly))*((xn-1)/cellx)
 
               DO i = 1,g_pri
-                !  bit_thing_t1 = TRANSPOSE(RESHAPE(priLongBitFull(1:leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
-                !  primary(:,:,i) = bit_thing_t1
-                 !
-                !  bit_thing_t1 = TRANSPOSE(RESHAPE(priLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
-                !  primary_a(:,:,i) = bit_thing_t1
-                 !
-                !  bit_thing_t1 = TRANSPOSE(RESHAPE(priLongBitFull(2*leng+1:,i),(/yn/(2*celly), (xn-1)/cellx/)))
-                !  primary_b(:,:,i) = bit_thing_t1
-                bit_thing_t1 = RESHAPE(priLongBitFull(1:leng,i),(/(xn-1)/cellx,yn/(2*celly)/))
-                primary(:,:,i) = bit_thing_t1
+                 bit_thing_t1 = TRANSPOSE(RESHAPE(priLongBitFull(1:leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
+                 primary(:,:,i) = bit_thing_t1
 
-                bit_thing_t1 = RESHAPE(priLongBitFull(leng+1:2*leng,i),(/(xn-1)/cellx,yn/(2*celly)/))
-                primary_a(:,:,i) = bit_thing_t1
+                 bit_thing_t1 = TRANSPOSE(RESHAPE(priLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
+                 primary_a(:,:,i) = bit_thing_t1
 
-                bit_thing_t1 = RESHAPE(priLongBitFull(2*leng+1:,i),(/(xn-1)/cellx,yn/(2*celly)/))
-                primary_b(:,:,i) = bit_thing_t1
+                 bit_thing_t1 = TRANSPOSE(RESHAPE(priLongBitFull(2*leng+1:,i),(/yn/(2*celly), (xn-1)/cellx/)))
+                 primary_b(:,:,i) = bit_thing_t1
+                ! bit_thing_t1 = RESHAPE(priLongBitFull(1:leng,i),(/(xn-1)/cellx,yn/(2*celly)/))
+                ! primary(:,:,i) = bit_thing_t1
+                !
+                ! bit_thing_t1 = RESHAPE(priLongBitFull(leng+1:2*leng,i),(/(xn-1)/cellx,yn/(2*celly)/))
+                ! primary_a(:,:,i) = bit_thing_t1
+                !
+                ! bit_thing_t1 = RESHAPE(priLongBitFull(2*leng+1:,i),(/(xn-1)/cellx,yn/(2*celly)/))
+                ! primary_b(:,:,i) = bit_thing_t1
               END DO
 
               IF (MAXVAL(medium(:,:,2)) .EQ. 0.0) THEN
                  DO i = 1,g_sec
 
-                    ! bit_thing_t1 = TRANSPOSE(RESHAPE(secLongBitFull(1:leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
-                    ! secondary(:,:,i) = bit_thing_t1
-                    !
-                    ! bit_thing_t1 = TRANSPOSE(RESHAPE(secLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
-                    ! secondary_a(:,:,i) = bit_thing_t1
-                    !
-                    ! bit_thing_t1 = TRANSPOSE(RESHAPE(secLongBitFull(2*leng+1:,i),(/yn/(2*celly), (xn-1)/cellx/)))
-                    ! secondary_b(:,:,i) = bit_thing_t1
-
-                    bit_thing_t1 = RESHAPE(secLongBitFull(1:leng,i),(/(xn-1)/cellx,yn/(2*celly)/))
+                    bit_thing_t1 = TRANSPOSE(RESHAPE(secLongBitFull(1:leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
                     secondary(:,:,i) = bit_thing_t1
 
-                    bit_thing_t1 = RESHAPE(secLongBitFull(leng+1:2*leng,i),(/(xn-1)/cellx,yn/(2*celly)/))
+                    bit_thing_t1 = TRANSPOSE(RESHAPE(secLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
                     secondary_a(:,:,i) = bit_thing_t1
 
-                    bit_thing_t1 = RESHAPE(secLongBitFull(2*leng+1:,i),(/(xn-1)/cellx,yn/(2*celly)/))
+                    bit_thing_t1 = TRANSPOSE(RESHAPE(secLongBitFull(2*leng+1:,i),(/yn/(2*celly), (xn-1)/cellx/)))
                     secondary_b(:,:,i) = bit_thing_t1
+
+                    ! bit_thing_t1 = RESHAPE(secLongBitFull(1:leng,i),(/(xn-1)/cellx,yn/(2*celly)/))
+                    ! secondary(:,:,i) = bit_thing_t1
+                    !
+                    ! bit_thing_t1 = RESHAPE(secLongBitFull(leng+1:2*leng,i),(/(xn-1)/cellx,yn/(2*celly)/))
+                    ! secondary_a(:,:,i) = bit_thing_t1
+                    !
+                    ! bit_thing_t1 = RESHAPE(secLongBitFull(2*leng+1:,i),(/(xn-1)/cellx,yn/(2*celly)/))
+                    ! secondary_b(:,:,i) = bit_thing_t1
                  END DO
               END IF
 
               DO i = 1,g_sol
 
-                !  bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(1:leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
-                !  solute(:,:,i) = bit_thing_t1
-                 !
-                !  bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
-                !  solute_a(:,:,i) = bit_thing_t1
-                 !
-                !  bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(2*leng+1:,i),(/yn/(2*celly), (xn-1)/cellx/)))
-                !  solute_b(:,:,i) = bit_thing_t1
-                bit_thing_t1 = RESHAPE(solLongBitFull(1:leng,i),(/(xn-1)/cellx,yn/(2*celly)/))
-                solute(:,:,i) = bit_thing_t1
+                 bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(1:leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
+                 solute(:,:,i) = bit_thing_t1
 
-                bit_thing_t1 = RESHAPE(solLongBitFull(leng+1:2*leng,i),(/(xn-1)/cellx,yn/(2*celly)/))
-                solute_a(:,:,i) = bit_thing_t1
+                 bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
+                 solute_a(:,:,i) = bit_thing_t1
 
-                bit_thing_t1 = RESHAPE(solLongBitFull(2*leng+1:,i),(/(xn-1)/cellx,yn/(2*celly)/))
-                solute_b(:,:,i) = bit_thing_t1
+                 bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(2*leng+1:,i),(/yn/(2*celly), (xn-1)/cellx/)))
+                 solute_b(:,:,i) = bit_thing_t1
+                ! bit_thing_t1 = RESHAPE(solLongBitFull(1:leng,i),(/(xn-1)/cellx,yn/(2*celly)/))
+                ! solute(:,:,i) = bit_thing_t1
+                !
+                ! bit_thing_t1 = RESHAPE(solLongBitFull(leng+1:2*leng,i),(/(xn-1)/cellx,yn/(2*celly)/))
+                ! solute_a(:,:,i) = bit_thing_t1
+                !
+                ! bit_thing_t1 = RESHAPE(solLongBitFull(2*leng+1:,i),(/(xn-1)/cellx,yn/(2*celly)/))
+                ! solute_b(:,:,i) = bit_thing_t1
 
               END DO
 
               DO i = 1,g_med
 
-                !  bit_thing_t1 = TRANSPOSE(RESHAPE(medLongBitFull(1:leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
-                !  medium(:,:,i) = bit_thing_t1
-                 !
-                !  bit_thing_t1 = TRANSPOSE(RESHAPE(medLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
-                !  medium_a(:,:,i) = bit_thing_t1
-                 !
-                !  bit_thing_t1 = TRANSPOSE(RESHAPE(medLongBitFull(2*leng+1:,i),(/yn/(2*celly), (xn-1)/cellx/)))
-                !  medium_b(:,:,i) = bit_thing_t1
-                bit_thing_t1 = RESHAPE(medLongBitFull(1:leng,i),(/(xn-1)/cellx,yn/(2*celly)/))
-                medium(:,:,i) = bit_thing_t1
+                 bit_thing_t1 = TRANSPOSE(RESHAPE(medLongBitFull(1:leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
+                 medium(:,:,i) = bit_thing_t1
 
-                bit_thing_t1 = RESHAPE(medLongBitFull(leng+1:2*leng,i),(/(xn-1)/cellx,yn/(2*celly)/))
-                medium_a(:,:,i) = bit_thing_t1
+                 bit_thing_t1 = TRANSPOSE(RESHAPE(medLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
+                 medium_a(:,:,i) = bit_thing_t1
 
-                bit_thing_t1 = RESHAPE(medLongBitFull(2*leng+1:,i),(/(xn-1)/cellx,yn/(2*celly)/))
-                medium_b(:,:,i) = bit_thing_t1
+                 bit_thing_t1 = TRANSPOSE(RESHAPE(medLongBitFull(2*leng+1:,i),(/yn/(2*celly), (xn-1)/cellx/)))
+                 medium_b(:,:,i) = bit_thing_t1
+                ! bit_thing_t1 = RESHAPE(medLongBitFull(1:leng,i),(/(xn-1)/cellx,yn/(2*celly)/))
+                ! medium(:,:,i) = bit_thing_t1
+                !
+                ! bit_thing_t1 = RESHAPE(medLongBitFull(leng+1:2*leng,i),(/(xn-1)/cellx,yn/(2*celly)/))
+                ! medium_a(:,:,i) = bit_thing_t1
+                !
+                ! bit_thing_t1 = RESHAPE(medLongBitFull(2*leng+1:,i),(/(xn-1)/cellx,yn/(2*celly)/))
+                ! medium_b(:,:,i) = bit_thing_t1
 
               END DO
 
             !   ! phi_calc
-            !   bit_thing_t1 = TRANSPOSE(RESHAPE(phiLongBitFull(1:leng),(/yn/(2*celly), (xn-1)/cellx/)))
-            !   phiCalc(:,:) = bit_thing_t1
-            !   bit_thing_t1 = TRANSPOSE(RESHAPE(phiLongBitFull(leng+1:2*leng),(/yn/(2*celly), (xn-1)/cellx/)))
-            !   phiCalc_a(:,:) = bit_thing_t1
+              bit_thing_t1 = TRANSPOSE(RESHAPE(phiLongBitFull(1:leng),(/yn/(2*celly), (xn-1)/cellx/)))
+              phiCalc(:,:) = bit_thing_t1
+              bit_thing_t1 = TRANSPOSE(RESHAPE(phiLongBitFull(leng+1:2*leng),(/yn/(2*celly), (xn-1)/cellx/)))
+              phiCalc_a(:,:) = bit_thing_t1
             ! phi_calc
-            bit_thing_t1 = RESHAPE(phiLongBitFull(1:leng),(/(xn-1)/cellx,yn/(2*celly)/))
-            phiCalc(:,:) = bit_thing_t1
-            bit_thing_t1 = RESHAPE(phiLongBitFull(leng+1:2*leng),(/(xn-1)/cellx,yn/(2*celly)/))
-            phiCalc_a(:,:) = bit_thing_t1
+            ! bit_thing_t1 = RESHAPE(phiLongBitFull(1:leng),(/(xn-1)/cellx,yn/(2*celly)/))
+            ! phiCalc(:,:) = bit_thing_t1
+            ! bit_thing_t1 = RESHAPE(phiLongBitFull(leng+1:2*leng),(/(xn-1)/cellx,yn/(2*celly)/))
+            ! phiCalc_a(:,:) = bit_thing_t1
 
 
               ! pH fix
-            !   bit_thing_t1 = TRANSPOSE(RESHAPE(ph_fix_LongBitFull(1:leng),(/yn/(2*celly), (xn-1)/cellx/)))
-            !   ph_fix(:,:) = bit_thing_t1
-            !   bit_thing_t1 = TRANSPOSE(RESHAPE(ph_fix_LongBitFull(leng+1:2*leng),(/yn/(2*celly), (xn-1)/cellx/)))
-            !   ph_fix_a(:,:) = bit_thing_t1
-            !   bit_thing_t1 = TRANSPOSE(RESHAPE(ph_fix_LongBitFull(2*leng+1:),(/yn/(2*celly), (xn-1)/cellx/)))
-            !   ph_fix_b(:,:) = bit_thing_t1
-            bit_thing_t1 = RESHAPE(ph_fix_LongBitFull(1:leng),(/(xn-1)/cellx,yn/(2*celly)/))
-            ph_fix(:,:) = bit_thing_t1
-            bit_thing_t1 = RESHAPE(ph_fix_LongBitFull(leng+1:2*leng),(/(xn-1)/cellx,yn/(2*celly)/))
-            ph_fix_a(:,:) = bit_thing_t1
-            bit_thing_t1 = RESHAPE(ph_fix_LongBitFull(2*leng+1:),(/(xn-1)/cellx,yn/(2*celly)/))
-            ph_fix_b(:,:) = bit_thing_t1
+              bit_thing_t1 = TRANSPOSE(RESHAPE(ph_fix_LongBitFull(1:leng),(/yn/(2*celly), (xn-1)/cellx/)))
+              ph_fix(:,:) = bit_thing_t1
+              bit_thing_t1 = TRANSPOSE(RESHAPE(ph_fix_LongBitFull(leng+1:2*leng),(/yn/(2*celly), (xn-1)/cellx/)))
+              ph_fix_a(:,:) = bit_thing_t1
+              bit_thing_t1 = TRANSPOSE(RESHAPE(ph_fix_LongBitFull(2*leng+1:),(/yn/(2*celly), (xn-1)/cellx/)))
+              ph_fix_b(:,:) = bit_thing_t1
+            ! bit_thing_t1 = RESHAPE(ph_fix_LongBitFull(1:leng),(/(xn-1)/cellx,yn/(2*celly)/))
+            ! ph_fix(:,:) = bit_thing_t1
+            ! bit_thing_t1 = RESHAPE(ph_fix_LongBitFull(leng+1:2*leng),(/(xn-1)/cellx,yn/(2*celly)/))
+            ! ph_fix_a(:,:) = bit_thing_t1
+            ! bit_thing_t1 = RESHAPE(ph_fix_LongBitFull(2*leng+1:),(/(xn-1)/cellx,yn/(2*celly)/))
+            ! ph_fix_b(:,:) = bit_thing_t1
 
 
               WRITE(*,*) "BEGIN UPDATING _MAT ARRAYS"
@@ -4531,65 +4549,65 @@ PROGRAM main
      !kinetics = " "
 
 
-     DO jj = 1, end_loop*tn/mstep
+     DO jj = 1, tn/mstep
 
-        ! IF (my_id .LE. 22) THEN
-        !
-        !    ! receive an_id
-        !    CALL MPI_RECV ( an_id_local, 1 , MPI_INTEGER, &
-        !         root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
-        !
-        !    ! receive solute long for advection
-        !    CALL MPI_RECV ( sol_coarse_long_local, ((xn-1)/cellx)*(yn/(2*celly)), MPI_REAL4, &
-        !         root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
-        !
-        !    ! receive u long for advection
-        !    CALL MPI_RECV ( u_coarse_long_local, ((xn-1)/cellx)*(yn/(2*celly)), MPI_REAL4, &
-        !         root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
-        !
-        !    ! receive v long for advection
-        !    CALL MPI_RECV ( v_coarse_long_local, ((xn-1)/cellx)*(yn/(2*celly)), MPI_REAL4, &
-        !         root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
-        !
-        !    ! receive phi long for advection
-        !    CALL MPI_RECV ( phi_coarse_long_local, ((xn-1)/cellx)*(yn/(2*celly)), MPI_REAL4, &
-        !         root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
-        !
-        !    write(*,*) "advection proc my_id" , my_id , an_id_local
-        !
-        !    ! reshape them all
-        !    sol_coarse_local = TRANSPOSE(RESHAPE(sol_coarse_long_local,(/yn/(2*celly),(xn-1)/cellx/)))
-        !    u_coarse_local = RESHAPE(u_coarse_long_local,(/(xn-1)/cellx,yn/(2*celly)/))
-        !    v_coarse_local = RESHAPE(v_coarse_long_local,(/(xn-1)/cellx,yn/(2*celly)/))
-        !    phi_coarse_local = TRANSPOSE(RESHAPE(phi_coarse_long_local,(/yn/(2*celly),(xn-1)/cellx/))) ! this is where the phi transpose bug was
-        !    !phi_coarse_local = 0.5
-        !    !write(*,*) maxval(phi_coarse_local)
-        !
-        !    !-do advection
-        !    IF (an_id_local .LE. 11) THEN
-        !       DO ii = 1,cstep
-        !          sol_coarse_local = solute_next_coarse(sol_coarse_local,u_coarse_local,v_coarse_local,phi_coarse_local,sea(sol_index(an_id_local)))
-        !       END DO
-        !    END IF
-        !
-        !    IF (an_id_local .GT. 11) THEN
-        !       DO ii = 1,cstep
-        !          sol_coarse_local = solute_next_coarse(sol_coarse_local,u_coarse_local,v_coarse_local,phi_coarse_local,sea(sol_index(an_id_local-11)))
-        !       END DO
-        !    END IF
-        !
-        !    sol_coarse_long_local = RESHAPE(TRANSPOSE(sol_coarse_local),(/((xn-1)/cellx)*(yn/(2*celly))/))
-        !
-        !    ! send advected solutes back :)
-        !    CALL MPI_SEND( sol_coarse_long_local, ((xn-1)/cellx)*(yn/(2*celly)), MPI_REAL4, root_process, &
-        !         return_data_tag, MPI_COMM_WORLD, ierr)
-        !
-        ! END IF ! end if my_id .le. 22
+        IF (my_id .LE. 22) THEN
 
+           ! receive an_id
+           CALL MPI_RECV ( an_id_local, 1 , MPI_INTEGER, &
+                root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
 
+           ! receive solute long for advection
+           CALL MPI_RECV ( sol_coarse_long_local, ((xn-1)/cellx)*(yn/(2*celly)), MPI_REAL4, &
+                root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+
+           ! receive u long for advection
+           CALL MPI_RECV ( u_coarse_long_local, ((xn-1)/cellx)*(yn/(2*celly)), MPI_REAL4, &
+                root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+
+           ! receive v long for advection
+           CALL MPI_RECV ( v_coarse_long_local, ((xn-1)/cellx)*(yn/(2*celly)), MPI_REAL4, &
+                root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+
+           ! receive phi long for advection
+           CALL MPI_RECV ( phi_coarse_long_local, ((xn-1)/cellx)*(yn/(2*celly)), MPI_REAL4, &
+                root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+
+           write(*,*) "advection proc my_id" , my_id , an_id_local
+
+           ! reshape them all
+           sol_coarse_local = TRANSPOSE(RESHAPE(sol_coarse_long_local,(/yn/(2*celly),(xn-1)/cellx/)))
+           u_coarse_local = RESHAPE(u_coarse_long_local,(/(xn-1)/cellx,yn/(2*celly)/))
+           v_coarse_local = RESHAPE(v_coarse_long_local,(/(xn-1)/cellx,yn/(2*celly)/))
+           phi_coarse_local = TRANSPOSE(RESHAPE(phi_coarse_long_local,(/yn/(2*celly),(xn-1)/cellx/))) ! this is where the phi transpose bug was
+           !phi_coarse_local = 0.5
+           !write(*,*) maxval(phi_coarse_local)
+
+           !-do advection
+           IF (an_id_local .LE. 11) THEN
+              DO ii = 1,cstep
+                 sol_coarse_local = solute_next_coarse(sol_coarse_local,u_coarse_local,v_coarse_local,phi_coarse_local,sea(sol_index(an_id_local)))
+              END DO
+           END IF
+
+           IF (an_id_local .GT. 11) THEN
+              DO ii = 1,cstep
+                 sol_coarse_local = solute_next_coarse(sol_coarse_local,u_coarse_local,v_coarse_local,phi_coarse_local,sea(sol_index(an_id_local-11)))
+              END DO
+           END IF
+
+           sol_coarse_long_local = RESHAPE(TRANSPOSE(sol_coarse_local),(/((xn-1)/cellx)*(yn/(2*celly))/))
+
+           ! send advected solutes back :)
+           CALL MPI_SEND( sol_coarse_long_local, ((xn-1)/cellx)*(yn/(2*celly)), MPI_REAL4, root_process, &
+                return_data_tag, MPI_COMM_WORLD, ierr)
+
+        END IF ! end if my_id .le. 22
 
 
 
+
+DO jjj = 1,end_loop
 
 
 
@@ -5072,7 +5090,10 @@ PROGRAM main
               ! end if
 
               ! INITIALIZE STUFF
+              !call system_clock(counti, count_rate, count_max)
               id = CreateIPhreeqc()
+              !call system_clock(countf, count_rate, count_max)
+              !write(*,*) "proc", my_id , "finished CreateIPhreeqc" , countf - counti
 
               ! write(*,*) "ID:" , id
 
@@ -5100,6 +5121,7 @@ PROGRAM main
               ! 	write(*,*) "		R1 START"
               ! end if
 
+              !call system_clock(counti, count_rate, count_max)
               IF (SetSelectedOutputStringOn(id, .TRUE.).NE.IPQ_OK) THEN
                  CALL OutputErrorString(id)
                  WRITE(*,*) "primary"
@@ -5114,6 +5136,8 @@ PROGRAM main
                  WRITE(*,*) temp3
                  !STOP
               END IF
+              !call system_clock(countf, count_rate, count_max)
+              !write(*,*) "proc", my_id , "finished error string" , countf - counti
 
               ! if (my_id .eq. 2) then
               ! 	call system_clock(countf, count_rate, count_max)
@@ -5125,10 +5149,13 @@ PROGRAM main
               ! 	write(*,*) "		R2 START"
               ! end if
 
+              !call system_clock(counti, count_rate, count_max)
               IF (SetOutputStringOn(id, .TRUE.).NE.IPQ_OK) THEN
                  CALL OutputErrorString(id)
                  !STOP
               END IF
+              !call system_clock(countf, count_rate, count_max)
+              !write(*,*) "proc", my_id , "finished error string 2" , countf - counti
 
               ! if (my_id .eq. 2) then
               ! 	call system_clock(countf, count_rate, count_max)
@@ -5141,6 +5168,7 @@ PROGRAM main
               ! end if
 
               ! write(*,*) "we here"
+              call system_clock(counti, count_rate, count_max)
               !IF (LoadDatabase(id, 'l5.dat').NE.0) THEN
               IF (LoadDatabaseString(id, TRIM(L5)).NE.0) THEN
                  CALL OutputErrorString(id)
@@ -5156,6 +5184,8 @@ PROGRAM main
                  WRITE(*,*) temp3
                  !STOP
               END IF
+              call system_clock(countf, count_rate, count_max)
+              write(*,*) "proc", my_id , "finished LoadDB" , countf - counti
 
               ! if (my_id .eq. 2) then
               ! 	call system_clock(countf, count_rate, count_max)
@@ -5169,6 +5199,7 @@ PROGRAM main
               ! end if
 
               ! RUN INPUT
+              call system_clock(counti, count_rate, count_max)
               IF (RunString(id, TRIM(inputz0)).NE.0) THEN
                  WRITE(*,*) "issue is:" , RunString(id, TRIM(inputz0))
                  CALL OutputErrorString(id)
@@ -5188,6 +5219,8 @@ PROGRAM main
                  END IF
                  !STOP
               END IF
+              call system_clock(countf, count_rate, count_max)
+              write(*,*) "proc", my_id , "finished run string" , countf - counti
 
               ! if (my_id .eq. 2) then
               ! 	call system_clock(countf, count_rate, count_max)
@@ -5200,6 +5233,7 @@ PROGRAM main
               ! end if
 
               ! WRITE AWAY
+              !call system_clock(counti, count_rate, count_max)
               DO i=1,GetSelectedOutputStringLineCount(id)
                  CALL GetSelectedOutputStringLine(id, i, line)
                  ! HEADER BITS YOU MAY WANT
@@ -5275,6 +5309,9 @@ PROGRAM main
                  STOP
               END IF
 
+              !call system_clock(countf, count_rate, count_max)
+              !write(*,*) "proc", my_id , "finished everything else" , countf - counti
+
 
               ! if (my_id .eq. 2) then
               ! 	call system_clock(countf, count_rate, count_max)
@@ -5293,6 +5330,7 @@ PROGRAM main
               ! 	call system_clock(counti, count_rate, count_max)
               ! 	write(*,*) "	PROC 40 START ASSEMBLING"
               ! end if
+
 
               if (alt0(1,2) .GT. 1.0) then
 
@@ -5335,7 +5373,7 @@ PROGRAM main
         !END DO ! end m = 1,num rows, ran chem for each row and populated local arrays
         !write(*,*) my_id, m_count
 
-
+        call system_clock(counti, count_rate, count_max)
         medLocal(:,1) = 0.0
         DO m=1,g_sec/2
            medLocal(:,1) = medLocal(:,1) + secLocal(:,m)*sec_molar(m)/sec_density(m)
@@ -5353,6 +5391,8 @@ PROGRAM main
 
 
 
+
+
         ! if (my_id .eq. 2) then
         ! 	call system_clock(countf, count_rate, count_max)
         ! 	write(*,*) "	PROC 40 END ASSEMBLING" , countf - counti
@@ -5367,7 +5407,7 @@ PROGRAM main
         !#GEOCHEM: slave sends to master
 
         ! send primary array chunk back to root process
-        write(*,*) "BEGIN sending to master from" , my_id
+        !write(*,*) "BEGIN sending to master from" , my_id
         DO ii = 1,g_pri
            CALL MPI_SEND( priLocal(1,ii), 1, MPI_REAL4, root_process, &
                 return_data_tag, MPI_COMM_WORLD, ierr)
@@ -5408,6 +5448,9 @@ PROGRAM main
                 return_data_tag, MPI_COMM_WORLD, ierr)
         END DO
 
+        call system_clock(countf, count_rate, count_max)
+        write(*,*) "proc", my_id , "finished parse and send" , countf - counti
+
         !write(*,*) "FINISHED sending to master from" , my_id
 
         ! if (my_id .eq. 2) then
@@ -5418,6 +5461,8 @@ PROGRAM main
         !write(*,*) "SLAVE PROCESSOR IS DONE WITH WORK"
 
 	! done with looping through coarse timesteps
+
+END DO ! end jjj = 1,end_loop
      END DO ! end do jj = tn/mstep ??
 
 
