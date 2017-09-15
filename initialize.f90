@@ -909,6 +909,13 @@ CONTAINS
 
     coarse_mask_long = RESHAPE(TRANSPOSE(coarse_mask),(/((xn-1)/cellx)*(yn/(2*celly))/))
 
+    active_coarse = 0
+    DO g=1,((xn-1)/cellx)*(yn/(2*celly))
+          IF (coarse_mask_long(g) .NE. 0.0) THEN
+             active_coarse = active_coarse + 1
+          END IF
+    END DO
+
 
 
     ! high lambda in deep basalt

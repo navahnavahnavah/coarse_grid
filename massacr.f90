@@ -2958,33 +2958,51 @@ PROGRAM main
                  sol_coarse_long = solLongBitFull(:leng,sol_index(an_id))
                  phi_coarse_long = phiLongBitFull(:leng)
 
+               ! reshape them all
+               sol_coarse_local = TRANSPOSE(RESHAPE(sol_coarse_long,(/yn/(2*celly),(xn-1)/cellx/)))
+               u_coarse_local = RESHAPE(u_coarse_long,(/(xn-1)/cellx,yn/(2*celly)/))
+               v_coarse_local = RESHAPE(v_coarse_long,(/(xn-1)/cellx,yn/(2*celly)/))
+               phi_coarse_local = TRANSPOSE(RESHAPE(phi_coarse_long,(/yn/(2*celly),(xn-1)/cellx/)))
+
+               DO ii = 1,cstep
+                 sol_coarse_local = solute_next_coarse(sol_coarse_local,u_coarse_local,v_coarse_local,phi_coarse_local,sea(sol_index(an_id)))
+              END DO
+
+              sol_coarse_long_local = RESHAPE(TRANSPOSE(sol_coarse_local),(/((xn-1)/cellx)*(yn/(2*celly))/))
+
+              IF (an_id .LE. 11) THEN
+                 solLongBitFull(:leng,sol_index(an_id)) = sol_coarse_long_local
+              END IF
+
+
+
 
                  !#ADVECTION: send from master to slaves (s)
 
-                 ! send an_id name
-                 CALL MPI_SEND( an_id, 1, MPI_INTEGER, &
-                      an_id, send_data_tag, MPI_COMM_WORLD, ierr)
-
-                 ! send long sol coarse
-                 CALL MPI_SEND( sol_coarse_long, leng, MPI_REAL4, &
-                      an_id, send_data_tag, MPI_COMM_WORLD, ierr)
-
-                 ! send long u coarse
-                 CALL MPI_SEND( u_coarse_long, leng, MPI_REAL4, &
-                      an_id, send_data_tag, MPI_COMM_WORLD, ierr)
-
-                 ! send long v coarse
-                 CALL MPI_SEND( v_coarse_long, leng, MPI_REAL4, &
-                      an_id, send_data_tag, MPI_COMM_WORLD, ierr)
-
-                 ! send long phi coarse
-                 CALL MPI_SEND( phi_coarse_long, leng, MPI_REAL4, &
-                      an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+                !  ! send an_id name
+                !  CALL MPI_SEND( an_id, 1, MPI_INTEGER, &
+                !       an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+                 !
+                !  ! send long sol coarse
+                !  CALL MPI_SEND( sol_coarse_long, leng, MPI_REAL4, &
+                !       an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+                 !
+                !  ! send long u coarse
+                !  CALL MPI_SEND( u_coarse_long, leng, MPI_REAL4, &
+                !       an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+                 !
+                !  ! send long v coarse
+                !  CALL MPI_SEND( v_coarse_long, leng, MPI_REAL4, &
+                !       an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+                 !
+                !  ! send long phi coarse
+                !  CALL MPI_SEND( phi_coarse_long, leng, MPI_REAL4, &
+                !       an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 
 
               !END IF
 
-              write(*,*) "sent to first set" , an_id
+            !   write(*,*) "sent to first set" , an_id
 
             END DO
 
@@ -3004,33 +3022,52 @@ PROGRAM main
                  phi_coarse_long = phiLongBitFull(leng+1:2*leng)
 
 
+                 ! reshape them all
+                 sol_coarse_local = TRANSPOSE(RESHAPE(sol_coarse_long,(/yn/(2*celly),(xn-1)/cellx/)))
+                 u_coarse_local = RESHAPE(u_coarse_long,(/(xn-1)/cellx,yn/(2*celly)/))
+                 v_coarse_local = RESHAPE(v_coarse_long,(/(xn-1)/cellx,yn/(2*celly)/))
+                 phi_coarse_local = TRANSPOSE(RESHAPE(phi_coarse_long,(/yn/(2*celly),(xn-1)/cellx/)))
 
-                 !#ADVECTION: send from master to slaves (a)
 
-                 ! send an_id name
-                 CALL MPI_SEND( an_id, 1, MPI_INTEGER, &
-                      an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+                 DO ii = 1,cstep
+                 sol_coarse_local = solute_next_coarse(sol_coarse_local,u_coarse_local,v_coarse_local,phi_coarse_local,sea(sol_index(an_id-11)))
+             END DO
 
-                 ! send long sol coarse
-                 CALL MPI_SEND( sol_coarse_long, leng, MPI_REAL4, &
-                      an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+             sol_coarse_long_local = RESHAPE(TRANSPOSE(sol_coarse_local),(/((xn-1)/cellx)*(yn/(2*celly))/))
 
-                 ! send long u coarse
-                 CALL MPI_SEND( u_coarse_long, leng, MPI_REAL4, &
-                      an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 
-                 ! send long v coarse
-                 CALL MPI_SEND( v_coarse_long, leng, MPI_REAL4, &
-                      an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+              IF (an_id .GT. 11) THEN
+                 solLongBitFull(leng+1:2*leng,sol_index(an_id-11)) = sol_coarse_long_local
+              END IF
 
-                 ! send long phi coarse
-                 CALL MPI_SEND( phi_coarse_long, leng, MPI_REAL4, &
-                      an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+
+
+                !  !#ADVECTION: send from master to slaves (a)
+                 !
+                !  ! send an_id name
+                !  CALL MPI_SEND( an_id, 1, MPI_INTEGER, &
+                !       an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+                 !
+                !  ! send long sol coarse
+                !  CALL MPI_SEND( sol_coarse_long, leng, MPI_REAL4, &
+                !       an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+                 !
+                !  ! send long u coarse
+                !  CALL MPI_SEND( u_coarse_long, leng, MPI_REAL4, &
+                !       an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+                 !
+                !  ! send long v coarse
+                !  CALL MPI_SEND( v_coarse_long, leng, MPI_REAL4, &
+                !       an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+                 !
+                !  ! send long phi coarse
+                !  CALL MPI_SEND( phi_coarse_long, leng, MPI_REAL4, &
+                !       an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 
 
               !END IF
 
-              write(*,*) "sent to second set" , an_id
+            !   write(*,*) "sent to second set" , an_id
 
               !write(*,*) "DONE SENDING SOLUTE TO PROCESSOR", an_id
 
@@ -3039,24 +3076,24 @@ PROGRAM main
            !#ADVECTION: master receives from slaves
 
            ! call system_clock(counti, count_rate, count_max)
-           write(*,*) "BEGIN RECEIVING ADVECTED SOLUTES"
+           !write(*,*) "BEGIN RECEIVING ADVECTED SOLUTES"
 
-           DO an_id = 1, 22
+        !    DO an_id = 1, 22
+           !
+        !       CALL MPI_RECV( sol_coarse_long, leng, MPI_REAL4, &
+        !            an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+           !
+        !     !   IF (an_id .LE. 11) THEN
+        !     !      solLongBitFull(:leng,sol_index(an_id)) = sol_coarse_long
+        !     !   END IF
+           !
+        !     !   IF (an_id .GT. 11) THEN
+        !     !      solLongBitFull(leng+1:2*leng,sol_index(an_id-11)) = sol_coarse_long
+        !     !   END IF
+           !
+        !    END DO
 
-              CALL MPI_RECV( sol_coarse_long, leng, MPI_REAL4, &
-                   an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
-
-              IF (an_id .LE. 11) THEN
-                 solLongBitFull(:leng,sol_index(an_id)) = sol_coarse_long
-              END IF
-
-              IF (an_id .GT. 11) THEN
-                 solLongBitFull(leng+1:2*leng,sol_index(an_id-11)) = sol_coarse_long
-              END IF
-
-           END DO
-
-           write(*,*) "END RECEIVING ADVECTED SOLUTES"
+           !write(*,*) "END RECEIVING ADVECTED SOLUTES"
 
            ! old chamber mixing
            ! solute_inter_long = solLongBitFull(leng+1:2*leng,n)
@@ -3427,135 +3464,406 @@ PROGRAM main
 
 
            !#GEOCHEM: send from master to slaves
-           DO an_id = 1, num_procs - 1
+        !    DO an_id = 1, num_procs - 1
+           !
+        !       ! put number of rows in vector here for hLong
+        !       num_rows = 3*((xn-1)/cellx)*(yn/(2*celly))
+        !       avg_rows_per_process = num_rows / (num_procs-1)
+        !       start_row = ( (an_id-1) * avg_rows_per_process) + 1
+        !       end_row = start_row + avg_rows_per_process - 1
+        !       IF (an_id .EQ. (num_procs - 1)) end_row = num_rows
+        !       num_rows_to_send = (end_row - start_row + 1)
+           !
+        !       ! send size of array chunk to processor an_id
+        !       CALL MPI_SEND( num_rows_to_send, 1, MPI_INTEGER, &
+        !            an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+           !
+        !       ! send timestep to processor an_id
+        !       CALL MPI_SEND( dt, 1, MPI_REAL4, &
+        !            an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+           !
+        !       ! send temperature array chunk to processor an_id
+        !       CALL MPI_SEND( hLong(start_row), num_rows_to_send, MPI_REAL4, &
+        !            an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+           !
+        !       ! send ph_fix array chunk to processor an_id
+        !       CALL MPI_SEND( ph_fix_LongBitFull(start_row), num_rows_to_send, MPI_REAL4, &
+        !            an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+           !
+        !       ! send primary array chunk to processor an_id
+        !       DO ii = 1,g_pri
+        !          CALL MPI_SEND( priLongBitFull(start_row,ii), num_rows_to_send, MPI_REAL4, &
+        !               an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+        !       END DO
+           !
+        !       ! send secondary array chunk to processor an_id
+        !       DO ii = 1,g_sec
+        !          CALL MPI_SEND( secLongBitFull(start_row,ii), num_rows_to_send, MPI_REAL4, &
+        !               an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+        !       END DO
+           !
+        !       ! send solute array chunk to processor an_id
+        !       DO ii = 1,g_sol
+        !          CALL MPI_SEND( solLongBitFull(start_row,ii), num_rows_to_send, MPI_REAL4, &
+        !               an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+        !       END DO
+           !
+        !       ! send medium array chunk to processor an_id
+        !       DO ii = 1,g_med
+        !          CALL MPI_SEND( medLongBitFull(start_row,ii), num_rows_to_send, MPI_REAL4, &
+        !               an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+        !       END DO
+           !
+        !       write(*,*) "done sending to " , an_id
+           !
+        !    END DO
 
-              ! put number of rows in vector here for hLong
-              num_rows = 3*((xn-1)/cellx)*(yn/(2*celly))
-              avg_rows_per_process = num_rows / (num_procs-1)
-              start_row = ( (an_id-1) * avg_rows_per_process) + 1
-              end_row = start_row + avg_rows_per_process - 1
-              IF (an_id .EQ. (num_procs - 1)) end_row = num_rows
-              num_rows_to_send = (end_row - start_row + 1)
+        par_rounds = active_coarse * 3 / (num_procs - 1)
+        write(*,*) "active_coarse" , active_coarse
+        write(*,*) "par_rounds" , par_rounds
 
-              ! send size of array chunk to processor an_id
-              CALL MPI_SEND( num_rows_to_send, 1, MPI_INTEGER, &
-                   an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+        last_active = 0
 
-              ! send timestep to processor an_id
-              CALL MPI_SEND( dt, 1, MPI_REAL4, &
-                   an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+        DO par_round = 1, par_rounds
+            write(*,*) "starting par_round " , par_round
+            an_id = 1
+            start_row = last_active + 1
 
-              ! send temperature array chunk to processor an_id
-              CALL MPI_SEND( hLong(start_row), num_rows_to_send, MPI_REAL4, &
-                   an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+            DO WHILE (an_id .LE. num_procs - 1)
 
-              ! send ph_fix array chunk to processor an_id
-              CALL MPI_SEND( ph_fix_LongBitFull(start_row), num_rows_to_send, MPI_REAL4, &
-                   an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+                if (medLongBitFull(start_row,5) .EQ. 1.0) then
+                    write(*,*) "sending index start_row: " , start_row , "on processor: " , an_id
 
-              ! send primary array chunk to processor an_id
-              DO ii = 1,g_pri
-                 CALL MPI_SEND( priLongBitFull(start_row,ii), num_rows_to_send, MPI_REAL4, &
-                      an_id, send_data_tag, MPI_COMM_WORLD, ierr)
-              END DO
+                    ! send everything on an_id
 
-              ! send secondary array chunk to processor an_id
-              DO ii = 1,g_sec
-                 CALL MPI_SEND( secLongBitFull(start_row,ii), num_rows_to_send, MPI_REAL4, &
-                      an_id, send_data_tag, MPI_COMM_WORLD, ierr)
-              END DO
+                    ! send timestep to processor an_id
+                    CALL MPI_SEND( dt, 1, MPI_REAL4, an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 
-              ! send solute array chunk to processor an_id
-              DO ii = 1,g_sol
-                 CALL MPI_SEND( solLongBitFull(start_row,ii), num_rows_to_send, MPI_REAL4, &
-                      an_id, send_data_tag, MPI_COMM_WORLD, ierr)
-              END DO
+                    ! send temperature array chunk to processor an_id
+                    CALL MPI_SEND( hLong(start_row), 1, MPI_REAL4, an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 
-              ! send medium array chunk to processor an_id
-              DO ii = 1,g_med
-                 CALL MPI_SEND( medLongBitFull(start_row,ii), num_rows_to_send, MPI_REAL4, &
-                      an_id, send_data_tag, MPI_COMM_WORLD, ierr)
-              END DO
+                    ! send ph_fix array chunk to processor an_id
+                    CALL MPI_SEND( ph_fix_LongBitFull(start_row), 1, MPI_REAL4, an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 
-           END DO
+                    ! send primary array chunk to processor an_id
+                    DO ii = 1,g_pri
+                       CALL MPI_SEND( priLongBitFull(start_row,ii), 1, MPI_REAL4, an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+                    END DO
 
-           write(*,*) "done sending geochem to slaves"
+                    ! send secondary array chunk to processor an_id
+                    DO ii = 1,g_sec
+                       CALL MPI_SEND( secLongBitFull(start_row,ii), 1, MPI_REAL4, an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+                    END DO
 
+                    ! send solute array chunk to processor an_id
+                    DO ii = 1,g_sol
+                       CALL MPI_SEND( solLongBitFull(start_row,ii), 1, MPI_REAL4, an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+                    END DO
 
-
-           !#GEOCHEM: receives from slaves
-           DO an_id = 1, num_procs - 1
-
-              ! get the size of each chunk again
-              num_rows = 3*((xn-1)/cellx)*(yn/(2*celly))
-              avg_rows_per_process = num_rows / (num_procs-1)
-              start_row = ( (an_id-1) * avg_rows_per_process) + 1
-              end_row = start_row + avg_rows_per_process - 1
-              IF (an_id .EQ. (num_procs - 1)) end_row = num_rows
-              num_rows_to_send = (end_row - start_row + 1)
-
-              ! receive primary chunk
-              DO ii = 1,g_pri
-                 ! receive it
-                 CALL MPI_RECV( priLocal(:,ii), num_rows_to_send, MPI_REAL4, &
-                      an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
-                 ! fill it
-                 priLongBitFull(start_row:end_row,ii) = priLocal(1:num_rows_to_send,ii)
-              END DO
-
-              ! receive secondary chunk
-              DO ii = 1,g_sec/2
-                 ! receive it
-                 CALL MPI_RECV( secLocal(:,ii), num_rows_to_send, MPI_REAL4, &
-                      an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
-                 ! fill it
-                 secLongBitFull(start_row:end_row,ii) = secLocal(1:num_rows_to_send,ii)
-              END DO
-
-              ! receive solute chunk
-              CALL MPI_RECV( solLocal(:,3), num_rows_to_send, MPI_REAL4, &
-                   an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
-              ! fill it
-              !solLongBitFull(start_row:end_row,ii) = solLocal(1:num_rows_to_send,ii)
-
-              CALL MPI_RECV( solLocal(:,2), num_rows_to_send, MPI_REAL4, &
-                   an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
-              solLongBitFull(start_row:end_row,2) = solLocal(1:num_rows_to_send,2)*solLocal(1:num_rows_to_send,3)/(solLongBitFull(start_row:end_row,3))
-
-
-              CALL MPI_RECV( solLocal(:,1), num_rows_to_send, MPI_REAL4, &
-                   an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
-                   do ii=start_row,end_row
-                       solLongBitFull(ii,1) = -1.0*LOG10(10.0**(-1.0*solLocal(ii-start_row+1,1))*solLocal(ii-start_row+1,3)/(solLongBitFull(ii,3)))
-                   end do
-
-
-              !10.0**(-1.0*solLongBitFull(2*leng+i,1))
-
-              DO ii = 4,g_sol
-                 ! receive it
-                 CALL MPI_RECV( solLocal(:,ii), num_rows_to_send, MPI_REAL4, &
-                      an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
-                 ! fill it
-                 !solLongBitFull(start_row:end_row,ii) = solLocal(1:num_rows_to_send,ii)
-                 solLongBitFull(start_row:end_row,ii) = solLocal(1:num_rows_to_send,ii)*solLocal(1:num_rows_to_send,3)/(solLongBitFull(start_row:end_row,3))
-              END DO
-
-            !   write(*,*) "an_id master received" , an_id
-            !   write(*,*) solLongBitFull(start_row:end_row,4)
-            !   write(*,*) " "
+                    ! send medium array chunk to processor an_id
+                    DO ii = 1,g_med
+                       CALL MPI_SEND( medLongBitFull(start_row,ii), 1, MPI_REAL4, an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+                    END DO
 
 
-              ! receive medium chunk
-              DO ii = 1,g_med
-                 ! receive it
-                 CALL MPI_RECV( medLocal(:,ii), num_rows_to_send, MPI_REAL4, &
-                      an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
-                 ! fill it
-                 medLongBitFull(start_row:end_row,ii) = medLocal(1:num_rows_to_send,ii)
-              END DO
+                    an_id = an_id + 1
 
-           END DO
+                end if ! if cell is active
+
+                start_row = start_row + 1
+
+            END DO ! while an_id .LE. num_procs -1
+
+
+
+
+
+            an_id = 1
+            start_row = last_active + 1
+
+            DO WHILE (an_id .LE. num_procs - 1)
+
+                if (medLongBitFull(start_row,5) .EQ. 1.0) then
+                    !write(*,*) "receiving index start_row: " , start_row , "from processor: " , an_id
+
+                    ! receive primary chunk
+                    DO ii = 1,g_pri
+                       ! receive it
+                       CALL MPI_RECV( priLocal(:,ii), 1, MPI_REAL4, an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+                       ! fill it
+                       priLongBitFull(start_row,ii) = priLocal(1,ii)
+                    END DO
+
+                    ! receive secondary chunk
+                    DO ii = 1,g_sec/2
+                       ! receive it
+                       CALL MPI_RECV( secLocal(:,ii), 1, MPI_REAL4, an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+                       ! fill it
+                       secLongBitFull(start_row,ii) = secLocal(1,ii)
+                    END DO
+
+                    ! receive solute chunk
+                    CALL MPI_RECV( solLocal(:,3), 1, MPI_REAL4, an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+
+                    CALL MPI_RECV( solLocal(:,2), 1, MPI_REAL4, an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+                    solLongBitFull(start_row,2) = solLocal(1,2)*solLocal(1,3)/(solLongBitFull(start_row,3))
+
+                    CALL MPI_RECV( solLocal(:,1), 1, MPI_REAL4, an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+                    solLongBitFull(start_row,1) = -1.0*LOG10(10.0**(-1.0*solLocal(1,1))*solLocal(1,3)/(solLongBitFull(start_row,3)))
+
+                    DO ii = 4,g_sol
+                       ! receive it
+                       CALL MPI_RECV( solLocal(:,ii), 1, MPI_REAL4, an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+                       ! fill it
+                       solLongBitFull(start_row,ii) = solLocal(1,ii)*solLocal(1,3)/(solLongBitFull(start_row,3))
+                    END DO
+
+                    ! receive medium chunk
+                    DO ii = 1,g_med
+                       ! receive it
+                       CALL MPI_RECV( medLocal(:,ii), 1, MPI_REAL4, an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+                       ! fill it
+                       medLongBitFull(start_row,ii) = medLocal(1,ii)
+                    END DO
+
+                    an_id = an_id + 1
+
+                end if ! if cell is active
+
+                start_row = start_row + 1
+
+            END DO ! while an_id .LE. num_procs - 1
+
+
+            last_active = start_row
+
+        END DO ! 1, par_rounds
+
+
+        IF (mod(active_coarse*3,num_procs-1) .GT. 0) THEN
+
+            an_id = 1
+            start_row = last_active + 1
+
+            DO WHILE (an_id .LE. mod(active_coarse*3,num_procs-1))
+
+                if (medLongBitFull(start_row,5) .EQ. 1.0) then
+                    write(*,*) "(remainder) sending index start_row: " , start_row , "on processor: " , an_id
+
+                    ! send everything on an_id
+
+                    ! send timestep to processor an_id
+                    CALL MPI_SEND( dt, 1, MPI_REAL4, an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+
+                    ! send temperature array chunk to processor an_id
+                    CALL MPI_SEND( hLong(start_row), 1, MPI_REAL4, an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+
+                    ! send ph_fix array chunk to processor an_id
+                    CALL MPI_SEND( ph_fix_LongBitFull(start_row), 1, MPI_REAL4, an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+
+                    ! send primary array chunk to processor an_id
+                    DO ii = 1,g_pri
+                       CALL MPI_SEND( priLongBitFull(start_row,ii), 1, MPI_REAL4, an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+                    END DO
+
+                    ! send secondary array chunk to processor an_id
+                    DO ii = 1,g_sec
+                       CALL MPI_SEND( secLongBitFull(start_row,ii), 1, MPI_REAL4, an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+                    END DO
+
+                    ! send solute array chunk to processor an_id
+                    DO ii = 1,g_sol
+                       CALL MPI_SEND( solLongBitFull(start_row,ii), 1, MPI_REAL4, an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+                    END DO
+
+                    ! send medium array chunk to processor an_id
+                    DO ii = 1,g_med
+                       CALL MPI_SEND( medLongBitFull(start_row,ii), 1, MPI_REAL4, an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+                    END DO
+
+
+                    an_id = an_id + 1
+
+                end if ! if cell is active
+
+                start_row = start_row + 1
+
+            END DO
+
+
+
+            an_id = 1
+            start_row = last_active + 1
+
+            DO WHILE (an_id .LE. mod(active_coarse*3,num_procs-1))
+
+                if (medLongBitFull(start_row,5) .EQ. 1.0) then
+                    !write(*,*) "receiving index start_row: " , start_row , "from processor: " , an_id
+
+                    ! receive primary chunk
+                    DO ii = 1,g_pri
+                       ! receive it
+                       CALL MPI_RECV( priLocal(:,ii), 1, MPI_REAL4, an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+                       ! fill it
+                       priLongBitFull(start_row,ii) = priLocal(1,ii)
+                    END DO
+
+                    ! receive secondary chunk
+                    DO ii = 1,g_sec/2
+                       ! receive it
+                       CALL MPI_RECV( secLocal(:,ii), 1, MPI_REAL4, an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+                       ! fill it
+                       secLongBitFull(start_row,ii) = secLocal(1,ii)
+                    END DO
+
+                    ! receive solute chunk
+                    CALL MPI_RECV( solLocal(:,3), 1, MPI_REAL4, an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+
+                    CALL MPI_RECV( solLocal(:,2), 1, MPI_REAL4, an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+                    solLongBitFull(start_row,2) = solLocal(1,2)*solLocal(1,3)/(solLongBitFull(start_row,3))
+
+                    CALL MPI_RECV( solLocal(:,1), 1, MPI_REAL4, an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+                    solLongBitFull(start_row,1) = -1.0*LOG10(10.0**(-1.0*solLocal(1,1))*solLocal(1,3)/(solLongBitFull(start_row,3)))
+
+                    DO ii = 4,g_sol
+                       ! receive it
+                       CALL MPI_RECV( solLocal(:,ii), 1, MPI_REAL4, an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+                       ! fill it
+                       solLongBitFull(start_row,ii) = solLocal(1,ii)*solLocal(1,3)/(solLongBitFull(start_row,3))
+                    END DO
+
+                    ! receive medium chunk
+                    DO ii = 1,g_med
+                       ! receive it
+                       CALL MPI_RECV( medLocal(:,ii), 1, MPI_REAL4, an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+                       ! fill it
+                       medLongBitFull(start_row,ii) = medLocal(1,ii)
+                    END DO
+
+                    an_id = an_id + 1
+
+                end if
+
+                start_row = start_row + 1
+
+            END DO ! while an_id .LE. num_procs - 1
+
+
+
+        END IF
+
+
+
+
+
+
+
+            ! DO an_id = 1, num_procs - 1
+            !
+            !    ! put number of rows in vector here for hLong
+            !    num_rows = 3*((xn-1)/cellx)*(yn/(2*celly))
+            !    avg_rows_per_process = num_rows / (num_procs-1)
+            !    start_row = ( (an_id-1) * avg_rows_per_process) + 1
+            !    end_row = start_row + avg_rows_per_process - 1
+            !    IF (an_id .EQ. (num_procs - 1)) end_row = num_rows
+            !    num_rows_to_send = (end_row - start_row + 1)
+            !
+            !    start_row = (an_id - 1)
+            !
+            !    IF (medLongBitFull(start_row,5) .eq. 1.0) then
+            !
+            !        ! send size of array chunk to processor an_id
+            !        CALL MPI_SEND( num_rows_to_send, 1, MPI_INTEGER, &
+            !             an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+            !
+            !
+            !
+            !
+            !    end if
+            !
+            ! END DO
+
+
+           !
+        !    write(*,*) "done sending geochem to slaves"
+           !
+           !
+           !
+        !    !#GEOCHEM: receives from slaves
+        !    DO an_id = 1, num_procs - 1
+           !
+        !       ! get the size of each chunk again
+        !       num_rows = 3*((xn-1)/cellx)*(yn/(2*celly))
+        !       avg_rows_per_process = num_rows / (num_procs-1)
+        !       start_row = ( (an_id-1) * avg_rows_per_process) + 1
+        !       end_row = start_row + avg_rows_per_process - 1
+        !       IF (an_id .EQ. (num_procs - 1)) end_row = num_rows
+        !       num_rows_to_send = (end_row - start_row + 1)
+           !
+        !       ! receive primary chunk
+        !       DO ii = 1,g_pri
+        !          ! receive it
+        !          CALL MPI_RECV( priLocal(:,ii), num_rows_to_send, MPI_REAL4, &
+        !               an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+        !          ! fill it
+        !          priLongBitFull(start_row:end_row,ii) = priLocal(1:num_rows_to_send,ii)
+        !       END DO
+           !
+        !       ! receive secondary chunk
+        !       DO ii = 1,g_sec/2
+        !          ! receive it
+        !          CALL MPI_RECV( secLocal(:,ii), num_rows_to_send, MPI_REAL4, &
+        !               an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+        !          ! fill it
+        !          secLongBitFull(start_row:end_row,ii) = secLocal(1:num_rows_to_send,ii)
+        !       END DO
+           !
+        !       ! receive solute chunk
+        !       CALL MPI_RECV( solLocal(:,3), num_rows_to_send, MPI_REAL4, &
+        !            an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+        !       ! fill it
+        !       !solLongBitFull(start_row:end_row,ii) = solLocal(1:num_rows_to_send,ii)
+           !
+        !       CALL MPI_RECV( solLocal(:,2), num_rows_to_send, MPI_REAL4, &
+        !            an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+        !       solLongBitFull(start_row:end_row,2) = solLocal(1:num_rows_to_send,2)*solLocal(1:num_rows_to_send,3)/(solLongBitFull(start_row:end_row,3))
+           !
+           !
+        !       CALL MPI_RECV( solLocal(:,1), num_rows_to_send, MPI_REAL4, &
+        !            an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+        !            do ii=start_row,end_row
+        !                solLongBitFull(ii,1) = -1.0*LOG10(10.0**(-1.0*solLocal(ii-start_row+1,1))*solLocal(ii-start_row+1,3)/(solLongBitFull(ii,3)))
+        !            end do
+           !
+           !
+        !       !10.0**(-1.0*solLongBitFull(2*leng+i,1))
+           !
+        !       DO ii = 4,g_sol
+        !          ! receive it
+        !          CALL MPI_RECV( solLocal(:,ii), num_rows_to_send, MPI_REAL4, &
+        !               an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+        !          ! fill it
+        !          !solLongBitFull(start_row:end_row,ii) = solLocal(1:num_rows_to_send,ii)
+        !          solLongBitFull(start_row:end_row,ii) = solLocal(1:num_rows_to_send,ii)*solLocal(1:num_rows_to_send,3)/(solLongBitFull(start_row:end_row,3))
+        !       END DO
+           !
+        !     !   write(*,*) "an_id master received" , an_id
+        !     !   write(*,*) solLongBitFull(start_row:end_row,4)
+        !     !   write(*,*) " "
+           !
+           !
+        !       ! receive medium chunk
+        !       DO ii = 1,g_med
+        !          ! receive it
+        !          CALL MPI_RECV( medLocal(:,ii), num_rows_to_send, MPI_REAL4, &
+        !               an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+        !          ! fill it
+        !          medLongBitFull(start_row:end_row,ii) = medLocal(1:num_rows_to_send,ii)
+        !       END DO
+           !
+        !       write(*,*) "done receiving from " , an_id
+           !
+        !    END DO
 
 
            write(*,*) "done receiving geochem from slaves"
@@ -4094,58 +4402,58 @@ PROGRAM main
 
      DO jj = 1, tn/mstep
 
-        IF (my_id .LE. 22) THEN
-
-           ! receive an_id
-           CALL MPI_RECV ( an_id_local, 1 , MPI_INTEGER, &
-                root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
-
-           ! receive solute long for advection
-           CALL MPI_RECV ( sol_coarse_long_local, ((xn-1)/cellx)*(yn/(2*celly)), MPI_REAL4, &
-                root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
-
-           ! receive u long for advection
-           CALL MPI_RECV ( u_coarse_long_local, ((xn-1)/cellx)*(yn/(2*celly)), MPI_REAL4, &
-                root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
-
-           ! receive v long for advection
-           CALL MPI_RECV ( v_coarse_long_local, ((xn-1)/cellx)*(yn/(2*celly)), MPI_REAL4, &
-                root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
-
-           ! receive phi long for advection
-           CALL MPI_RECV ( phi_coarse_long_local, ((xn-1)/cellx)*(yn/(2*celly)), MPI_REAL4, &
-                root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
-
-           write(*,*) "advection proc my_id" , my_id , an_id_local
-
-           ! reshape them all
-           sol_coarse_local = TRANSPOSE(RESHAPE(sol_coarse_long_local,(/yn/(2*celly),(xn-1)/cellx/)))
-           u_coarse_local = RESHAPE(u_coarse_long_local,(/(xn-1)/cellx,yn/(2*celly)/))
-           v_coarse_local = RESHAPE(v_coarse_long_local,(/(xn-1)/cellx,yn/(2*celly)/))
-           phi_coarse_local = TRANSPOSE(RESHAPE(phi_coarse_long_local,(/yn/(2*celly),(xn-1)/cellx/))) ! this is where the phi transpose bug was
-           !phi_coarse_local = 0.5
-           !write(*,*) maxval(phi_coarse_local)
-
-           !-do advection
-           IF (an_id_local .LE. 11) THEN
-              DO ii = 1,cstep
-                 sol_coarse_local = solute_next_coarse(sol_coarse_local,u_coarse_local,v_coarse_local,phi_coarse_local,sea(sol_index(an_id_local)))
-              END DO
-           END IF
-
-           IF (an_id_local .GT. 11) THEN
-              DO ii = 1,cstep
-                 sol_coarse_local = solute_next_coarse(sol_coarse_local,u_coarse_local,v_coarse_local,phi_coarse_local,sea(sol_index(an_id_local-11)))
-              END DO
-           END IF
-
-           sol_coarse_long_local = RESHAPE(TRANSPOSE(sol_coarse_local),(/((xn-1)/cellx)*(yn/(2*celly))/))
-
-           ! send advected solutes back :)
-           CALL MPI_SEND( sol_coarse_long_local, ((xn-1)/cellx)*(yn/(2*celly)), MPI_REAL4, root_process, &
-                return_data_tag, MPI_COMM_WORLD, ierr)
-
-        END IF ! end if my_id .le. 22
+        ! IF (my_id .LE. 22) THEN
+        !
+        !    ! receive an_id
+        !    CALL MPI_RECV ( an_id_local, 1 , MPI_INTEGER, &
+        !         root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+        !
+        !    ! receive solute long for advection
+        !    CALL MPI_RECV ( sol_coarse_long_local, ((xn-1)/cellx)*(yn/(2*celly)), MPI_REAL4, &
+        !         root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+        !
+        !    ! receive u long for advection
+        !    CALL MPI_RECV ( u_coarse_long_local, ((xn-1)/cellx)*(yn/(2*celly)), MPI_REAL4, &
+        !         root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+        !
+        !    ! receive v long for advection
+        !    CALL MPI_RECV ( v_coarse_long_local, ((xn-1)/cellx)*(yn/(2*celly)), MPI_REAL4, &
+        !         root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+        !
+        !    ! receive phi long for advection
+        !    CALL MPI_RECV ( phi_coarse_long_local, ((xn-1)/cellx)*(yn/(2*celly)), MPI_REAL4, &
+        !         root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+        !
+        !    write(*,*) "advection proc my_id" , my_id , an_id_local
+        !
+        !    ! reshape them all
+        !    sol_coarse_local = TRANSPOSE(RESHAPE(sol_coarse_long_local,(/yn/(2*celly),(xn-1)/cellx/)))
+        !    u_coarse_local = RESHAPE(u_coarse_long_local,(/(xn-1)/cellx,yn/(2*celly)/))
+        !    v_coarse_local = RESHAPE(v_coarse_long_local,(/(xn-1)/cellx,yn/(2*celly)/))
+        !    phi_coarse_local = TRANSPOSE(RESHAPE(phi_coarse_long_local,(/yn/(2*celly),(xn-1)/cellx/))) ! this is where the phi transpose bug was
+        !    !phi_coarse_local = 0.5
+        !    !write(*,*) maxval(phi_coarse_local)
+        !
+        !    !-do advection
+        !    IF (an_id_local .LE. 11) THEN
+        !       DO ii = 1,cstep
+        !          sol_coarse_local = solute_next_coarse(sol_coarse_local,u_coarse_local,v_coarse_local,phi_coarse_local,sea(sol_index(an_id_local)))
+        !       END DO
+        !    END IF
+        !
+        !    IF (an_id_local .GT. 11) THEN
+        !       DO ii = 1,cstep
+        !          sol_coarse_local = solute_next_coarse(sol_coarse_local,u_coarse_local,v_coarse_local,phi_coarse_local,sea(sol_index(an_id_local-11)))
+        !       END DO
+        !    END IF
+        !
+        !    sol_coarse_long_local = RESHAPE(TRANSPOSE(sol_coarse_local),(/((xn-1)/cellx)*(yn/(2*celly))/))
+        !
+        !    ! send advected solutes back :)
+        !    CALL MPI_SEND( sol_coarse_long_local, ((xn-1)/cellx)*(yn/(2*celly)), MPI_REAL4, root_process, &
+        !         return_data_tag, MPI_COMM_WORLD, ierr)
+        !
+        ! END IF ! end if my_id .le. 22
 
 
 
@@ -4159,49 +4467,43 @@ PROGRAM main
 
         !#GEOCHEM: slave receives from master
         ! receive size of temperature array chunk
-        CALL MPI_RECV ( num_rows_to_receive, 1 , MPI_INTEGER, &
-             root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+        ! CALL MPI_RECV ( num_rows_to_receive, 1 , MPI_INTEGER, &
+        !      root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
 
         ! receive timestep size
-        CALL MPI_RECV ( dt_local, 1 , MPI_REAL4, &
-             root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+        CALL MPI_RECV ( dt_local, 1 , MPI_REAL4, root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
 
         ! receive temperature array chunk, save in local hLocal
-        CALL MPI_RECV ( hLocal(1), num_rows_to_receive, MPI_REAL4, &
-             root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
-        num_rows_received = num_rows_to_receive
+        CALL MPI_RECV ( hLocal(1), 1, MPI_REAL4, root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
 
         ! receive temperature array chunk, save in local hLocal
-        CALL MPI_RECV ( ph_fix_Local(1), num_rows_to_receive, MPI_REAL4, &
-             root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+        CALL MPI_RECV ( ph_fix_Local(1), 1, MPI_REAL4, root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
 
         ! receive primary array chunk, save in local priLocal
         DO ii = 1,g_pri
-           CALL MPI_RECV ( priLocal(1,ii), num_rows_to_receive, MPI_REAL4, &
-                root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+           CALL MPI_RECV ( priLocal(1,ii), 1, MPI_REAL4, root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
            ! 			priLocal(:,ii) = priLocalBit
         END DO
 
         ! receive secondary array chunk, save in local secLocal
         DO ii = 1,g_sec
-           CALL MPI_RECV ( secLocal(1,ii), num_rows_to_receive, MPI_REAL4, &
-                root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+           CALL MPI_RECV ( secLocal(1,ii), 1, MPI_REAL4, root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
            ! 			secLocal(:,ii) = secLocalBit
         END DO
 
         ! receive solute chunk, save in local solLocal
         DO ii = 1,g_sol
-           CALL MPI_RECV ( solLocal(1,ii), num_rows_to_receive, MPI_REAL4, &
-                root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+           CALL MPI_RECV ( solLocal(1,ii), 1, MPI_REAL4, root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
            ! 			solLocal(:,ii) = solLocalBit
         END DO
 
         ! receive medium chunk, save in local solLocal
         DO ii = 1,g_med
-           CALL MPI_RECV ( medLocal(1,ii), num_rows_to_receive, MPI_REAL4, &
-                root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+           CALL MPI_RECV ( medLocal(1,ii), 1, MPI_REAL4, root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
            ! 			medLocal(:,ii) = medLocalBit
         END DO
+
+        !write(*,*) "my_id: " , my_id , "done receiving from master"
 
 
 
@@ -4213,7 +4515,7 @@ PROGRAM main
 
         ! slave processor loops through each coarse cell
         m_count = 0
-        DO m=1,num_rows_to_receive
+        m=1
 
            IF (medLocal(m,5) .EQ. 1.0) THEN
                m_count = m_count + 1
@@ -4899,8 +5201,8 @@ PROGRAM main
 
            end if
 
-        END DO ! end m = 1,num rows, ran chem for each row and populated local arrays
-        write(*,*) my_id, m_count
+        !END DO ! end m = 1,num rows, ran chem for each row and populated local arrays
+        !write(*,*) my_id, m_count
 
 
         medLocal(:,1) = 0.0
@@ -4912,11 +5214,11 @@ PROGRAM main
            medLocal(:,1) = medLocal(:,1) + priLocal(:,m)*pri_molar(m)/pri_density(m)
         END DO
 
-        DO m=1,num_rows_to_receive
+        !DO m=1,num_rows_to_receive
            IF ((medLocal(m,1) + solLocal(m,3)) .GT. 0.0) THEN
               medLocal(m,1) = medLocal(m,1)/(medLocal(m,1) + 1000.0*solLocal(m,3))
            END IF
-        END DO
+        !END DO
 
 
 
@@ -4934,29 +5236,30 @@ PROGRAM main
         !#GEOCHEM: slave sends to master
 
         ! send primary array chunk back to root process
+        !write(*,*) "BEGIN sending to master from" , my_id
         DO ii = 1,g_pri
-           CALL MPI_SEND( priLocal(1,ii), num_rows_received, MPI_REAL4, root_process, &
+           CALL MPI_SEND( priLocal(1,ii), 1, MPI_REAL4, root_process, &
                 return_data_tag, MPI_COMM_WORLD, ierr)
         END DO
 
         ! send secondary array chunk back to root process
         DO ii = 1,g_sec/2
-           CALL MPI_SEND( secLocal(1,ii), num_rows_received, MPI_REAL4, root_process, &
+           CALL MPI_SEND( secLocal(1,ii), 1, MPI_REAL4, root_process, &
                 return_data_tag, MPI_COMM_WORLD, ierr)
         END DO
 
         ! send solute array chunk back to root process
-        CALL MPI_SEND( solLocal(1,3), num_rows_received, MPI_REAL4, root_process, &
+        CALL MPI_SEND( solLocal(1,3), 1, MPI_REAL4, root_process, &
              return_data_tag, MPI_COMM_WORLD, ierr)
 
-        CALL MPI_SEND( solLocal(1,2), num_rows_received, MPI_REAL4, root_process, &
+        CALL MPI_SEND( solLocal(1,2), 1, MPI_REAL4, root_process, &
              return_data_tag, MPI_COMM_WORLD, ierr)
 
-        CALL MPI_SEND( solLocal(1,1), num_rows_received, MPI_REAL4, root_process, &
+        CALL MPI_SEND( solLocal(1,1), 1, MPI_REAL4, root_process, &
              return_data_tag, MPI_COMM_WORLD, ierr)
 
         DO ii = 4,g_sol
-           CALL MPI_SEND( solLocal(1,ii), num_rows_received, MPI_REAL4, root_process, &
+           CALL MPI_SEND( solLocal(1,ii), 1, MPI_REAL4, root_process, &
                 return_data_tag, MPI_COMM_WORLD, ierr)
         END DO
 
@@ -4970,9 +5273,11 @@ PROGRAM main
 
         ! send medium array chunk back to root process
         DO ii = 1,g_med
-           CALL MPI_SEND( medLocal(1,ii), num_rows_received, MPI_REAL4, root_process, &
+           CALL MPI_SEND( medLocal(1,ii), 1, MPI_REAL4, root_process, &
                 return_data_tag, MPI_COMM_WORLD, ierr)
         END DO
+
+        !write(*,*) "FINISHED sending to master from" , my_id
 
         ! if (my_id .eq. 2) then
         ! 	call system_clock(countf, count_rate, count_max)
