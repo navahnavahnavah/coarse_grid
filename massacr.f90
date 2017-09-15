@@ -326,6 +326,9 @@ PROGRAM main
   REAL(4) :: medLong_b(((xn-1)/cellx)*(yn/(2*celly)),g_med)
 
 
+  REAL(4) :: cml3((3*(xn-1)/cellx)*(yn/(2*celly)))
+
+
 
   INTEGER(KIND=4) :: id, all=136
   CHARACTER(LEN=5000) :: line
@@ -370,6 +373,8 @@ PROGRAM main
   CHARACTER(len=25) :: exp_ol1, exp_ol2, exp_ol3, exp_ol
   CHARACTER(len=25) :: exp_pyr1, exp_pyr2, exp_pyr3, exp_pyr
   CHARACTER(len=25) :: exp_plag1, exp_plag2, exp_plag3, exp_plag
+
+
 
 
   CHARACTER(len=79000) :: L5
@@ -2334,6 +2339,15 @@ PROGRAM main
      ! initialize domain geometry
      CALL init()
 
+     cml3 = coarse_mask_long3
+
+     write(*,*) "before bcast" , SUM(coarse_mask_long3)
+
+     CALL MPI_Bcast( coarse_mask_long3, (3*(xn-1)/cellx)*(yn/(2*celly)), MPI_REAL4, 0, MPI_COMM_WORLD, status, ierr)
+     CALL MPI_Barrier(MPI_COMM_WORLD, ierr)
+
+     write(*,*) "after bcast"
+
 
      do an_id = 1,num_procs - 1
         par_rounds = active_coarse * 3 / (num_procs - 1)
@@ -2344,6 +2358,8 @@ PROGRAM main
         ! send end_loop to processor an_id
         CALL MPI_SEND( end_loop, 1, MPI_INTEGER, an_id, send_data_tag, MPI_COMM_WORLD, ierr)
     end do
+
+
 
 
      !-diss_toggle
@@ -3040,6 +3056,23 @@ PROGRAM main
 
 
 
+            DO an_id = 1, 11
+
+               CALL MPI_RECV( sol_coarse_long, leng, MPI_REAL4, &
+                    an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+
+               IF (an_id .LE. 11) THEN
+                  solLongBitFull(:leng,sol_index(an_id)) = sol_coarse_long
+               END IF
+
+            !    IF (an_id .GT. 11) THEN
+            !       solLongBitFull(leng+1:2*leng,sol_index(an_id-11)) = sol_coarse_long
+            !    END IF
+
+            END DO
+
+
+
             DO an_id = 12, 22
 
               !IF (an_id .GT. 11) THEN
@@ -3082,24 +3115,24 @@ PROGRAM main
                 !  !#ADVECTION: send from master to slaves (a)
                  !
                  ! send an_id name
-                 CALL MPI_SEND( an_id, 1, MPI_INTEGER, &
-                      an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+                 CALL MPI_SEND( an_id-11, 1, MPI_INTEGER, &
+                      an_id-11, send_data_tag, MPI_COMM_WORLD, ierr)
 
                  ! send long sol coarse
                  CALL MPI_SEND( sol_coarse_long, leng, MPI_REAL4, &
-                      an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+                      an_id-11, send_data_tag, MPI_COMM_WORLD, ierr)
 
                  ! send long u coarse
                  CALL MPI_SEND( u_coarse_long, leng, MPI_REAL4, &
-                      an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+                      an_id-11, send_data_tag, MPI_COMM_WORLD, ierr)
 
                  ! send long v coarse
                  CALL MPI_SEND( v_coarse_long, leng, MPI_REAL4, &
-                      an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+                      an_id-11, send_data_tag, MPI_COMM_WORLD, ierr)
 
                  ! send long phi coarse
                  CALL MPI_SEND( phi_coarse_long, leng, MPI_REAL4, &
-                      an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+                      an_id-11, send_data_tag, MPI_COMM_WORLD, ierr)
 
 
               !END IF
@@ -3110,25 +3143,41 @@ PROGRAM main
 
               END DO
 
+
+              DO an_id = 12, 22
+
+                 CALL MPI_RECV( sol_coarse_long, leng, MPI_REAL4, &
+                      an_id-11, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+
+                !  IF (an_id .LE. 11) THEN
+                !     solLongBitFull(:leng,sol_index(an_id)) = sol_coarse_long
+                !  END IF
+
+                 IF (an_id .GT. 11) THEN
+                    solLongBitFull(leng+1:2*leng,sol_index(an_id-11)) = sol_coarse_long
+                 END IF
+
+              END DO
+
            !#ADVECTION: master receives from slaves
 
            ! call system_clock(counti, count_rate, count_max)
            !write(*,*) "BEGIN RECEIVING ADVECTED SOLUTES"
 
-           DO an_id = 1, 22
-
-              CALL MPI_RECV( sol_coarse_long, leng, MPI_REAL4, &
-                   an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
-
-              IF (an_id .LE. 11) THEN
-                 solLongBitFull(:leng,sol_index(an_id)) = sol_coarse_long
-              END IF
-
-              IF (an_id .GT. 11) THEN
-                 solLongBitFull(leng+1:2*leng,sol_index(an_id-11)) = sol_coarse_long
-              END IF
-
-           END DO
+        !    DO an_id = 1, 22
+           !
+        !       CALL MPI_RECV( sol_coarse_long, leng, MPI_REAL4, &
+        !            an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+           !
+        !       IF (an_id .LE. 11) THEN
+        !          solLongBitFull(:leng,sol_index(an_id)) = sol_coarse_long
+        !       END IF
+           !
+        !       IF (an_id .GT. 11) THEN
+        !          solLongBitFull(leng+1:2*leng,sol_index(an_id-11)) = sol_coarse_long
+        !       END IF
+           !
+        !    END DO
 
            call system_clock(countf, count_rate, count_max)
            write(*,*) "...advection done" , countf - counti
@@ -4456,13 +4505,34 @@ PROGRAM main
 
      !#ADVECTION: slave receives message
      CALL init_mini()
+     CALL MPI_Bcast( coarse_mask_long3, (3*(xn-1)/cellx)*(yn/(2*celly)), MPI_REAL4, 0, MPI_COMM_WORLD, status, ierr)
+     CALL MPI_Barrier(MPI_COMM_WORLD, ierr)
 
      ! receive timestep size
      CALL MPI_RECV ( end_loop, 1 , MPI_INTEGER, root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
      write(*,*) "my_id: " , my_id , "end loop is: " , end_loop
 
+
+
+
      leng = (yn/(2*celly))*((xn-1)/cellx)
      ! message receiving has to happen every mth step
+
+     !-slave_vector!!!!!!
+    !  write(*,*) "my_id: " , my_id , "sum: " , SUM(coarse_mask_long3)
+    slave_count = 1
+    index_count = 1
+    do jj = 1 , 3*leng
+        if (coarse_mask_long3(jj) .EQ. 1.0) then
+            ! if (slave_count .EQ. (slave_count/(num_procs-1)) + my_id) then
+            if (my_id .EQ. mod(slave_count-((num_procs-1)*(index_count-1)),num_procs)) then
+                slave_vector(index_count) = jj
+                index_count = index_count + 1
+            end if
+            slave_count = slave_count + 1
+        end if
+    end do
+    write(*,*) "my_id: " , my_id , "slave_vector" , slave_vector(1:end_loop)
 
      !-primary compositions + amounts
 
@@ -4551,7 +4621,7 @@ PROGRAM main
 
      DO jj = 1, tn/mstep
 
-        IF (my_id .LE. 22) THEN
+        IF (my_id .LE. 11) THEN
 
            ! receive an_id
            CALL MPI_RECV ( an_id_local, 1 , MPI_INTEGER, &
@@ -4601,6 +4671,58 @@ PROGRAM main
            ! send advected solutes back :)
            CALL MPI_SEND( sol_coarse_long_local, ((xn-1)/cellx)*(yn/(2*celly)), MPI_REAL4, root_process, &
                 return_data_tag, MPI_COMM_WORLD, ierr)
+
+
+
+
+            ! receive an_id
+            CALL MPI_RECV ( an_id_local, 1 , MPI_INTEGER, &
+                 root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+
+            ! receive solute long for advection
+            CALL MPI_RECV ( sol_coarse_long_local, ((xn-1)/cellx)*(yn/(2*celly)), MPI_REAL4, &
+                 root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+
+            ! receive u long for advection
+            CALL MPI_RECV ( u_coarse_long_local, ((xn-1)/cellx)*(yn/(2*celly)), MPI_REAL4, &
+                 root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+
+            ! receive v long for advection
+            CALL MPI_RECV ( v_coarse_long_local, ((xn-1)/cellx)*(yn/(2*celly)), MPI_REAL4, &
+                 root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+
+            ! receive phi long for advection
+            CALL MPI_RECV ( phi_coarse_long_local, ((xn-1)/cellx)*(yn/(2*celly)), MPI_REAL4, &
+                 root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+
+            write(*,*) "advection proc my_id" , my_id , an_id_local
+
+            ! reshape them all
+            sol_coarse_local = TRANSPOSE(RESHAPE(sol_coarse_long_local,(/yn/(2*celly),(xn-1)/cellx/)))
+            u_coarse_local = RESHAPE(u_coarse_long_local,(/(xn-1)/cellx,yn/(2*celly)/))
+            v_coarse_local = RESHAPE(v_coarse_long_local,(/(xn-1)/cellx,yn/(2*celly)/))
+            phi_coarse_local = TRANSPOSE(RESHAPE(phi_coarse_long_local,(/yn/(2*celly),(xn-1)/cellx/))) ! this is where the phi transpose bug was
+            !phi_coarse_local = 0.5
+            !write(*,*) maxval(phi_coarse_local)
+
+            !-do advection
+            IF (an_id_local .LE. 11) THEN
+               DO ii = 1,cstep
+                  sol_coarse_local = solute_next_coarse(sol_coarse_local,u_coarse_local,v_coarse_local,phi_coarse_local,sea(sol_index(an_id_local)))
+               END DO
+            END IF
+
+            IF (an_id_local .GT. 11) THEN
+               DO ii = 1,cstep
+                  sol_coarse_local = solute_next_coarse(sol_coarse_local,u_coarse_local,v_coarse_local,phi_coarse_local,sea(sol_index(an_id_local-11)))
+               END DO
+            END IF
+
+            sol_coarse_long_local = RESHAPE(TRANSPOSE(sol_coarse_local),(/((xn-1)/cellx)*(yn/(2*celly))/))
+
+            ! send advected solutes back :)
+            CALL MPI_SEND( sol_coarse_long_local, ((xn-1)/cellx)*(yn/(2*celly)), MPI_REAL4, root_process, &
+                 return_data_tag, MPI_COMM_WORLD, ierr)
 
         END IF ! end if my_id .le. 22
 

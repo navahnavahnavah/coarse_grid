@@ -59,6 +59,8 @@ MODULE initialize
 
 
 
+
+
   REAL(4) :: t_vol_s, t_vol_a, t_vol_b
 
   REAL(4) :: sec_density(g_sec/2), sec_molar(g_sec/2)
@@ -82,6 +84,7 @@ MODULE initialize
   ! real(4) :: med_coarse_b((xn-1)/cellx,yn/celly,g_med)
 
   REAL(4) :: coarse_mask((xn-1)/cellx,yn/(2*celly)), coarse_mask_long(((xn-1)/cellx)*(yn/(2*celly)))
+  REAL(4) :: coarse_mask_long3((3*(xn-1)/cellx)*(yn/(2*celly)))
 
   REAL(4) :: volume_ratio, mix_ratio, volume_ratio_i, volume_ratio_u
   REAL(4) :: vol_i, vol_i_a, vol_i_b
@@ -908,7 +911,8 @@ CONTAINS
     medium_b(1,:,5) = 0.0
 
     coarse_mask_long = RESHAPE(TRANSPOSE(coarse_mask),(/((xn-1)/cellx)*(yn/(2*celly))/))
-
+    coarse_mask_long3 = (/ coarse_mask_long, coarse_mask_long, coarse_mask_long /)
+    write(*,*) "init sum: " , sum(coarse_mask_long3)
     active_coarse = 0
     DO g=1,((xn-1)/cellx)*(yn/(2*celly))
           IF (coarse_mask_long(g) .NE. 0.0) THEN

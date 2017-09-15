@@ -60,6 +60,11 @@ MODULE globals
   INTEGER :: m_count
   INTEGER :: par_rounds, par_round, par_current, last_active
   INTEGER :: active_coarse, end_loop
+
+
+  INTEGER :: slave_vector((3*(xn-1)/cellx)*(yn/(2*celly)))
+  INTEGER :: slave_count, index_count
+
 CONTAINS
 
 
