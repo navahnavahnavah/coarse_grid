@@ -3693,7 +3693,7 @@ PROGRAM main
         !
         ! call system_clock(countf, count_rate, count_max)
         ! write(*,*) "bcast + barrier" , countf - counti
-
+        call system_clock(counti, count_rate, count_max)
         DO an_id = 1 , num_procs - 1
             CALL MPI_SEND( hLong, 3*leng, MPI_REAL4, an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 
@@ -3714,6 +3714,8 @@ PROGRAM main
             END DO
 
         END DO
+        call system_clock(countf, count_rate, count_max)
+        write(*,*) "sending time to all: " , countf - counti
 
 
 
@@ -3848,12 +3850,14 @@ PROGRAM main
             !DO i = 1 , end_loop
 
                 DO ii = 1 , g_pri
-                    CALL MPI_RECV( priLongBitFull(slave_vector(1:end_loop),ii), end_loop, MPI_REAL4, an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+                    CALL MPI_RECV( priLocal(1,ii), end_loop, MPI_REAL4, an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+                    priLongBitFull(slave_vector(1:end_loop),ii) = priLocal(1:end_loop,ii)
                     !write(*,*) "    RECEIVE FROM: " , an_id , "g_pri: " , ii
                 END DO
 
                 DO ii = 1 , g_sec/2
-                    CALL MPI_RECV( secLongBitFull(slave_vector(1:end_loop),ii), end_loop, MPI_REAL4, an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+                    CALL MPI_RECV( secLocal(1,ii), end_loop, MPI_REAL4, an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+                    secLongBitFull(slave_vector(1:end_loop),ii) = secLocal(1:end_loop,ii)
                     !write(*,*) "    RECEIVE FROM: " , an_id , "g_sec/2: " , ii
                 END DO
 
@@ -3875,7 +3879,8 @@ PROGRAM main
                 END DO
 
                 DO ii = 1 , g_med
-                    CALL MPI_RECV( medLongBitFull(slave_vector(1:end_loop),ii), end_loop, MPI_REAL4, an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+                    CALL MPI_RECV( medLocal(1,ii), end_loop, MPI_REAL4, an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+                    medLongBitFull(slave_vector(1:end_loop),ii) = medLocal(1:end_loop,ii)
                     !write(*,*) "    RECEIVE FROM: " , an_id , "g_med: " , ii
                 END DO
 
@@ -4928,7 +4933,7 @@ PROGRAM main
         ! CALL MPI_Barrier(MPI_COMM_WORLD, ierr)
         ! call system_clock(countf, count_rate, count_max)
         ! write(*,*) "slave" , my_id , "broadcast" , countf - counti
-
+        call system_clock(counti, count_rate, count_max)
         CALL MPI_RECV ( hLong, 3*leng, MPI_REAL4, root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
 
         DO ii = 1 , g_pri
@@ -4946,6 +4951,8 @@ PROGRAM main
         DO ii = 1 , g_med
             CALL MPI_RECV ( medLongBitFull(:,ii), 3*leng, MPI_REAL4, root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
         END DO
+        call system_clock(countf, count_rate, count_max)
+        write(*,*) "slave:" , my_id , "receives time:" , countf - counti
 
 dt_local = dt
 
@@ -5026,6 +5033,20 @@ DO jjj = 1,end_loop
               IF (temp3 .GE. 300.0) THEN
                  temp3 = 299.0
               END IF
+
+            !   if (my_id .EQ. 1) then
+            !       write(*,*) "primary"
+            !       write(*,*) primary3
+              !
+            !       write(*,*) "secondary"
+            !       write(*,*) secondary3
+              !
+            !       write(*,*) "solute"
+            !       write(*,*) solute3
+              !
+            !       write(*,*) "med"
+            !       write(*,*) medium3
+            !   end if
 
 
               ! SOLUTES TO STRINGS
@@ -5607,6 +5628,10 @@ DO jjj = 1,end_loop
                   secLocal(m,ii) = alt_mat(m,2*ii+14)
                END DO
                end if
+            !    if (my_id .EQ. 1) then
+            !        write(*,*) "secLocal(m,:) for my_id = 1"
+            !        write(*,*) secLocal(m,:)
+            !    end if
 
            end if
 
@@ -5718,7 +5743,7 @@ END DO ! end jjj = 1,end_loop
 
 
 !#GEOCHEM: slave sends to master
-!call system_clock(counti, count_rate, count_max)
+call system_clock(counti, count_rate, count_max)
 
 !if (jjj .EQ. 1) then
     CALL MPI_SEND( end_loop, 1, MPI_INTEGER, root_process, return_data_tag, MPI_COMM_WORLD, ierr)
@@ -5743,9 +5768,9 @@ END DO
 ! send secondary array chunk back to root process
 DO ii = 1,g_sec/2
    CALL MPI_SEND( secLocal(slave_vector(1:end_loop),ii), end_loop, MPI_REAL4, root_process, return_data_tag, MPI_COMM_WORLD, ierr)
-!    if (my_id .EQ. 12) then
-!        write(*,*) "jj:" , jj , "jjj:" , jjj , my_id , "sent g_sec/2: " , ii
-!    end if
+    ! if (my_id .EQ. 1) then
+    !     write(*,*) "secLocal just sent:" , secLocal(slave_vector(1:end_loop),ii)
+    ! end if
 END DO
 
 ! send solute array chunk back to root process
@@ -5786,7 +5811,8 @@ DO ii = 1,g_med
 !        write(*,*) my_id , "sent g_med: " , ii
 !    end if
 END DO
-
+call system_clock(countf, count_rate, count_max)
+write(*,*) "slave:" , my_id , "return send time:" , countf - counti
 
      END DO ! end do jj = tn/mstep ??
 
