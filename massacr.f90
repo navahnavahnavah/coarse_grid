@@ -2775,6 +2775,7 @@ PROGRAM main
            DO i = 1,yn/(2*celly)
               h_coarse(:,i) = SUM(h_coarse(:,i))/((xn-1)/cellx)
            END DO
+           
 
 
            !h_coarse((xn-1)/cellx,:) = h_coarse(((xn-1)/cellx)-1,:)
@@ -3838,7 +3839,7 @@ PROGRAM main
         DO an_id = 1,num_procs - 1
             call system_clock(counti, count_rate, count_max)
             CALL MPI_RECV( end_loop, 1, MPI_INTEGER, an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
-            write(*,*) "    RECEIVE END_LOOP FROM: " , an_id !, "end_loop: " , end_loop
+            !write(*,*) "    RECEIVE END_LOOP FROM: " , an_id !, "end_loop: " , end_loop
             CALL MPI_RECV( slave_vector, end_loop, MPI_INTEGER, an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
             !write(*,*) "    RECEIVE FROM: " , an_id , "slave_vector: " , slave_vector(1:end_loop)
             call system_clock(countf, count_rate, count_max)
@@ -4956,7 +4957,7 @@ PROGRAM main
 
 dt_local = dt
 
-
+call system_clock(counti, count_rate, count_max)
 DO jjj = 1,end_loop
 
 !write(*,*) slave_vector(jjj) , ":" , priLongBitFull(slave_vector(jjj),:)
@@ -5502,7 +5503,14 @@ DO jjj = 1,end_loop
               !write(*,*) "proc", my_id , "finished LoadDB" , countf - counti
 
               ! RUN INPUT
-              !call system_clock(counti, count_rate, count_max)
+            !   if (my_id .EQ. 1) then
+            !       call system_clock(counti, count_rate, count_max)
+            !   end if
+              !
+            !   if (my_id .EQ. 13) then
+            !       call system_clock(counti, count_rate, count_max)
+            !   end if
+
               IF (RunString(id, TRIM(inputz0)).NE.0) THEN
                  WRITE(*,*) "issue is:" , RunString(id, TRIM(inputz0))
                  CALL OutputErrorString(id)
@@ -5522,8 +5530,15 @@ DO jjj = 1,end_loop
                  END IF
                  !STOP
               END IF
-              !call system_clock(countf, count_rate, count_max)
-              !write(*,*) "proc", my_id , "finished run string" , countf - counti
+            !   if (my_id .EQ. 1) then
+            !       call system_clock(countf, count_rate, count_max)
+            !       write(*,*) "proc", my_id , "finished run string" , countf - counti
+            !   end if
+              !
+            !   if (my_id .EQ. 13) then
+            !       call system_clock(countf, count_rate, count_max)
+            !       write(*,*) "proc", my_id , "finished run string" , countf - counti
+            !   end if
 
               ! WRITE AWAY
               DO i=1,GetSelectedOutputStringLineCount(id)
@@ -5740,10 +5755,11 @@ DO jjj = 1,end_loop
 	! done with looping through coarse timesteps
 
 END DO ! end jjj = 1,end_loop
-
+call system_clock(countf, count_rate, count_max)
+write(*,*) "my_id" , my_id , "jjj loop time:" , countf - counti
 
 !#GEOCHEM: slave sends to master
-call system_clock(counti, count_rate, count_max)
+!call system_clock(counti, count_rate, count_max)
 
 !if (jjj .EQ. 1) then
     CALL MPI_SEND( end_loop, 1, MPI_INTEGER, root_process, return_data_tag, MPI_COMM_WORLD, ierr)
@@ -5811,8 +5827,8 @@ DO ii = 1,g_med
 !        write(*,*) my_id , "sent g_med: " , ii
 !    end if
 END DO
-call system_clock(countf, count_rate, count_max)
-write(*,*) "slave:" , my_id , "return send time:" , countf - counti
+!call system_clock(countf, count_rate, count_max)
+!write(*,*) "slave:" , my_id , "return send time:" , countf - counti
 
      END DO ! end do jj = tn/mstep ??
 
