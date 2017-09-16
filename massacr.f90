@@ -3655,6 +3655,9 @@ PROGRAM main
         !    END DO
 
         !#GEOCHEM: send from master to slaves
+        call system_clock(counti, count_rate, count_max)
+
+
         CALL MPI_Bcast( hLong, 3*leng, MPI_REAL4, root_process, MPI_COMM_WORLD, status, ierr)
 
         DO ii = 1,g_pri
@@ -3673,7 +3676,12 @@ PROGRAM main
             CALL MPI_Bcast( medLongBitFull(:,ii), 3*leng, MPI_REAL4, root_process, MPI_COMM_WORLD, status, ierr)
         END DO
 
+        !write(*,*) medLongBitFull(:,5)
+
         CALL MPI_Barrier(MPI_COMM_WORLD, ierr)
+
+        call system_clock(countf, count_rate, count_max)
+        write(*,*) "bcast + barrier" , countf - counti
 
 
 
@@ -3766,7 +3774,7 @@ PROGRAM main
                 solLongBitFull(slave_vector(i),1) = -1.0*LOG10(10.0**(-1.0*solLocal(1,1))*solLocal(1,3)/(solLongBitFull(slave_vector(i),3)))
 
                 DO ii = 4 , g_sol
-                    CALL MPI_RECV( solLongBitFull(slave_vector(i),ii), 1, MPI_REAL4, an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+                    CALL MPI_RECV( solLocal(1,ii), 1, MPI_REAL4, an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
                     solLongBitFull(slave_vector(i),ii) = solLocal(1,ii)*solLocal(1,3)/(solLongBitFull(slave_vector(i),3))
                 END DO
 
@@ -4594,7 +4602,7 @@ PROGRAM main
             slave_count = slave_count + 1
         end if
     end do
-    write(*,*) "my_id: " , my_id , "slave_vector" , slave_vector(1:end_loop)
+    !write(*,*) "my_id: " , my_id , "slave_vector" , slave_vector(1:end_loop)
 
      !-primary compositions + amounts
 
@@ -4878,7 +4886,7 @@ DO jjj = 1,end_loop
         m_count = 0
         m=slave_vector(jjj)
 
-           IF (medLocal(m,5) .EQ. 1.0) THEN
+           IF (medLongBitFull(m,5) .EQ. 1.0) THEN
                m_count = m_count + 1
 
 
@@ -4891,6 +4899,7 @@ DO jjj = 1,end_loop
               IF (temp3 .GE. 300.0) THEN
                  temp3 = 299.0
               END IF
+
 
               ! SOLUTES TO STRINGS
               WRITE(s_ph,'(F25.10)') solute3(1)
@@ -5325,7 +5334,7 @@ DO jjj = 1,end_loop
               END IF
 
               ! write(*,*) "we here"
-              call system_clock(counti, count_rate, count_max)
+              !call system_clock(counti, count_rate, count_max)
               !IF (LoadDatabase(id, 'l5.dat').NE.0) THEN
               IF (LoadDatabaseString(id, TRIM(L5)).NE.0) THEN
                  CALL OutputErrorString(id)
@@ -5341,11 +5350,11 @@ DO jjj = 1,end_loop
                  WRITE(*,*) temp3
                  !STOP
               END IF
-              call system_clock(countf, count_rate, count_max)
-              write(*,*) "proc", my_id , "finished LoadDB" , countf - counti
+              !call system_clock(countf, count_rate, count_max)
+              !write(*,*) "proc", my_id , "finished LoadDB" , countf - counti
 
               ! RUN INPUT
-              call system_clock(counti, count_rate, count_max)
+              !call system_clock(counti, count_rate, count_max)
               IF (RunString(id, TRIM(inputz0)).NE.0) THEN
                  WRITE(*,*) "issue is:" , RunString(id, TRIM(inputz0))
                  CALL OutputErrorString(id)
@@ -5365,8 +5374,8 @@ DO jjj = 1,end_loop
                  END IF
                  !STOP
               END IF
-              call system_clock(countf, count_rate, count_max)
-              write(*,*) "proc", my_id , "finished run string" , countf - counti
+              !call system_clock(countf, count_rate, count_max)
+              !write(*,*) "proc", my_id , "finished run string" , countf - counti
 
               ! WRITE AWAY
               DO i=1,GetSelectedOutputStringLineCount(id)
@@ -5478,12 +5487,12 @@ DO jjj = 1,end_loop
         !write(*,*) my_id, m_count
 
         medLocal(:,1) = 0.0
-        DO m=1,g_sec/2
-           medLocal(:,1) = medLocal(:,1) + secLocal(:,m)*sec_molar(m)/sec_density(m)
+        DO ii=1,g_sec/2
+           medLocal(:,1) = medLocal(:,1) + secLocal(:,ii)*sec_molar(ii)/sec_density(ii)
         END DO
 
-        DO m=1,g_pri
-           medLocal(:,1) = medLocal(:,1) + priLocal(:,m)*pri_molar(m)/pri_density(m)
+        DO ii=1,g_pri
+           medLocal(:,1) = medLocal(:,1) + priLocal(:,ii)*pri_molar(ii)/pri_density(ii)
         END DO
 
         !DO m=1,num_rows_to_receive
@@ -5496,7 +5505,7 @@ DO jjj = 1,end_loop
 
 
         !#GEOCHEM: slave sends to master
-
+        !call system_clock(counti, count_rate, count_max)
 
         if (jjj .EQ. 1) then
             CALL MPI_SEND( end_loop, 1, MPI_INTEGER, root_process, return_data_tag, MPI_COMM_WORLD, ierr)
@@ -5506,23 +5515,23 @@ DO jjj = 1,end_loop
         ! send primary array chunk back to root process
         !write(*,*) "BEGIN sending to master from" , my_id
         DO ii = 1,g_pri
-           CALL MPI_SEND( priLocal(1,ii), 1, MPI_REAL4, root_process, return_data_tag, MPI_COMM_WORLD, ierr)
+           CALL MPI_SEND( priLocal(m,ii), 1, MPI_REAL4, root_process, return_data_tag, MPI_COMM_WORLD, ierr)
         END DO
 
         ! send secondary array chunk back to root process
         DO ii = 1,g_sec/2
-           CALL MPI_SEND( secLocal(1,ii), 1, MPI_REAL4, root_process, return_data_tag, MPI_COMM_WORLD, ierr)
+           CALL MPI_SEND( secLocal(m,ii), 1, MPI_REAL4, root_process, return_data_tag, MPI_COMM_WORLD, ierr)
         END DO
 
         ! send solute array chunk back to root process
-        CALL MPI_SEND( solLocal(1,3), 1, MPI_REAL4, root_process, return_data_tag, MPI_COMM_WORLD, ierr)
+        CALL MPI_SEND( solLocal(m,3), 1, MPI_REAL4, root_process, return_data_tag, MPI_COMM_WORLD, ierr)
 
-        CALL MPI_SEND( solLocal(1,2), 1, MPI_REAL4, root_process, return_data_tag, MPI_COMM_WORLD, ierr)
+        CALL MPI_SEND( solLocal(m,2), 1, MPI_REAL4, root_process, return_data_tag, MPI_COMM_WORLD, ierr)
 
-        CALL MPI_SEND( solLocal(1,1), 1, MPI_REAL4, root_process, return_data_tag, MPI_COMM_WORLD, ierr)
+        CALL MPI_SEND( solLocal(m,1), 1, MPI_REAL4, root_process, return_data_tag, MPI_COMM_WORLD, ierr)
 
         DO ii = 4,g_sol
-           CALL MPI_SEND( solLocal(1,ii), 1, MPI_REAL4, root_process, return_data_tag, MPI_COMM_WORLD, ierr)
+           CALL MPI_SEND( solLocal(m,ii), 1, MPI_REAL4, root_process, return_data_tag, MPI_COMM_WORLD, ierr)
         END DO
 
 
@@ -5535,9 +5544,11 @@ DO jjj = 1,end_loop
 
         ! send medium array chunk back to root process
         DO ii = 1,g_med
-           CALL MPI_SEND( medLocal(1,ii), 1, MPI_REAL4, root_process, &
-                return_data_tag, MPI_COMM_WORLD, ierr)
+           CALL MPI_SEND( medLongBitFull(slave_vector(jjj),ii), 1, MPI_REAL4, root_process, return_data_tag, MPI_COMM_WORLD, ierr)
         END DO
+
+        !call system_clock(countf, count_rate, count_max)
+        !write(*,*) "end of send to master", my_id , countf - counti
 
 
 	! done with looping through coarse timesteps
