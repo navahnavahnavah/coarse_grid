@@ -292,6 +292,9 @@ PROGRAM main
   REAL(4) :: secLongBit(3*((xn-1)/cellx)*(yn/(2*celly)))
   REAL(4) :: solLongBit(3*((xn-1)/cellx)*(yn/(2*celly)))
   REAL(4) :: medLongBit(3*((xn-1)/cellx)*(yn/(2*celly)))
+  REAL(4) :: dpriLocal(3*((xn-1)/cellx)*(yn/(2*celly)),g_pri)
+  REAL(4) :: dsecLocal(3*((xn-1)/cellx)*(yn/(2*celly)),g_sec)
+
 
   REAL(4) :: sol_coarse_long(((xn-1)/cellx)*(yn/(2*celly)))
   REAL(4) :: sol_coarse_long_local(((xn-1)/cellx)*(yn/(2*celly)))
@@ -338,6 +341,7 @@ PROGRAM main
   CHARACTER(len=7000) :: inputz0
   REAL(4) :: outmat(4,136)
   REAL(4) :: temp3, timestep3, primary3(5), secondary3(80), solute3(15), medium3(7), ph_fix3 ! important information
+  REAL(4) :: dsecondary3(80), dprimary3(5)
   REAL(4) :: water
 
   ! STRINGS
@@ -364,6 +368,26 @@ PROGRAM main
   CHARACTER(len=25) :: s_hco3, s_co3, s_pe
   CHARACTER(len=25) :: s_water, s_w, s_reactive ! medium
   CHARACTER(len=25) :: s_basalt1, s_basalt2, s_basalt3, s_precip, s_clay, s_chlor, s_ph_fix
+
+  ! staggered equilibrium
+  CHARACTER(len=25) :: sd_dbasalt1, sd_dbasalt2, sd_dbasalt3, sd_dglass
+
+  CHARACTER(len=25) :: sd_verm_ca, sd_analcime, sd_phillipsite, sd_clinozoisite, sd_verm_na
+  CHARACTER(len=25) :: sd_diopside, sd_epidote, sd_minnesotaite, sd_ferrite_ca, sd_foshagite
+  CHARACTER(len=25) :: sd_gismondine, sd_gyrolite, sd_hedenbergite, sd_chalcedony, sd_verm_mg
+  CHARACTER(len=25) :: sd_ferrihydrite, sd_lawsonite, sd_merwinite, sd_monticellite, sd_natrolite
+  CHARACTER(len=25) :: sd_talc, sd_smectite_low, sd_prehnite, sd_chlorite, sd_rankinite
+  CHARACTER(len=25) :: sd_scolecite, sd_tobermorite_9a, sd_tremolite, sd_chamosite7a, sd_clinochlore14a
+  CHARACTER(len=25) :: sd_clinochlore7a, sd_andradite
+  CHARACTER(len=25) :: sd_saponite_ca, sd_troilite, sd_pyrrhotite, sd_lepidocrocite, sd_daphnite_7a
+  CHARACTER(len=25) :: sd_daphnite_14a, sd_verm_k, sd_greenalite, sd_aragonite
+  CHARACTER(len=25) :: sd_siderite, sd_kaolinite, sd_goethite, sd_dolomite, sd_celadonite ! secondary
+  CHARACTER(len=25) :: sd_sio2, sd_albite, sd_calcite, sd_mont_na, sd_smectite, sd_saponite ! secondary
+  CHARACTER(len=25) :: sd_stilbite, sd_saponite_k, sd_anhydrite, sd_clinoptilolite, sd_pyrite ! secondary
+  CHARACTER(len=25) :: sd_quartz, sd_kspar, sd_saponite_na, sd_nont_na, sd_nont_mg, sd_nont_k ! secondary
+  CHARACTER(len=25) :: sd_fe_celadonite, sd_nont_ca, sd_muscovite, sd_mesolite, sd_hematite, sd_diaspore !
+  CHARACTER(len=25) :: sd_laumontite, sd_mont_k, sd_mont_mg, sd_mont_ca
+  CHARACTER(len=25) :: sd_fe_saponite_ca, sd_fe_saponite_mg
 
 
   ! NEWER GEOCHEM
@@ -3438,6 +3462,8 @@ PROGRAM main
 
         !#GEOCHEM: send from master to slaves
         DO an_id = 1 , num_procs - 1
+            CALL MPI_SEND( j, 1, MPI_INTEGER, an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+
             CALL MPI_SEND( hLong, 3*leng, MPI_REAL4, an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 
             DO ii = 1 , g_pri
@@ -3464,12 +3490,9 @@ PROGRAM main
         !#GEOCHEM: receive from slaves
 
         DO an_id = 1,num_procs - 1
-            !call system_clock(counti, count_rate, count_max)
+
             CALL MPI_RECV( end_loop, 1, MPI_INTEGER, an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
             CALL MPI_RECV( slave_vector, end_loop, MPI_INTEGER, an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
-            !write(*,*) "    RECEIVE FROM: " , an_id , "slave_vector: " , slave_vector(1:end_loop)
-            !call system_clock(countf, count_rate, count_max)
-            !write(*,*) "an_id" , an_id , "index receive:" , countf - counti
 
 
                 DO ii = 1 , g_pri
@@ -4229,8 +4252,20 @@ PROGRAM main
         END IF ! end if my_id .le. 11
 
 
-        !#GEOCHEM: slave receives broadcast
-        call system_clock(counti, count_rate, count_max)
+        !#GEOCHEM: slave receives from root
+
+        CALL MPI_RECV ( j_root, 1, MPI_INTEGER, root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+
+        se_toggle = 0
+        !-set SE_TOGGLE
+        IF ((MOD(j_root,mstep*se_factor) .EQ. 0) .OR. (j_root .LE. mstep*se_spinup)) THEN
+            se_toggle = 1
+        END IF
+
+        if (my_id .eq. 10) then
+            write(*,*) "j_root:" , j_root , "se_toggle:" , se_toggle
+        end if
+
         CALL MPI_RECV ( hLong, 3*leng, MPI_REAL4, root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
 
         DO ii = 1 , g_pri
@@ -4248,8 +4283,6 @@ PROGRAM main
         DO ii = 1 , g_med
             CALL MPI_RECV ( medLongBitFull(:,ii), 3*leng, MPI_REAL4, root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
         END DO
-        call system_clock(countf, count_rate, count_max)
-        write(*,*) "slave:" , my_id , "receives time:" , countf - counti
 
         dt_local = dt
 
@@ -4259,7 +4292,7 @@ PROGRAM main
 
         DO jjj = 1,end_loop
 
-        !-slave runs geochem model
+
 
         timestep3 = dt_local*mstep
         WRITE(s_timestep,'(F25.10)') timestep3
@@ -4274,25 +4307,15 @@ PROGRAM main
               secondary3 = secLongBitFull(m,:)
               solute3 = solLongBitFull(m,:)
               medium3 = medLongBitFull(m,:)
+            !   dprimary3 = dpriLongBitFull(m,:)
+              dprimary3 = dpriLocal(m,:)
+            !   dsecondary3 = dsecLongBitFull(m,:)
+              dsecondary3 = dsecLocal(m,:)
+
               temp3 = hLong(m)-273.0
-              ph_fix3 = ph_fix_Local(m)
               IF (temp3 .GE. 300.0) THEN
                  temp3 = 299.0
               END IF
-
-            !   if (my_id .EQ. 1) then
-            !       write(*,*) "primary"
-            !       write(*,*) primary3
-              !
-            !       write(*,*) "secondary"
-            !       write(*,*) secondary3
-              !
-            !       write(*,*) "solute"
-            !       write(*,*) solute3
-              !
-            !       write(*,*) "med"
-            !       write(*,*) medium3
-            !   end if
 
 
               ! SOLUTES TO STRINGS
@@ -4312,12 +4335,8 @@ PROGRAM main
               WRITE(s_hco3,'(F25.10)') solute3(14)
               WRITE(s_co3,'(F25.10)') solute3(15)
 
-              !s_co2 = "0.002100"
-
               ! MEDIUM TO STRINGS
               WRITE(s_w,'(F25.10)') medium3(3) !solute3(3)
-
-              ! solute3(15) = (10.0**(-1.0*solute3(1)))**3
 
               WRITE(s_basalt3,'(F25.10)') primary3(2)
               WRITE(s_basalt2,'(F25.10)') primary3(3)
@@ -4329,40 +4348,6 @@ PROGRAM main
               exp_pyr = "0.005"
               exp_plag = "0.05"
               param_exp_string = "0.000125"
-
-            !   exp_ol = "0.0"
-            !   exp_pyr = "0.0"
-            !   exp_plag = "0.0"
-            !   param_exp_string = "0.0"
-
-              ! chamber b
-              IF ((primary3(5) .LE. 0.0) .AND. (primary3(4) .GT. 0.0) .AND. (primary3(3) .GT. 0.0) .AND. (primary3(2) .GT. 0.0)) THEN
-                 exp_ol =  "0.0375"
-                 exp_pyr = "0.005"
-                 exp_plag = "0.05"
-              END IF
-
-            !   IF ((primary3(5) .GT. 0.0) .AND. (primary3(4) .LE. 0.0) .AND. (primary3(3) .LE. 0.0) .AND. (primary3(2) .Le. 0.0)) THEN
-            !      param_exp_string = "0.00125"
-            !      !param_exp_string = "0.003"
-            !   END IF
-
-              ! ! solo
-              ! if ((primary3(5) .gt. 0.0) .and. (primary3(4) .gt. 0.0) .and. (primary3(3) .gt. 0.0) .and. (primary3(2) .gt. 0.0)) then
-              ! 	exp_ol = "0.0025"
-              ! 	exp_pyr = "0.0025"
-              ! 	exp_plag = "0.25"
-              ! 	param_exp_string = "0.0025"
-              ! end if
-              !
-              ! ! chamber a
-              ! if ((primary3(5) .gt. 0.0) .and. (primary3(4) .le. 0.0) .and. (primary3(3) .le. 0.0) .and. (primary3(2) .le. 0.0)) then
-              ! 	exp_ol = "0.0025"
-              ! 	exp_pyr = "0.0025"
-              ! 	exp_plag = "0.25"
-              ! 	param_exp_string = "0.0025"
-              ! end if
-
 
 
 
@@ -4407,25 +4392,65 @@ PROGRAM main
               WRITE(s_daphnite_14a,'(F25.10)') secondary3(39) !!!
               WRITE(s_epidote,'(F25.10)') secondary3(40) !!!
 
+
+
+              WRITE(sd_dbasalt3,'(F25.10)') dprimary3(2)
+              WRITE(sd_dbasalt2,'(F25.10)') dprimary3(3)
+              WRITE(sd_dbasalt1,'(F25.10)') dprimary3(4)
+              WRITE(sd_dglass,'(F25.10)') dprimary3(5)
+
+              WRITE(sd_kaolinite,'(F25.10)') dsecondary3(1)
+              WRITE(sd_saponite,'(F25.10)') dsecondary3(2)
+              WRITE(sd_celadonite,'(F25.10)') dsecondary3(3)
+              WRITE(sd_clinoptilolite,'(F25.10)') dsecondary3(4)
+              WRITE(sd_pyrite,'(F25.10)') dsecondary3(5)
+              WRITE(sd_mont_na,'(F25.10)') dsecondary3(6)
+              WRITE(sd_goethite,'(F25.10)') dsecondary3(7)
+              WRITE(sd_smectite,'(F25.10)') dsecondary3(8)
+              WRITE(sd_calcite,'(F25.10)') dsecondary3(9)
+              WRITE(sd_kspar,'(F25.10)') dsecondary3(10)
+              WRITE(sd_saponite_na,'(F25.10)') dsecondary3(11) !!!!
+              WRITE(sd_nont_na,'(F25.10)') dsecondary3(12)
+              WRITE(sd_nont_mg,'(F25.10)') dsecondary3(13)
+              WRITE(sd_fe_celadonite,'(F25.10)') dsecondary3(14)
+              WRITE(sd_nont_ca,'(F25.10)') dsecondary3(15)
+              WRITE(sd_mesolite,'(F25.10)') dsecondary3(16)
+              WRITE(sd_hematite,'(F25.10)') dsecondary3(17)
+              WRITE(sd_mont_ca,'(F25.10)') dsecondary3(18)
+              WRITE(sd_verm_ca,'(F25.10)') dsecondary3(19)
+              WRITE(sd_analcime,'(F25.10)') dsecondary3(20)
+              WRITE(sd_phillipsite,'(F25.10)') dsecondary3(21)
+              WRITE(sd_mont_mg,'(F25.10)') dsecondary3(22)
+              WRITE(sd_gismondine,'(F25.10)') dsecondary3(23)
+              WRITE(sd_verm_mg,'(F25.10)') dsecondary3(24)
+              WRITE(sd_natrolite,'(F25.10)') dsecondary3(25)
+              WRITE(sd_talc,'(F25.10)') dsecondary3(26) !!!!!!!!!
+              WRITE(sd_smectite_low,'(F25.10)') dsecondary3(27)
+              WRITE(sd_prehnite,'(F25.10)') dsecondary3(28)
+              WRITE(sd_chlorite,'(F25.10)') dsecondary3(29) !!!!!!!!
+              WRITE(sd_scolecite,'(F25.10)') dsecondary3(30)
+              WRITE(sd_clinochlore14a,'(F25.10)') dsecondary3(31)
+              WRITE(sd_clinochlore7a,'(F25.10)') dsecondary3(32)
+              WRITE(sd_saponite_ca,'(F25.10)') dsecondary3(33)
+              WRITE(sd_verm_na,'(F25.10)') dsecondary3(34)
+              WRITE(sd_pyrrhotite,'(F25.10)') dsecondary3(35)
+              WRITE(sd_fe_saponite_ca,'(F25.10)') dsecondary3(36) !!!
+              WRITE(sd_fe_saponite_mg,'(F25.10)') dsecondary3(37) !!!
+              WRITE(sd_daphnite_7a,'(F25.10)') dsecondary3(38) !!!
+              WRITE(sd_daphnite_14a,'(F25.10)') dsecondary3(39) !!!
+              WRITE(sd_epidote,'(F25.10)') dsecondary3(40) !!!
+
+
               ! OTHER INFORMATION TO STRINGS
               WRITE(s_temp,'(F25.10)') temp3
               WRITE(s_precip,'(F25.10)') medium3(2)
               WRITE(s_reactive,'(F25.10)') medium3(4)
-              s_clay = "0.0"
-              s_chlor = "0.0"
-              WRITE(s_ph_fix,'(F25.10)') ph_fix3
-
-              ! ----------------------------------%%
-              ! INITIAL AQUEOUS PHASE CONSITUENTS
-              ! ----------------------------------%%
 
 
-              ! write(s_pressure,'(F25.10)') 250.0 - (medium3(7)/5.0)
-              ! write(si_hematite,'(F25.10)') 1.0! -(solute3(1)*2.5) + 30.0
+            !-equilibrium input file
+            IF (se_toggle .EQ. 1) THEN
 
-
-
-              !-phreeqc solution
+              ! EQ solution
               inputz0 = "SOLUTION 1 " //NEW_LINE('')// &
                    &"    units   mol/kgw" //NEW_LINE('')// &
                    &"    temp" // TRIM(s_temp) //NEW_LINE('')// &
@@ -4441,30 +4466,9 @@ PROGRAM main
                    &"    C " // TRIM(s_co2) //NEW_LINE('')// &
                    &"    Alkalinity " // TRIM(s_alk) //NEW_LINE('')// &
                    &"    -water "// TRIM(s_water) // " # kg" //NEW_LINE('')// &
-                                ! &" "  //NEW_LINE('')
-
-
-                                ! &" "  //NEW_LINE('')// &
-                                ! &"PHASES 1" //NEW_LINE('')// &
-                                ! &"Basalt1" //NEW_LINE('')// &
-                                ! &"    MgFeSiO4 + 4H+ = Mg+2 + Fe+2 + SiO2 + 2H2O" //NEW_LINE('')// &
-                                ! &"Basalt2" //NEW_LINE('')// &
-                                ! &"    CaMgSi2O6 + 4H+ = Ca+2 + Mg+2 + 2SiO2 + 2H2O" //NEW_LINE('')// &
-                                ! &"Basalt3" //NEW_LINE('')// &
-                                ! &"    NaAlSi3O8 + 4H+ = Al+3 + Na+ + 3SiO2 + 2H2O" //NEW_LINE('')// &
-
                    &" "  //NEW_LINE('')
 
-
-              ! 		if (medium3(2) .eq. 1000.0) then
-              ! 			write(*,*) "med2 1000"
-              ! 			inputz0 = trim(inputz0) // "EQUILIBRIUM_PHASES 1" //NEW_LINE('')// &
-              ! 			&"    K-Feldspar " // trim(s_precip) // trim(s_kspar) // kinetics //NEW_LINE('')
-              ! 		end if
-              !
-               		if (medium3(2) .eq. precip_th) then
-
-              !-phreeqc equilibrium phases
+              ! EQ equilibrium phases
               inputz0 = TRIM(inputz0) // "EQUILIBRIUM_PHASES 1" //NEW_LINE('')// &
                    &"    Goethite " // TRIM(s_precip) // TRIM(s_goethite) // kinetics //NEW_LINE('')// &
                    &"    Celadonite " // TRIM(s_precip) // TRIM(s_celadonite) // kinetics //NEW_LINE('')// & ! mica
@@ -4486,202 +4490,136 @@ PROGRAM main
                    &"    Pyrrhotite " // TRIM(s_precip) // TRIM(s_pyrrhotite) // kinetics //NEW_LINE('')//& ! sulfide
                    &"    Fe-Saponite-Ca " // TRIM(s_precip) // TRIM(s_fe_saponite_ca) // kinetics //NEW_LINE('')// & ! sap smec
                    &"    Fe-Saponite-Mg " // TRIM(s_precip) // TRIM(s_fe_saponite_mg) // kinetics //NEW_LINE('')// &! sap smec
-
-
-                   ! 		!&"    Celadonite -5.0 " // trim(s_celadonite) // kinetics //NEW_LINE('')// & ! mica
                    ! 		!&"    Calcite " // trim(s_precip) // trim(s_calcite) // kinetics //NEW_LINE('')// & ! .135
                    !&"    Montmor-Na " // TRIM(s_precip) // TRIM(s_mont_na) // kinetics //NEW_LINE('')// & ! smectite
                    &"    Montmor-Mg " // TRIM(s_precip) // TRIM(s_mont_mg) // kinetics //NEW_LINE('')// & ! smectite
                    &"    Montmor-Ca " // TRIM(s_precip) // TRIM(s_mont_ca) // kinetics //NEW_LINE('')// & ! smectite
-
-
-
-                    		&"    Smectite-high-Fe-Mg " // trim(s_precip) // trim(s_smectite) // kinetics //NEW_LINE('')// & ! smectite
- 	 	   &"    Vermiculite-Na " // TRIM(s_precip) // TRIM(s_verm_na) // kinetics //NEW_LINE('')// & ! clay
+                   &"    Smectite-high-Fe-Mg " // trim(s_precip) // trim(s_smectite) // kinetics //NEW_LINE('')// & ! smectite
+ 	 	           &"    Vermiculite-Na " // TRIM(s_precip) // TRIM(s_verm_na) // kinetics //NEW_LINE('')// & ! clay
                    &"    Vermiculite-Ca " // TRIM(s_precip) // TRIM(s_verm_ca) // kinetics //NEW_LINE('')// & ! clay
                    &"    Vermiculite-Mg " // TRIM(s_precip) // TRIM(s_verm_mg) // kinetics //NEW_LINE('')//& ! clay
                    &"    Hematite " // TRIM(s_precip) // TRIM(s_hematite) // kinetics //NEW_LINE('')//& ! iron oxide
-                   ! 		&"    Hematite 2.0 " // trim(s_hematite) // kinetics //NEW_LINE('')// &
-!!!!!!!old!! &"    Hematite " // trim(si_hematite) // trim(s_hematite) // kinetics //NEW_LINE('')// &
-                    		    &"    Epidote  " // trim(s_precip) // trim(s_epidote) // kinetics //NEW_LINE('')// &
-
+                   &"    Epidote  " // trim(s_precip) // trim(s_epidote) // kinetics //NEW_LINE('')// &
                    ! 		&"    Smectite-low-Fe-Mg 0.0 " // trim(s_smectite_low) // kinetics //NEW_LINE('')// & ! smectite
-
-                      		&"   Daphnite-7a " // trim(s_precip) // trim(s_daphnite_7a) // kinetics //NEW_LINE('')// & ! chlorite
-                      		&"   Daphnite-14a " // trim(s_precip) // trim(s_daphnite_14a) // kinetics //NEW_LINE('')// &! chlorite
-
-                    		!&"    Kaolinite " // trim(s_precip) // trim(s_kaolinite) // kinetics //NEW_LINE('')// & ! clay
-                    		&"    Clinoptilolite-Ca " // trim(s_precip) // trim(s_clinoptilolite) // kinetics //NEW_LINE('')// & ! zeolite
-                    		!&"    K-Feldspar " // trim(s_precip) // trim(s_kspar) // kinetics //NEW_LINE('')// &
-                    		!&"    Mesolite " // trim(s_precip) // trim(s_mesolite) // kinetics //NEW_LINE('')// & ! zeolite
-                            &"    Prehnite " // trim(s_precip) // trim(s_prehnite) // kinetics //NEW_LINE('')// &
-                          &"    Scolecite " // trim(s_precip) // trim(s_scolecite) // kinetics //NEW_LINE('')// & ! zeolite
-                          !&"    Gismondine " // trim(s_precip) // trim(s_gismondine) // kinetics //NEW_LINE('')// & ! zeolite
-
+                   &"   Daphnite-7a " // trim(s_precip) // trim(s_daphnite_7a) // kinetics //NEW_LINE('')// & ! chlorite
+              	   &"   Daphnite-14a " // trim(s_precip) // trim(s_daphnite_14a) // kinetics //NEW_LINE('')// &! chlorite
+                   !&"    Kaolinite " // trim(s_precip) // trim(s_kaolinite) // kinetics //NEW_LINE('')// & ! clay
+                   &"    Clinoptilolite-Ca " // trim(s_precip) // trim(s_clinoptilolite) // kinetics //NEW_LINE('')// & ! zeolite
+                   !&"    K-Feldspar " // trim(s_precip) // trim(s_kspar) // kinetics //NEW_LINE('')// &
+                   !&"    Mesolite " // trim(s_precip) // trim(s_mesolite) // kinetics //NEW_LINE('')// & ! zeolite
+                   &"    Prehnite " // trim(s_precip) // trim(s_prehnite) // kinetics //NEW_LINE('')// &
+                   "    Scolecite " // trim(s_precip) // trim(s_scolecite) // kinetics //NEW_LINE('')// & ! zeolite
+                   !&"    Gismondine " // trim(s_precip) // trim(s_gismondine) // kinetics //NEW_LINE('')// & ! zeolite
                    &" "  //NEW_LINE('')
 
-
-               		end if
-
-              !-phreeqc rates
+              ! EQ rates
               inputz0 = TRIM(inputz0) // "RATES" //NEW_LINE('')// &
 
-                          ! &"    10 rate0=M*110.0*(1.52e-5)*" // trim(param_exp_string) // "*(CALC_VALUE('R(sum)'))*(1.0e4)*(2.51189e-6)*exp(-25.5/(.008314*TK))" // &
+               &"BGlass" //NEW_LINE('')// &
+               &"-start" //NEW_LINE('')// &
+               &"	 10 base0 = 1e-10" //NEW_LINE('')// &
+               &"	 20 if (ACT('Al+3') > 1e-10) then base0 = ACT('Al+3')" //NEW_LINE('')// &
+               &"    30 rate0=M*110.0*(1.52e-5)*" // TRIM(param_exp_string) // "*(1.0e4)*(2.51189e-6)*exp(-25.5/(.008314*TK))*(((ACT('H+')^3)/(ACT('Al+3')))^.33333)" //NEW_LINE('')// &
+               &"    40 save rate0 * time" //NEW_LINE('')// &
+               &"-end" //NEW_LINE('')// &
 
-              !
-              ! &"    30 rate0=M*110.0*(1.52e-5)*" // TRIM(param_exp_string) // "*(1.0e4)*(2.51189e-6)*exp(-25.5/(.008314*TK))" // &
-              ! &"*((((10.0^-"//TRIM(s_ph_fix)//")^3)/(base0))^.33333)" //NEW_LINE('')// &
+               ! olivine
+               &"Basalt1" //NEW_LINE('')// &
+               &"-start" //NEW_LINE('')// &
+               &"    10 rate0=M*140.7*(1.52e-5)*" // TRIM(exp_ol) //"*(" //TRIM(ol_k1)//"*(ACT('H+')^"//TRIM(ol_n1)//")*exp(-("//TRIM(ol_e1)//"/.008314)*((1.0/TK) - (1.0/298.0))) + "//TRIM(ol_k2)//"*exp(-("//TRIM(ol_e2)//"/.008314)*((1.0/TK) - (1.0/298.0))))" //NEW_LINE('')// &
+               &"    20 save rate0 * time" //NEW_LINE('')// &
+               &"-end" //NEW_LINE('')// &
 
-                                ! linear decrease with alteration
-                   &"BGlass" //NEW_LINE('')// &
-                   &"-start" //NEW_LINE('')// &
+               ! pyroxene
+               &"Basalt2" //NEW_LINE('')// &
+               &"-start" //NEW_LINE('')// &
+               &"    10 rate0=M*250.0*(1.52e-5)*" // TRIM(exp_pyr) //"*(" //TRIM(pyr_k1)//"*(ACT('H+')^"//TRIM(pyr_n1)//")*exp(-("//TRIM(pyr_e1)//"/.008314)*((1.0/TK) - (1.0/298.0))) + "//TRIM(pyr_k2)//"*exp(-("//TRIM(pyr_e2)//"/.008314)*((1.0/TK) - (1.0/298.0))))" //NEW_LINE('')// &
+               &"    20 save rate0 * time" //NEW_LINE('')// &
+               &"-end" //NEW_LINE('')// &
 
-                   &"		10 base0 = 1e-10" //NEW_LINE('')// &
-                   &"		20 if (ACT('Al+3') > 1e-10) then base0 = ACT('Al+3')" //NEW_LINE('')// &
-                   &"    30 rate0=M*110.0*(1.52e-5)*" // TRIM(param_exp_string) // "*(1.0e4)*(2.51189e-6)*exp(-25.5/(.008314*TK))" // &
-                  !  &"*(((ACT('H+')^3)/(base0))^.33333)" //NEW_LINE('')// &
-                &"*(((ACT('H+')^3)/(ACT('Al+3')))^.33333)" //NEW_LINE('')// &
-
-                &"    40 save rate0 * time" //NEW_LINE('')// &
-                &"-end" //NEW_LINE('')// &
-
-
-             !    &"    30 rate0=M*110.0*(1.52e-5)*" // TRIM(param_exp_string) // "*(1.0e4)*(2.51189e-6)*exp(-25.5/(.008314*TK))" // &
-             !    &"*(((ACT('H+')^3)/(base0))^.33333)" //NEW_LINE('')// &
-
-            !  &"    10 rate0=M*110.0*(1.52e-5)*" // TRIM(param_exp_string) // "*(1.0e4)*(2.51189e-6)*exp(-25.5/(.008314*TK))" // &
-            !  &"*((((10.0^-"//TRIM(s_ph_fix)//")^3)/(1e-10))^.33333)" //NEW_LINE('')// &
-            !        &"    20 save rate0 * time" //NEW_LINE('')// &
-            !        &"-end" //NEW_LINE('')// &
-
-                   &"Basalt1" //NEW_LINE('')// &
-                   &"-start" //NEW_LINE('')// &
-
-                   &"    10 rate0=M*140.7*(1.52e-5)*" // TRIM(exp_ol) //"*(" //TRIM(ol_k1)//"*(ACT('H+')^"//TRIM(ol_n1)//")*exp(-("//TRIM(ol_e1)//"/.008314)*((1.0/TK) - (1.0/298.0))) + "//TRIM(ol_k2)//"*exp(-("//TRIM(ol_e2)//"/.008314)*((1.0/TK) - (1.0/298.0))))" //NEW_LINE('')// &
-
-                ! &"    10 rate0=M*140.7*(1.52e-5)*" // TRIM(exp_ol) //"*(" //TRIM(ol_k1)//"*((10.0^-"//TRIM(s_ph_fix)//")^"//TRIM(ol_n1)//")*exp(-("//TRIM(ol_e1)//"/.008314)*((1.0/TK) - (1.0/298.0))) + "//TRIM(ol_k2)//"*exp(-("//TRIM(ol_e2)//"/.008314)*((1.0/TK) - (1.0/298.0))))" //NEW_LINE('')// &
-
-                   &"    20 save rate0 * time" //NEW_LINE('')// &
-                   &"-end" //NEW_LINE('')// &
-
-                   &"Basalt2" //NEW_LINE('')// &
-                   &"-start" //NEW_LINE('')// &
-
-                   &"    10 rate0=M*250.0*(1.52e-5)*" // TRIM(exp_pyr) //"*(" //TRIM(pyr_k1)//"*(ACT('H+')^"//TRIM(pyr_n1)//")*exp(-("//TRIM(pyr_e1)//"/.008314)*((1.0/TK) - (1.0/298.0))) + "//TRIM(pyr_k2)//"*exp(-("//TRIM(pyr_e2)//"/.008314)*((1.0/TK) - (1.0/298.0))))" //NEW_LINE('')// &
-
-                ! &"    10 rate0=M*250.0*(1.52e-5)*" // TRIM(exp_pyr) //"*(" //TRIM(pyr_k1)//"*((10.0^-"//TRIM(s_ph_fix)//")^"//TRIM(pyr_n1)//")*exp(-("//TRIM(pyr_e1)//"/.008314)*((1.0/TK) - (1.0/298.0))) + "//TRIM(pyr_k2)//"*exp(-("//TRIM(pyr_e2)//"/.008314)*((1.0/TK) - (1.0/298.0))))" //NEW_LINE('')// &
-
-                   &"    20 save rate0 * time" //NEW_LINE('')// &
-                   &"-end" //NEW_LINE('')// &
-
-                   &"Basalt3" //NEW_LINE('')// &
-                   &"-start" //NEW_LINE('')// &
-                   &"    10 rate0=M*270.0*(1.52e-5)*" // TRIM(exp_plag) //"*" //TRIM(plag_k1)//"*(ACT('H+')^"//TRIM(plag_n1)//")*exp(-("//TRIM(plag_e1)//"/.008314)*((1.0/TK) - (1.0/298.0)))" //NEW_LINE('')// &
-                ! &"    10 rate0=M*270.0*(1.52e-5)*" // TRIM(exp_plag) //"*"//TRIM(plag_k1)//"*((10.0^-"//TRIM(s_ph_fix)//")^"//TRIM(plag_n1)//")*exp(-("//TRIM(plag_e1)//"/.008314)*((1.0/TK) - (1.0/298.0)))" //NEW_LINE('')// &
-                   &"    20 save rate0 * time" //NEW_LINE('')// &
-                   &"-end" //NEW_LINE('')// &
-
-                                ! & "Fe2O3 .149 FeO .0075 MgO .1744 K2O .002 " //&
-                                ! & "FeO .149 MgO .1744 K2O .002 " //&
+               ! plagioclase
+               &"Basalt3" //NEW_LINE('')// &
+               &"-start" //NEW_LINE('')// &
+               &"    10 rate0=M*270.0*(1.52e-5)*" // TRIM(exp_plag) //"*" //TRIM(plag_k1)//"*(ACT('H+')^"//TRIM(plag_n1)//")*exp(-("//TRIM(plag_e1)//"/.008314)*((1.0/TK) - (1.0/298.0)))" //NEW_LINE('')// &
+               &"    20 save rate0 * time" //NEW_LINE('')// &
+               &"-end" //NEW_LINE('')// &
 
 
 
+               ! EQ kinetics
+               &"KINETICS 1" //NEW_LINE('')// &
 
+               &"BGlass" //NEW_LINE('')// &
+               &"-f CaO .1997 SiO2 .847 Al2O3 .138 " //&
+               & "Fe2O3 .149 MgO .1744 K2O .002 " //&
+               & "Na2O .043" //NEW_LINE('')// &
+               &"-m0 " // TRIM(s_glass) //NEW_LINE('')// &
 
-                   !-phreeqc kinetics
-                   &"KINETICS 1" //NEW_LINE('')// &
-                   &"BGlass" //NEW_LINE('')// &
-                                ! ! seyfried JDF
-                   &"-f CaO .1997 SiO2 .847 Al2O3 .138 " //&
-                   & "Fe2O3 .149 MgO .1744 K2O .002 " //&
-                   & "Na2O .043" //NEW_LINE('')// &
-                   &"-m0 " // TRIM(s_glass) //NEW_LINE('')// &
+               &"Basalt1 " //NEW_LINE('')// &
+               & TRIM(param_ol_string) //NEW_LINE('')// &
+               &"-m0 " // TRIM(s_basalt1) //NEW_LINE('')// &
 
-                   &"Basalt1 " //NEW_LINE('')// &
-                   & TRIM(param_ol_string) //NEW_LINE('')// &
-                   &"-m0 " // TRIM(s_basalt1) //NEW_LINE('')// &
+               &"Basalt2 " //NEW_LINE('')// &
+               & TRIM(param_pyr_string) //NEW_LINE('')// &
+               &"-m0 " // TRIM(s_basalt2) //NEW_LINE('')// &
 
-                   &"Basalt2 " //NEW_LINE('')// &
-                   & TRIM(param_pyr_string) //NEW_LINE('')// &
-                   &"-m0 " // TRIM(s_basalt2) //NEW_LINE('')// &
+               &"Basalt3 " //NEW_LINE('')// &
+               & TRIM(param_plag_string) //NEW_LINE('')// &
+               &"-m0 " // TRIM(s_basalt3) //NEW_LINE('')// &
+               &"    -step " // TRIM(s_timestep) // " in 1" //NEW_LINE('')// &
 
-                   &"Basalt3 " //NEW_LINE('')// &
-                   & TRIM(param_plag_string) //NEW_LINE('')// &
-                   &"-m0 " // TRIM(s_basalt3) //NEW_LINE('')// &
-                   &"    -step " // TRIM(s_timestep) // " in 1" //NEW_LINE('')// &
-
-                   &"INCREMENTAL_REACTIONS true" //NEW_LINE('')// &
-
-
-                   &"CALCULATE_VALUES" //NEW_LINE('')// &
-
-                   &"R(sum)" //NEW_LINE('')// &
-                   &"-start" //NEW_LINE('')// &
-                   &"10 sum = 1.0" //&
-                   &"" //NEW_LINE('')// &
-                   &"100 SAVE sum" //NEW_LINE('')// &
-                   &"-end" //NEW_LINE('')// &
-
-
-                   ! 		!
-                   ! 		&"R(phi)" //NEW_LINE('')// &
-                   ! 		&"-start" //NEW_LINE('')// &
-                   ! 		!&"10 phi = 1.0-(CALC_VALUE('R(sum)')/(CALC_VALUE('R(sum)')+(TOT('water')*1000.0)))" //&
-                   ! 		! &"10 phi = ((  (ACT('H+')^3) / (ACT('Al+3')) )^.33333)" //&
-                   ! 		! &"10 phi = ACT('Al+3')" //&
-                   ! 		&"10 phi = 1.0" //&
-                   ! 		&"" //NEW_LINE('')// &
-                   ! 		&"100 SAVE phi" //NEW_LINE('')// &
-                   ! 		&"-end" //NEW_LINE('')// &
-
-                                !
-                   &"R(s_sp)" //NEW_LINE('')// &
-                   &"-start" //NEW_LINE('')// &
-                                !&"10 s_sp = (CALC_VALUE('R(phi)')/(1.0-CALC_VALUE('R(phi)')))*400.0/CALC_VALUE('R(rho_s)')" //&
-                   &"10 s_sp = 1.53e-5" //&
-                   &"" //NEW_LINE('')// &
-                   &"100 SAVE s_sp" //NEW_LINE('')// &
-                   &"-end" //NEW_LINE('')// &
-
-
-                !    !-phreeqc knobs
-                !    &"KNOBS" //NEW_LINE('')// &
-                !    !&"-tolerance 1e-6" //NEW_LINE('')// &
-                !    &"-convergence_tolerance 1e-6" //NEW_LINE('')// &
+               &"INCREMENTAL_REACTIONS true" //NEW_LINE('')// &
 
 
 
-                   &"SELECTED_OUTPUT" //NEW_LINE('')// &
-                   &"    -reset false" //NEW_LINE('')// &
-                   &"    -high_precision true" //NEW_LINE('')// &
-                   &"    -k basalt3 basalt2 basalt1 bglass" //NEW_LINE('')// &
-                   &"    -ph" //NEW_LINE('')// &
-                   &"    -pe false" //NEW_LINE('')// &
-                   &"    -totals C" //NEW_LINE('')// &
-                   &"    -totals Ca Mg Na K Fe S Si Cl Al " //NEW_LINE('')// &
-                   &"    -molalities HCO3-" //NEW_LINE('')// &
-                   &"    -water true" //NEW_LINE('')// &
-                   &"    -alkalinity" //NEW_LINE('')// &
-                   &"    -p Kaolinite Saponite-Mg Celadonite Clinoptilolite-Ca Pyrite Montmor-Na Goethite" //NEW_LINE('')// & ! 7
-                   &"    -p Smectite-high-Fe-Mg Calcite K-Feldspar Saponite-Na Nontronite-Na Nontronite-Mg" //NEW_LINE('')// & ! 6
-                   &"    -p Fe-Celadonite Nontronite-Ca Mesolite Hematite Montmor-Ca Vermiculite-Ca Analcime" //NEW_LINE('')// & ! 7
-                   &"    -p Phillipsite Montmor-Mg Gismondine Vermiculite-Mg Natrolite Talc Smectite-low-Fe-Mg " //NEW_LINE('')// & ! 7
-                   &"    -p Prehnite Chlorite(14a) scolecite Clinochlore-14A Clinochlore-7A Saponite-Ca" //NEW_LINE('')// & ! 6
-                   &"    -p Vermiculite-Na Pyrrhotite Fe-Saponite-Ca Fe-Saponite-Mg" //NEW_LINE('')// & ! 4
+               &"CALCULATE_VALUES" //NEW_LINE('')// &
 
-                   &"    -p Daphnite-7a Daphnite-14a Epidote Clinochlore-14A Clinochlore-7A saponite-ca" //NEW_LINE('')// & ! 6
-                   &"    -p prehnite chlorite(14a) scolecite Clinochlore-14A Clinochlore-7A saponite-ca" //NEW_LINE('')// & ! 6
-                   &"    -p prehnite chlorite(14a) scolecite Clinochlore-14A Clinochlore-7A saponite-ca" //NEW_LINE('')// & ! 6
-                   &"    -s kaolinite" //NEW_LINE('')// &		! 1
-                   ! 		&"    -s kaolinite saponite-mg celadonite Clinoptilolite-Ca pyrite montmor-na goethite" //NEW_LINE('')// &
-                   ! 		&"    -s Smectite-high-Fe-Mg calcite k-feldspar saponite-na nontronite-na nontronite-mg" //NEW_LINE('')// &
-                   ! 		&"    -s fe-celadonite nontronite-ca mesolite hematite montmor-ca vermiculite-ca analcime" //NEW_LINE('')// &
-                   ! 		&"    -s phillipsite diopside gismondine vermiculite-mg natrolite talc Smectite-low-Fe-Mg " //NEW_LINE('')// &
-                   ! 		&"    -s prehnite chlorite(14a) scolecite Clinochlore-14A Clinochlore-7A saponite-ca" //NEW_LINE('')// &
-                   ! 		&"    -s vermiculite-na pyrrhotite Fe-Saponite-Ca Fe-Saponite-Mg" //NEW_LINE('')// &
-                   &"    -calculate_values R(sum) R(s_sp)" //NEW_LINE('')// &
-                   &"    -time" //NEW_LINE('')// &
-                   &"END"
+               &"R(sum)" //NEW_LINE('')// &
+               &"-start" //NEW_LINE('')// &
+               &"10 sum = 1.0" //&
+               &"" //NEW_LINE('')// &
+               &"100 SAVE sum" //NEW_LINE('')// &
+               &"-end" //NEW_LINE('')// &
+
+               &"R(s_sp)" //NEW_LINE('')// &
+               &"-start" //NEW_LINE('')// &
+               &"10 s_sp = 1.53e-5" //&
+               &"" //NEW_LINE('')// &
+               &"100 SAVE s_sp" //NEW_LINE('')// &
+               &"-end" //NEW_LINE('')// &
+
+
+               &"SELECTED_OUTPUT" //NEW_LINE('')// &
+               &"    -reset false" //NEW_LINE('')// &
+               &"    -high_precision true" //NEW_LINE('')// &
+               &"    -k basalt3 basalt2 basalt1 bglass" //NEW_LINE('')// &
+               &"    -ph" //NEW_LINE('')// &
+               &"    -pe false" //NEW_LINE('')// &
+               &"    -totals C" //NEW_LINE('')// &
+               &"    -totals Ca Mg Na K Fe S Si Cl Al " //NEW_LINE('')// &
+               &"    -molalities HCO3-" //NEW_LINE('')// &
+               &"    -water true" //NEW_LINE('')// &
+               &"    -alkalinity" //NEW_LINE('')// &
+               &"    -p Kaolinite Saponite-Mg Celadonite Clinoptilolite-Ca Pyrite Montmor-Na Goethite" //NEW_LINE('')// & ! 7
+               &"    -p Smectite-high-Fe-Mg Calcite K-Feldspar Saponite-Na Nontronite-Na Nontronite-Mg" //NEW_LINE('')// & ! 6
+               &"    -p Fe-Celadonite Nontronite-Ca Mesolite Hematite Montmor-Ca Vermiculite-Ca Analcime" //NEW_LINE('')// & ! 7
+               &"    -p Phillipsite Montmor-Mg Gismondine Vermiculite-Mg Natrolite Talc Smectite-low-Fe-Mg " //NEW_LINE('')// & ! 7
+               &"    -p Prehnite Chlorite(14a) scolecite Clinochlore-14A Clinochlore-7A Saponite-Ca" //NEW_LINE('')// & ! 6
+               &"    -p Vermiculite-Na Pyrrhotite Fe-Saponite-Ca Fe-Saponite-Mg" //NEW_LINE('')// & ! 4
+
+               &"    -p Daphnite-7a Daphnite-14a Epidote Clinochlore-14A Clinochlore-7A saponite-ca" //NEW_LINE('')// & ! 6
+               &"    -p prehnite chlorite(14a) scolecite Clinochlore-14A Clinochlore-7A saponite-ca" //NEW_LINE('')// & ! 6
+               &"    -p prehnite chlorite(14a) scolecite Clinochlore-14A Clinochlore-7A saponite-ca" //NEW_LINE('')// & ! 6
+               &"    -s kaolinite" //NEW_LINE('')// &		! 1
+               ! 		&"    -s kaolinite saponite-mg celadonite Clinoptilolite-Ca pyrite montmor-na goethite" //NEW_LINE('')// &
+               ! 		&"    -s Smectite-high-Fe-Mg calcite k-feldspar saponite-na nontronite-na nontronite-mg" //NEW_LINE('')// &
+               ! 		&"    -s fe-celadonite nontronite-ca mesolite hematite montmor-ca vermiculite-ca analcime" //NEW_LINE('')// &
+               ! 		&"    -s phillipsite diopside gismondine vermiculite-mg natrolite talc Smectite-low-Fe-Mg " //NEW_LINE('')// &
+               ! 		&"    -s prehnite chlorite(14a) scolecite Clinochlore-14A Clinochlore-7A saponite-ca" //NEW_LINE('')// &
+               ! 		&"    -s vermiculite-na pyrrhotite Fe-Saponite-Ca Fe-Saponite-Mg" //NEW_LINE('')// &
+               &"    -calculate_values R(sum) R(s_sp)" //NEW_LINE('')// &
+               &"    -time" //NEW_LINE('')// &
+               &"END"
 
 
 
@@ -4727,8 +4665,6 @@ PROGRAM main
                  !STOP
               END IF
 
-              ! write(*,*) "we here"
-              !call system_clock(counti, count_rate, count_max)
               !IF (LoadDatabase(id, 'l5.dat').NE.0) THEN
               IF (LoadDatabaseString(id, TRIM(L5)).NE.0) THEN
                  CALL OutputErrorString(id)
@@ -4744,18 +4680,8 @@ PROGRAM main
                  WRITE(*,*) temp3
                  !STOP
               END IF
-              !call system_clock(countf, count_rate, count_max)
-              !write(*,*) "proc", my_id , "finished LoadDB" , countf - counti
 
               ! RUN INPUT
-            !   if (my_id .EQ. 1) then
-            !       call system_clock(counti, count_rate, count_max)
-            !   end if
-              !
-            !   if (my_id .EQ. 13) then
-            !       call system_clock(counti, count_rate, count_max)
-            !   end if
-
               IF (RunString(id, TRIM(inputz0)).NE.0) THEN
                  WRITE(*,*) "issue is:" , RunString(id, TRIM(inputz0))
                  CALL OutputErrorString(id)
@@ -4775,15 +4701,6 @@ PROGRAM main
                  END IF
                  !STOP
               END IF
-            !   if (my_id .EQ. 1) then
-            !       call system_clock(countf, count_rate, count_max)
-            !       write(*,*) "proc", my_id , "finished run string" , countf - counti
-            !   end if
-              !
-            !   if (my_id .EQ. 13) then
-            !       call system_clock(countf, count_rate, count_max)
-            !       write(*,*) "proc", my_id , "finished run string" , countf - counti
-            !   end if
 
               ! WRITE AWAY
               DO i=1,GetSelectedOutputStringLineCount(id)
@@ -4814,41 +4731,20 @@ PROGRAM main
 
               ! OUTPUT TO THE MAIN MASSACR METHOD
               alt0(1,:) = outmat(3,:)
-              !alt0(1,124:177) = outmat(2,124:177)
               alt_mat(m,:) = alt0(1,:)
 
               !write(*,*) "an output alt0: ", alt0
 
               IF (GetSelectedOutputStringLineCount(id) .NE. 3) THEN
                  alt0(1,:) = 0.0
-                 WRITE(*,*) "not = 3" , param_ol_string
+                 WRITE(*,*) "not 3 lines error"
               END IF
-
-
-
-              ! IF (RunString(id, inputz0).NE.0) THEN
-              ! 	write(*,*) "SECOND RUNSTRING ERROR"
-              ! 	alter(1,:) = 0.0
-              ! END IF
-
-              ! IF (SetSelectedOutputStringOn(id, .TRUE.).NE.IPQ_OK) THEN
-              ! 	alter(1,:) = 0.0
-              ! END IF
-              !
-              ! IF (SetOutputStringOn(id, .TRUE.).NE.IPQ_OK) THEN
-              ! 	alter(1,:) = 0.0
-              ! END IF
-              !
-              ! IF (LoadDatabase(id, "llnl.dat").NE.0) THEN
-              ! 	alter(1,:) = 0.0
-              ! END IF
-
 
 
               ! DESTROY INSTANCE
               IF (DestroyIPhreeqc(id).NE.IPQ_OK) THEN
                  CALL OutputErrorString(id)
-                 WRITE(*,*) "cannot be destroyed?"
+                 WRITE(*,*) "cannot be destroyed error"
                  STOP
               END IF
 
@@ -4859,22 +4755,21 @@ PROGRAM main
                    alt0(1,7), alt0(1,8), alt0(1,9), alt0(1,10), alt0(1,11), alt0(1,12), &
                    alt0(1,13), alt0(1,14), alt0(1,15), 0.0/)
 
-
-
               priLocal(m,:) = (/ 0.0*alt0(1,136), alt0(1,127), alt0(1,129), alt0(1,131), alt0(1,133)/)
+
+              dpriLocal(m,:) = (/ 0.0*alt0(1,136), alt0(1,128), alt0(1,130), alt0(1,132), alt0(1,134)/)
+              if (my_id .EQ. 10) then
+                  write(*,*) "dpriLocal:" , dpriLocal(m,:)
+              end if
 
               end if
 
-              !
-              ! 				medLocal(m,3) = alt0(1,4)
-              !
               IF (alt0(1,2) .LT. 1.0) THEN
                  !medLocal(m,5) = 0.0
                  solLocal(m,:) = (/ solute3(1), solute3(2), solute3(3), solute3(4), solute3(5), &
                       solute3(6), solute3(7), solute3(8), solute3(9), solute3(10), solute3(11), &
                       solute3(12), solute3(13), solute3(14), 0.0/)
               END IF
-
 
 
            END IF ! end if-cell-is-on loop (medLocl 5 == 1)
@@ -4884,204 +4779,371 @@ PROGRAM main
 
                if (medium3(2) .eq. precip_th) then
                !secLocal = 0.0
-               DO ii=1,g_sec/2
-                  secLocal(m,ii) = alt_mat(m,2*ii+14)
-               END DO
+                   DO ii=1,g_sec/2
+                      secLocal(m,ii) = alt_mat(m,2*ii+14)
+                      dsecLocal(m,ii) = secLocal(m,ii) - secondary3(ii)
+                   END DO
                end if
-            !    if (my_id .EQ. 1) then
-            !        write(*,*) "secLocal(m,:) for my_id = 1"
-            !        write(*,*) secLocal(m,:)
-            !    end if
 
            end if
 
-        !END DO ! end m = 1,num rows, ran chem for each row and populated local arrays
-        !write(*,*) my_id, m_count
+            medLocal(:,1) = 0.0
+            DO ii=1,g_sec/2
+               medLocal(:,1) = medLocal(:,1) + secLocal(:,ii)*sec_molar(ii)/sec_density(ii)
+            END DO
 
-        medLocal(:,1) = 0.0
-        DO ii=1,g_sec/2
-           medLocal(:,1) = medLocal(:,1) + secLocal(:,ii)*sec_molar(ii)/sec_density(ii)
-        END DO
+            DO ii=1,g_pri
+               medLocal(:,1) = medLocal(:,1) + priLocal(:,ii)*pri_molar(ii)/pri_density(ii)
+            END DO
 
-        DO ii=1,g_pri
-           medLocal(:,1) = medLocal(:,1) + priLocal(:,ii)*pri_molar(ii)/pri_density(ii)
-        END DO
-
-        !DO m=1,num_rows_to_receive
-           IF ((medLocal(m,1) + solLocal(m,3)) .GT. 0.0) THEN
-              medLocal(m,1) = medLocal(m,1)/(medLocal(m,1) + 1000.0*solLocal(m,3))
-           END IF
-        !END DO
+            IF ((medLocal(m,1) + solLocal(m,3)) .GT. 0.0) THEN
+               medLocal(m,1) = medLocal(m,1)/(medLocal(m,1) + 1000.0*solLocal(m,3))
+            END IF
 
 
+
+
+        END IF ! if se_toggle == 1
 
 
 
 
 
-        ! !#GEOCHEM: slave sends to master
-        ! !call system_clock(counti, count_rate, count_max)
-        !
-        ! if (jjj .EQ. 1) then
-        !     CALL MPI_SEND( end_loop, 1, MPI_INTEGER, root_process, return_data_tag, MPI_COMM_WORLD, ierr)
-        !     ! if (my_id .EQ. 12) then
-        !     !     write(*,*) "jj:" , jj , "jjj:" , jjj , my_id , "sent end_loop"
-        !     ! end if
-        !     CALL MPI_SEND( slave_vector, end_loop, MPI_INTEGER, root_process, return_data_tag, MPI_COMM_WORLD, ierr)
-        !     ! if (my_id .EQ. 12) then
-        !     !     write(*,*) "jj:" , jj , "jjj:" , jjj , my_id , "sent slave_vector"
-        !     ! end if
-        ! end if
-        !
-        ! ! send primary array chunk back to root process
-        ! !write(*,*) "BEGIN sending to master from" , my_id
-        ! DO ii = 1,g_pri
-        !    CALL MPI_SEND( priLocal(m,ii), 1, MPI_REAL4, root_process, return_data_tag, MPI_COMM_WORLD, ierr)
-        ! !    if (my_id .EQ. 12) then
-        ! !        write(*,*) "jj:" , jj , "jjj:" , jjj , my_id , "sent g_pri: " , ii
-        ! !    end if
-        ! END DO
-        !
-        ! ! send secondary array chunk back to root process
-        ! DO ii = 1,g_sec/2
-        !    CALL MPI_SEND( secLocal(m,ii), 1, MPI_REAL4, root_process, return_data_tag, MPI_COMM_WORLD, ierr)
-        ! !    if (my_id .EQ. 12) then
-        ! !        write(*,*) "jj:" , jj , "jjj:" , jjj , my_id , "sent g_sec/2: " , ii
-        ! !    end if
-        ! END DO
-        !
-        ! ! send solute array chunk back to root process
-        ! CALL MPI_SEND( solLocal(m,3), 1, MPI_REAL4, root_process, return_data_tag, MPI_COMM_WORLD, ierr)
-        ! ! if (my_id .EQ. 12) then
-        ! !     write(*,*) "jj:" , jj , "jjj:" , jjj , my_id , "sent g_sol: " , 3
-        ! ! end if
-        !
-        ! CALL MPI_SEND( solLocal(m,2), 1, MPI_REAL4, root_process, return_data_tag, MPI_COMM_WORLD, ierr)
-        ! ! if (my_id .EQ. 12) then
-        ! !     write(*,*) "jj:" , jj , "jjj:" , jjj , my_id , "sent g_sol: " , 2
-        ! ! end if
-        !
-        ! CALL MPI_SEND( solLocal(m,1), 1, MPI_REAL4, root_process, return_data_tag, MPI_COMM_WORLD, ierr)
-        ! ! if (my_id .EQ. 12) then
-        ! !     write(*,*) "jj:" , jj , "jjj:" , jjj , my_id , "sent g_sol: " , 1
-        ! ! end if
-        !
-        ! DO ii = 4,g_sol
-        !    CALL MPI_SEND( solLocal(m,ii), 1, MPI_REAL4, root_process, return_data_tag, MPI_COMM_WORLD, ierr)
-        ! !    if (my_id .EQ. 12) then
-        ! !        write(*,*) "jj:" , jj , "jjj:" , jjj , my_id , "sent g_sol: " , ii
-        ! !    end if
-        ! END DO
-        !
-        !
-        ! ! if (my_id .eq. 54) then
-        ! !     write(*,*) "my_id slave sent" , my_id
-        ! !     write(*,*) solLocal(:,4)
-        ! !     write(*,*) " "
-        ! ! end if
-        ! !write(*,*) solLocal(:,4)
-        !
-        ! ! send medium array chunk back to root process
-        ! DO ii = 1,g_med
-        !    CALL MPI_SEND( medLongBitFull(slave_vector(jjj),ii), 1, MPI_REAL4, root_process, return_data_tag, MPI_COMM_WORLD, ierr)
-        ! !    if (my_id .EQ. 12) then
-        ! !        write(*,*) my_id , "sent g_med: " , ii
-        ! !    end if
-        ! END DO
+        !-kinetic input file
+        IF (se_toggle .EQ. 0) THEN
+
+
+            inputz0 = "SOLUTION 1 " //NEW_LINE('')// &
+                 &"    units   mol/kgw" //NEW_LINE('')// &
+                 &"    temp" // TRIM(s_temp) //NEW_LINE('')// &
+                 &"    Ca " // TRIM(s_ca) //NEW_LINE('')// &
+                 &"    Mg " // TRIM(s_mg) //NEW_LINE('')// &
+                 &"    Na " // TRIM(s_na) //NEW_LINE('')// &
+                 &"    K " // TRIM(s_k) //NEW_LINE('')// &
+                 &"    Fe " // TRIM(s_fe) //NEW_LINE('')// &
+                 &"    S "// TRIM(s_s)  //NEW_LINE('')// &
+                 &"    Si " // TRIM(s_si) //NEW_LINE('')// &
+                 &"    Cl " // TRIM(s_cl) //NEW_LINE('')// &
+                 &"    Al " // TRIM(s_al) //NEW_LINE('')// &
+                 &"    C " // TRIM(s_co2) //NEW_LINE('')// &
+                 &"    Alkalinity " // TRIM(s_alk) //NEW_LINE('')// &
+                 &"    -water "// TRIM(s_water) // " # kg" //NEW_LINE('')// &
+
+                 &" "  //NEW_LINE('')
+
+
+                 inputz0 = TRIM(inputz0) // "RATES" //NEW_LINE('')// &
+
+                  &"BGlass" //NEW_LINE('')// &
+                  &"-start" //NEW_LINE('')// &
+                  &"    10 rate0=" // TRIM(sd_dglass) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                  &"    20 save rate0 * time" //NEW_LINE('')// &
+                  &"-end" //NEW_LINE('')// &
+
+                  ! olivine
+                  &"Basalt1" //NEW_LINE('')// &
+                  &"-start" //NEW_LINE('')// &
+                  &"    10 rate0=" // TRIM(sd_dbasalt1) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                  &"    20 save rate0 * time" //NEW_LINE('')// &
+                  &"-end" //NEW_LINE('')// &
+
+                  ! pyroxene
+                  &"Basalt2" //NEW_LINE('')// &
+                  &"-start" //NEW_LINE('')// &
+                  &"    10 rate0=" // TRIM(sd_dbasalt2) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                  &"    20 save rate0 * time" //NEW_LINE('')// &
+                  &"-end" //NEW_LINE('')// &
+
+                  ! plagioclase
+                  &"Basalt3" //NEW_LINE('')// &
+                  &"-start" //NEW_LINE('')// &
+                  &"    10 rate0=" // TRIM(sd_dbasalt3) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                  &"    20 save rate0 * time" //NEW_LINE('')// &
+                  &"-end" //NEW_LINE('')// &
+
+                  ! EQ kinetics
+                  &"KINETICS 1" //NEW_LINE('')// &
+
+                  &"BGlass" //NEW_LINE('')// &
+                  &"-f CaO .1997 SiO2 .847 Al2O3 .138 " //&
+                  & "Fe2O3 .149 MgO .1744 K2O .002 " //&
+                  & "Na2O .043" //NEW_LINE('')// &
+                  &"-m0 " // TRIM(s_glass) //NEW_LINE('')// &
+
+                  &"Basalt1 " //NEW_LINE('')// &
+                  & TRIM(param_ol_string) //NEW_LINE('')// &
+                  &"-m0 " // TRIM(s_basalt1) //NEW_LINE('')// &
+
+                  &"Basalt2 " //NEW_LINE('')// &
+                  & TRIM(param_pyr_string) //NEW_LINE('')// &
+                  &"-m0 " // TRIM(s_basalt2) //NEW_LINE('')// &
+
+                  &"Basalt3 " //NEW_LINE('')// &
+                  & TRIM(param_plag_string) //NEW_LINE('')// &
+                  &"-m0 " // TRIM(s_basalt3) //NEW_LINE('')// &
+
+                  &"    -step " // TRIM(s_timestep) // " in 1" //NEW_LINE('')// &
+
+                  &"INCREMENTAL_REACTIONS true" //NEW_LINE('')// &
+
+
+
+                  &"SELECTED_OUTPUT" //NEW_LINE('')// &
+                  &"    -reset false" //NEW_LINE('')// &
+                  &"    -high_precision true" //NEW_LINE('')// &
+                  &"    -k basalt3 basalt2 basalt1 bglass" //NEW_LINE('')// &
+                  &"    -ph" //NEW_LINE('')// &
+                  &"    -pe false" //NEW_LINE('')// &
+                  &"    -totals C" //NEW_LINE('')// &
+                  &"    -totals Ca Mg Na K Fe S Si Cl Al " //NEW_LINE('')// &
+                  &"    -molalities HCO3-" //NEW_LINE('')// &
+                  &"    -water true" //NEW_LINE('')// &
+                  &"    -alkalinity" //NEW_LINE('')// &
+                  &"    -k Kaolinite Saponite-Mg Celadonite Clinoptilolite-Ca Pyrite Montmor-Na Goethite" //NEW_LINE('')// & ! 7
+                  &"    -k Smectite-high-Fe-Mg Calcite K-Feldspar Saponite-Na Nontronite-Na Nontronite-Mg" //NEW_LINE('')// & ! 6
+                  &"    -k Fe-Celadonite Nontronite-Ca Mesolite Hematite Montmor-Ca Vermiculite-Ca Analcime" //NEW_LINE('')// & ! 7
+                  &"    -k Phillipsite Montmor-Mg Gismondine Vermiculite-Mg Natrolite Talc Smectite-low-Fe-Mg " //NEW_LINE('')// & ! 7
+                  &"    -k Prehnite Chlorite(14a) scolecite Clinochlore-14A Clinochlore-7A Saponite-Ca" //NEW_LINE('')// & ! 6
+                  &"    -k Vermiculite-Na Pyrrhotite Fe-Saponite-Ca Fe-Saponite-Mg" //NEW_LINE('')// & ! 4
+                   &"    -k Daphnite-7a Daphnite-14a Epidote" //NEW_LINE('')// & ! 3
+                !   &"    -p prehnite chlorite(14a) scolecite Clinochlore-14A Clinochlore-7A saponite-ca" //NEW_LINE('')// & ! 6
+                !   &"    -p prehnite chlorite(14a) scolecite Clinochlore-14A Clinochlore-7A saponite-ca" //NEW_LINE('')// & ! 6
+                !   &"    -s kaolinite" //NEW_LINE('')// &		! 1
+                  ! 		&"    -s kaolinite saponite-mg celadonite Clinoptilolite-Ca pyrite montmor-na goethite" //NEW_LINE('')// &
+                  ! 		&"    -s Smectite-high-Fe-Mg calcite k-feldspar saponite-na nontronite-na nontronite-mg" //NEW_LINE('')// &
+                  ! 		&"    -s fe-celadonite nontronite-ca mesolite hematite montmor-ca vermiculite-ca analcime" //NEW_LINE('')// &
+                  ! 		&"    -s phillipsite diopside gismondine vermiculite-mg natrolite talc Smectite-low-Fe-Mg " //NEW_LINE('')// &
+                  ! 		&"    -s prehnite chlorite(14a) scolecite Clinochlore-14A Clinochlore-7A saponite-ca" //NEW_LINE('')// &
+                  ! 		&"    -s vermiculite-na pyrrhotite Fe-Saponite-Ca Fe-Saponite-Mg" //NEW_LINE('')// &
+                  &"    -time" //NEW_LINE('')// &
+                  &"END"
 
 
 
 
+                  ! INITIALIZE STUFF
+                  id = CreateIPhreeqc()
 
-        !call system_clock(countf, count_rate, count_max)
-        !write(*,*) "end of send to master", my_id , countf - counti
+
+                  IF (SetSelectedOutputStringOn(id, .TRUE.).NE.IPQ_OK) THEN
+                     CALL OutputErrorString(id)
+                     WRITE(*,*) "primary"
+                     WRITE(*,*) primary3
+                     WRITE(*,*) "secondary"
+                     WRITE(*,*) secondary3
+                     WRITE(*,*) "solute"
+                     WRITE(*,*) solute3
+                     WRITE(*,*) "medium"
+                     WRITE(*,*) medium3
+                     WRITE(*,*) "temp"
+                     WRITE(*,*) temp3
+                     !STOP
+                  END IF
+
+                  IF (SetOutputStringOn(id, .TRUE.).NE.IPQ_OK) THEN
+                     CALL OutputErrorString(id)
+                     !STOP
+                  END IF
+
+                  !IF (LoadDatabase(id, 'l5.dat').NE.0) THEN
+                  IF (LoadDatabaseString(id, TRIM(L5)).NE.0) THEN
+                     CALL OutputErrorString(id)
+                     WRITE(*,*) "primary"
+                     WRITE(*,*) primary3
+                     WRITE(*,*) "secondary"
+                     WRITE(*,*) secondary3
+                     WRITE(*,*) "solute"
+                     WRITE(*,*) solute3
+                     WRITE(*,*) "medium"
+                     WRITE(*,*) medium3
+                     WRITE(*,*) "temp"
+                     WRITE(*,*) temp3
+                     !STOP
+                  END IF
+
+                  ! RUN INPUT
+                  IF (RunString(id, TRIM(inputz0)).NE.0) THEN
+                     WRITE(*,*) "issue is:" , RunString(id, TRIM(inputz0))
+                     CALL OutputErrorString(id)
+                     WRITE(*,*) "primary"
+                     WRITE(*,*) primary3
+                     WRITE(*,*) "secondary"
+                     WRITE(*,*) secondary3
+                     WRITE(*,*) "solute"
+                     WRITE(*,*) solute3
+                     WRITE(*,*) "medium"
+                     WRITE(*,*) medium3
+                     WRITE(*,*) "temp"
+                     WRITE(*,*) temp3
+                     IF (RunString(id, TRIM(inputz0)).NE.0) THEN
+                        WRITE(*,*) "another chance 2"
+                        CALL OutputErrorString(id)
+                     END IF
+                     !STOP
+                  END IF
+
+                  ! WRITE AWAY
+                  DO i=1,GetSelectedOutputStringLineCount(id)
+                     CALL GetSelectedOutputStringLine(id, i, line)
+                     ! HEADER BITS YOU MAY WANT
+                     if (my_id .EQ. 10) then
+                          	if (i .eq. 1) then
+                           	   write(12,*) trim(line)
+                           	   write(*,*) trim(line) ! PRINT LABELS FOR EVERY FIELD (USEFUL)
+                          	end if
+                    end if
+
+                     ! MEAT
+                     IF (i .GT. 1) THEN
+                        READ(line,*) outmat(i,1:97)
+    !!!!write(12,*) outmat(i,:) ! this writes to file, which i don't need (USEFUL)
+                        ! 		if ((medium3(6) .gt. 23000.0) .and. (medium3(7) .gt. -200.0)) then
+                        ! 		write(*,*) i
+                        ! 		write(*,*) trim(line) ! PRINT EVERY GOD DAMN LINE
+                        ! 		write(*,*) ""
+                        ! ! 		! write(*,*) solute3
+                        ! ! ! 		write(*,*) ""
+                        ! ! 		write(*,*) ""
+                        ! 		end if
+                     END IF
+                  END DO
 
 
-	! done with looping through coarse timesteps
+                  ! OUTPUT TO THE MAIN MASSACR METHOD
+                  alt0(1,1:97) = outmat(3,1:97)
+                  alt_mat(m,1:97) = alt0(1,1:97)
 
-END DO ! end jjj = 1,end_loop
-call system_clock(countf, count_rate, count_max)
-write(*,*) "my_id" , my_id , "jjj loop time:" , countf - counti
+                  !write(*,*) "an output alt0: ", alt0
 
-!#GEOCHEM: slave sends to master
-!call system_clock(counti, count_rate, count_max)
+                  IF (GetSelectedOutputStringLineCount(id) .NE. 3) THEN
+                     alt0(1,:) = 0.0
+                     WRITE(*,*) "not 3 lines error"
+                  END IF
 
-!if (jjj .EQ. 1) then
+
+                  ! DESTROY INSTANCE
+                  IF (DestroyIPhreeqc(id).NE.IPQ_OK) THEN
+                     CALL OutputErrorString(id)
+                     WRITE(*,*) "cannot be destroyed error"
+                     STOP
+                  END IF
+
+
+                  if (alt0(1,2) .GT. 1.0) then
+
+                  solLocal(m,:) = (/ alt0(1,2), alt0(1,3), alt0(1,4), alt0(1,5), alt0(1,6), &
+                       alt0(1,7), alt0(1,8), alt0(1,9), alt0(1,10), alt0(1,11), alt0(1,12), &
+                       alt0(1,13), alt0(1,14), alt0(1,15), 0.0/)
+
+                !   priLocal(m,:) = (/ 0.0*alt0(1,136), alt0(1,127), alt0(1,129), alt0(1,131), alt0(1,133)/)
+                priLocal(m,:) = (/ 0.0*alt0(1,16), alt0(1,16), alt0(1,18), alt0(1,20), alt0(1,22)/)
+
+                if (my_id .EQ. 10) then
+                    write(*,*) "priLocal:" , priLocal(m,:)
+                end if
+
+                !   dpriLocal(m,:) = (/ 0.0*alt0(1,136), alt0(1,128), alt0(1,130), alt0(1,132), alt0(1,134)/)
+                dpriLocal(m,:) = (/ 0.0*alt0(1,16), alt0(1,17), alt0(1,19), alt0(1,21), alt0(1,23)/)
+
+                if (my_id .EQ. 10) then
+                    write(*,*) "dpriLocal:" , dpriLocal(m,:)
+                end if
+
+                  end if
+
+                  IF (alt0(1,2) .LT. 1.0) THEN
+                     !medLocal(m,5) = 0.0
+                     solLocal(m,:) = (/ solute3(1), solute3(2), solute3(3), solute3(4), solute3(5), &
+                          solute3(6), solute3(7), solute3(8), solute3(9), solute3(10), solute3(11), &
+                          solute3(12), solute3(13), solute3(14), 0.0/)
+                  END IF
+
+
+               if (alt0(1,2) .GT. 1.0) then
+
+                   if (medium3(2) .eq. precip_th) then
+                   !secLocal = 0.0
+                       DO ii=1,g_sec/2
+                          secLocal(m,ii) = alt_mat(m,2*ii+22)
+                          dsecLocal(m,ii) = secLocal(m,ii) - secondary3(ii)
+                       END DO
+                   end if
+
+               end if
+
+                medLocal(:,1) = 0.0
+                DO ii=1,g_sec/2
+                   medLocal(:,1) = medLocal(:,1) + secLocal(:,ii)*sec_molar(ii)/sec_density(ii)
+                END DO
+
+                DO ii=1,g_pri
+                   medLocal(:,1) = medLocal(:,1) + priLocal(:,ii)*pri_molar(ii)/pri_density(ii)
+                END DO
+
+                IF ((medLocal(m,1) + solLocal(m,3)) .GT. 0.0) THEN
+                   medLocal(m,1) = medLocal(m,1)/(medLocal(m,1) + 1000.0*solLocal(m,3))
+                END IF
+
+
+
+                  priLocal(m,:) = primary3
+                  secLocal(m,:) = secondary3
+                  solLocal(m,:) = solute3
+
+
+
+        END IF ! if se_toggle == 0
+
+
+
+    END DO ! end jjj = 1,end_loop
+
+
+
+    call system_clock(countf, count_rate, count_max)
+    write(*,*) "my_id" , my_id , "jjj loop time:" , countf - counti
+
+    !#GEOCHEM: slave sends to master
+
     CALL MPI_SEND( end_loop, 1, MPI_INTEGER, root_process, return_data_tag, MPI_COMM_WORLD, ierr)
-    ! if (my_id .EQ. 12) then
-    !     write(*,*) "jj:" , jj , "jjj:" , jjj , my_id , "sent end_loop"
-    ! end if
+
     CALL MPI_SEND( slave_vector, end_loop, MPI_INTEGER, root_process, return_data_tag, MPI_COMM_WORLD, ierr)
-    ! if (my_id .EQ. 12) then
-    !     write(*,*) "jj:" , jj , "jjj:" , jjj , my_id , "sent slave_vector"
-    ! end if
-!end if
 
-! send primary array chunk back to root process
-!write(*,*) "BEGIN sending to master from" , my_id
-DO ii = 1,g_pri
-   CALL MPI_SEND( priLocal(slave_vector(1:end_loop),ii), end_loop, MPI_REAL4, root_process, return_data_tag, MPI_COMM_WORLD, ierr)
-!    if (my_id .EQ. 12) then
-!        write(*,*) "jj:" , jj , "jjj:" , jjj , my_id , "sent g_pri: " , ii
-!    end if
-END DO
+    ! send primary array chunk back to root process
+    DO ii = 1,g_pri
+       CALL MPI_SEND( priLocal(slave_vector(1:end_loop),ii), end_loop, MPI_REAL4, root_process, return_data_tag, MPI_COMM_WORLD, ierr)
+    END DO
 
-! send secondary array chunk back to root process
-DO ii = 1,g_sec/2
-   CALL MPI_SEND( secLocal(slave_vector(1:end_loop),ii), end_loop, MPI_REAL4, root_process, return_data_tag, MPI_COMM_WORLD, ierr)
-    ! if (my_id .EQ. 1) then
-    !     write(*,*) "secLocal just sent:" , secLocal(slave_vector(1:end_loop),ii)
-    ! end if
-END DO
+    ! send secondary array chunk back to root process
+    DO ii = 1,g_sec/2
+       CALL MPI_SEND( secLocal(slave_vector(1:end_loop),ii), end_loop, MPI_REAL4, root_process, return_data_tag, MPI_COMM_WORLD, ierr)
+    END DO
 
-! send solute array chunk back to root process
-CALL MPI_SEND( solLocal(slave_vector(1:end_loop),3), end_loop, MPI_REAL4, root_process, return_data_tag, MPI_COMM_WORLD, ierr)
-! if (my_id .EQ. 12) then
-!     write(*,*) "jj:" , jj , "jjj:" , jjj , my_id , "sent g_sol: " , 3
-! end if
+    ! send solute array chunk back to root process
+    CALL MPI_SEND( solLocal(slave_vector(1:end_loop),3), end_loop, MPI_REAL4, root_process, return_data_tag, MPI_COMM_WORLD, ierr)
 
-CALL MPI_SEND( solLocal(slave_vector(1:end_loop),2), end_loop, MPI_REAL4, root_process, return_data_tag, MPI_COMM_WORLD, ierr)
-! if (my_id .EQ. 12) then
-!     write(*,*) "jj:" , jj , "jjj:" , jjj , my_id , "sent g_sol: " , 2
-! end if
+    CALL MPI_SEND( solLocal(slave_vector(1:end_loop),2), end_loop, MPI_REAL4, root_process, return_data_tag, MPI_COMM_WORLD, ierr)
 
-CALL MPI_SEND( solLocal(slave_vector(1:end_loop),1), end_loop, MPI_REAL4, root_process, return_data_tag, MPI_COMM_WORLD, ierr)
-! if (my_id .EQ. 12) then
-!     write(*,*) "jj:" , jj , "jjj:" , jjj , my_id , "sent g_sol: " , 1
-! end if
+    CALL MPI_SEND( solLocal(slave_vector(1:end_loop),1), end_loop, MPI_REAL4, root_process, return_data_tag, MPI_COMM_WORLD, ierr)
 
-DO ii = 4,g_sol
-   CALL MPI_SEND( solLocal(slave_vector(1:end_loop),ii), end_loop, MPI_REAL4, root_process, return_data_tag, MPI_COMM_WORLD, ierr)
-!    if (my_id .EQ. 12) then
-!        write(*,*) "jj:" , jj , "jjj:" , jjj , my_id , "sent g_sol: " , ii
-!    end if
-END DO
+    DO ii = 4,g_sol
+       CALL MPI_SEND( solLocal(slave_vector(1:end_loop),ii), end_loop, MPI_REAL4, root_process, return_data_tag, MPI_COMM_WORLD, ierr)
+    END DO
+
+    ! send medium array chunk back to root process
+    DO ii = 1,g_med
+       CALL MPI_SEND( medLongBitFull(slave_vector(1:end_loop),ii), end_loop, MPI_REAL4, root_process, return_data_tag, MPI_COMM_WORLD, ierr)
+    END DO
 
 
-! if (my_id .eq. 54) then
-!     write(*,*) "my_id slave sent" , my_id
-!     write(*,*) solLocal(:,4)
-!     write(*,*) " "
-! end if
-!write(*,*) solLocal(:,4)
 
-! send medium array chunk back to root process
-DO ii = 1,g_med
-   CALL MPI_SEND( medLongBitFull(slave_vector(1:end_loop),ii), end_loop, MPI_REAL4, root_process, return_data_tag, MPI_COMM_WORLD, ierr)
-!    if (my_id .EQ. 12) then
-!        write(*,*) my_id , "sent g_med: " , ii
-!    end if
-END DO
-!call system_clock(countf, count_rate, count_max)
-!write(*,*) "slave:" , my_id , "return send time:" , countf - counti
-
-     END DO ! end do jj = tn/mstep ??
+    END DO ! end do jj = tn/mstep
 
 
 
 
-     ! end loop through processors
-  END IF
+
+  END IF ! end loop through processors
 
 
 
