@@ -66,6 +66,9 @@ MODULE globals
   INTEGER :: slave_count, index_count
   INTEGER :: dabs_loop
 
+  INTEGER :: se_toggle
+  INTEGER :: se_factor
+
 CONTAINS
 
 
