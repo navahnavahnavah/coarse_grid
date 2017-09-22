@@ -4722,7 +4722,7 @@ PROGRAM main
             slave_count = slave_count + 1
         end if
     end do
-    write(*,*) "my_id: " , my_id , "slave_vector(end_loop)" , slave_vector !(end_loop)
+    write(*,*) "my_id: " , my_id , "slave_vector(end_loop)" , slave_vector(1:end_loop)
 
      !-primary compositions + amounts
 

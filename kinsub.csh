@@ -21,9 +21,12 @@
 
 
 
-##PBS -l nodes=compute-0-0:ppn=12+compute-0-1:ppn=12+compute-0-2:ppn=12+compute-0-3:ppn=12+compute-1-5:ppn=12
-#PBS -l nodes=compute-1-9:ppn=12+compute-1-0:ppn=12+compute-1-7:ppn=12
-#PBS -l nodes=compute-1-2:ppn=12+compute-1-10:ppn=12+compute-1-8:ppn=12
+#PBS -l nodes=compute-0-0:ppn=12+compute-0-1:ppn=12+compute-0-2:ppn=12
+
+##+compute-0-3:ppn=12+compute-1-5:ppn=12
+##PBS -l nodes=compute-1-9:ppn=12+compute-1-0:ppn=12+compute-1-7:ppn=12
+##PBS -l nodes=compute-1-2:ppn=12+compute-1-10:ppn=12+compute-1-8:ppn=12
+##PBS -l nodes=compute-1-4:ppn=12+compute-0-4:ppn=12+compute-1-3:ppn=12
 
 ##+compute-1-2:ppn=12
 ##PBS -l nodes=compute-1-4:ppn=12+compute-1-10:ppn=12+compute-1-7:ppn=12+compute-1-9:ppn=12
@@ -81,13 +84,13 @@ set PARAM_F_K = '1e-5'
 #set PARAM_F_FREQ = '0.0005'
 set PARAM_F_FREQ = '20'
 set PARAM_F_POR = '6e-4'
-set PARAM_T_DIFF = '5e9'
+set PARAM_T_DIFF = '1e10'
 set PARAM_B_G = '50'
 set PARAM_D_ONLY = '1'
 
 
 
-set PARAM_PATH='/data/navah/cg_output/sites_9_f/'
+set PARAM_PATH='/data/navah/cg_output/sites_9_h/'
 #set PARAM_PATH='/data/navah/cg_output/medium_vel_sites/med_c_no_heat/'
 
 
