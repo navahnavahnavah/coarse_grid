@@ -2974,7 +2974,7 @@ PROGRAM main
 
 
 
-           !- CALCULATE phi_coarse_calc_long (s + a)
+           !-phi_coarse_calc_long (s + a)
            DO i = 1,leng
               phi_calc_denom = 0.0
               phi_calc_denom = solLongBitFull(i,3)*1000.0
@@ -4178,7 +4178,7 @@ PROGRAM main
            !phi_coarse_local = 0.5
            !write(*,*) maxval(phi_coarse_local)
 
-           !-do advection
+           ! do advection
            IF (an_id_local .LE. 11) THEN
               DO ii = 1,cstep
                  sol_coarse_local = solute_next_coarse(sol_coarse_local,u_coarse_local,v_coarse_local,phi_coarse_local,sea(sol_index(an_id_local)))
@@ -4230,7 +4230,7 @@ PROGRAM main
             !phi_coarse_local = 0.5
             !write(*,*) maxval(phi_coarse_local)
 
-            !-do advection
+            ! do advection
             IF (an_id_local .LE. 11) THEN
                DO ii = 1,cstep
                   sol_coarse_local = solute_next_coarse(sol_coarse_local,u_coarse_local,v_coarse_local,phi_coarse_local,sea(sol_index(an_id_local)))
@@ -4307,7 +4307,7 @@ PROGRAM main
               secondary3 = secLongBitFull(m,:)
               solute3 = solLongBitFull(m,:)
               medium3 = medLongBitFull(m,:)
-            !   dprimary3 = dpriLongBitFull(m,:)
+             !  dprimary3 = dpriLongBitFull(m,:)
               dprimary3 = dpriLocal(m,:)
             !   dsecondary3 = dsecLongBitFull(m,:)
               dsecondary3 = dsecLocal(m,:)
@@ -4394,51 +4394,107 @@ PROGRAM main
 
 
 
-              WRITE(sd_dbasalt3,'(F25.10)') dprimary3(2)
-              WRITE(sd_dbasalt2,'(F25.10)') dprimary3(3)
-              WRITE(sd_dbasalt1,'(F25.10)') dprimary3(4)
-              WRITE(sd_dglass,'(F25.10)') dprimary3(5)
+              WRITE(sd_dbasalt3,'(F25.10)') -1.0*dprimary3(2)
+              WRITE(sd_dbasalt2,'(F25.10)') -1.0*dprimary3(3)
+              WRITE(sd_dbasalt1,'(F25.10)') -1.0*dprimary3(4)
+              WRITE(sd_dglass,'(F25.10)') -1.0*dprimary3(5)
+
+              if ((my_id .EQ. 10) .AND. (jjj .EQ. 1)) then
+                  write(*,*) "plag sd_dbasalt3" , sd_dbasalt3
+                  write(*,*) "pyr sd_dbasalt2" , sd_dbasalt2
+                  write(*,*) "ol sd_dbasalt1" , sd_dbasalt1
+                  write(*,*) "sd_dglass" , sd_dglass
+              end if
+
+
 
               WRITE(sd_kaolinite,'(F25.10)') dsecondary3(1)
               WRITE(sd_saponite,'(F25.10)') dsecondary3(2)
               WRITE(sd_celadonite,'(F25.10)') dsecondary3(3)
               WRITE(sd_clinoptilolite,'(F25.10)') dsecondary3(4)
               WRITE(sd_pyrite,'(F25.10)') dsecondary3(5)
-              WRITE(sd_mont_na,'(F25.10)') dsecondary3(6)
-              WRITE(sd_goethite,'(F25.10)') dsecondary3(7)
-              WRITE(sd_smectite,'(F25.10)') dsecondary3(8)
-              WRITE(sd_calcite,'(F25.10)') dsecondary3(9)
-              WRITE(sd_kspar,'(F25.10)') dsecondary3(10)
-              WRITE(sd_saponite_na,'(F25.10)') dsecondary3(11) !!!!
-              WRITE(sd_nont_na,'(F25.10)') dsecondary3(12)
-              WRITE(sd_nont_mg,'(F25.10)') dsecondary3(13)
-              WRITE(sd_fe_celadonite,'(F25.10)') dsecondary3(14)
-              WRITE(sd_nont_ca,'(F25.10)') dsecondary3(15)
-              WRITE(sd_mesolite,'(F25.10)') dsecondary3(16)
-              WRITE(sd_hematite,'(F25.10)') dsecondary3(17)
-              WRITE(sd_mont_ca,'(F25.10)') dsecondary3(18)
-              WRITE(sd_verm_ca,'(F25.10)') dsecondary3(19)
-              WRITE(sd_analcime,'(F25.10)') dsecondary3(20)
-              WRITE(sd_phillipsite,'(F25.10)') dsecondary3(21)
-              WRITE(sd_mont_mg,'(F25.10)') dsecondary3(22)
-              WRITE(sd_gismondine,'(F25.10)') dsecondary3(23)
-              WRITE(sd_verm_mg,'(F25.10)') dsecondary3(24)
-              WRITE(sd_natrolite,'(F25.10)') dsecondary3(25)
-              WRITE(sd_talc,'(F25.10)') dsecondary3(26) !!!!!!!!!
-              WRITE(sd_smectite_low,'(F25.10)') dsecondary3(27)
-              WRITE(sd_prehnite,'(F25.10)') dsecondary3(28)
-              WRITE(sd_chlorite,'(F25.10)') dsecondary3(29) !!!!!!!!
-              WRITE(sd_scolecite,'(F25.10)') dsecondary3(30)
-              WRITE(sd_clinochlore14a,'(F25.10)') dsecondary3(31)
-              WRITE(sd_clinochlore7a,'(F25.10)') dsecondary3(32)
-              WRITE(sd_saponite_ca,'(F25.10)') dsecondary3(33)
-              WRITE(sd_verm_na,'(F25.10)') dsecondary3(34)
-              WRITE(sd_pyrrhotite,'(F25.10)') dsecondary3(35)
-              WRITE(sd_fe_saponite_ca,'(F25.10)') dsecondary3(36) !!!
-              WRITE(sd_fe_saponite_mg,'(F25.10)') dsecondary3(37) !!!
-              WRITE(sd_daphnite_7a,'(F25.10)') dsecondary3(38) !!!
-              WRITE(sd_daphnite_14a,'(F25.10)') dsecondary3(39) !!!
-              WRITE(sd_epidote,'(F25.10)') dsecondary3(40) !!!
+
+              if ((my_id .EQ. 10) .AND. (jjj .EQ. 1)) then
+                  write(*,*) "sd_kaolinite" , sd_kaolinite
+                  write(*,*) "sd_saponite" , sd_saponite
+                  write(*,*) "sd_celadonite" , sd_celadonite
+                  write(*,*) "sd_clinoptilolite" , sd_clinoptilolite
+                  write(*,*) "sd_pyrite" , sd_pyrite
+              end if
+
+            !   WRITE(sd_mont_na,'(F25.10)') dsecondary3(6)
+            !   WRITE(sd_goethite,'(F25.10)') dsecondary3(7)
+            !   WRITE(sd_smectite,'(F25.10)') dsecondary3(8)
+            !   WRITE(sd_calcite,'(F25.10)') dsecondary3(9)
+            !   WRITE(sd_kspar,'(F25.10)') dsecondary3(10)
+            !   WRITE(sd_saponite_na,'(F25.10)') dsecondary3(11) !!!!
+            !   WRITE(sd_nont_na,'(F25.10)') dsecondary3(12)
+            !   WRITE(sd_nont_mg,'(F25.10)') dsecondary3(13)
+            !   WRITE(sd_fe_celadonite,'(F25.10)') dsecondary3(14)
+            !   WRITE(sd_nont_ca,'(F25.10)') dsecondary3(15)
+            !   WRITE(sd_mesolite,'(F25.10)') dsecondary3(16)
+            !   WRITE(sd_hematite,'(F25.10)') dsecondary3(17)
+            !   WRITE(sd_mont_ca,'(F25.10)') dsecondary3(18)
+            !   WRITE(sd_verm_ca,'(F25.10)') dsecondary3(19)
+            !   WRITE(sd_analcime,'(F25.10)') dsecondary3(20)
+            !   WRITE(sd_phillipsite,'(F25.10)') dsecondary3(21)
+            !   WRITE(sd_mont_mg,'(F25.10)') dsecondary3(22)
+            !   WRITE(sd_gismondine,'(F25.10)') dsecondary3(23)
+            !   WRITE(sd_verm_mg,'(F25.10)') dsecondary3(24)
+            !   WRITE(sd_natrolite,'(F25.10)') dsecondary3(25)
+            !   WRITE(sd_talc,'(F25.10)') dsecondary3(26) !!!!!!!!!
+            !   WRITE(sd_smectite_low,'(F25.10)') dsecondary3(27)
+            !   WRITE(sd_prehnite,'(F25.10)') dsecondary3(28)
+            !   WRITE(sd_chlorite,'(F25.10)') dsecondary3(29) !!!!!!!!
+            !   WRITE(sd_scolecite,'(F25.10)') dsecondary3(30)
+            !   WRITE(sd_clinochlore14a,'(F25.10)') dsecondary3(31)
+            !   WRITE(sd_clinochlore7a,'(F25.10)') dsecondary3(32)
+            !   WRITE(sd_saponite_ca,'(F25.10)') dsecondary3(33)
+            !   WRITE(sd_verm_na,'(F25.10)') dsecondary3(34)
+            !   WRITE(sd_pyrrhotite,'(F25.10)') dsecondary3(35)
+            !   WRITE(sd_fe_saponite_ca,'(F25.10)') dsecondary3(36) !!!
+            !   WRITE(sd_fe_saponite_mg,'(F25.10)') dsecondary3(37) !!!
+            !   WRITE(sd_daphnite_7a,'(F25.10)') dsecondary3(38) !!!
+            !   WRITE(sd_daphnite_14a,'(F25.10)') dsecondary3(39) !!!
+            !   WRITE(sd_epidote,'(F25.10)') dsecondary3(40) !!!
+
+
+            WRITE(sd_mont_na,'(F25.10)') -1.0*dsecondary3(6)
+            WRITE(sd_goethite,'(F25.10)') -1.0*dsecondary3(7)
+            WRITE(sd_smectite,'(F25.10)') -1.0*dsecondary3(8)
+            WRITE(sd_calcite,'(F25.10)') -1.0*dsecondary3(9)
+            WRITE(sd_kspar,'(F25.10)') -1.0*dsecondary3(10)
+            WRITE(sd_saponite_na,'(F25.10)') -1.0*dsecondary3(11) !!!!
+            WRITE(sd_nont_na,'(F25.10)') -1.0*dsecondary3(12)
+            WRITE(sd_nont_mg,'(F25.10)') -1.0*dsecondary3(13)
+            WRITE(sd_fe_celadonite,'(F25.10)') -1.0*dsecondary3(14)
+            WRITE(sd_nont_ca,'(F25.10)') -1.0*dsecondary3(15)
+            WRITE(sd_mesolite,'(F25.10)') -1.0*dsecondary3(16)
+            WRITE(sd_hematite,'(F25.10)') -1.0*dsecondary3(17)
+            WRITE(sd_mont_ca,'(F25.10)') -1.0*dsecondary3(18)
+            WRITE(sd_verm_ca,'(F25.10)') -1.0*dsecondary3(19)
+            WRITE(sd_analcime,'(F25.10)') -1.0*dsecondary3(20)
+            WRITE(sd_phillipsite,'(F25.10)') -1.0*dsecondary3(21)
+            WRITE(sd_mont_mg,'(F25.10)') -1.0*dsecondary3(22)
+            WRITE(sd_gismondine,'(F25.10)') -1.0*dsecondary3(23)
+            WRITE(sd_verm_mg,'(F25.10)') -1.0*dsecondary3(24)
+            WRITE(sd_natrolite,'(F25.10)') -1.0*dsecondary3(25)
+            WRITE(sd_talc,'(F25.10)') -1.0*dsecondary3(26) !!!!!!!!!
+            WRITE(sd_smectite_low,'(F25.10)') -1.0*dsecondary3(27)
+            WRITE(sd_prehnite,'(F25.10)') -1.0*dsecondary3(28)
+            WRITE(sd_chlorite,'(F25.10)') -1.0*dsecondary3(29) !!!!!!!!
+            WRITE(sd_scolecite,'(F25.10)') -1.0*dsecondary3(30)
+            WRITE(sd_clinochlore14a,'(F25.10)') -1.0*dsecondary3(31)
+            WRITE(sd_clinochlore7a,'(F25.10)') -1.0*dsecondary3(32)
+            WRITE(sd_saponite_ca,'(F25.10)') -1.0*dsecondary3(33)
+            WRITE(sd_verm_na,'(F25.10)') -1.0*dsecondary3(34)
+            WRITE(sd_pyrrhotite,'(F25.10)') -1.0*dsecondary3(35)
+            WRITE(sd_fe_saponite_ca,'(F25.10)') -1.0*dsecondary3(36) !!!
+            WRITE(sd_fe_saponite_mg,'(F25.10)') -1.0*dsecondary3(37) !!!
+            WRITE(sd_daphnite_7a,'(F25.10)') -1.0*dsecondary3(38) !!!
+            WRITE(sd_daphnite_14a,'(F25.10)') -1.0*dsecondary3(39) !!!
+            WRITE(sd_epidote,'(F25.10)') -1.0*dsecondary3(40) !!!
+
 
 
               ! OTHER INFORMATION TO STRINGS
@@ -4758,9 +4814,9 @@ PROGRAM main
               priLocal(m,:) = (/ 0.0*alt0(1,136), alt0(1,127), alt0(1,129), alt0(1,131), alt0(1,133)/)
 
               dpriLocal(m,:) = (/ 0.0*alt0(1,136), alt0(1,128), alt0(1,130), alt0(1,132), alt0(1,134)/)
-              if (my_id .EQ. 10) then
-                  write(*,*) "dpriLocal:" , dpriLocal(m,:)
-              end if
+            !   if (my_id .EQ. 10) then
+            !       write(*,*) "dpriLocal:" , dpriLocal(m,:)
+            !   end if
 
               end if
 
@@ -4861,6 +4917,46 @@ PROGRAM main
                   &"    20 save rate0 * time" //NEW_LINE('')// &
                   &"-end" //NEW_LINE('')// &
 
+
+
+
+
+                  ! kaolinite
+                  &"Kaolinite" //NEW_LINE('')// &
+                  &"-start" //NEW_LINE('')// &
+                  &"    10 rate0=" // TRIM(sd_kaolinite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                  &"    20 save rate0 * time" //NEW_LINE('')// &
+                  &"-end" //NEW_LINE('')// &
+
+                  ! saponite-mg
+                  &"Saponite-Mg" //NEW_LINE('')// &
+                  &"-start" //NEW_LINE('')// &
+                  &"    10 rate0=" // TRIM(sd_saponite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                  &"    20 save rate0 * time" //NEW_LINE('')// &
+                  &"-end" //NEW_LINE('')// &
+
+                  ! celadonite
+                  &"Celadonite" //NEW_LINE('')// &
+                  &"-start" //NEW_LINE('')// &
+                  &"    10 rate0=" // TRIM(sd_celadonite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                  &"    20 save rate0 * time" //NEW_LINE('')// &
+                  &"-end" //NEW_LINE('')// &
+
+                  ! clinoptilolite
+                  &"Clinoptilolite-Ca" //NEW_LINE('')// &
+                  &"-start" //NEW_LINE('')// &
+                  &"    10 rate0=" // TRIM(sd_clinoptilolite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                  &"    20 save rate0 * time" //NEW_LINE('')// &
+                  &"-end" //NEW_LINE('')// &
+
+                  ! pyrite
+                  &"Pyrite" //NEW_LINE('')// &
+                  &"-start" //NEW_LINE('')// &
+                  &"    10 rate0=" // TRIM(sd_pyrite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                  &"    20 save rate0 * time" //NEW_LINE('')// &
+                  &"-end" //NEW_LINE('')// &
+
+
                   ! EQ kinetics
                   &"KINETICS 1" //NEW_LINE('')// &
 
@@ -4881,6 +4977,25 @@ PROGRAM main
                   &"Basalt3 " //NEW_LINE('')// &
                   & TRIM(param_plag_string) //NEW_LINE('')// &
                   &"-m0 " // TRIM(s_basalt3) //NEW_LINE('')// &
+
+
+                  &"Kaolinite " //NEW_LINE('')// &
+                  &"-m0 " // TRIM(s_kaolinite) //NEW_LINE('')// &
+
+                  &"Saponite-Mg " //NEW_LINE('')// &
+                  &"-m0 " // TRIM(s_saponite) //NEW_LINE('')// &
+
+                  &"Celadonite " //NEW_LINE('')// &
+                  &"-m0 " // TRIM(s_celadonite) //NEW_LINE('')// &
+
+                  &"Clinoptilolite-Ca " //NEW_LINE('')// &
+                  &"-m0 " // TRIM(s_clinoptilolite) //NEW_LINE('')// &
+
+                  &"Pyrite " //NEW_LINE('')// &
+                  &"-m0 " // TRIM(s_pyrite) //NEW_LINE('')// &
+
+
+
 
                   &"    -step " // TRIM(s_timestep) // " in 1" //NEW_LINE('')// &
 
@@ -4920,7 +5035,6 @@ PROGRAM main
 
 
 
-
                   ! INITIALIZE STUFF
                   id = CreateIPhreeqc()
 
@@ -4940,10 +5054,12 @@ PROGRAM main
                      !STOP
                   END IF
 
+
                   IF (SetOutputStringOn(id, .TRUE.).NE.IPQ_OK) THEN
                      CALL OutputErrorString(id)
                      !STOP
                   END IF
+
 
                   !IF (LoadDatabase(id, 'l5.dat').NE.0) THEN
                   IF (LoadDatabaseString(id, TRIM(L5)).NE.0) THEN
@@ -4982,20 +5098,21 @@ PROGRAM main
                      !STOP
                   END IF
 
+
                   ! WRITE AWAY
                   DO i=1,GetSelectedOutputStringLineCount(id)
                      CALL GetSelectedOutputStringLine(id, i, line)
                      ! HEADER BITS YOU MAY WANT
-                     if (my_id .EQ. 10) then
-                          	if (i .eq. 1) then
-                           	   write(12,*) trim(line)
-                           	   write(*,*) trim(line) ! PRINT LABELS FOR EVERY FIELD (USEFUL)
-                          	end if
-                    end if
+                    !  if (my_id .EQ. 10) then
+                    !       	if (i .eq. 1) then
+                    !        	   write(12,*) trim(line)
+                    !        	   write(*,*) trim(line) ! PRINT LABELS FOR EVERY FIELD (USEFUL)
+                    !       	end if
+                    ! end if
 
                      ! MEAT
                      IF (i .GT. 1) THEN
-                        READ(line,*) outmat(i,1:97)
+                        READ(line,*) outmat(i,1:103)
     !!!!write(12,*) outmat(i,:) ! this writes to file, which i don't need (USEFUL)
                         ! 		if ((medium3(6) .gt. 23000.0) .and. (medium3(7) .gt. -200.0)) then
                         ! 		write(*,*) i
@@ -5009,9 +5126,15 @@ PROGRAM main
                   END DO
 
 
+
+
                   ! OUTPUT TO THE MAIN MASSACR METHOD
-                  alt0(1,1:97) = outmat(3,1:97)
-                  alt_mat(m,1:97) = alt0(1,1:97)
+                  alt0(1,1:103) = outmat(3,1:103)
+                  alt_mat(m,1:103) = alt0(1,1:103)
+
+                !   if (my_id .EQ. 10) then
+                !       write(*,*) "all of outmat : " , alt_mat(m,1:103)
+                !   end if
 
                   !write(*,*) "an output alt0: ", alt0
 
@@ -5028,6 +5151,22 @@ PROGRAM main
                      STOP
                   END IF
 
+                  if ((my_id .EQ. 10) .AND. (jjj .EQ. 1)) then
+                      write(*,*) "BEFORE priLocal:" , priLocal(m,2:)
+                  end if
+
+                  if ((my_id .EQ. 10) .AND. (jjj .EQ. 1)) then
+                      write(*,*) "BEFORE dpriLocal:" , dpriLocal(m,2:)
+                  end if
+
+                  if ((my_id .EQ. 10) .AND. (jjj .EQ. 1)) then
+                      write(*,*) "BEFORE secLocal:" , secLocal(m,2:5)
+                  end if
+
+                  if ((my_id .EQ. 10) .AND. (jjj .EQ. 1)) then
+                      write(*,*) "BEFORE dsecLocal:" , dsecLocal(m,2:5)
+                  end if
+
 
                   if (alt0(1,2) .GT. 1.0) then
 
@@ -5038,16 +5177,13 @@ PROGRAM main
                 !   priLocal(m,:) = (/ 0.0*alt0(1,136), alt0(1,127), alt0(1,129), alt0(1,131), alt0(1,133)/)
                 priLocal(m,:) = (/ 0.0*alt0(1,16), alt0(1,16), alt0(1,18), alt0(1,20), alt0(1,22)/)
 
-                if (my_id .EQ. 10) then
-                    write(*,*) "priLocal:" , priLocal(m,:)
-                end if
+                ! if (my_id .EQ. 10) then
+                !     write(*,*) "priLocal:" , priLocal(m,:)
+                ! end if
 
                 !   dpriLocal(m,:) = (/ 0.0*alt0(1,136), alt0(1,128), alt0(1,130), alt0(1,132), alt0(1,134)/)
                 dpriLocal(m,:) = (/ 0.0*alt0(1,16), alt0(1,17), alt0(1,19), alt0(1,21), alt0(1,23)/)
 
-                if (my_id .EQ. 10) then
-                    write(*,*) "dpriLocal:" , dpriLocal(m,:)
-                end if
 
                   end if
 
@@ -5061,13 +5197,13 @@ PROGRAM main
 
                if (alt0(1,2) .GT. 1.0) then
 
-                   if (medium3(2) .eq. precip_th) then
+                   !if (medium3(2) .eq. precip_th) then
                    !secLocal = 0.0
                        DO ii=1,g_sec/2
                           secLocal(m,ii) = alt_mat(m,2*ii+22)
-                          dsecLocal(m,ii) = secLocal(m,ii) - secondary3(ii)
+                          dsecLocal(m,ii) = alt_mat(m,2*ii+23)!secLocal(m,ii) - secondary3(ii)
                        END DO
-                   end if
+                   !end if
 
                end if
 
@@ -5084,11 +5220,27 @@ PROGRAM main
                    medLocal(m,1) = medLocal(m,1)/(medLocal(m,1) + 1000.0*solLocal(m,3))
                 END IF
 
+                if ((my_id .EQ. 10) .AND. (jjj .EQ. 1)) then
+                    write(*,*) "AFTER priLocal:" , priLocal(m,2:)
+                end if
+
+                if ((my_id .EQ. 10) .AND. (jjj .EQ. 1)) then
+                    write(*,*) "AFTER dpriLocal:" , dpriLocal(m,2:)
+                end if
+
+                if ((my_id .EQ. 10) .AND. (jjj .EQ. 1)) then
+                    write(*,*) "AFTER secLocal:" , secLocal(m,2:5)
+                end if
+
+                if ((my_id .EQ. 10) .AND. (jjj .EQ. 1)) then
+                    write(*,*) "AFTER dsecLocal:" , dsecLocal(m,2:5)
+                end if
 
 
-                  priLocal(m,:) = primary3
-                  secLocal(m,:) = secondary3
-                  solLocal(m,:) = solute3
+
+                  !priLocal(m,:) = primary3
+                  !secLocal(m,:) = secondary3
+                  !solLocal(m,:) = solute3
 
 
 

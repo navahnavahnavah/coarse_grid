@@ -4,7 +4,8 @@
 
 # macros go here
 FC=mpif90
-FCFLAGS = -I/home/navah/include -parallel -par-report -ipo
+FCFLAGS = -I/home/navah/include -O2
+#### -par-report -parallel -ipo
 #####-O2 -no-prec-div -xHost -vec-report2 -mcmodel=large -O2
 ####### -O2 -parallel -ip -no-prec-div
 #FCFLAGS = -I/home/navah/include -shared-intel
