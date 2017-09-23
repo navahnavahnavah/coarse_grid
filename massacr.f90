@@ -4399,28 +4399,28 @@ PROGRAM main
               WRITE(sd_dbasalt1,'(F25.10)') -1.0*dprimary3(4)
               WRITE(sd_dglass,'(F25.10)') -1.0*dprimary3(5)
 
-              if ((my_id .EQ. 10) .AND. (jjj .EQ. 1)) then
-                  write(*,*) "plag sd_dbasalt3" , sd_dbasalt3
-                  write(*,*) "pyr sd_dbasalt2" , sd_dbasalt2
-                  write(*,*) "ol sd_dbasalt1" , sd_dbasalt1
-                  write(*,*) "sd_dglass" , sd_dglass
-              end if
+            !   if ((my_id .EQ. 10) .AND. (jjj .EQ. 1)) then
+            !       write(*,*) "plag sd_dbasalt3" , sd_dbasalt3
+            !       write(*,*) "pyr sd_dbasalt2" , sd_dbasalt2
+            !       write(*,*) "ol sd_dbasalt1" , sd_dbasalt1
+            !       write(*,*) "sd_dglass" , sd_dglass
+            !   end if
 
 
 
-              WRITE(sd_kaolinite,'(F25.10)') dsecondary3(1)
-              WRITE(sd_saponite,'(F25.10)') dsecondary3(2)
-              WRITE(sd_celadonite,'(F25.10)') dsecondary3(3)
-              WRITE(sd_clinoptilolite,'(F25.10)') dsecondary3(4)
-              WRITE(sd_pyrite,'(F25.10)') dsecondary3(5)
+              WRITE(sd_kaolinite,'(F25.10)') -1.0*dsecondary3(1)
+              WRITE(sd_saponite,'(F25.10)') -1.0*dsecondary3(2)
+              WRITE(sd_celadonite,'(F25.10)') -1.0*dsecondary3(3)
+              WRITE(sd_clinoptilolite,'(F25.10)') -1.0*dsecondary3(4)
+              WRITE(sd_pyrite,'(F25.10)') -1.0*dsecondary3(5)
 
-              if ((my_id .EQ. 10) .AND. (jjj .EQ. 1)) then
-                  write(*,*) "sd_kaolinite" , sd_kaolinite
-                  write(*,*) "sd_saponite" , sd_saponite
-                  write(*,*) "sd_celadonite" , sd_celadonite
-                  write(*,*) "sd_clinoptilolite" , sd_clinoptilolite
-                  write(*,*) "sd_pyrite" , sd_pyrite
-              end if
+            !   if ((my_id .EQ. 10) .AND. (jjj .EQ. 1)) then
+            !       write(*,*) "sd_kaolinite" , sd_kaolinite
+            !       write(*,*) "sd_saponite" , sd_saponite
+            !       write(*,*) "sd_celadonite" , sd_celadonite
+            !       write(*,*) "sd_clinoptilolite" , sd_clinoptilolite
+            !       write(*,*) "sd_pyrite" , sd_pyrite
+            !   end if
 
             !   WRITE(sd_mont_na,'(F25.10)') dsecondary3(6)
             !   WRITE(sd_goethite,'(F25.10)') dsecondary3(7)
@@ -4957,6 +4957,254 @@ PROGRAM main
                   &"-end" //NEW_LINE('')// &
 
 
+                  ! mont-na
+                  &"Montmor-Na" //NEW_LINE('')// &
+                  &"-start" //NEW_LINE('')// &
+                  &"    10 rate0=" // TRIM(sd_mont_na) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                  &"    20 save rate0 * time" //NEW_LINE('')// &
+                  &"-end" //NEW_LINE('')// &
+
+                  ! goethite
+                  &"Goethite" //NEW_LINE('')// &
+                  &"-start" //NEW_LINE('')// &
+                  &"    10 rate0=" // TRIM(sd_goethite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                  &"    20 save rate0 * time" //NEW_LINE('')// &
+                  &"-end" //NEW_LINE('')// &
+
+                  ! smectite
+                  &"Smectite-high-Fe-Mg" //NEW_LINE('')// &
+                  &"-start" //NEW_LINE('')// &
+                  &"    10 rate0=" // TRIM(sd_smectite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                  &"    20 save rate0 * time" //NEW_LINE('')// &
+                  &"-end" //NEW_LINE('')// &
+
+                  ! calcite
+                  &"Calcite" //NEW_LINE('')// &
+                  &"-start" //NEW_LINE('')// &
+                  &"    10 rate0=" // TRIM(sd_calcite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                  &"    20 save rate0 * time" //NEW_LINE('')// &
+                  &"-end" //NEW_LINE('')// &
+
+                  ! kspar
+                  &"K-Feldspar" //NEW_LINE('')// &
+                  &"-start" //NEW_LINE('')// &
+                  &"    10 rate0=" // TRIM(sd_kspar) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                  &"    20 save rate0 * time" //NEW_LINE('')// &
+                  &"-end" //NEW_LINE('')// &
+
+                  ! saponite-na
+                  &"Saponite-Na" //NEW_LINE('')// &
+                  &"-start" //NEW_LINE('')// &
+                  &"    10 rate0=" // TRIM(sd_saponite_na) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                  &"    20 save rate0 * time" //NEW_LINE('')// &
+                  &"-end" //NEW_LINE('')// &
+
+                  ! nont na
+                  &"Nontronite-Na" //NEW_LINE('')// &
+                  &"-start" //NEW_LINE('')// &
+                  &"    10 rate0=" // TRIM(sd_nont_na) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                  &"    20 save rate0 * time" //NEW_LINE('')// &
+                  &"-end" //NEW_LINE('')// &
+
+                  ! nont mg
+                  &"Nontronite-Mg" //NEW_LINE('')// &
+                  &"-start" //NEW_LINE('')// &
+                  &"    10 rate0=" // TRIM(sd_nont_mg) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                  &"    20 save rate0 * time" //NEW_LINE('')// &
+                  &"-end" //NEW_LINE('')// &
+
+                  ! fe celad
+                  &"Fe-Celadonite" //NEW_LINE('')// &
+                  &"-start" //NEW_LINE('')// &
+                  &"    10 rate0=" // TRIM(sd_fe_celadonite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                  &"    20 save rate0 * time" //NEW_LINE('')// &
+                  &"-end" //NEW_LINE('')// &
+
+                  ! nont ca
+                  &"Nontronite-Ca" //NEW_LINE('')// &
+                  &"-start" //NEW_LINE('')// &
+                  &"    10 rate0=" // TRIM(sd_nont_ca) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                  &"    20 save rate0 * time" //NEW_LINE('')// &
+                  &"-end" //NEW_LINE('')// &
+
+                  ! mesolite
+                  &"Mesolite" //NEW_LINE('')// &
+                  &"-start" //NEW_LINE('')// &
+                  &"    10 rate0=" // TRIM(sd_mesolite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                  &"    20 save rate0 * time" //NEW_LINE('')// &
+                  &"-end" //NEW_LINE('')// &
+
+                  ! hematite
+                  &"Hematite" //NEW_LINE('')// &
+                  &"-start" //NEW_LINE('')// &
+                  &"    10 rate0=" // TRIM(sd_hematite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                  &"    20 save rate0 * time" //NEW_LINE('')// &
+                  &"-end" //NEW_LINE('')// &
+
+                  ! mont ca
+                  &"Montmor-Ca" //NEW_LINE('')// &
+                  &"-start" //NEW_LINE('')// &
+                  &"    10 rate0=" // TRIM(sd_mont_ca) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                  &"    20 save rate0 * time" //NEW_LINE('')// &
+                  &"-end" //NEW_LINE('')// &
+
+                  ! verm ca
+                  &"Vermiculite-Ca" //NEW_LINE('')// &
+                  &"-start" //NEW_LINE('')// &
+                  &"    10 rate0=" // TRIM(sd_verm_ca) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                  &"    20 save rate0 * time" //NEW_LINE('')// &
+                  &"-end" //NEW_LINE('')// &
+
+                  ! analcime
+                  &"Analcime" //NEW_LINE('')// &
+                  &"-start" //NEW_LINE('')// &
+                  &"    10 rate0=" // TRIM(sd_analcime) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                  &"    20 save rate0 * time" //NEW_LINE('')// &
+                  &"-end" //NEW_LINE('')// &
+
+                  ! phillipsite
+                  &"Phillipsite" //NEW_LINE('')// &
+                  &"-start" //NEW_LINE('')// &
+                  &"    10 rate0=" // TRIM(sd_phillipsite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                  &"    20 save rate0 * time" //NEW_LINE('')// &
+                  &"-end" //NEW_LINE('')// &
+
+                  ! mont mg
+                  &"Montmor-Mg" //NEW_LINE('')// &
+                  &"-start" //NEW_LINE('')// &
+                  &"    10 rate0=" // TRIM(sd_mont_mg) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                  &"    20 save rate0 * time" //NEW_LINE('')// &
+                  &"-end" //NEW_LINE('')// &
+
+                  ! gismondine
+                  &"Gismondine" //NEW_LINE('')// &
+                  &"-start" //NEW_LINE('')// &
+                  &"    10 rate0=" // TRIM(sd_gismondine) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                  &"    20 save rate0 * time" //NEW_LINE('')// &
+                  &"-end" //NEW_LINE('')// &
+
+                  ! verm mg
+                  &"Vermiculite-Mg" //NEW_LINE('')// &
+                  &"-start" //NEW_LINE('')// &
+                  &"    10 rate0=" // TRIM(sd_verm_mg) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                  &"    20 save rate0 * time" //NEW_LINE('')// &
+                  &"-end" //NEW_LINE('')// &
+
+                  ! natrolite
+                  &"Natrolite" //NEW_LINE('')// &
+                  &"-start" //NEW_LINE('')// &
+                  &"    10 rate0=" // TRIM(sd_natrolite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                  &"    20 save rate0 * time" //NEW_LINE('')// &
+                  &"-end" //NEW_LINE('')// &
+
+                  ! talc
+                  &"Talc" //NEW_LINE('')// &
+                  &"-start" //NEW_LINE('')// &
+                  &"    10 rate0=" // TRIM(sd_talc) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                  &"    20 save rate0 * time" //NEW_LINE('')// &
+                  &"-end" //NEW_LINE('')// &
+
+                  ! smectite low
+                  &"Smectite-low-Fe-Mg" //NEW_LINE('')// &
+                  &"-start" //NEW_LINE('')// &
+                  &"    10 rate0=" // TRIM(sd_smectite_low) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                  &"    20 save rate0 * time" //NEW_LINE('')// &
+                  &"-end" //NEW_LINE('')// &
+
+                  ! prehnite
+                  &"Prehnite" //NEW_LINE('')// &
+                  &"-start" //NEW_LINE('')// &
+                  &"    10 rate0=" // TRIM(sd_prehnite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                  &"    20 save rate0 * time" //NEW_LINE('')// &
+                  &"-end" //NEW_LINE('')// &
+
+                  ! chlorite
+                  &"Chlorite(14a)" //NEW_LINE('')// &
+                  &"-start" //NEW_LINE('')// &
+                  &"    10 rate0=" // TRIM(sd_chlorite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                  &"    20 save rate0 * time" //NEW_LINE('')// &
+                  &"-end" //NEW_LINE('')// &
+
+                  ! scolecite
+                  &"Scolecite" //NEW_LINE('')// &
+                  &"-start" //NEW_LINE('')// &
+                  &"    10 rate0=" // TRIM(sd_scolecite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                  &"    20 save rate0 * time" //NEW_LINE('')// &
+                  &"-end" //NEW_LINE('')// &
+
+                  ! clinochlorte
+                  &"Clinochlore-14A" //NEW_LINE('')// &
+                  &"-start" //NEW_LINE('')// &
+                  &"    10 rate0=" // TRIM(sd_clinochlore14a) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                  &"    20 save rate0 * time" //NEW_LINE('')// &
+                  &"-end" //NEW_LINE('')// &
+
+                  ! Clinochlore-7A
+                  &"Clinochlore-7A" //NEW_LINE('')// &
+                  &"-start" //NEW_LINE('')// &
+                  &"    10 rate0=" // TRIM(sd_clinochlore7a) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                  &"    20 save rate0 * time" //NEW_LINE('')// &
+                  &"-end" //NEW_LINE('')// &
+
+                  ! saponite_ca
+                  &"Saponite-Ca" //NEW_LINE('')// &
+                  &"-start" //NEW_LINE('')// &
+                  &"    10 rate0=" // TRIM(sd_saponite_ca) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                  &"    20 save rate0 * time" //NEW_LINE('')// &
+                  &"-end" //NEW_LINE('')// &
+
+                  ! verm-na
+                  &"Vermiculite-Na" //NEW_LINE('')// &
+                  &"-start" //NEW_LINE('')// &
+                  &"    10 rate0=" // TRIM(sd_verm_na) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                  &"    20 save rate0 * time" //NEW_LINE('')// &
+                  &"-end" //NEW_LINE('')// &
+
+                  ! pyrrhotite
+                  &"Pyrrhotite" //NEW_LINE('')// &
+                  &"-start" //NEW_LINE('')// &
+                  &"    10 rate0=" // TRIM(sd_pyrrhotite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                  &"    20 save rate0 * time" //NEW_LINE('')// &
+                  &"-end" //NEW_LINE('')// &
+
+                  ! fe-sap-ca
+                  &"Fe-Saponite-Ca" //NEW_LINE('')// &
+                  &"-start" //NEW_LINE('')// &
+                  &"    10 rate0=" // TRIM(sd_fe_saponite_ca) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                  &"    20 save rate0 * time" //NEW_LINE('')// &
+                  &"-end" //NEW_LINE('')// &
+
+                  ! fe sap mg
+                  &"Fe-Saponite-Mg" //NEW_LINE('')// &
+                  &"-start" //NEW_LINE('')// &
+                  &"    10 rate0=" // TRIM(sd_fe_saponite_mg) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                  &"    20 save rate0 * time" //NEW_LINE('')// &
+                  &"-end" //NEW_LINE('')// &
+
+                  ! daphnite-7a
+                  &"Daphnite-7a" //NEW_LINE('')// &
+                  &"-start" //NEW_LINE('')// &
+                  &"    10 rate0=" // TRIM(sd_daphnite_7a) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                  &"    20 save rate0 * time" //NEW_LINE('')// &
+                  &"-end" //NEW_LINE('')// &
+
+                  ! daphnite-14a
+                  &"Daphnite-14a" //NEW_LINE('')// &
+                  &"-start" //NEW_LINE('')// &
+                  &"    10 rate0=" // TRIM(sd_daphnite_14a) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                  &"    20 save rate0 * time" //NEW_LINE('')// &
+                  &"-end" //NEW_LINE('')// &
+
+                  ! epidote
+                  &"Epidote" //NEW_LINE('')// &
+                  &"-start" //NEW_LINE('')// &
+                  &"    10 rate0=" // TRIM(sd_epidote) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                  &"    20 save rate0 * time" //NEW_LINE('')// &
+                  &"-end" //NEW_LINE('')// &
+
+
+
+
                   ! EQ kinetics
                   &"KINETICS 1" //NEW_LINE('')// &
 
@@ -4993,6 +5241,112 @@ PROGRAM main
 
                   &"Pyrite " //NEW_LINE('')// &
                   &"-m0 " // TRIM(s_pyrite) //NEW_LINE('')// &
+
+
+                  &"Montmor-Na " //NEW_LINE('')// &
+                  &"-m0 " // TRIM(s_mont_na) //NEW_LINE('')// &
+
+                  &"Goethite " //NEW_LINE('')// &
+                  &"-m0 " // TRIM(s_goethite) //NEW_LINE('')// &
+
+                  &"Smectite-high-Fe-Mg " //NEW_LINE('')// &
+                  &"-m0 " // TRIM(s_smectite) //NEW_LINE('')// &
+
+                  &"Calcite " //NEW_LINE('')// &
+                  &"-m0 " // TRIM(s_calcite) //NEW_LINE('')// &
+
+                  &"K-Feldspar " //NEW_LINE('')// &
+                  &"-m0 " // TRIM(s_kspar) //NEW_LINE('')// &
+
+                  &"Saponite-Na " //NEW_LINE('')// &
+                  &"-m0 " // TRIM(s_saponite_na) //NEW_LINE('')// &
+
+                  &"Nontronite-Na " //NEW_LINE('')// &
+                  &"-m0 " // TRIM(s_nont_na) //NEW_LINE('')// &
+
+                  &"Nontronite-Mg " //NEW_LINE('')// &
+                  &"-m0 " // TRIM(s_nont_mg) //NEW_LINE('')// &
+
+                  &"Fe-Celadonite " //NEW_LINE('')// &
+                  &"-m0 " // TRIM(s_fe_celadonite) //NEW_LINE('')// &
+
+                  &"Nontronite-Ca " //NEW_LINE('')// &
+                  &"-m0 " // TRIM(s_nont_ca) //NEW_LINE('')// &
+
+                  &"Mesolite " //NEW_LINE('')// &
+                  &"-m0 " // TRIM(s_mesolite) //NEW_LINE('')// &
+
+                  &"Hematite " //NEW_LINE('')// &
+                  &"-m0 " // TRIM(s_hematite) //NEW_LINE('')// &
+
+                  &"Montmor-Ca " //NEW_LINE('')// &
+                  &"-m0 " // TRIM(s_mont_ca) //NEW_LINE('')// &
+
+                  &"Vermiculite-Ca " //NEW_LINE('')// &
+                  &"-m0 " // TRIM(s_verm_ca) //NEW_LINE('')// &
+
+                  &"Analcime " //NEW_LINE('')// &
+                  &"-m0 " // TRIM(s_analcime) //NEW_LINE('')// &
+
+                  &"Phillipsite " //NEW_LINE('')// &
+                  &"-m0 " // TRIM(s_phillipsite) //NEW_LINE('')// &
+
+                  &"Montmor-Mg " //NEW_LINE('')// &
+                  &"-m0 " // TRIM(s_mont_mg) //NEW_LINE('')// &
+
+                  &"Gismondine " //NEW_LINE('')// &
+                  &"-m0 " // TRIM(s_gismondine) //NEW_LINE('')// &
+
+                  &"Vermiculite-Mg " //NEW_LINE('')// &
+                  &"-m0 " // TRIM(s_verm_mg) //NEW_LINE('')// &
+
+                  &"Natrolite " //NEW_LINE('')// &
+                  &"-m0 " // TRIM(s_natrolite) //NEW_LINE('')// &
+
+                  &"Talc " //NEW_LINE('')// &
+                  &"-m0 " // TRIM(s_talc) //NEW_LINE('')// &
+
+                  &"Smectite-low-Fe-Mg " //NEW_LINE('')// &
+                  &"-m0 " // TRIM(s_smectite_low) //NEW_LINE('')// &
+
+                  &"Prehnite " //NEW_LINE('')// &
+                  &"-m0 " // TRIM(s_prehnite) //NEW_LINE('')// &
+
+                  &"Chlorite(14a) " //NEW_LINE('')// &
+                  &"-m0 " // TRIM(s_chlorite) //NEW_LINE('')// &
+
+                  &"Scolecite " //NEW_LINE('')// &
+                  &"-m0 " // TRIM(s_scolecite) //NEW_LINE('')// &
+
+                  &"Clinochlore-14a " //NEW_LINE('')// &
+                  &"-m0 " // TRIM(s_clinochlore14a) //NEW_LINE('')// &
+
+                  &"Clinochlore-7a " //NEW_LINE('')// &
+                  &"-m0 " // TRIM(s_clinochlore7a) //NEW_LINE('')// &
+
+                  &"Saponite-Ca " //NEW_LINE('')// &
+                  &"-m0 " // TRIM(s_saponite_ca) //NEW_LINE('')// &
+
+                  &"Vermiculite-Na " //NEW_LINE('')// &
+                  &"-m0 " // TRIM(s_verm_na) //NEW_LINE('')// &
+
+                  &"Pyrrhotite " //NEW_LINE('')// &
+                  &"-m0 " // TRIM(s_pyrrhotite) //NEW_LINE('')// &
+
+                  &"Fe-Saponite-Ca " //NEW_LINE('')// &
+                  &"-m0 " // TRIM(s_fe_saponite_ca) //NEW_LINE('')// &
+
+                  &"Fe-Saponite-Mg " //NEW_LINE('')// &
+                  &"-m0 " // TRIM(s_fe_saponite_mg) //NEW_LINE('')// &
+
+                  &"Daphnite-7a " //NEW_LINE('')// &
+                  &"-m0 " // TRIM(s_daphnite_7a) //NEW_LINE('')// &
+
+                  &"Daphnite-14a " //NEW_LINE('')// &
+                  &"-m0 " // TRIM(s_daphnite_14a) //NEW_LINE('')// &
+
+                  &"Epidote " //NEW_LINE('')// &
+                  &"-m0 " // TRIM(s_epidote) //NEW_LINE('')// &
 
 
 
@@ -5151,21 +5505,21 @@ PROGRAM main
                      STOP
                   END IF
 
-                  if ((my_id .EQ. 10) .AND. (jjj .EQ. 1)) then
-                      write(*,*) "BEFORE priLocal:" , priLocal(m,2:)
-                  end if
-
-                  if ((my_id .EQ. 10) .AND. (jjj .EQ. 1)) then
-                      write(*,*) "BEFORE dpriLocal:" , dpriLocal(m,2:)
-                  end if
-
-                  if ((my_id .EQ. 10) .AND. (jjj .EQ. 1)) then
-                      write(*,*) "BEFORE secLocal:" , secLocal(m,2:5)
-                  end if
-
-                  if ((my_id .EQ. 10) .AND. (jjj .EQ. 1)) then
-                      write(*,*) "BEFORE dsecLocal:" , dsecLocal(m,2:5)
-                  end if
+                !   if ((my_id .EQ. 10) .AND. (jjj .EQ. 1)) then
+                !       write(*,*) "BEFORE priLocal:" , priLocal(m,2:)
+                !   end if
+                  !
+                !   if ((my_id .EQ. 10) .AND. (jjj .EQ. 1)) then
+                !       write(*,*) "BEFORE dpriLocal:" , dpriLocal(m,2:)
+                !   end if
+                  !
+                !   if ((my_id .EQ. 10) .AND. (jjj .EQ. 1)) then
+                !       write(*,*) "BEFORE secLocal:" , secLocal(m,2:5)
+                !   end if
+                  !
+                !   if ((my_id .EQ. 10) .AND. (jjj .EQ. 1)) then
+                !       write(*,*) "BEFORE dsecLocal:" , dsecLocal(m,2:5)
+                !   end if
 
 
                   if (alt0(1,2) .GT. 1.0) then
@@ -5220,21 +5574,21 @@ PROGRAM main
                    medLocal(m,1) = medLocal(m,1)/(medLocal(m,1) + 1000.0*solLocal(m,3))
                 END IF
 
-                if ((my_id .EQ. 10) .AND. (jjj .EQ. 1)) then
-                    write(*,*) "AFTER priLocal:" , priLocal(m,2:)
-                end if
-
-                if ((my_id .EQ. 10) .AND. (jjj .EQ. 1)) then
-                    write(*,*) "AFTER dpriLocal:" , dpriLocal(m,2:)
-                end if
-
-                if ((my_id .EQ. 10) .AND. (jjj .EQ. 1)) then
-                    write(*,*) "AFTER secLocal:" , secLocal(m,2:5)
-                end if
-
-                if ((my_id .EQ. 10) .AND. (jjj .EQ. 1)) then
-                    write(*,*) "AFTER dsecLocal:" , dsecLocal(m,2:5)
-                end if
+                ! if ((my_id .EQ. 10) .AND. (jjj .EQ. 1)) then
+                !     write(*,*) "AFTER priLocal:" , priLocal(m,2:)
+                ! end if
+                !
+                ! if ((my_id .EQ. 10) .AND. (jjj .EQ. 1)) then
+                !     write(*,*) "AFTER dpriLocal:" , dpriLocal(m,2:)
+                ! end if
+                !
+                ! if ((my_id .EQ. 10) .AND. (jjj .EQ. 1)) then
+                !     write(*,*) "AFTER secLocal:" , secLocal(m,2:5)
+                ! end if
+                !
+                ! if ((my_id .EQ. 10) .AND. (jjj .EQ. 1)) then
+                !     write(*,*) "AFTER dsecLocal:" , dsecLocal(m,2:5)
+                ! end if
 
 
 
