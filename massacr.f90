@@ -3245,33 +3245,33 @@ PROGRAM main
         DO i=1,leng
            volLongBitFull(i) = solLongBitFull(leng+i,3)/solLongBitFull(2*leng+i,3)
         END DO
-        !    WRITE(*,*) "made volLongBitFull"
-        !    n=2 ! alk
-        !    solute_inter_long = solLongBitFull(leng+1:2*leng,n)
-        !    solLongBitFull(leng+1:2*leng,n) = solLongBitFull(leng+1:2*leng,n)*(1.0-mix_ratio/volLongBitFull) + solLongBitFull(2*leng+1:,n)*mix_ratio/volLongBitFull ! a mix
-        !    solLongBitFull(2*leng+1:,n) = solLongBitFull(2*leng+1:,n)*(1.0-mix_ratio) + solute_inter_long*mix_ratio
-           !
-        !    DO n=4,13 ! solutes
-        !       solute_inter_long = solLongBitFull(leng+1:2*leng,n)
-        !       solLongBitFull(leng+1:2*leng,n) = solLongBitFull(leng+1:2*leng,n)*(1.0-mix_ratio/volLongBitFull) + solLongBitFull(2*leng+1:,n)*mix_ratio/volLongBitFull ! a mix
-        !       solLongBitFull(2*leng+1:,n) = solLongBitFull(2*leng+1:,n)*(1.0-mix_ratio) + solute_inter_long*mix_ratio
-        !    END DO
+           WRITE(*,*) "made volLongBitFull"
+           n=2 ! alk
+           solute_inter_long = solLongBitFull(leng+1:2*leng,n)
+           solLongBitFull(leng+1:2*leng,n) = solLongBitFull(leng+1:2*leng,n)*(1.0-mix_ratio/volLongBitFull) + solLongBitFull(2*leng+1:,n)*mix_ratio/volLongBitFull ! a mix
+           solLongBitFull(2*leng+1:,n) = solLongBitFull(2*leng+1:,n)*(1.0-mix_ratio) + solute_inter_long*mix_ratio
+
+           DO n=4,13 ! solutes
+              solute_inter_long = solLongBitFull(leng+1:2*leng,n)
+              solLongBitFull(leng+1:2*leng,n) = solLongBitFull(leng+1:2*leng,n)*(1.0-mix_ratio/volLongBitFull) + solLongBitFull(2*leng+1:,n)*mix_ratio/volLongBitFull ! a mix
+              solLongBitFull(2*leng+1:,n) = solLongBitFull(2*leng+1:,n)*(1.0-mix_ratio) + solute_inter_long*mix_ratio
+           END DO
 
         ! !-new mixing between chambers
         ! DO i=1,leng
         !    volLongBitFull(i) = t_vol_a/t_vol_b
         ! END DO
         WRITE(*,*) "made volLongBitFull"
-        n=2 ! alk
-        solute_inter_long = solLongBitFull(leng+1:2*leng,n)
-        solLongBitFull(leng+1:2*leng,n) = solLongBitFull(leng+1:2*leng,n)*(1.0-mix_ratio/volLongBitFull) + solLongBitFull(2*leng+1:,n)*mix_ratio/volLongBitFull
-        solLongBitFull(2*leng+1:,n) = solLongBitFull(2*leng+1:,n)*(1.0-mix_ratio) + solute_inter_long*mix_ratio
-
-        DO n=4,13 ! solutes
-           solute_inter_long = solLongBitFull(leng+1:2*leng,n)
-           solLongBitFull(leng+1:2*leng,n) = solLongBitFull(leng+1:2*leng,n)*(1.0-mix_ratio/volLongBitFull) + solLongBitFull(2*leng+1:,n)*mix_ratio/volLongBitFull
-           solLongBitFull(2*leng+1:,n) = solLongBitFull(2*leng+1:,n)*(1.0-mix_ratio) + solute_inter_long*mix_ratio
-        END DO
+        ! n=2 ! alk
+        ! solute_inter_long = solLongBitFull(leng+1:2*leng,n)
+        ! solLongBitFull(leng+1:2*leng,n) = solLongBitFull(leng+1:2*leng,n)*(1.0-mix_ratio/volLongBitFull) + solLongBitFull(2*leng+1:,n)*mix_ratio/volLongBitFull
+        ! solLongBitFull(2*leng+1:,n) = solLongBitFull(2*leng+1:,n)*(1.0-mix_ratio) + solute_inter_long*mix_ratio
+        !
+        ! DO n=4,13 ! solutes
+        !    solute_inter_long = solLongBitFull(leng+1:2*leng,n)
+        !    solLongBitFull(leng+1:2*leng,n) = solLongBitFull(leng+1:2*leng,n)*(1.0-mix_ratio/volLongBitFull) + solLongBitFull(2*leng+1:,n)*mix_ratio/volLongBitFull
+        !    solLongBitFull(2*leng+1:,n) = solLongBitFull(2*leng+1:,n)*(1.0-mix_ratio) + solute_inter_long*mix_ratio
+        ! END DO
         call system_clock(countf, count_rate, count_max)
         write(*,*) "mixing time: " , countf - counti
 
@@ -4189,12 +4189,16 @@ PROGRAM main
               DO ii = 1,cstep
                  sol_coarse_local = solute_next_coarse(sol_coarse_local,u_coarse_local,v_coarse_local,phi_coarse_local,sea(sol_index(an_id_local)))
               END DO
+              !-proc 34 cell fix
+            !   sol_coarse_local(2,:) = sol_coarse_local(3,:)
            END IF
 
            IF (an_id_local .GT. 11) THEN
               DO ii = 1,cstep
                  sol_coarse_local = solute_next_coarse(sol_coarse_local,u_coarse_local,v_coarse_local,phi_coarse_local,sea(sol_index(an_id_local-11)))
               END DO
+              !-proc 34 cell fix
+            !   sol_coarse_local(2,:) = sol_coarse_local(3,:)
            END IF
 
            sol_coarse_long_local = RESHAPE(TRANSPOSE(sol_coarse_local),(/((xn-1)/cellx)*(yn/(2*celly))/))
@@ -4410,57 +4414,130 @@ PROGRAM main
             !       write(*,*) "sd_dglass" , sd_dglass
             !   end if
 
-              WRITE(sd_kaolinite,'(F25.10)') -1.0*dsecondary3(1)
+            !   WRITE(sd_kaolinite,'(F25.10)') -1.0*dsecondary3(1)
+            !   WRITE(sd_saponite,'(F25.10)') -1.0*dsecondary3(2)
+            !   WRITE(sd_celadonite,'(F25.10)') -1.0*dsecondary3(3)
+            !   WRITE(sd_clinoptilolite,'(F25.10)') -1.0*dsecondary3(4)
+            !   WRITE(sd_pyrite,'(F25.10)') -1.0*dsecondary3(5)
+            !   WRITE(sd_mont_na,'(F25.10)') -1.0*dsecondary3(6)
+            !   WRITE(sd_goethite,'(F25.10)') -1.0*dsecondary3(7)
+            !   WRITE(sd_smectite,'(F25.10)') -1.0*dsecondary3(8)
+            !   WRITE(sd_calcite,'(F25.10)') -1.0*dsecondary3(9)
+            !   WRITE(sd_kspar,'(F25.10)') -1.0*dsecondary3(10)
+            !   WRITE(sd_saponite_na,'(F25.10)') -1.0*dsecondary3(11) !!!!
+            !   WRITE(sd_nont_na,'(F25.10)') -1.0*dsecondary3(12)
+            !   WRITE(sd_nont_mg,'(F25.10)') -1.0*dsecondary3(13)
+            !   WRITE(sd_fe_celadonite,'(F25.10)') -1.0*dsecondary3(14)
+            !   WRITE(sd_nont_ca,'(F25.10)') -1.0*dsecondary3(15)
+            !   WRITE(sd_mesolite,'(F25.10)') -1.0*dsecondary3(16)
+            !   WRITE(sd_hematite,'(F25.10)') -1.0*dsecondary3(17)
+            !   WRITE(sd_mont_ca,'(F25.10)') -1.0*dsecondary3(18)
+            !   WRITE(sd_verm_ca,'(F25.10)') -1.0*dsecondary3(19)
+            !   WRITE(sd_analcime,'(F25.10)') -1.0*dsecondary3(20)
+            !   WRITE(sd_phillipsite,'(F25.10)') -1.0*dsecondary3(21)
+            !   WRITE(sd_mont_mg,'(F25.10)') -1.0*dsecondary3(22)
+            !   WRITE(sd_gismondine,'(F25.10)') -1.0*dsecondary3(23)
+            !   WRITE(sd_verm_mg,'(F25.10)') -1.0*dsecondary3(24)
+            !   WRITE(sd_natrolite,'(F25.10)') -1.0*dsecondary3(25)
+            !   WRITE(sd_talc,'(F25.10)') -1.0*dsecondary3(26) !!!!!!!!!
+            !   WRITE(sd_smectite_low,'(F25.10)') -1.0*dsecondary3(27)
+            !   WRITE(sd_prehnite,'(F25.10)') -1.0*dsecondary3(28)
+            !   WRITE(sd_chlorite,'(F25.10)') -1.0*dsecondary3(29) !!!!!!!!
+            !   WRITE(sd_scolecite,'(F25.10)') -1.0*dsecondary3(30)
+            !   WRITE(sd_clinochlore14a,'(F25.10)') -1.0*dsecondary3(31)
+            !   WRITE(sd_clinochlore7a,'(F25.10)') -1.0*dsecondary3(32)
+            !   WRITE(sd_saponite_ca,'(F25.10)') -1.0*dsecondary3(33)
+            !   WRITE(sd_verm_na,'(F25.10)') -1.0*dsecondary3(34)
+            !   WRITE(sd_pyrrhotite,'(F25.10)') -1.0*dsecondary3(35)
+            !   WRITE(sd_fe_saponite_ca,'(F25.10)') -1.0*dsecondary3(36) !!!
+            !   WRITE(sd_fe_saponite_mg,'(F25.10)') -1.0*dsecondary3(37) !!!
+            !   WRITE(sd_daphnite_7a,'(F25.10)') -1.0*dsecondary3(38) !!!
+            !   WRITE(sd_daphnite_14a,'(F25.10)') -1.0*dsecondary3(39) !!!
+            !   WRITE(sd_epidote,'(F25.10)') -1.0*dsecondary3(40) !!!
 
-              WRITE(sd_saponite,'(F25.10)') -1.0*dsecondary3(2)
 
-            !   if (se_toggle .EQ. 1) then
-            !       WRITE(sd_saponite,'(F25.10)') -1.0*dsecondary3(2)
-            !   end if
-              !
-            !   if (se_toggle .EQ. 0) then
-            !       WRITE(sd_saponite,'(F25.10)') 1.0*dsecondary3(2)
-            !   end if
+            ! WRITE(sd_kaolinite,'(F25.10)') -0.9*dsecondary3(1)
+            ! WRITE(sd_saponite,'(F25.10)') -0.9*dsecondary3(2)
+            ! WRITE(sd_celadonite,'(F25.10)') -0.9*dsecondary3(3)
+            ! WRITE(sd_clinoptilolite,'(F25.10)') -0.9*dsecondary3(4)
+            ! WRITE(sd_pyrite,'(F25.10)') -0.9*dsecondary3(5)
+            ! WRITE(sd_mont_na,'(F25.10)') -0.9*dsecondary3(6)
+            ! WRITE(sd_goethite,'(F25.10)') -0.9*dsecondary3(7)
+            ! WRITE(sd_smectite,'(F25.10)') -0.9*dsecondary3(8)
+            ! WRITE(sd_calcite,'(F25.10)') -0.9*dsecondary3(9)
+            ! WRITE(sd_kspar,'(F25.10)') -0.9*dsecondary3(10)
+            ! WRITE(sd_saponite_na,'(F25.10)') -0.9*dsecondary3(11) !!!!
+            ! WRITE(sd_nont_na,'(F25.10)') -0.9*dsecondary3(12)
+            ! WRITE(sd_nont_mg,'(F25.10)') -0.9*dsecondary3(13)
+            ! WRITE(sd_fe_celadonite,'(F25.10)') -0.9*dsecondary3(14)
+            ! WRITE(sd_nont_ca,'(F25.10)') -0.9*dsecondary3(15)
+            ! WRITE(sd_mesolite,'(F25.10)') -0.9*dsecondary3(16)
+            ! WRITE(sd_hematite,'(F25.10)') -0.9*dsecondary3(17)
+            ! WRITE(sd_mont_ca,'(F25.10)') -0.9*dsecondary3(18)
+            ! WRITE(sd_verm_ca,'(F25.10)') -0.9*dsecondary3(19)
+            ! WRITE(sd_analcime,'(F25.10)') -0.9*dsecondary3(20)
+            ! WRITE(sd_phillipsite,'(F25.10)') -0.9*dsecondary3(21)
+            ! WRITE(sd_mont_mg,'(F25.10)') -0.9*dsecondary3(22)
+            ! WRITE(sd_gismondine,'(F25.10)') -0.9*dsecondary3(23)
+            ! WRITE(sd_verm_mg,'(F25.10)') -0.9*dsecondary3(24)
+            ! WRITE(sd_natrolite,'(F25.10)') -0.9*dsecondary3(25)
+            ! WRITE(sd_talc,'(F25.10)') -0.9*dsecondary3(26) !!!!!!!!!
+            ! WRITE(sd_smectite_low,'(F25.10)') -0.9*dsecondary3(27)
+            ! WRITE(sd_prehnite,'(F25.10)') -0.9*dsecondary3(28)
+            ! WRITE(sd_chlorite,'(F25.10)') -0.9*dsecondary3(29) !!!!!!!!
+            ! WRITE(sd_scolecite,'(F25.10)') -0.9*dsecondary3(30)
+            ! WRITE(sd_clinochlore14a,'(F25.10)') -0.9*dsecondary3(31)
+            ! WRITE(sd_clinochlore7a,'(F25.10)') -0.9*dsecondary3(32)
+            ! WRITE(sd_saponite_ca,'(F25.10)') -0.9*dsecondary3(33)
+            ! WRITE(sd_verm_na,'(F25.10)') -0.9*dsecondary3(34)
+            ! WRITE(sd_pyrrhotite,'(F25.10)') -0.9*dsecondary3(35)
+            ! WRITE(sd_fe_saponite_ca,'(F25.10)') -0.9*dsecondary3(36) !!!
+            ! WRITE(sd_fe_saponite_mg,'(F25.10)') -0.9*dsecondary3(37) !!!
+            ! WRITE(sd_daphnite_7a,'(F25.10)') -0.9*dsecondary3(38) !!!
+            ! WRITE(sd_daphnite_14a,'(F25.10)') -0.9*dsecondary3(39) !!!
+            ! WRITE(sd_epidote,'(F25.10)') -0.9*dsecondary3(40) !!!
 
-              WRITE(sd_celadonite,'(F25.10)') -1.0*dsecondary3(3)
-              WRITE(sd_clinoptilolite,'(F25.10)') -1.0*dsecondary3(4)
-              WRITE(sd_pyrite,'(F25.10)') -1.0*dsecondary3(5)
 
-              WRITE(sd_mont_na,'(F25.10)') -1.0*dsecondary3(6)
-              WRITE(sd_goethite,'(F25.10)') -1.0*dsecondary3(7)
-              WRITE(sd_smectite,'(F25.10)') -1.0*dsecondary3(8)
-              WRITE(sd_calcite,'(F25.10)') -1.0*dsecondary3(9)
-              WRITE(sd_kspar,'(F25.10)') -1.0*dsecondary3(10)
-              WRITE(sd_saponite_na,'(F25.10)') -1.0*dsecondary3(11) !!!!
-              WRITE(sd_nont_na,'(F25.10)') -1.0*dsecondary3(12)
-              WRITE(sd_nont_mg,'(F25.10)') -1.0*dsecondary3(13)
-              WRITE(sd_fe_celadonite,'(F25.10)') -1.0*dsecondary3(14)
-              WRITE(sd_nont_ca,'(F25.10)') -1.0*dsecondary3(15)
-              WRITE(sd_mesolite,'(F25.10)') -1.0*dsecondary3(16)
-              WRITE(sd_hematite,'(F25.10)') -1.0*dsecondary3(17)
-              WRITE(sd_mont_ca,'(F25.10)') -1.0*dsecondary3(18)
-              WRITE(sd_verm_ca,'(F25.10)') -1.0*dsecondary3(19)
-              WRITE(sd_analcime,'(F25.10)') -1.0*dsecondary3(20)
-              WRITE(sd_phillipsite,'(F25.10)') -1.0*dsecondary3(21)
-              WRITE(sd_mont_mg,'(F25.10)') -1.0*dsecondary3(22)
-              WRITE(sd_gismondine,'(F25.10)') -1.0*dsecondary3(23)
-              WRITE(sd_verm_mg,'(F25.10)') -1.0*dsecondary3(24)
-              WRITE(sd_natrolite,'(F25.10)') -1.0*dsecondary3(25)
-              WRITE(sd_talc,'(F25.10)') -1.0*dsecondary3(26) !!!!!!!!!
-              WRITE(sd_smectite_low,'(F25.10)') -1.0*dsecondary3(27)
-              WRITE(sd_prehnite,'(F25.10)') -1.0*dsecondary3(28)
-              WRITE(sd_chlorite,'(F25.10)') -1.0*dsecondary3(29) !!!!!!!!
-              WRITE(sd_scolecite,'(F25.10)') -1.0*dsecondary3(30)
-              WRITE(sd_clinochlore14a,'(F25.10)') -1.0*dsecondary3(31)
-              WRITE(sd_clinochlore7a,'(F25.10)') -1.0*dsecondary3(32)
-              WRITE(sd_saponite_ca,'(F25.10)') -1.0*dsecondary3(33)
-              WRITE(sd_verm_na,'(F25.10)') -1.0*dsecondary3(34)
-              WRITE(sd_pyrrhotite,'(F25.10)') -1.0*dsecondary3(35)
-              WRITE(sd_fe_saponite_ca,'(F25.10)') -1.0*dsecondary3(36) !!!
-              WRITE(sd_fe_saponite_mg,'(F25.10)') -1.0*dsecondary3(37) !!!
-              WRITE(sd_daphnite_7a,'(F25.10)') -1.0*dsecondary3(38) !!!
-              WRITE(sd_daphnite_14a,'(F25.10)') -1.0*dsecondary3(39) !!!
-              WRITE(sd_epidote,'(F25.10)') -1.0*dsecondary3(40) !!!
+            WRITE(sd_kaolinite,'(F25.10)') -0.99*dsecondary3(1)
+            WRITE(sd_saponite,'(F25.10)') -0.99*dsecondary3(2)
+            WRITE(sd_celadonite,'(F25.10)') -0.99*dsecondary3(3)
+            WRITE(sd_clinoptilolite,'(F25.10)') -0.99*dsecondary3(4)
+            WRITE(sd_pyrite,'(F25.10)') -0.99*dsecondary3(5)
+            WRITE(sd_mont_na,'(F25.10)') -0.99*dsecondary3(6)
+            WRITE(sd_goethite,'(F25.10)') -0.99*dsecondary3(7)
+            WRITE(sd_smectite,'(F25.10)') -0.99*dsecondary3(8)
+            WRITE(sd_calcite,'(F25.10)') -0.99*dsecondary3(9)
+            WRITE(sd_kspar,'(F25.10)') -0.99*dsecondary3(10)
+            WRITE(sd_saponite_na,'(F25.10)') -0.99*dsecondary3(11) !!!!
+            WRITE(sd_nont_na,'(F25.10)') -0.99*dsecondary3(12)
+            WRITE(sd_nont_mg,'(F25.10)') -0.99*dsecondary3(13)
+            WRITE(sd_fe_celadonite,'(F25.10)') -0.99*dsecondary3(14)
+            WRITE(sd_nont_ca,'(F25.10)') -0.99*dsecondary3(15)
+            WRITE(sd_mesolite,'(F25.10)') -0.99*dsecondary3(16)
+            WRITE(sd_hematite,'(F25.10)') -0.99*dsecondary3(17)
+            WRITE(sd_mont_ca,'(F25.10)') -0.99*dsecondary3(18)
+            WRITE(sd_verm_ca,'(F25.10)') -0.99*dsecondary3(19)
+            WRITE(sd_analcime,'(F25.10)') -0.99*dsecondary3(20)
+            WRITE(sd_phillipsite,'(F25.10)') -0.99*dsecondary3(21)
+            WRITE(sd_mont_mg,'(F25.10)') -0.99*dsecondary3(22)
+            WRITE(sd_gismondine,'(F25.10)') -0.99*dsecondary3(23)
+            WRITE(sd_verm_mg,'(F25.10)') -0.99*dsecondary3(24)
+            WRITE(sd_natrolite,'(F25.10)') -0.99*dsecondary3(25)
+            WRITE(sd_talc,'(F25.10)') -0.99*dsecondary3(26) !!!!!!!!!
+            WRITE(sd_smectite_low,'(F25.10)') -0.99*dsecondary3(27)
+            WRITE(sd_prehnite,'(F25.10)') -0.99*dsecondary3(28)
+            WRITE(sd_chlorite,'(F25.10)') -0.99*dsecondary3(29) !!!!!!!!
+            WRITE(sd_scolecite,'(F25.10)') -0.99*dsecondary3(30)
+            WRITE(sd_clinochlore14a,'(F25.10)') -0.99*dsecondary3(31)
+            WRITE(sd_clinochlore7a,'(F25.10)') -0.99*dsecondary3(32)
+            WRITE(sd_saponite_ca,'(F25.10)') -0.99*dsecondary3(33)
+            WRITE(sd_verm_na,'(F25.10)') -0.99*dsecondary3(34)
+            WRITE(sd_pyrrhotite,'(F25.10)') -0.99*dsecondary3(35)
+            WRITE(sd_fe_saponite_ca,'(F25.10)') -0.99*dsecondary3(36) !!!
+            WRITE(sd_fe_saponite_mg,'(F25.10)') -0.99*dsecondary3(37) !!!
+            WRITE(sd_daphnite_7a,'(F25.10)') -0.99*dsecondary3(38) !!!
+            WRITE(sd_daphnite_14a,'(F25.10)') -0.99*dsecondary3(39) !!!
+            WRITE(sd_epidote,'(F25.10)') -0.99*dsecondary3(40) !!!
 
             !   if ((my_id .EQ. 10) .AND. (jjj .EQ. 1)) then
             !       write(*,*) "sd_kaolinite" , sd_kaolinite
@@ -4693,7 +4770,7 @@ PROGRAM main
 
 
 
-              ! INITIALIZE STUFF
+              !-phreeq equilibrium
               id = CreateIPhreeqc()
 
 
@@ -4881,6 +4958,11 @@ PROGRAM main
 
         !-kinetic input file
         IF (se_toggle .EQ. 0) THEN
+            ! !# FE FIX
+            ! if ((my_id .EQ. 34) .or. (my_id .EQ. 35)) then
+            !     s_fe = "0.000009"
+            ! end if
+
 
 
             inputz0 = "SOLUTION 1 " //NEW_LINE('')// &
@@ -4953,11 +5035,11 @@ PROGRAM main
                 ! &"    10 save " // TRIM(sd_clinoptilolite) //NEW_LINE('')// &
                 ! &"-end" //NEW_LINE('')// &
                 !
-                ! ! pyrite
-                ! &"Pyrite" //NEW_LINE('')// &
-                ! &"-start" //NEW_LINE('')// &
-                ! &"    10 save " // TRIM(sd_pyrite) //NEW_LINE('')// &
-                ! &"-end" //NEW_LINE('')// &
+                ! pyrite
+                &"Pyrite" //NEW_LINE('')// &
+                &"-start" //NEW_LINE('')// &
+                &"    10 save " // TRIM(sd_pyrite) //NEW_LINE('')// &
+                &"-end" //NEW_LINE('')// &
                 !
                 !
                 ! ! mont-na
@@ -5007,13 +5089,13 @@ PROGRAM main
                 ! &"-start" //NEW_LINE('')// &
                 ! &"    10 save " // TRIM(sd_nont_mg) //NEW_LINE('')// &
                 ! &"-end" //NEW_LINE('')// &
-                !
-                ! ! fe celad
-                ! &"Fe-Celadonite" //NEW_LINE('')// &
-                ! &"-start" //NEW_LINE('')// &
-                ! &"    10 save " // TRIM(sd_fe_celadonite) //NEW_LINE('')// &
-                ! &"-end" //NEW_LINE('')// &
-                !
+
+                ! fe celad
+                &"Fe-Celadonite" //NEW_LINE('')// &
+                &"-start" //NEW_LINE('')// &
+                &"    10 save " // TRIM(sd_fe_celadonite) //NEW_LINE('')// &
+                &"-end" //NEW_LINE('')// &
+
                 ! ! nont ca
                 ! &"Nontronite-Ca" //NEW_LINE('')// &
                 ! &"-start" //NEW_LINE('')// &
@@ -5026,11 +5108,11 @@ PROGRAM main
                 ! &"    10 save " // TRIM(sd_mesolite) //NEW_LINE('')// &
                 ! &"-end" //NEW_LINE('')// &
                 !
-                ! ! hematite
-                ! &"Hematite" //NEW_LINE('')// &
-                ! &"-start" //NEW_LINE('')// &
-                ! &"    10 save " // TRIM(sd_hematite) //NEW_LINE('')// &
-                ! &"-end" //NEW_LINE('')// &
+                ! hematite
+                &"Hematite" //NEW_LINE('')// &
+                &"-start" //NEW_LINE('')// &
+                &"    10 save " // TRIM(sd_hematite) //NEW_LINE('')// &
+                &"-end" //NEW_LINE('')// &
 
                 ! ! mont ca
                 ! &"Montmor-Ca" //NEW_LINE('')// &
@@ -5079,13 +5161,13 @@ PROGRAM main
                 ! &"-start" //NEW_LINE('')// &
                 ! &"    10 save " // TRIM(sd_natrolite) //NEW_LINE('')// &
                 ! &"-end" //NEW_LINE('')// &
-                !
-                ! ! talc
-                ! &"Talc" //NEW_LINE('')// &
-                ! &"-start" //NEW_LINE('')// &
-                ! &"    10 save " // TRIM(sd_talc) //NEW_LINE('')// &
-                ! &"-end" //NEW_LINE('')// &
-                !
+
+                ! talc
+                &"Talc" //NEW_LINE('')// &
+                &"-start" //NEW_LINE('')// &
+                &"    10 save " // TRIM(sd_talc) //NEW_LINE('')// &
+                &"-end" //NEW_LINE('')// &
+
                 ! ! smectite low
                 ! &"Smectite-low-Fe-Mg" //NEW_LINE('')// &
                 ! &"-start" //NEW_LINE('')// &
@@ -5206,11 +5288,11 @@ PROGRAM main
                   !
                 !   &"Clinoptilolite-Ca " //NEW_LINE('')// &
                 !   &"-m0 " // TRIM(s_clinoptilolite) //NEW_LINE('')// &
-                  !
-                !   &"Pyrite " //NEW_LINE('')// &
-                !   &"-m0 " // TRIM(s_pyrite) //NEW_LINE('')// &
-                  !
-                  !
+
+                  &"Pyrite " //NEW_LINE('')// &
+                  &"-m0 " // TRIM(s_pyrite) //NEW_LINE('')// &
+
+
                 !   &"Montmor-Na " //NEW_LINE('')// &
                 !   &"-m0 " // TRIM(s_mont_na) //NEW_LINE('')// &
                   !
@@ -5234,18 +5316,18 @@ PROGRAM main
                   !
                 !   &"Nontronite-Mg " //NEW_LINE('')// &
                 !   &"-m0 " // TRIM(s_nont_mg) //NEW_LINE('')// &
-                  !
-                !   &"Fe-Celadonite " //NEW_LINE('')// &
-                !   &"-m0 " // TRIM(s_fe_celadonite) //NEW_LINE('')// &
-                  !
+
+                  &"Fe-Celadonite " //NEW_LINE('')// &
+                  &"-m0 " // TRIM(s_fe_celadonite) //NEW_LINE('')// &
+
                 !   &"Nontronite-Ca " //NEW_LINE('')// &
                 !   &"-m0 " // TRIM(s_nont_ca) //NEW_LINE('')// &
                   !
                 !   &"Mesolite " //NEW_LINE('')// &
                 !   &"-m0 " // TRIM(s_mesolite) //NEW_LINE('')// &
-                  !
-                !   &"Hematite " //NEW_LINE('')// &
-                !   &"-m0 " // TRIM(s_hematite) //NEW_LINE('')// &
+
+                  &"Hematite " //NEW_LINE('')// &
+                  &"-m0 " // TRIM(s_hematite) //NEW_LINE('')// &
 
                 !   &"Montmor-Ca " //NEW_LINE('')// &
                 !   &"-m0 " // TRIM(s_mont_ca) //NEW_LINE('')// &
@@ -5270,10 +5352,10 @@ PROGRAM main
                   !
                 !   &"Natrolite " //NEW_LINE('')// &
                 !   &"-m0 " // TRIM(s_natrolite) //NEW_LINE('')// &
-                  !
-                !   &"Talc " //NEW_LINE('')// &
-                !   &"-m0 " // TRIM(s_talc) //NEW_LINE('')// &
-                  !
+
+                  &"Talc " //NEW_LINE('')// &
+                  &"-m0 " // TRIM(s_talc) //NEW_LINE('')// &
+
                 !   &"Smectite-low-Fe-Mg " //NEW_LINE('')// &
                 !   &"-m0 " // TRIM(s_smectite_low) //NEW_LINE('')// &
                   !
@@ -5354,28 +5436,31 @@ PROGRAM main
                   &"    -time" //NEW_LINE('')// &
                   &"END"
 
-                  !-kinetic print statements
-                  if ((my_id .EQ. 10) .AND. (jjj .EQ. 1)) then
-                      write(*,*) "plag pyr ol glass"
-                      write(*,*) s_basalt3, s_basalt2, s_basalt1, s_glass
-                  end if
-
-                  if ((my_id .EQ. 10) .AND. (jjj .EQ. 1)) then
-                      write(*,*) "sd_ plag pyr ol glass"
-                      write(*,*) sd_dbasalt3, sd_dbasalt2, sd_dbasalt1, sd_dglass
-                  end if
-
-                  if ((my_id .EQ. 10) .AND. (jjj .EQ. 1)) then
-                      write(*,*) "amount sap" , s_saponite
-                  end if
-
-                  if ((my_id .EQ. 10) .AND. (jjj .EQ. 1)) then
-                      write(*,*) "sd_saponite" , sd_saponite
-                  end if
+                !-kinetic print statements
 
 
+                !   if ((my_id .EQ. 10) .AND. (jjj .EQ. 1)) then
+                !       write(*,*) "plag pyr ol glass"
+                !       write(*,*) s_basalt3, s_basalt2, s_basalt1, s_glass
+                !   end if
+                  !
+                !   if ((my_id .EQ. 10) .AND. (jjj .EQ. 1)) then
+                !       write(*,*) "sd_ plag pyr ol glass"
+                !       write(*,*) sd_dbasalt3, sd_dbasalt2, sd_dbasalt1, sd_dglass
+                !   end if
+                  !
+                !   if ((my_id .EQ. 10) .AND. (jjj .EQ. 1)) then
+                !       write(*,*) "amount sap" , s_saponite
+                !   end if
+                  !
+                !   if ((my_id .EQ. 10) .AND. (jjj .EQ. 1)) then
+                !       write(*,*) "sd_saponite" , sd_saponite
+                !   end if
 
-                  ! INITIALIZE STUFF
+
+
+
+                  !-kinetic PHREEQ
                   id = CreateIPhreeqc()
 
 
@@ -5401,6 +5486,8 @@ PROGRAM main
                   END IF
 
 
+
+
                   !IF (LoadDatabase(id, 'l5.dat').NE.0) THEN
                   IF (LoadDatabaseString(id, TRIM(L5)).NE.0) THEN
                      CALL OutputErrorString(id)
@@ -5416,6 +5503,14 @@ PROGRAM main
                      WRITE(*,*) temp3
                      !STOP
                   END IF
+
+                  if (my_id .EQ. 34) then
+                      write(*,*) "34b jjj" , jjj , slave_vector(jjj) , medium3(6) , medium3(7)
+                  end if
+
+                  if (my_id .EQ. 35) then
+                      write(*,*) "35b jjj" , jjj , slave_vector(jjj) , medium3(6) , medium3(7)
+                  end if
 
                   ! RUN INPUT
                   IF (RunString(id, TRIM(inputz0)).NE.0) THEN
@@ -5437,6 +5532,14 @@ PROGRAM main
                      END IF
                      !STOP
                   END IF
+
+                  if (my_id .EQ. 34) then
+                      write(*,*) "34 after jjj" , jjj , slave_vector(jjj)
+                  end if
+
+                  if (my_id .EQ. 35) then
+                      write(*,*) "35 after jjj" , jjj , slave_vector(jjj)
+                  end if
 
 
                   ! WRITE AWAY
