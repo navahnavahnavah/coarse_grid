@@ -346,8 +346,8 @@ CONTAINS
     ! primary minerals [mol]
     primary(:,:,:) = 0.0
     primary(:,:,1) = 0.0 !1.29600 ! feldspar
-    primary(:,:,2) = 0.1 !.69600 ! plag
-    primary(:,:,3) = 0.1 !.12600 ! pyr
+    primary(:,:,2) = 0.5 !.69600 ! plag
+    primary(:,:,3) = 0.5 !.12600 ! pyr
     primary(:,:,4) = 0.95068 !.04000 ! ol
     primary(:,:,5) = 1.0 !9.67700 ! basaltic glass
 
@@ -360,8 +360,8 @@ CONTAINS
 
     primary_b(:,:,:) = 0.0
     primary_b(:,:,1) = 0.0  ! feldspar
-    primary_b(:,:,2) = 0.1 ! plag
-    primary_b(:,:,3) = 0.1 ! pyr
+    primary_b(:,:,2) = 0.5 ! plag
+    primary_b(:,:,3) = 0.5 ! pyr
     primary_b(:,:,4) = 0.95068 ! ol
     primary_b(:,:,5) = param_b_g  ! basaltic glass
 
