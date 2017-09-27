@@ -338,7 +338,7 @@ PROGRAM main
 
   INTEGER(KIND=4) :: id, all=136
   CHARACTER(LEN=5000) :: line
-  CHARACTER(len=47000) :: inputz0
+  CHARACTER(len=20000) :: inputz0
   REAL(4) :: outmat(4,136)
   REAL(4) :: temp3, timestep3, primary3(5), secondary3(80), solute3(15), medium3(7), ph_fix3 ! important information
   REAL(4) :: dsecondary3(80), dprimary3(5)
@@ -3245,33 +3245,33 @@ PROGRAM main
         DO i=1,leng
            volLongBitFull(i) = solLongBitFull(leng+i,3)/solLongBitFull(2*leng+i,3)
         END DO
-           WRITE(*,*) "made volLongBitFull"
-           n=2 ! alk
-           solute_inter_long = solLongBitFull(leng+1:2*leng,n)
-           solLongBitFull(leng+1:2*leng,n) = solLongBitFull(leng+1:2*leng,n)*(1.0-mix_ratio/volLongBitFull) + solLongBitFull(2*leng+1:,n)*mix_ratio/volLongBitFull ! a mix
-           solLongBitFull(2*leng+1:,n) = solLongBitFull(2*leng+1:,n)*(1.0-mix_ratio) + solute_inter_long*mix_ratio
-
-           DO n=4,13 ! solutes
-              solute_inter_long = solLongBitFull(leng+1:2*leng,n)
-              solLongBitFull(leng+1:2*leng,n) = solLongBitFull(leng+1:2*leng,n)*(1.0-mix_ratio/volLongBitFull) + solLongBitFull(2*leng+1:,n)*mix_ratio/volLongBitFull ! a mix
-              solLongBitFull(2*leng+1:,n) = solLongBitFull(2*leng+1:,n)*(1.0-mix_ratio) + solute_inter_long*mix_ratio
-           END DO
+        !    WRITE(*,*) "made volLongBitFull"
+        !    n=2 ! alk
+        !    solute_inter_long = solLongBitFull(leng+1:2*leng,n)
+        !    solLongBitFull(leng+1:2*leng,n) = solLongBitFull(leng+1:2*leng,n)*(1.0-mix_ratio/volLongBitFull) + solLongBitFull(2*leng+1:,n)*mix_ratio/volLongBitFull ! a mix
+        !    solLongBitFull(2*leng+1:,n) = solLongBitFull(2*leng+1:,n)*(1.0-mix_ratio) + solute_inter_long*mix_ratio
+           !
+        !    DO n=4,13 ! solutes
+        !       solute_inter_long = solLongBitFull(leng+1:2*leng,n)
+        !       solLongBitFull(leng+1:2*leng,n) = solLongBitFull(leng+1:2*leng,n)*(1.0-mix_ratio/volLongBitFull) + solLongBitFull(2*leng+1:,n)*mix_ratio/volLongBitFull ! a mix
+        !       solLongBitFull(2*leng+1:,n) = solLongBitFull(2*leng+1:,n)*(1.0-mix_ratio) + solute_inter_long*mix_ratio
+        !    END DO
 
         ! !-new mixing between chambers
         ! DO i=1,leng
         !    volLongBitFull(i) = t_vol_a/t_vol_b
         ! END DO
         WRITE(*,*) "made volLongBitFull"
-        ! n=2 ! alk
-        ! solute_inter_long = solLongBitFull(leng+1:2*leng,n)
-        ! solLongBitFull(leng+1:2*leng,n) = solLongBitFull(leng+1:2*leng,n)*(1.0-mix_ratio/volLongBitFull) + solLongBitFull(2*leng+1:,n)*mix_ratio/volLongBitFull
-        ! solLongBitFull(2*leng+1:,n) = solLongBitFull(2*leng+1:,n)*(1.0-mix_ratio) + solute_inter_long*mix_ratio
-        !
-        ! DO n=4,13 ! solutes
-        !    solute_inter_long = solLongBitFull(leng+1:2*leng,n)
-        !    solLongBitFull(leng+1:2*leng,n) = solLongBitFull(leng+1:2*leng,n)*(1.0-mix_ratio/volLongBitFull) + solLongBitFull(2*leng+1:,n)*mix_ratio/volLongBitFull
-        !    solLongBitFull(2*leng+1:,n) = solLongBitFull(2*leng+1:,n)*(1.0-mix_ratio) + solute_inter_long*mix_ratio
-        ! END DO
+        n=2 ! alk
+        solute_inter_long = solLongBitFull(leng+1:2*leng,n)
+        solLongBitFull(leng+1:2*leng,n) = solLongBitFull(leng+1:2*leng,n)*(1.0-mix_ratio/volLongBitFull) + solLongBitFull(2*leng+1:,n)*mix_ratio/volLongBitFull
+        solLongBitFull(2*leng+1:,n) = solLongBitFull(2*leng+1:,n)*(1.0-mix_ratio) + solute_inter_long*mix_ratio
+
+        DO n=4,13 ! solutes
+           solute_inter_long = solLongBitFull(leng+1:2*leng,n)
+           solLongBitFull(leng+1:2*leng,n) = solLongBitFull(leng+1:2*leng,n)*(1.0-mix_ratio/volLongBitFull) + solLongBitFull(2*leng+1:,n)*mix_ratio/volLongBitFull
+           solLongBitFull(2*leng+1:,n) = solLongBitFull(2*leng+1:,n)*(1.0-mix_ratio) + solute_inter_long*mix_ratio
+        END DO
         call system_clock(countf, count_rate, count_max)
         write(*,*) "mixing time: " , countf - counti
 
@@ -3279,6 +3279,8 @@ PROGRAM main
            !-move aged cells
            num_rows = 3*((xn-1)/cellx)*(yn/(2*celly))
 
+
+           age_toggle = 0
            ! if (t(j) .gt. 2.512e13) then
            IF (t(j) .LT. 8.478e13) THEN
               !WRITE(*,*) "past 0.8 myr"
@@ -3358,30 +3360,30 @@ PROGRAM main
                 !  bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
                 !  medLongBitFull(2*leng+1:,5) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
 
-                 DO i = 1,g_sol
-                    bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(1:leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
-                    bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                    solLongBitFull(:leng,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
-
-                    bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
-                    bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                    solLongBitFull(leng+1:2*leng,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
-
-                    bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(2*leng+1:,i),(/yn/(2*celly), (xn-1)/cellx/)))
-                    bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                    solLongBitFull(2*leng+1:,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
-                    ! bit_thing_t1 = RESHAPE(solLongBitFull(1:leng,i),(/(xn-1)/cellx,yn/(2*celly)/))
-                    ! bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                    ! solLongBitFull(:leng,i) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
-                    !
-                    ! bit_thing_t1 = RESHAPE(solLongBitFull(leng+1:2*leng,i),(/(xn-1)/cellx,yn/(2*celly)/))
-                    ! bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                    ! solLongBitFull(leng+1:2*leng,i) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
-                    !
-                    ! bit_thing_t1 = RESHAPE(solLongBitFull(2*leng+1:,i),(/(xn-1)/cellx,yn/(2*celly)/))
-                    ! bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                    ! solLongBitFull(2*leng+1:,i) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
-                 END DO
+                !  DO i = 1,g_sol
+                !     bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(1:leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
+                !     bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                !     solLongBitFull(:leng,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
+                 !
+                !     bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
+                !     bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                !     solLongBitFull(leng+1:2*leng,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
+                 !
+                !     bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(2*leng+1:,i),(/yn/(2*celly), (xn-1)/cellx/)))
+                !     bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                !     solLongBitFull(2*leng+1:,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
+                !     ! bit_thing_t1 = RESHAPE(solLongBitFull(1:leng,i),(/(xn-1)/cellx,yn/(2*celly)/))
+                !     ! bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                !     ! solLongBitFull(:leng,i) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
+                !     !
+                !     ! bit_thing_t1 = RESHAPE(solLongBitFull(leng+1:2*leng,i),(/(xn-1)/cellx,yn/(2*celly)/))
+                !     ! bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                !     ! solLongBitFull(leng+1:2*leng,i) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
+                !     !
+                !     ! bit_thing_t1 = RESHAPE(solLongBitFull(2*leng+1:,i),(/(xn-1)/cellx,yn/(2*celly)/))
+                !     ! bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                !     ! solLongBitFull(2*leng+1:,i) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
+                !  END DO
 
 
                  bit_thing_t1 = TRANSPOSE(RESHAPE(medLongBitFull(1:leng,2),(/yn/(2*celly), (xn-1)/cellx/)))
@@ -3409,7 +3411,7 @@ PROGRAM main
 
                 call system_clock(countf, count_rate, count_max)
                 write(*,*) "moving time: " , countf - counti
-
+                age_toggle = 1
 
 
 
@@ -3465,6 +3467,7 @@ PROGRAM main
         !#GEOCHEM: send from master to slaves
         DO an_id = 1 , num_procs - 1
             CALL MPI_SEND( j, 1, MPI_INTEGER, an_id, send_data_tag, MPI_COMM_WORLD, ierr)
+            !CALL MPI_SEND( age_toggle, 1, MPI_INTEGER, an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 
             CALL MPI_SEND( hLong, 3*leng, MPI_REAL4, an_id, send_data_tag, MPI_COMM_WORLD, ierr)
 
@@ -4266,9 +4269,11 @@ PROGRAM main
 
         CALL MPI_RECV ( j_root, 1, MPI_INTEGER, root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
 
+        !CALL MPI_RECV ( age_root, 1, MPI_INTEGER, root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+
         se_toggle = 0
         !-set SE_TOGGLE
-        IF ((MOD(j_root,mstep*se_factor) .EQ. 0) .OR. (j_root .LE. mstep*se_spinup) .OR. (MOD(j_root-mstep,mstep*se_factor) .EQ. 0) .OR. (MOD(j_root-(2*mstep),mstep*se_factor) .EQ. 0) .OR. (MOD(j_root-(3*mstep),mstep*se_factor) .EQ. 0) .OR. (MOD(j_root-(4*mstep),mstep*se_factor) .EQ. 0)) THEN
+        IF ((MOD(j_root,mstep*se_factor) .EQ. 0) .OR. (j_root .LE. mstep*se_spinup) .OR. (MOD(j_root-mstep,mstep*se_factor) .EQ. 0) .OR. (MOD(j_root-(2*mstep),mstep*se_factor) .EQ. 0) .OR. (MOD(j_root-(3*mstep),mstep*se_factor) .EQ. 0)) THEN
             se_toggle = 1
         END IF
 
@@ -4498,87 +4503,87 @@ PROGRAM main
             ! WRITE(sd_epidote,'(F25.10)') -0.9*dsecondary3(40) !!!
 
 
-            ! WRITE(sd_kaolinite,'(F25.10)') -0.99*dsecondary3(1)
-            ! WRITE(sd_saponite,'(F25.10)') -0.99*dsecondary3(2)
-            ! WRITE(sd_celadonite,'(F25.10)') -0.99*dsecondary3(3)
-            ! WRITE(sd_clinoptilolite,'(F25.10)') -0.99*dsecondary3(4)
-            ! WRITE(sd_pyrite,'(F25.10)') -0.99*dsecondary3(5)
-            ! WRITE(sd_mont_na,'(F25.10)') -0.99*dsecondary3(6)
-            ! WRITE(sd_goethite,'(F25.10)') -0.99*dsecondary3(7)
-            ! WRITE(sd_smectite,'(F25.10)') -0.99*dsecondary3(8)
-            ! WRITE(sd_calcite,'(F25.10)') -0.99*dsecondary3(9)
-            ! WRITE(sd_kspar,'(F25.10)') -0.99*dsecondary3(10)
-            ! WRITE(sd_saponite_na,'(F25.10)') -0.99*dsecondary3(11) !!!!
-            ! WRITE(sd_nont_na,'(F25.10)') -0.99*dsecondary3(12)
-            ! WRITE(sd_nont_mg,'(F25.10)') -0.99*dsecondary3(13)
-            ! WRITE(sd_fe_celadonite,'(F25.10)') -0.99*dsecondary3(14)
-            ! WRITE(sd_nont_ca,'(F25.10)') -0.99*dsecondary3(15)
-            ! WRITE(sd_mesolite,'(F25.10)') -0.99*dsecondary3(16)
-            ! WRITE(sd_hematite,'(F25.10)') -0.99*dsecondary3(17)
-            ! WRITE(sd_mont_ca,'(F25.10)') -0.99*dsecondary3(18)
-            ! WRITE(sd_verm_ca,'(F25.10)') -0.99*dsecondary3(19)
-            ! WRITE(sd_analcime,'(F25.10)') -0.99*dsecondary3(20)
-            ! WRITE(sd_phillipsite,'(F25.10)') -0.99*dsecondary3(21)
-            ! WRITE(sd_mont_mg,'(F25.10)') -0.99*dsecondary3(22)
-            ! WRITE(sd_gismondine,'(F25.10)') -0.99*dsecondary3(23)
-            ! WRITE(sd_verm_mg,'(F25.10)') -0.99*dsecondary3(24)
-            ! WRITE(sd_natrolite,'(F25.10)') -0.99*dsecondary3(25)
-            ! WRITE(sd_talc,'(F25.10)') -0.99*dsecondary3(26) !!!!!!!!!
-            ! WRITE(sd_smectite_low,'(F25.10)') -0.99*dsecondary3(27)
-            ! WRITE(sd_prehnite,'(F25.10)') -0.99*dsecondary3(28)
-            ! WRITE(sd_chlorite,'(F25.10)') -0.99*dsecondary3(29) !!!!!!!!
-            ! WRITE(sd_scolecite,'(F25.10)') -0.99*dsecondary3(30)
-            ! WRITE(sd_clinochlore14a,'(F25.10)') -0.99*dsecondary3(31)
-            ! WRITE(sd_clinochlore7a,'(F25.10)') -0.99*dsecondary3(32)
-            ! WRITE(sd_saponite_ca,'(F25.10)') -0.99*dsecondary3(33)
-            ! WRITE(sd_verm_na,'(F25.10)') -0.99*dsecondary3(34)
-            ! WRITE(sd_pyrrhotite,'(F25.10)') -0.99*dsecondary3(35)
-            ! WRITE(sd_fe_saponite_ca,'(F25.10)') -0.99*dsecondary3(36) !!!
-            ! WRITE(sd_fe_saponite_mg,'(F25.10)') -0.99*dsecondary3(37) !!!
-            ! WRITE(sd_daphnite_7a,'(F25.10)') -0.99*dsecondary3(38) !!!
-            ! WRITE(sd_daphnite_14a,'(F25.10)') -0.99*dsecondary3(39) !!!
-            ! WRITE(sd_epidote,'(F25.10)') -0.99*dsecondary3(40) !!!
+            WRITE(sd_kaolinite,'(F25.10)') -0.99*dsecondary3(1)
+            WRITE(sd_saponite,'(F25.10)') -0.99*dsecondary3(2)
+            WRITE(sd_celadonite,'(F25.10)') -0.99*dsecondary3(3)
+            WRITE(sd_clinoptilolite,'(F25.10)') -0.99*dsecondary3(4)
+            WRITE(sd_pyrite,'(F25.10)') -0.99*dsecondary3(5)
+            WRITE(sd_mont_na,'(F25.10)') -0.99*dsecondary3(6)
+            WRITE(sd_goethite,'(F25.10)') -0.99*dsecondary3(7)
+            WRITE(sd_smectite,'(F25.10)') -0.99*dsecondary3(8)
+            WRITE(sd_calcite,'(F25.10)') -0.99*dsecondary3(9)
+            WRITE(sd_kspar,'(F25.10)') -0.99*dsecondary3(10)
+            WRITE(sd_saponite_na,'(F25.10)') -0.99*dsecondary3(11) !!!!
+            WRITE(sd_nont_na,'(F25.10)') -0.99*dsecondary3(12)
+            WRITE(sd_nont_mg,'(F25.10)') -0.99*dsecondary3(13)
+            WRITE(sd_fe_celadonite,'(F25.10)') -0.99*dsecondary3(14)
+            WRITE(sd_nont_ca,'(F25.10)') -0.99*dsecondary3(15)
+            WRITE(sd_mesolite,'(F25.10)') -0.99*dsecondary3(16)
+            WRITE(sd_hematite,'(F25.10)') -0.99*dsecondary3(17)
+            WRITE(sd_mont_ca,'(F25.10)') -0.99*dsecondary3(18)
+            WRITE(sd_verm_ca,'(F25.10)') -0.99*dsecondary3(19)
+            WRITE(sd_analcime,'(F25.10)') -0.99*dsecondary3(20)
+            WRITE(sd_phillipsite,'(F25.10)') -0.99*dsecondary3(21)
+            WRITE(sd_mont_mg,'(F25.10)') -0.99*dsecondary3(22)
+            WRITE(sd_gismondine,'(F25.10)') -0.99*dsecondary3(23)
+            WRITE(sd_verm_mg,'(F25.10)') -0.99*dsecondary3(24)
+            WRITE(sd_natrolite,'(F25.10)') -0.99*dsecondary3(25)
+            WRITE(sd_talc,'(F25.10)') -0.99*dsecondary3(26) !!!!!!!!!
+            WRITE(sd_smectite_low,'(F25.10)') -0.99*dsecondary3(27)
+            WRITE(sd_prehnite,'(F25.10)') -0.99*dsecondary3(28)
+            WRITE(sd_chlorite,'(F25.10)') -0.99*dsecondary3(29) !!!!!!!!
+            WRITE(sd_scolecite,'(F25.10)') -0.99*dsecondary3(30)
+            WRITE(sd_clinochlore14a,'(F25.10)') -0.99*dsecondary3(31)
+            WRITE(sd_clinochlore7a,'(F25.10)') -0.99*dsecondary3(32)
+            WRITE(sd_saponite_ca,'(F25.10)') -0.99*dsecondary3(33)
+            WRITE(sd_verm_na,'(F25.10)') -0.99*dsecondary3(34)
+            WRITE(sd_pyrrhotite,'(F25.10)') -0.99*dsecondary3(35)
+            WRITE(sd_fe_saponite_ca,'(F25.10)') -0.99*dsecondary3(36) !!!
+            WRITE(sd_fe_saponite_mg,'(F25.10)') -0.99*dsecondary3(37) !!!
+            WRITE(sd_daphnite_7a,'(F25.10)') -0.99*dsecondary3(38) !!!
+            WRITE(sd_daphnite_14a,'(F25.10)') -0.99*dsecondary3(39) !!!
+            WRITE(sd_epidote,'(F25.10)') -0.99*dsecondary3(40) !!!
 
-            WRITE(sd_kaolinite,'(F25.10)') -0.999*dsecondary3(1)
-            WRITE(sd_saponite,'(F25.10)') -0.999*dsecondary3(2)
-            WRITE(sd_celadonite,'(F25.10)') -0.999*dsecondary3(3)
-            WRITE(sd_clinoptilolite,'(F25.10)') -0.999*dsecondary3(4)
-            WRITE(sd_pyrite,'(F25.10)') -0.999*dsecondary3(5)
-            WRITE(sd_mont_na,'(F25.10)') -0.999*dsecondary3(6)
-            WRITE(sd_goethite,'(F25.10)') -0.999*dsecondary3(7)
-            WRITE(sd_smectite,'(F25.10)') -0.999*dsecondary3(8)
-            WRITE(sd_calcite,'(F25.10)') -0.999*dsecondary3(9)
-            WRITE(sd_kspar,'(F25.10)') -0.999*dsecondary3(10)
-            WRITE(sd_saponite_na,'(F25.10)') -0.999*dsecondary3(11) !!!!
-            WRITE(sd_nont_na,'(F25.10)') -0.999*dsecondary3(12)
-            WRITE(sd_nont_mg,'(F25.10)') -0.999*dsecondary3(13)
-            WRITE(sd_fe_celadonite,'(F25.10)') -0.999*dsecondary3(14)
-            WRITE(sd_nont_ca,'(F25.10)') -0.999*dsecondary3(15)
-            WRITE(sd_mesolite,'(F25.10)') -0.999*dsecondary3(16)
-            WRITE(sd_hematite,'(F25.10)') -0.999*dsecondary3(17)
-            WRITE(sd_mont_ca,'(F25.10)') -0.999*dsecondary3(18)
-            WRITE(sd_verm_ca,'(F25.10)') -0.999*dsecondary3(19)
-            WRITE(sd_analcime,'(F25.10)') -0.999*dsecondary3(20)
-            WRITE(sd_phillipsite,'(F25.10)') -0.999*dsecondary3(21)
-            WRITE(sd_mont_mg,'(F25.10)') -0.999*dsecondary3(22)
-            WRITE(sd_gismondine,'(F25.10)') -0.999*dsecondary3(23)
-            WRITE(sd_verm_mg,'(F25.10)') -0.999*dsecondary3(24)
-            WRITE(sd_natrolite,'(F25.10)') -0.999*dsecondary3(25)
-            WRITE(sd_talc,'(F25.10)') -0.999*dsecondary3(26) !!!!!!!!!
-            WRITE(sd_smectite_low,'(F25.10)') -0.999*dsecondary3(27)
-            WRITE(sd_prehnite,'(F25.10)') -0.999*dsecondary3(28)
-            WRITE(sd_chlorite,'(F25.10)') -0.999*dsecondary3(29) !!!!!!!!
-            WRITE(sd_scolecite,'(F25.10)') -0.999*dsecondary3(30)
-            WRITE(sd_clinochlore14a,'(F25.10)') -0.999*dsecondary3(31)
-            WRITE(sd_clinochlore7a,'(F25.10)') -0.999*dsecondary3(32)
-            WRITE(sd_saponite_ca,'(F25.10)') -0.999*dsecondary3(33)
-            WRITE(sd_verm_na,'(F25.10)') -0.999*dsecondary3(34)
-            WRITE(sd_pyrrhotite,'(F25.10)') -0.999*dsecondary3(35)
-            WRITE(sd_fe_saponite_ca,'(F25.10)') -0.999*dsecondary3(36) !!!
-            WRITE(sd_fe_saponite_mg,'(F25.10)') -0.999*dsecondary3(37) !!!
-            WRITE(sd_daphnite_7a,'(F25.10)') -0.999*dsecondary3(38) !!!
-            WRITE(sd_daphnite_14a,'(F25.10)') -0.999*dsecondary3(39) !!!
-            WRITE(sd_epidote,'(F25.10)') -0.999*dsecondary3(40) !!!
+            ! WRITE(sd_kaolinite,'(F25.10)') -0.999*dsecondary3(1)
+            ! WRITE(sd_saponite,'(F25.10)') -0.999*dsecondary3(2)
+            ! WRITE(sd_celadonite,'(F25.10)') -0.999*dsecondary3(3)
+            ! WRITE(sd_clinoptilolite,'(F25.10)') -0.999*dsecondary3(4)
+            ! WRITE(sd_pyrite,'(F25.10)') -0.999*dsecondary3(5)
+            ! WRITE(sd_mont_na,'(F25.10)') -0.999*dsecondary3(6)
+            ! WRITE(sd_goethite,'(F25.10)') -0.999*dsecondary3(7)
+            ! WRITE(sd_smectite,'(F25.10)') -0.999*dsecondary3(8)
+            ! WRITE(sd_calcite,'(F25.10)') -0.999*dsecondary3(9)
+            ! WRITE(sd_kspar,'(F25.10)') -0.999*dsecondary3(10)
+            ! WRITE(sd_saponite_na,'(F25.10)') -0.999*dsecondary3(11) !!!!
+            ! WRITE(sd_nont_na,'(F25.10)') -0.999*dsecondary3(12)
+            ! WRITE(sd_nont_mg,'(F25.10)') -0.999*dsecondary3(13)
+            ! WRITE(sd_fe_celadonite,'(F25.10)') -0.999*dsecondary3(14)
+            ! WRITE(sd_nont_ca,'(F25.10)') -0.999*dsecondary3(15)
+            ! WRITE(sd_mesolite,'(F25.10)') -0.999*dsecondary3(16)
+            ! WRITE(sd_hematite,'(F25.10)') -0.999*dsecondary3(17)
+            ! WRITE(sd_mont_ca,'(F25.10)') -0.999*dsecondary3(18)
+            ! WRITE(sd_verm_ca,'(F25.10)') -0.999*dsecondary3(19)
+            ! WRITE(sd_analcime,'(F25.10)') -0.999*dsecondary3(20)
+            ! WRITE(sd_phillipsite,'(F25.10)') -0.999*dsecondary3(21)
+            ! WRITE(sd_mont_mg,'(F25.10)') -0.999*dsecondary3(22)
+            ! WRITE(sd_gismondine,'(F25.10)') -0.999*dsecondary3(23)
+            ! WRITE(sd_verm_mg,'(F25.10)') -0.999*dsecondary3(24)
+            ! WRITE(sd_natrolite,'(F25.10)') -0.999*dsecondary3(25)
+            ! WRITE(sd_talc,'(F25.10)') -0.999*dsecondary3(26) !!!!!!!!!
+            ! WRITE(sd_smectite_low,'(F25.10)') -0.999*dsecondary3(27)
+            ! WRITE(sd_prehnite,'(F25.10)') -0.999*dsecondary3(28)
+            ! WRITE(sd_chlorite,'(F25.10)') -0.999*dsecondary3(29) !!!!!!!!
+            ! WRITE(sd_scolecite,'(F25.10)') -0.999*dsecondary3(30)
+            ! WRITE(sd_clinochlore14a,'(F25.10)') -0.999*dsecondary3(31)
+            ! WRITE(sd_clinochlore7a,'(F25.10)') -0.999*dsecondary3(32)
+            ! WRITE(sd_saponite_ca,'(F25.10)') -0.999*dsecondary3(33)
+            ! WRITE(sd_verm_na,'(F25.10)') -0.999*dsecondary3(34)
+            ! WRITE(sd_pyrrhotite,'(F25.10)') -0.999*dsecondary3(35)
+            ! WRITE(sd_fe_saponite_ca,'(F25.10)') -0.999*dsecondary3(36) !!!
+            ! WRITE(sd_fe_saponite_mg,'(F25.10)') -0.999*dsecondary3(37) !!!
+            ! WRITE(sd_daphnite_7a,'(F25.10)') -0.999*dsecondary3(38) !!!
+            ! WRITE(sd_daphnite_14a,'(F25.10)') -0.999*dsecondary3(39) !!!
+            ! WRITE(sd_epidote,'(F25.10)') -0.999*dsecondary3(40) !!!
 
             !   if ((my_id .EQ. 10) .AND. (jjj .EQ. 1)) then
             !       write(*,*) "sd_kaolinite" , sd_kaolinite
@@ -5545,13 +5550,13 @@ PROGRAM main
                      !STOP
                   END IF
 
-                  if (my_id .EQ. 34) then
-                      write(*,*) "34b jjj" , jjj , slave_vector(jjj) , medium3(6) , medium3(7)
-                  end if
-
-                  if (my_id .EQ. 35) then
-                      write(*,*) "35b jjj" , jjj , slave_vector(jjj) , medium3(6) , medium3(7)
-                  end if
+                !   if (my_id .EQ. 34) then
+                !       write(*,*) "34b jjj" , jjj , slave_vector(jjj) , medium3(6) , medium3(7)
+                !   end if
+                  !
+                !   if (my_id .EQ. 35) then
+                !       write(*,*) "35b jjj" , jjj , slave_vector(jjj) , medium3(6) , medium3(7)
+                !   end if
 
                   ! RUN INPUT
                   IF (RunString(id, TRIM(inputz0)).NE.0) THEN
@@ -5574,13 +5579,13 @@ PROGRAM main
                      !STOP
                   END IF
 
-                  if (my_id .EQ. 34) then
-                      write(*,*) "34 after jjj" , jjj , slave_vector(jjj)
-                  end if
-
-                  if (my_id .EQ. 35) then
-                      write(*,*) "35 after jjj" , jjj , slave_vector(jjj)
-                  end if
+                !   if (my_id .EQ. 34) then
+                !       write(*,*) "34 after jjj" , jjj , slave_vector(jjj)
+                !   end if
+                  !
+                !   if (my_id .EQ. 35) then
+                !       write(*,*) "35 after jjj" , jjj , slave_vector(jjj)
+                !   end if
 
 
                   ! WRITE AWAY

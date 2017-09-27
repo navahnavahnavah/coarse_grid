@@ -67,9 +67,11 @@ MODULE globals
   INTEGER :: dabs_loop
 
   INTEGER :: se_toggle
-  INTEGER :: se_factor = 10
+  INTEGER :: se_factor = 50
   INTEGER :: j_root
   INTEGER :: se_spinup = 100
+  INTEGER :: age_toggle
+  INTEGER :: age_root
 
 CONTAINS
 
