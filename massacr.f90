@@ -2362,6 +2362,7 @@ PROGRAM main
 
   ! what to do if you are the master processor
   IF (my_id .EQ. root_process) THEN
+      WRITE(my_id_s,'(I4)') my_id
 
      !#master processor does stuff
 
@@ -4972,6 +4973,10 @@ PROGRAM main
               END IF
 
               ! RUN INPUT
+            !   if ((my_id .EQ. 1) .OR. (my_id .EQ. 8) .OR. (my_id .EQ. 22) .OR. (my_id .EQ. 29)) then
+            !     call system_clock(counti, count_rate, count_max)
+            !   end if
+
               IF (RunString(id, TRIM(inputz0)).NE.0) THEN
                  WRITE(*,*) "issue is:" , RunString(id, TRIM(inputz0))
                  CALL OutputErrorString(id)
@@ -4991,6 +4996,15 @@ PROGRAM main
                  END IF
                  !STOP
               END IF
+
+
+
+            !   if ((my_id .EQ. 1) .OR. (my_id .EQ. 8) .OR. (my_id .EQ. 22) .OR. (my_id .EQ. 29)) then
+            !     call system_clock(countf, count_rate, count_max)
+            !     !write(*,*) my_id , jjj , slave_vector(jjj) , countf - counti
+            !     write(*,22) my_id , slave_vector(jjj) , countf - counti , medium3(6) , medium3(7)
+            !     22 format ("id" , I3 , "  sv(jjj)" , I5 , "  ms" , I7 , "   x:" , F6.0 , "  y:" , F5.0 )
+            !   end if
 
               ! WRITE AWAY
               DO i=1,GetSelectedOutputStringLineCount(id)
@@ -5073,6 +5087,10 @@ PROGRAM main
                       secLocal(m,ii) = alt_mat(m,2*ii+14)
                       dsecLocal(m,ii) = secLocal(m,ii) - secondary3(ii)
                    END DO
+               end if
+
+               if (medium3(2) .ne. precip_th) then
+                   dsecLocal(m,ii) = 0.0
                end if
 
            end if
@@ -5633,9 +5651,9 @@ PROGRAM main
 
 
 
-                  if (my_id .EQ. 15) then
-                      call system_clock(counti, count_rate, count_max)
-                  end if
+                !   if (my_id .EQ. 15) then
+                !       call system_clock(counti, count_rate, count_max)
+                !   end if
 
 
                   !IF (LoadDatabase(id, 'l5.dat').NE.0) THEN
@@ -5654,10 +5672,10 @@ PROGRAM main
                      !STOP
                   END IF
 
-                  if (my_id .EQ. 15) then
-                      call system_clock(countf, count_rate, count_max)
-                      write(*,*) "      END LOAD DB" , countf - counti
-                  end if
+                !   if (my_id .EQ. 15) then
+                !       call system_clock(countf, count_rate, count_max)
+                !       write(*,*) "      END LOAD DB" , countf - counti
+                !   end if
 
                 !   if (my_id .EQ. 34) then
                 !       write(*,*) "34b jjj" , jjj , slave_vector(jjj) , medium3(6) , medium3(7)
@@ -5668,8 +5686,19 @@ PROGRAM main
                 !   end if
 
 
-                if (my_id .EQ. 15) then
-                    call system_clock(counti, count_rate, count_max)
+                ! if (my_id .EQ. 15) then
+                !     call system_clock(counti, count_rate, count_max)
+                ! end if
+
+                if (jjj .LT. end_loop) then
+                    OPEN(UNIT=my_id+100, status = 'REPLACE', FILE=TRIM(path_final) // 'cell_break/' // 'TRIM(my_id_s)' //'.txt')
+                    WRITE(my_id+100,*) "my_id:" , my_id
+                    WRITE(my_id+100,*) "j_root:" , j_root
+                    WRITE(my_id+100,*) "jjj:" , jjj
+                    WRITE(my_id+100,*) "sv(jjj):" , slave_vector(jjj)
+                    WRITE(my_id+100,*) "x:" , medium3(6)
+                    WRITE(my_id+100,*) "y:" , medium3(7)
+                    !CLOSE ( my_id+100 )
                 end if
 
                   ! RUN INPUT
@@ -5693,10 +5722,14 @@ PROGRAM main
                      !STOP
                   END IF
 
-                  if (my_id .EQ. 15) then
-                      call system_clock(countf, count_rate, count_max)
-                      write(*,*) "      END RUNSTRING" , countf - counti
+                  if (jjj .LT. end_loop) then
+                      CLOSE ( my_id+100, status='delete' )
                   end if
+
+                !   if (my_id .EQ. 15) then
+                !       call system_clock(countf, count_rate, count_max)
+                !       write(*,*) "      END RUNSTRING" , countf - counti
+                !   end if
 
                 !   if (my_id .EQ. 34) then
                 !       write(*,*) "34 after jjj" , jjj , slave_vector(jjj)

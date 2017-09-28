@@ -72,6 +72,7 @@ MODULE globals
   INTEGER :: se_spinup = 100
   INTEGER :: age_toggle
   INTEGER :: age_root
+  CHARACTER(len=25) :: my_id_s
 
 CONTAINS
 
