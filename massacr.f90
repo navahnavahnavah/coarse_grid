@@ -3511,18 +3511,25 @@ PROGRAM main
                     secLongBitFull(slave_vector(1:end_loop),ii) = secLocal(1:end_loop,ii)
                 END DO
 
-                CALL MPI_RECV( solLocal(1:end_loop,3), end_loop, MPI_REAL4, an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+                ! CALL MPI_RECV( solLocal(1:end_loop,3), end_loop, MPI_REAL4, an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+                !
+                ! CALL MPI_RECV( solLocal(1:end_loop,2), end_loop, MPI_REAL4, an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+                ! solLongBitFull(slave_vector(1:end_loop),2) = solLocal(1:end_loop,2)*solLocal(1:end_loop,3)/(solLongBitFull(slave_vector(1:end_loop),3))
+                !
+                ! CALL MPI_RECV( solLocal(1:end_loop,1), end_loop, MPI_REAL4, an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+                ! solLongBitFull(slave_vector(1:end_loop),1) = -1.0*LOG10(10.0**(-1.0*solLocal(1:end_loop,1))*solLocal(1:end_loop,3)/(solLongBitFull(slave_vector(1:end_loop),3)))
+                !
+                ! DO ii = 4 , g_sol
+                !     CALL MPI_RECV( solLocal(1:end_loop,ii), end_loop, MPI_REAL4, an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+                !     solLongBitFull(slave_vector(1:end_loop),ii) = solLocal(1:end_loop,ii)*solLocal(1:end_loop,3)/(solLongBitFull(slave_vector(1:end_loop),3))
+                ! END DO
 
-                CALL MPI_RECV( solLocal(1:end_loop,2), end_loop, MPI_REAL4, an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
-                solLongBitFull(slave_vector(1:end_loop),2) = solLocal(1:end_loop,2)*solLocal(1:end_loop,3)/(solLongBitFull(slave_vector(1:end_loop),3))
-
-                CALL MPI_RECV( solLocal(1:end_loop,1), end_loop, MPI_REAL4, an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
-                solLongBitFull(slave_vector(1:end_loop),1) = -1.0*LOG10(10.0**(-1.0*solLocal(1:end_loop,1))*solLocal(1:end_loop,3)/(solLongBitFull(slave_vector(1:end_loop),3)))
-
-                DO ii = 4 , g_sol
+                DO ii = 1 , g_sol
                     CALL MPI_RECV( solLocal(1:end_loop,ii), end_loop, MPI_REAL4, an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
-                    solLongBitFull(slave_vector(1:end_loop),ii) = solLocal(1:end_loop,ii)*solLocal(1:end_loop,3)/(solLongBitFull(slave_vector(1:end_loop),3))
+                    solLongBitFull(slave_vector(1:end_loop),ii) = solLocal(1:end_loop,ii)
                 END DO
+
+
 
                 DO ii = 1 , g_med
                     CALL MPI_RECV( medLocal(1,ii), end_loop, MPI_REAL4, an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
@@ -4317,7 +4324,7 @@ PROGRAM main
 
            IF (medLongBitFull(m,5) .EQ. 1.0) THEN
 
-
+               !-primary3, secondar 3, etc.
               primary3 = priLongBitFull(m,:)
               secondary3 = secLongBitFull(m,:)
               solute3 = solLongBitFull(m,:)
@@ -4501,6 +4508,47 @@ PROGRAM main
             ! WRITE(sd_daphnite_7a,'(F25.10)') -0.9*dsecondary3(38) !!!
             ! WRITE(sd_daphnite_14a,'(F25.10)') -0.9*dsecondary3(39) !!!
             ! WRITE(sd_epidote,'(F25.10)') -0.9*dsecondary3(40) !!!
+
+            ! WRITE(sd_kaolinite,'(F25.10)') -0.1*dsecondary3(1)
+            ! WRITE(sd_saponite,'(F25.10)') -0.1*dsecondary3(2)
+            ! WRITE(sd_celadonite,'(F25.10)') -0.1*dsecondary3(3)
+            ! WRITE(sd_clinoptilolite,'(F25.10)') -0.1*dsecondary3(4)
+            ! WRITE(sd_pyrite,'(F25.10)') -0.1*dsecondary3(5)
+            ! WRITE(sd_mont_na,'(F25.10)') -0.1*dsecondary3(6)
+            ! WRITE(sd_goethite,'(F25.10)') -0.1*dsecondary3(7)
+            ! WRITE(sd_smectite,'(F25.10)') -0.1*dsecondary3(8)
+            ! WRITE(sd_calcite,'(F25.10)') -0.1*dsecondary3(9)
+            ! WRITE(sd_kspar,'(F25.10)') -0.1*dsecondary3(10)
+            ! WRITE(sd_saponite_na,'(F25.10)') -0.1*dsecondary3(11) !!!!
+            ! WRITE(sd_nont_na,'(F25.10)') -0.1*dsecondary3(12)
+            ! WRITE(sd_nont_mg,'(F25.10)') -0.1*dsecondary3(13)
+            ! WRITE(sd_fe_celadonite,'(F25.10)') -0.1*dsecondary3(14)
+            ! WRITE(sd_nont_ca,'(F25.10)') -0.1*dsecondary3(15)
+            ! WRITE(sd_mesolite,'(F25.10)') -0.1*dsecondary3(16)
+            ! WRITE(sd_hematite,'(F25.10)') -0.1*dsecondary3(17)
+            ! WRITE(sd_mont_ca,'(F25.10)') -0.1*dsecondary3(18)
+            ! WRITE(sd_verm_ca,'(F25.10)') -0.1*dsecondary3(19)
+            ! WRITE(sd_analcime,'(F25.10)') -0.1*dsecondary3(20)
+            ! WRITE(sd_phillipsite,'(F25.10)') -0.1*dsecondary3(21)
+            ! WRITE(sd_mont_mg,'(F25.10)') -0.1*dsecondary3(22)
+            ! WRITE(sd_gismondine,'(F25.10)') -0.1*dsecondary3(23)
+            ! WRITE(sd_verm_mg,'(F25.10)') -0.1*dsecondary3(24)
+            ! WRITE(sd_natrolite,'(F25.10)') -0.1*dsecondary3(25)
+            ! WRITE(sd_talc,'(F25.10)') -0.1*dsecondary3(26) !!!!!!!!!
+            ! WRITE(sd_smectite_low,'(F25.10)') -0.1*dsecondary3(27)
+            ! WRITE(sd_prehnite,'(F25.10)') -0.1*dsecondary3(28)
+            ! WRITE(sd_chlorite,'(F25.10)') -0.1*dsecondary3(29) !!!!!!!!
+            ! WRITE(sd_scolecite,'(F25.10)') -0.1*dsecondary3(30)
+            ! WRITE(sd_clinochlore14a,'(F25.10)') -0.1*dsecondary3(31)
+            ! WRITE(sd_clinochlore7a,'(F25.10)') -0.1*dsecondary3(32)
+            ! WRITE(sd_saponite_ca,'(F25.10)') -0.1*dsecondary3(33)
+            ! WRITE(sd_verm_na,'(F25.10)') -0.1*dsecondary3(34)
+            ! WRITE(sd_pyrrhotite,'(F25.10)') -0.1*dsecondary3(35)
+            ! WRITE(sd_fe_saponite_ca,'(F25.10)') -0.1*dsecondary3(36) !!!
+            ! WRITE(sd_fe_saponite_mg,'(F25.10)') -0.1*dsecondary3(37) !!!
+            ! WRITE(sd_daphnite_7a,'(F25.10)') -0.1*dsecondary3(38) !!!
+            ! WRITE(sd_daphnite_14a,'(F25.10)') -0.1*dsecondary3(39) !!!
+            ! WRITE(sd_epidote,'(F25.10)') -0.1*dsecondary3(40) !!!
 
             ! WRITE(sd_kaolinite,'(F25.10)') -0.999*dsecondary3(1)
             ! WRITE(sd_saponite,'(F25.10)') -0.999*dsecondary3(2)
@@ -4707,10 +4755,12 @@ PROGRAM main
                    &" "  //NEW_LINE('')
 
               ! EQ equilibrium phases
+              if (medium3(2) .eq. precip_th) then
+
               inputz0 = TRIM(inputz0) // "EQUILIBRIUM_PHASES 1" //NEW_LINE('')// &
                    &"    Goethite " // TRIM(s_precip) // TRIM(s_goethite) // kinetics //NEW_LINE('')// &
                    &"    Celadonite " // TRIM(s_precip) // TRIM(s_celadonite) // kinetics //NEW_LINE('')// & ! mica
-                   !&"    Saponite-Mg " // TRIM(s_precip) // TRIM(s_saponite) // kinetics //NEW_LINE('')// & ! smectite
+                   &"    Saponite-Mg " // TRIM(s_precip) // TRIM(s_saponite) // kinetics //NEW_LINE('')// & ! smectite
                    &"    Pyrite " // TRIM(s_precip) // TRIM(s_pyrite) // kinetics //NEW_LINE('')// &
                    &"    Saponite-Na " // TRIM(s_precip) // TRIM(s_saponite_na) // kinetics //NEW_LINE('')// & ! smectite
                    &"    Nontronite-Na " // TRIM(s_precip) // TRIM(s_nont_na) // kinetics //NEW_LINE('')// & ! smectite
@@ -4749,6 +4799,8 @@ PROGRAM main
                    "    Scolecite " // trim(s_precip) // trim(s_scolecite) // kinetics //NEW_LINE('')// & ! zeolite
                    !&"    Gismondine " // trim(s_precip) // trim(s_gismondine) // kinetics //NEW_LINE('')// & ! zeolite
                    &" "  //NEW_LINE('')
+
+               end if
 
               ! EQ rates
               inputz0 = TRIM(inputz0) // "RATES" //NEW_LINE('')// &
@@ -5489,9 +5541,7 @@ PROGRAM main
                   &"Epidote " //NEW_LINE('')// &
                   &"-m0 " // TRIM(s_epidote) //NEW_LINE('')// &
 
-
-
-                  &"    -step " // TRIM(s_timestep) // " in 1" //NEW_LINE('')// &
+                  &"    -step "//TRIM(s_timestep)//" in 1" //NEW_LINE('')// &
 
                   &"INCREMENTAL_REACTIONS true" //NEW_LINE('')// &
 
@@ -5500,7 +5550,7 @@ PROGRAM main
                   &"SELECTED_OUTPUT" //NEW_LINE('')// &
                   &"    -reset false" //NEW_LINE('')// &
                   &"    -high_precision true" //NEW_LINE('')// &
-                  &"    -k basalt3 basalt2 basalt1 bglass" //NEW_LINE('')// &
+                   &"    -k basalt3 basalt2 basalt1 bglass" //NEW_LINE('')// &
                   &"    -ph" //NEW_LINE('')// &
                   &"    -pe false" //NEW_LINE('')// &
                   &"    -totals C" //NEW_LINE('')// &
@@ -5515,6 +5565,9 @@ PROGRAM main
                   &"    -k Prehnite Chlorite(14a) scolecite Clinochlore-14A Clinochlore-7A Saponite-Ca" //NEW_LINE('')// & ! 6
                   &"    -k Vermiculite-Na Pyrrhotite Fe-Saponite-Ca Fe-Saponite-Mg" //NEW_LINE('')// & ! 4
                    &"    -k Daphnite-7a Daphnite-14a Epidote" //NEW_LINE('')// & ! 3
+
+
+
                 !   &"    -p prehnite chlorite(14a) scolecite Clinochlore-14A Clinochlore-7A saponite-ca" //NEW_LINE('')// & ! 6
                 !   &"    -p prehnite chlorite(14a) scolecite Clinochlore-14A Clinochlore-7A saponite-ca" //NEW_LINE('')// & ! 6
                 !   &"    -s kaolinite" //NEW_LINE('')// &		! 1
@@ -5554,9 +5607,7 @@ PROGRAM main
                   !-kinetic PHREEQ
                   id = CreateIPhreeqc()
 
-                  if (my_id .EQ. 15) then
-                      call system_clock(counti, count_rate, count_max)
-                  end if
+
 
                   IF (SetSelectedOutputStringOn(id, .TRUE.).NE.IPQ_OK) THEN
                      CALL OutputErrorString(id)
@@ -5580,10 +5631,6 @@ PROGRAM main
                   END IF
 
 
-                  if (my_id .EQ. 15) then
-                      call system_clock(countf, count_rate, count_max)
-                      write(*,*) "      END A" , countf - counti
-                  end if
 
 
                   if (my_id .EQ. 15) then
@@ -5659,9 +5706,6 @@ PROGRAM main
                 !       write(*,*) "35 after jjj" , jjj , slave_vector(jjj)
                 !   end if
 
-                if (my_id .EQ. 15) then
-                    call system_clock(counti, count_rate, count_max)
-                end if
 
                   ! WRITE AWAY
                   DO i=1,GetSelectedOutputStringLineCount(id)
@@ -5689,16 +5733,9 @@ PROGRAM main
                      END IF
                   END DO
 
-                  if (my_id .EQ. 15) then
-                      call system_clock(countf, count_rate, count_max)
-                      write(*,*) "      END GET SELECTED" , countf - counti
-                  end if
 
 
 
-                  if (my_id .EQ. 15) then
-                      call system_clock(counti, count_rate, count_max)
-                  end if
 
                   ! OUTPUT TO THE MAIN MASSACR METHOD
                   alt0(1,1:103) = outmat(3,1:103)
@@ -5748,6 +5785,7 @@ PROGRAM main
 
                 !   priLocal(m,:) = (/ 0.0*alt0(1,136), alt0(1,127), alt0(1,129), alt0(1,131), alt0(1,133)/)
                 priLocal(m,:) = (/ 0.0*alt0(1,16), alt0(1,16), alt0(1,18), alt0(1,20), alt0(1,22)/)
+                !priLocal(m,:) = (/0.0, primary3(2) + dprimary3(2), primary3(3) + dprimary3(3), primary3(4) + dprimary3(4), primary3(5) + dprimary3(5)/)
 
                 ! if (my_id .EQ. 10) then
                 !     write(*,*) "priLocal:" , priLocal(m,:)
@@ -5755,6 +5793,7 @@ PROGRAM main
 
                 !   dpriLocal(m,:) = (/ 0.0*alt0(1,136), alt0(1,128), alt0(1,130), alt0(1,132), alt0(1,134)/)
                 dpriLocal(m,:) = (/ 0.0*alt0(1,16), alt0(1,17), alt0(1,19), alt0(1,21), alt0(1,23)/)
+                !dpriLocal(m,:) = (/0.0, dprimary3(2), dprimary3(3), dprimary3(4), dprimary3(5)/)
 
 
                   end if
@@ -5773,7 +5812,9 @@ PROGRAM main
                    !secLocal = 0.0
                        DO ii=1,g_sec/2
                           secLocal(m,ii) = alt_mat(m,2*ii+22)
+                          !secLocal(m,ii) = secondary3(ii) + dsecondary3(ii)
                           dsecLocal(m,ii) = alt_mat(m,2*ii+23)!secLocal(m,ii) - secondary3(ii)
+                          !dsecLocal(m,ii) = dsecondary3(ii)
                        END DO
                    !end if
 
@@ -5792,10 +5833,6 @@ PROGRAM main
                    medLocal(m,1) = medLocal(m,1)/(medLocal(m,1) + 1000.0*solLocal(m,3))
                 END IF
 
-                if (my_id .EQ. 15) then
-                    call system_clock(countf, count_rate, count_max)
-                    write(*,*) "      END PARSE" , countf - counti
-                end if
 
                 ! if ((my_id .EQ. 10) .AND. (jjj .EQ. 1)) then
                 !     write(*,*) "AFTER priLocal:" , priLocal(m,2:)
@@ -5848,14 +5885,14 @@ PROGRAM main
        CALL MPI_SEND( secLocal(slave_vector(1:end_loop),ii), end_loop, MPI_REAL4, root_process, return_data_tag, MPI_COMM_WORLD, ierr)
     END DO
 
-    ! send solute array chunk back to root process
-    CALL MPI_SEND( solLocal(slave_vector(1:end_loop),3), end_loop, MPI_REAL4, root_process, return_data_tag, MPI_COMM_WORLD, ierr)
+    ! ! send solute array chunk back to root process
+    ! CALL MPI_SEND( solLocal(slave_vector(1:end_loop),3), end_loop, MPI_REAL4, root_process, return_data_tag, MPI_COMM_WORLD, ierr)
+    !
+    ! CALL MPI_SEND( solLocal(slave_vector(1:end_loop),2), end_loop, MPI_REAL4, root_process, return_data_tag, MPI_COMM_WORLD, ierr)
+    !
+    ! CALL MPI_SEND( solLocal(slave_vector(1:end_loop),1), end_loop, MPI_REAL4, root_process, return_data_tag, MPI_COMM_WORLD, ierr)
 
-    CALL MPI_SEND( solLocal(slave_vector(1:end_loop),2), end_loop, MPI_REAL4, root_process, return_data_tag, MPI_COMM_WORLD, ierr)
-
-    CALL MPI_SEND( solLocal(slave_vector(1:end_loop),1), end_loop, MPI_REAL4, root_process, return_data_tag, MPI_COMM_WORLD, ierr)
-
-    DO ii = 4,g_sol
+    DO ii = 1,g_sol
        CALL MPI_SEND( solLocal(slave_vector(1:end_loop),ii), end_loop, MPI_REAL4, root_process, return_data_tag, MPI_COMM_WORLD, ierr)
     END DO
 
@@ -8000,9 +8037,9 @@ FUNCTION solute_next_coarse (sol, uTransport, vTransport, phiTransport, seaw)
 
 
 
-    solute_next_coarse(2,j) = sol0(2,j) - (qx*uTransport(2,j))*(sol0(2,j)-sol0(1,j))! - qx*(uTransport(2,j)/phiTransport(2,j))*sol0(2,j)*(phiTransport(2,j)-phiTransport(1,j))
+    solute_next_coarse(2,j) = sol0(2,j) - (qx*uTransport(2,j))*(sol0(2,j)-sol0(1,j)) - qx*(uTransport(2,j)/phiTransport(2,j))*sol0(2,j)*(phiTransport(2,j)-phiTransport(1,j))
 
-     solute_next_coarse((xn-1)/cellx,j) = sol0((xn-1)/cellx,j) - (qx*uTransport((xn-1)/cellx,j))*(sol0((xn-1)/cellx,j)-sol0((xn-1)/cellx-1,j))! - qx*(uTransport((xn-1)/cellx,j)/phiTransport((xn-1)/cellx,j))*sol0((xn-1)/cellx,j)*(phiTransport((xn-1)/cellx,j)-phiTransport((xn-1)/cellx-1,j))
+     solute_next_coarse((xn-1)/cellx,j) = sol0((xn-1)/cellx,j) - (qx*uTransport((xn-1)/cellx,j))*(sol0((xn-1)/cellx,j)-sol0((xn-1)/cellx-1,j)) - qx*(uTransport((xn-1)/cellx,j)/phiTransport((xn-1)/cellx,j))*sol0((xn-1)/cellx,j)*(phiTransport((xn-1)/cellx,j)-phiTransport((xn-1)/cellx-1,j))
 
     !solute_next_coarse((xn-1)/cellx,j) = (4.0/3.0)*sol0((xn-1)/cellx-1,j) - (1.0/3.0)*sol0((xn-1)/cellx-2,j)
 
@@ -8020,7 +8057,7 @@ FUNCTION solute_next_coarse (sol, uTransport, vTransport, phiTransport, seaw)
             !solute_next_coarse(i,j) = sol0(i,j)-(qx*uTransport(i,j)/phiTransport(i,j))*(sol0(i,j)-sol0(i-1,j))! - qx*uTransport(i,j)*sol0(i,j)*((1.0/phiTransport(i,j))-(1.0/phiTransport(i-1,j)))
 
         ! new advection scheme
-        solute_next_coarse(i,j) = sol0(i,j) - (qx*uTransport(i,j))*(sol0(i,j)-sol0(i-1,j))! - qx*(uTransport(i,j)/phiTransport(i,j))*sol0(i,j)*(phiTransport(i,j)-phiTransport(i-1,j))
+        solute_next_coarse(i,j) = sol0(i,j) - (qx*uTransport(i,j))*(sol0(i,j)-sol0(i-1,j)) - qx*(uTransport(i,j)/phiTransport(i,j))*sol0(i,j)*(phiTransport(i,j)-phiTransport(i-1,j))
 
         ! solute_next_coarse(i,j) = sol0(i,j) - (qx*uTransport(i,j))*(sol0(i,j)-sol0(i-1,j)) - qx*(uTransport(i,j)/((phiTransport(i,j)+phiTransport(i-1,j))/2.0))*sol0(i,j)*(phiTransport(i,j)-phiTransport(i-1,j))
 
@@ -8190,8 +8227,8 @@ FUNCTION solute_next_coarse (sol, uTransport, vTransport, phiTransport, seaw)
            !
            !
            !
-           !
-           !
+
+
 
 
 
