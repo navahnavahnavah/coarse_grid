@@ -135,6 +135,9 @@ CONTAINS
   SUBROUTINE init_mini ()
     USE globals
 
+    in = iargc()
+    CALL getarg(3,path_final)
+
     sec_density = (/2.65, 2.3, 3.05, 2.17, 5.01, 2.5, 3.8, & ! 7
          & 2.7, 2.71, 2.56, 2.3, 2.28, 2.28, 3.05, 2.28, & ! 8
          & 2.25, 5.3, 2.5, 2.55, 2.27, 2.2, 2.5, 2.26, & ! 8
@@ -167,6 +170,10 @@ CONTAINS
 
     sol_index = (/2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13/)
     !           alk dic ca mg na k  fe s   si  cl  al
+
+    t_vol_s = 0.016
+    t_vol_a = 0.012! - 0.0112/2.0
+    t_vol_b = 0.004!/2.0
 
     RETURN
 

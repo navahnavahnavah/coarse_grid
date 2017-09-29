@@ -73,6 +73,8 @@ MODULE globals
   INTEGER :: age_toggle
   INTEGER :: age_root
   CHARACTER(len=25) :: my_id_s
+  REAL(4) :: vol_th
+  CHARACTER(len=25) :: s_precip_nope= "10000.0"
 
 CONTAINS
 
