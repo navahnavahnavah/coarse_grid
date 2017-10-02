@@ -67,14 +67,14 @@ MODULE globals
   INTEGER :: dabs_loop
 
   INTEGER :: se_toggle
-  INTEGER :: se_factor = 50
+  INTEGER :: se_factor = 10
   INTEGER :: j_root
   INTEGER :: se_spinup = 100
   INTEGER :: age_toggle
   INTEGER :: age_root
   CHARACTER(len=25) :: my_id_s
   REAL(4) :: vol_th
-  CHARACTER(len=25) :: s_precip_nope= "10000.0"
+  CHARACTER(len=25) :: s_precip_nope= "100.0"
 
 CONTAINS
 
