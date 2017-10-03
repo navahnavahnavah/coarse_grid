@@ -3303,120 +3303,120 @@ PROGRAM main
                call system_clock(counti, count_rate, count_max)
                WRITE(*,*) "moving cells now..."
 
-                 DO i = 1,g_pri
-                    bit_thing_t1 = TRANSPOSE(RESHAPE(priLongBitFull(1:leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
-                    bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                    priLongBitFull(:leng,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
-
-                    bit_thing_t1 = TRANSPOSE(RESHAPE(priLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
-                    bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                    priLongBitFull(leng+1:2*leng,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
-
-                    bit_thing_t1 = TRANSPOSE(RESHAPE(priLongBitFull(2*leng+1:,i),(/yn/(2*celly), (xn-1)/cellx/)))
-                    bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                    priLongBitFull(2*leng+1:,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
-                    ! bit_thing_t1 = RESHAPE(priLongBitFull(1:leng,i),(/(xn-1)/cellx,yn/(2*celly)/))
-                    ! bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                    ! priLongBitFull(:leng,i) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
-                    !
-                    ! bit_thing_t1 = RESHAPE(priLongBitFull(leng+1:2*leng,i),(/(xn-1)/cellx,yn/(2*celly)/))
-                    ! bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                    ! priLongBitFull(leng+1:2*leng,i) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
-                    !
-                    ! bit_thing_t1 = RESHAPE(priLongBitFull(2*leng+1:,i),(/(xn-1)/cellx,yn/(2*celly)/))
-                    ! bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                    ! priLongBitFull(2*leng+1:,i) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
-                 END DO
-
-                 DO i = 1,g_sec
-                    bit_thing_t1 = TRANSPOSE(RESHAPE(secLongBitFull(1:leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
-                    bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                    secLongBitFull(:leng,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
-
-                    bit_thing_t1 = TRANSPOSE(RESHAPE(secLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
-                    bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                    secLongBitFull(leng+1:2*leng,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
-
-                    bit_thing_t1 = TRANSPOSE(RESHAPE(secLongBitFull(2*leng+1:,i),(/yn/(2*celly), (xn-1)/cellx/)))
-                    bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                    secLongBitFull(2*leng+1:,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
-                    ! bit_thing_t1 = RESHAPE(secLongBitFull(1:leng,i),(/(xn-1)/cellx,yn/(2*celly)/))
-                    ! bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                    ! secLongBitFull(:leng,i) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
-                    !
-                    ! bit_thing_t1 = RESHAPE(secLongBitFull(leng+1:2*leng,i),(/(xn-1)/cellx,yn/(2*celly)/))
-                    ! bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                    ! secLongBitFull(leng+1:2*leng,i) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
-                    !
-                    ! bit_thing_t1 = RESHAPE(secLongBitFull(2*leng+1:,i),(/(xn-1)/cellx,yn/(2*celly)/))
-                    ! bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                    ! secLongBitFull(2*leng+1:,i) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
-                 END DO
-
-                !  bit_thing_t1 = TRANSPOSE(RESHAPE(medLongBitFull(1:leng,5),(/yn/(2*celly), (xn-1)/cellx/)))
-                !  bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                !  medLongBitFull(:leng,5) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
-                 !
-                !  bit_thing_t1 = TRANSPOSE(RESHAPE(medLongBitFull(leng+1:2*leng,5),(/yn/(2*celly), (xn-1)/cellx/)))
-                !  bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                !  medLongBitFull(leng+1:2*leng,5) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
-                 !
-                !  bit_thing_t1 = TRANSPOSE(RESHAPE(medLongBitFull(2*leng+1:,5),(/yn/(2*celly), (xn-1)/cellx/)))
-                !  bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                !  medLongBitFull(2*leng+1:,5) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
-
-                 DO i = 1,g_sol
-                    bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(1:leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
-                    bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                    solLongBitFull(:leng,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
-
-                    bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
-                    bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                    solLongBitFull(leng+1:2*leng,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
-
-                    bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(2*leng+1:,i),(/yn/(2*celly), (xn-1)/cellx/)))
-                    bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                    solLongBitFull(2*leng+1:,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
-                    ! bit_thing_t1 = RESHAPE(solLongBitFull(1:leng,i),(/(xn-1)/cellx,yn/(2*celly)/))
-                    ! bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                    ! solLongBitFull(:leng,i) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
-                    !
-                    ! bit_thing_t1 = RESHAPE(solLongBitFull(leng+1:2*leng,i),(/(xn-1)/cellx,yn/(2*celly)/))
-                    ! bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                    ! solLongBitFull(leng+1:2*leng,i) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
-                    !
-                    ! bit_thing_t1 = RESHAPE(solLongBitFull(2*leng+1:,i),(/(xn-1)/cellx,yn/(2*celly)/))
-                    ! bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                    ! solLongBitFull(2*leng+1:,i) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
-                 END DO
-
-
-                 bit_thing_t1 = TRANSPOSE(RESHAPE(medLongBitFull(1:leng,2),(/yn/(2*celly), (xn-1)/cellx/)))
-                 bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                 medLongBitFull(:leng,2) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
-
-                 bit_thing_t1 = TRANSPOSE(RESHAPE(medLongBitFull(leng+1:2*leng,2),(/yn/(2*celly), (xn-1)/cellx/)))
-                 bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                 medLongBitFull(leng+1:2*leng,2) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
-
-                 bit_thing_t1 = TRANSPOSE(RESHAPE(medLongBitFull(2*leng+1:,2),(/yn/(2*celly), (xn-1)/cellx/)))
-                 bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                 medLongBitFull(2*leng+1:,2) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
-                ! bit_thing_t1 = RESHAPE(medLongBitFull(1:leng,2),(/(xn-1)/cellx,yn/(2*celly)/))
-                ! bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                ! medLongBitFull(:leng,2) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
+                !  DO i = 1,g_pri
+                !     bit_thing_t1 = TRANSPOSE(RESHAPE(priLongBitFull(1:leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
+                !     bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                !     priLongBitFull(:leng,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
                 !
-                ! bit_thing_t1 = RESHAPE(medLongBitFull(leng+1:2*leng,2),(/(xn-1)/cellx,yn/(2*celly)/))
-                ! bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                ! medLongBitFull(leng+1:2*leng,2) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
+                !     bit_thing_t1 = TRANSPOSE(RESHAPE(priLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
+                !     bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                !     priLongBitFull(leng+1:2*leng,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
                 !
-                ! bit_thing_t1 = RESHAPE(medLongBitFull(2*leng+1:,2),(/(xn-1)/cellx,yn/(2*celly)/))
-                ! bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                ! medLongBitFull(2*leng+1:,2) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
-
-                call system_clock(countf, count_rate, count_max)
-                write(*,*) "moving time: " , countf - counti
-                age_toggle = 1
+                !     bit_thing_t1 = TRANSPOSE(RESHAPE(priLongBitFull(2*leng+1:,i),(/yn/(2*celly), (xn-1)/cellx/)))
+                !     bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                !     priLongBitFull(2*leng+1:,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
+                !     ! bit_thing_t1 = RESHAPE(priLongBitFull(1:leng,i),(/(xn-1)/cellx,yn/(2*celly)/))
+                !     ! bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                !     ! priLongBitFull(:leng,i) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
+                !     !
+                !     ! bit_thing_t1 = RESHAPE(priLongBitFull(leng+1:2*leng,i),(/(xn-1)/cellx,yn/(2*celly)/))
+                !     ! bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                !     ! priLongBitFull(leng+1:2*leng,i) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
+                !     !
+                !     ! bit_thing_t1 = RESHAPE(priLongBitFull(2*leng+1:,i),(/(xn-1)/cellx,yn/(2*celly)/))
+                !     ! bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                !     ! priLongBitFull(2*leng+1:,i) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
+                !  END DO
+                !
+                !  DO i = 1,g_sec
+                !     bit_thing_t1 = TRANSPOSE(RESHAPE(secLongBitFull(1:leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
+                !     bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                !     secLongBitFull(:leng,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
+                !
+                !     bit_thing_t1 = TRANSPOSE(RESHAPE(secLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
+                !     bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                !     secLongBitFull(leng+1:2*leng,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
+                !
+                !     bit_thing_t1 = TRANSPOSE(RESHAPE(secLongBitFull(2*leng+1:,i),(/yn/(2*celly), (xn-1)/cellx/)))
+                !     bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                !     secLongBitFull(2*leng+1:,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
+                !     ! bit_thing_t1 = RESHAPE(secLongBitFull(1:leng,i),(/(xn-1)/cellx,yn/(2*celly)/))
+                !     ! bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                !     ! secLongBitFull(:leng,i) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
+                !     !
+                !     ! bit_thing_t1 = RESHAPE(secLongBitFull(leng+1:2*leng,i),(/(xn-1)/cellx,yn/(2*celly)/))
+                !     ! bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                !     ! secLongBitFull(leng+1:2*leng,i) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
+                !     !
+                !     ! bit_thing_t1 = RESHAPE(secLongBitFull(2*leng+1:,i),(/(xn-1)/cellx,yn/(2*celly)/))
+                !     ! bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                !     ! secLongBitFull(2*leng+1:,i) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
+                !  END DO
+                !
+                ! !  bit_thing_t1 = TRANSPOSE(RESHAPE(medLongBitFull(1:leng,5),(/yn/(2*celly), (xn-1)/cellx/)))
+                ! !  bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                ! !  medLongBitFull(:leng,5) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
+                !  !
+                ! !  bit_thing_t1 = TRANSPOSE(RESHAPE(medLongBitFull(leng+1:2*leng,5),(/yn/(2*celly), (xn-1)/cellx/)))
+                ! !  bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                ! !  medLongBitFull(leng+1:2*leng,5) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
+                !  !
+                ! !  bit_thing_t1 = TRANSPOSE(RESHAPE(medLongBitFull(2*leng+1:,5),(/yn/(2*celly), (xn-1)/cellx/)))
+                ! !  bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                ! !  medLongBitFull(2*leng+1:,5) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
+                !
+                !  DO i = 1,g_sol
+                !     bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(1:leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
+                !     bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                !     solLongBitFull(:leng,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
+                !
+                !     bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
+                !     bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                !     solLongBitFull(leng+1:2*leng,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
+                !
+                !     bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(2*leng+1:,i),(/yn/(2*celly), (xn-1)/cellx/)))
+                !     bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                !     solLongBitFull(2*leng+1:,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
+                !     ! bit_thing_t1 = RESHAPE(solLongBitFull(1:leng,i),(/(xn-1)/cellx,yn/(2*celly)/))
+                !     ! bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                !     ! solLongBitFull(:leng,i) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
+                !     !
+                !     ! bit_thing_t1 = RESHAPE(solLongBitFull(leng+1:2*leng,i),(/(xn-1)/cellx,yn/(2*celly)/))
+                !     ! bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                !     ! solLongBitFull(leng+1:2*leng,i) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
+                !     !
+                !     ! bit_thing_t1 = RESHAPE(solLongBitFull(2*leng+1:,i),(/(xn-1)/cellx,yn/(2*celly)/))
+                !     ! bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                !     ! solLongBitFull(2*leng+1:,i) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
+                !  END DO
+                !
+                !
+                !  bit_thing_t1 = TRANSPOSE(RESHAPE(medLongBitFull(1:leng,2),(/yn/(2*celly), (xn-1)/cellx/)))
+                !  bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                !  medLongBitFull(:leng,2) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
+                !
+                !  bit_thing_t1 = TRANSPOSE(RESHAPE(medLongBitFull(leng+1:2*leng,2),(/yn/(2*celly), (xn-1)/cellx/)))
+                !  bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                !  medLongBitFull(leng+1:2*leng,2) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
+                !
+                !  bit_thing_t1 = TRANSPOSE(RESHAPE(medLongBitFull(2*leng+1:,2),(/yn/(2*celly), (xn-1)/cellx/)))
+                !  bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                !  medLongBitFull(2*leng+1:,2) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
+                ! ! bit_thing_t1 = RESHAPE(medLongBitFull(1:leng,2),(/(xn-1)/cellx,yn/(2*celly)/))
+                ! ! bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                ! ! medLongBitFull(:leng,2) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
+                ! !
+                ! ! bit_thing_t1 = RESHAPE(medLongBitFull(leng+1:2*leng,2),(/(xn-1)/cellx,yn/(2*celly)/))
+                ! ! bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                ! ! medLongBitFull(leng+1:2*leng,2) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
+                ! !
+                ! ! bit_thing_t1 = RESHAPE(medLongBitFull(2*leng+1:,2),(/(xn-1)/cellx,yn/(2*celly)/))
+                ! ! bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                ! ! medLongBitFull(2*leng+1:,2) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
+                !
+                ! call system_clock(countf, count_rate, count_max)
+                ! write(*,*) "moving time: " , countf - counti
+                ! age_toggle = 1
 
 
 
@@ -4204,7 +4204,7 @@ PROGRAM main
               DO ii = 1,cstep
                  sol_coarse_local = solute_next_coarse(sol_coarse_local,u_coarse_local,v_coarse_local,phi_coarse_local,sea(sol_index(an_id_local)))
               END DO
-              !-proc 34 cell fix
+              ! proc 34 cell fix
             !   sol_coarse_local(2,:) = sol_coarse_local(3,:)
            END IF
 
@@ -4212,7 +4212,7 @@ PROGRAM main
               DO ii = 1,cstep
                  sol_coarse_local = solute_next_coarse(sol_coarse_local,u_coarse_local,v_coarse_local,phi_coarse_local,sea(sol_index(an_id_local-11)))
               END DO
-              !-proc 34 cell fix
+              ! proc 34 cell fix
             !   sol_coarse_local(2,:) = sol_coarse_local(3,:)
            END IF
 
@@ -4283,14 +4283,15 @@ PROGRAM main
 
         !CALL MPI_RECV ( age_root, 1, MPI_INTEGER, root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
 
-        se_toggle = 1
+        se_toggle = 0
         !-set SE_TOGGLE
         IF ((MOD(j_root,mstep*se_factor) .EQ. 0) .OR. (j_root .LE. mstep*se_spinup) .OR. (MOD(j_root-mstep,mstep*se_factor) .EQ. 0) .OR. (MOD(j_root-(2*mstep),mstep*se_factor) .EQ. 0) .OR. (MOD(j_root-(3*mstep),mstep*se_factor) .EQ. 0)) THEN
             se_toggle = 1
         END IF
 
         if (my_id .eq. 10) then
-            write(*,*) "j_root:" , j_root , "se_toggle:" , se_toggle
+            write(*,22) j_root , se_toggle
+            22 format ("j_root: " , I8 , "   se_toggle " , I1)
         end if
 
         CALL MPI_RECV ( hLong, 3*leng, MPI_REAL4, root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
@@ -4473,46 +4474,46 @@ PROGRAM main
             !   WRITE(sd_epidote,'(F25.10)') -1.0*dsecondary3(40) !!!
 
 
-            WRITE(sd_kaolinite,'(F25.10)') -0.9*dsecondary3(1)
-            WRITE(sd_saponite,'(F25.10)') -0.9*dsecondary3(2)
-            WRITE(sd_celadonite,'(F25.10)') -0.9*dsecondary3(3)
-            WRITE(sd_clinoptilolite,'(F25.10)') -0.9*dsecondary3(4)
-            WRITE(sd_pyrite,'(F25.10)') -0.9*dsecondary3(5)
-            WRITE(sd_mont_na,'(F25.10)') -0.9*dsecondary3(6)
-            WRITE(sd_goethite,'(F25.10)') -0.9*dsecondary3(7)
-            WRITE(sd_smectite,'(F25.10)') -0.9*dsecondary3(8)
-            WRITE(sd_calcite,'(F25.10)') -0.9*dsecondary3(9)
-            WRITE(sd_kspar,'(F25.10)') -0.9*dsecondary3(10)
-            WRITE(sd_saponite_na,'(F25.10)') -0.9*dsecondary3(11) !!!!
-            WRITE(sd_nont_na,'(F25.10)') -0.9*dsecondary3(12)
-            WRITE(sd_nont_mg,'(F25.10)') -0.9*dsecondary3(13)
-            WRITE(sd_fe_celadonite,'(F25.10)') -0.9*dsecondary3(14)
-            WRITE(sd_nont_ca,'(F25.10)') -0.9*dsecondary3(15)
-            WRITE(sd_mesolite,'(F25.10)') -0.9*dsecondary3(16)
-            WRITE(sd_hematite,'(F25.10)') -0.9*dsecondary3(17)
-            WRITE(sd_mont_ca,'(F25.10)') -0.9*dsecondary3(18)
-            WRITE(sd_verm_ca,'(F25.10)') -0.9*dsecondary3(19)
-            WRITE(sd_analcime,'(F25.10)') -0.9*dsecondary3(20)
-            WRITE(sd_phillipsite,'(F25.10)') -0.9*dsecondary3(21)
-            WRITE(sd_mont_mg,'(F25.10)') -0.9*dsecondary3(22)
-            WRITE(sd_gismondine,'(F25.10)') -0.9*dsecondary3(23)
-            WRITE(sd_verm_mg,'(F25.10)') -0.9*dsecondary3(24)
-            WRITE(sd_natrolite,'(F25.10)') -0.9*dsecondary3(25)
-            WRITE(sd_talc,'(F25.10)') -0.9*dsecondary3(26) !!!!!!!!!
-            WRITE(sd_smectite_low,'(F25.10)') -0.9*dsecondary3(27)
-            WRITE(sd_prehnite,'(F25.10)') -0.9*dsecondary3(28)
-            WRITE(sd_chlorite,'(F25.10)') -0.9*dsecondary3(29) !!!!!!!!
-            WRITE(sd_scolecite,'(F25.10)') -0.9*dsecondary3(30)
-            WRITE(sd_clinochlore14a,'(F25.10)') -0.9*dsecondary3(31)
-            WRITE(sd_clinochlore7a,'(F25.10)') -0.9*dsecondary3(32)
-            WRITE(sd_saponite_ca,'(F25.10)') -0.9*dsecondary3(33)
-            WRITE(sd_verm_na,'(F25.10)') -0.9*dsecondary3(34)
-            WRITE(sd_pyrrhotite,'(F25.10)') -0.9*dsecondary3(35)
-            WRITE(sd_fe_saponite_ca,'(F25.10)') -0.9*dsecondary3(36) !!!
-            WRITE(sd_fe_saponite_mg,'(F25.10)') -0.9*dsecondary3(37) !!!
-            WRITE(sd_daphnite_7a,'(F25.10)') -0.9*dsecondary3(38) !!!
-            WRITE(sd_daphnite_14a,'(F25.10)') -0.9*dsecondary3(39) !!!
-            WRITE(sd_epidote,'(F25.10)') -0.9*dsecondary3(40) !!!
+            ! WRITE(sd_kaolinite,'(F25.10)') -0.9*dsecondary3(1)
+            ! WRITE(sd_saponite,'(F25.10)') -0.9*dsecondary3(2)
+            ! WRITE(sd_celadonite,'(F25.10)') -0.9*dsecondary3(3)
+            ! WRITE(sd_clinoptilolite,'(F25.10)') -0.9*dsecondary3(4)
+            ! WRITE(sd_pyrite,'(F25.10)') -0.9*dsecondary3(5)
+            ! WRITE(sd_mont_na,'(F25.10)') -0.9*dsecondary3(6)
+            ! WRITE(sd_goethite,'(F25.10)') -0.9*dsecondary3(7)
+            ! WRITE(sd_smectite,'(F25.10)') -0.9*dsecondary3(8)
+            ! WRITE(sd_calcite,'(F25.10)') -0.9*dsecondary3(9)
+            ! WRITE(sd_kspar,'(F25.10)') -0.9*dsecondary3(10)
+            ! WRITE(sd_saponite_na,'(F25.10)') -0.9*dsecondary3(11) !!!!
+            ! WRITE(sd_nont_na,'(F25.10)') -0.9*dsecondary3(12)
+            ! WRITE(sd_nont_mg,'(F25.10)') -0.9*dsecondary3(13)
+            ! WRITE(sd_fe_celadonite,'(F25.10)') -0.9*dsecondary3(14)
+            ! WRITE(sd_nont_ca,'(F25.10)') -0.9*dsecondary3(15)
+            ! WRITE(sd_mesolite,'(F25.10)') -0.9*dsecondary3(16)
+            ! WRITE(sd_hematite,'(F25.10)') -0.9*dsecondary3(17)
+            ! WRITE(sd_mont_ca,'(F25.10)') -0.9*dsecondary3(18)
+            ! WRITE(sd_verm_ca,'(F25.10)') -0.9*dsecondary3(19)
+            ! WRITE(sd_analcime,'(F25.10)') -0.9*dsecondary3(20)
+            ! WRITE(sd_phillipsite,'(F25.10)') -0.9*dsecondary3(21)
+            ! WRITE(sd_mont_mg,'(F25.10)') -0.9*dsecondary3(22)
+            ! WRITE(sd_gismondine,'(F25.10)') -0.9*dsecondary3(23)
+            ! WRITE(sd_verm_mg,'(F25.10)') -0.9*dsecondary3(24)
+            ! WRITE(sd_natrolite,'(F25.10)') -0.9*dsecondary3(25)
+            ! WRITE(sd_talc,'(F25.10)') -0.9*dsecondary3(26) !!!!!!!!!
+            ! WRITE(sd_smectite_low,'(F25.10)') -0.9*dsecondary3(27)
+            ! WRITE(sd_prehnite,'(F25.10)') -0.9*dsecondary3(28)
+            ! WRITE(sd_chlorite,'(F25.10)') -0.9*dsecondary3(29) !!!!!!!!
+            ! WRITE(sd_scolecite,'(F25.10)') -0.9*dsecondary3(30)
+            ! WRITE(sd_clinochlore14a,'(F25.10)') -0.9*dsecondary3(31)
+            ! WRITE(sd_clinochlore7a,'(F25.10)') -0.9*dsecondary3(32)
+            ! WRITE(sd_saponite_ca,'(F25.10)') -0.9*dsecondary3(33)
+            ! WRITE(sd_verm_na,'(F25.10)') -0.9*dsecondary3(34)
+            ! WRITE(sd_pyrrhotite,'(F25.10)') -0.9*dsecondary3(35)
+            ! WRITE(sd_fe_saponite_ca,'(F25.10)') -0.9*dsecondary3(36) !!!
+            ! WRITE(sd_fe_saponite_mg,'(F25.10)') -0.9*dsecondary3(37) !!!
+            ! WRITE(sd_daphnite_7a,'(F25.10)') -0.9*dsecondary3(38) !!!
+            ! WRITE(sd_daphnite_14a,'(F25.10)') -0.9*dsecondary3(39) !!!
+            ! WRITE(sd_epidote,'(F25.10)') -0.9*dsecondary3(40) !!!
 
             ! WRITE(sd_kaolinite,'(F25.10)') -0.1*dsecondary3(1)
             ! WRITE(sd_saponite,'(F25.10)') -0.1*dsecondary3(2)
@@ -4599,46 +4600,46 @@ PROGRAM main
 
             !IF ((se_toggle .EQ. 1) .OR. (MOD(j_root-(4*mstep),mstep*se_factor) .EQ. 0) .OR. (MOD(j_root-(5*mstep),mstep*se_factor) .EQ. 0)) THEN
 
-                ! WRITE(sd_kaolinite,'(F25.10)') -0.99*dsecondary3(1)
-                ! WRITE(sd_saponite,'(F25.10)') -0.99*dsecondary3(2)
-                ! WRITE(sd_celadonite,'(F25.10)') -0.99*dsecondary3(3)
-                ! WRITE(sd_clinoptilolite,'(F25.10)') -0.99*dsecondary3(4)
-                ! WRITE(sd_pyrite,'(F25.10)') -0.99*dsecondary3(5)
-                ! WRITE(sd_mont_na,'(F25.10)') -0.99*dsecondary3(6)
-                ! WRITE(sd_goethite,'(F25.10)') -0.99*dsecondary3(7)
-                ! WRITE(sd_smectite,'(F25.10)') -0.99*dsecondary3(8)
-                ! WRITE(sd_calcite,'(F25.10)') -0.99*dsecondary3(9)
-                ! WRITE(sd_kspar,'(F25.10)') -0.99*dsecondary3(10)
-                ! WRITE(sd_saponite_na,'(F25.10)') -0.99*dsecondary3(11) !!!!
-                ! WRITE(sd_nont_na,'(F25.10)') -0.99*dsecondary3(12)
-                ! WRITE(sd_nont_mg,'(F25.10)') -0.99*dsecondary3(13)
-                ! WRITE(sd_fe_celadonite,'(F25.10)') -0.99*dsecondary3(14)
-                ! WRITE(sd_nont_ca,'(F25.10)') -0.99*dsecondary3(15)
-                ! WRITE(sd_mesolite,'(F25.10)') -0.99*dsecondary3(16)
-                ! WRITE(sd_hematite,'(F25.10)') -0.99*dsecondary3(17)
-                ! WRITE(sd_mont_ca,'(F25.10)') -0.99*dsecondary3(18)
-                ! WRITE(sd_verm_ca,'(F25.10)') -0.99*dsecondary3(19)
-                ! WRITE(sd_analcime,'(F25.10)') -0.99*dsecondary3(20)
-                ! WRITE(sd_phillipsite,'(F25.10)') -0.99*dsecondary3(21)
-                ! WRITE(sd_mont_mg,'(F25.10)') -0.99*dsecondary3(22)
-                ! WRITE(sd_gismondine,'(F25.10)') -0.99*dsecondary3(23)
-                ! WRITE(sd_verm_mg,'(F25.10)') -0.99*dsecondary3(24)
-                ! WRITE(sd_natrolite,'(F25.10)') -0.99*dsecondary3(25)
-                ! WRITE(sd_talc,'(F25.10)') -0.99*dsecondary3(26) !!!!!!!!!
-                ! WRITE(sd_smectite_low,'(F25.10)') -0.99*dsecondary3(27)
-                ! WRITE(sd_prehnite,'(F25.10)') -0.99*dsecondary3(28)
-                ! WRITE(sd_chlorite,'(F25.10)') -0.99*dsecondary3(29) !!!!!!!!
-                ! WRITE(sd_scolecite,'(F25.10)') -0.99*dsecondary3(30)
-                ! WRITE(sd_clinochlore14a,'(F25.10)') -0.99*dsecondary3(31)
-                ! WRITE(sd_clinochlore7a,'(F25.10)') -0.99*dsecondary3(32)
-                ! WRITE(sd_saponite_ca,'(F25.10)') -0.99*dsecondary3(33)
-                ! WRITE(sd_verm_na,'(F25.10)') -0.99*dsecondary3(34)
-                ! WRITE(sd_pyrrhotite,'(F25.10)') -0.99*dsecondary3(35)
-                ! WRITE(sd_fe_saponite_ca,'(F25.10)') -0.99*dsecondary3(36) !!!
-                ! WRITE(sd_fe_saponite_mg,'(F25.10)') -0.99*dsecondary3(37) !!!
-                ! WRITE(sd_daphnite_7a,'(F25.10)') -0.99*dsecondary3(38) !!!
-                ! WRITE(sd_daphnite_14a,'(F25.10)') -0.99*dsecondary3(39) !!!
-                ! WRITE(sd_epidote,'(F25.10)') -0.99*dsecondary3(40) !!!
+                WRITE(sd_kaolinite,'(F25.10)') -0.99*dsecondary3(1)
+                WRITE(sd_saponite,'(F25.10)') -0.99*dsecondary3(2)
+                WRITE(sd_celadonite,'(F25.10)') -0.99*dsecondary3(3)
+                WRITE(sd_clinoptilolite,'(F25.10)') -0.99*dsecondary3(4)
+                WRITE(sd_pyrite,'(F25.10)') -0.99*dsecondary3(5)
+                WRITE(sd_mont_na,'(F25.10)') -0.99*dsecondary3(6)
+                WRITE(sd_goethite,'(F25.10)') -0.99*dsecondary3(7)
+                WRITE(sd_smectite,'(F25.10)') -0.99*dsecondary3(8)
+                WRITE(sd_calcite,'(F25.10)') -0.99*dsecondary3(9)
+                WRITE(sd_kspar,'(F25.10)') -0.99*dsecondary3(10)
+                WRITE(sd_saponite_na,'(F25.10)') -0.99*dsecondary3(11) !!!!
+                WRITE(sd_nont_na,'(F25.10)') -0.99*dsecondary3(12)
+                WRITE(sd_nont_mg,'(F25.10)') -0.99*dsecondary3(13)
+                WRITE(sd_fe_celadonite,'(F25.10)') -0.99*dsecondary3(14)
+                WRITE(sd_nont_ca,'(F25.10)') -0.99*dsecondary3(15)
+                WRITE(sd_mesolite,'(F25.10)') -0.99*dsecondary3(16)
+                WRITE(sd_hematite,'(F25.10)') -0.99*dsecondary3(17)
+                WRITE(sd_mont_ca,'(F25.10)') -0.99*dsecondary3(18)
+                WRITE(sd_verm_ca,'(F25.10)') -0.99*dsecondary3(19)
+                WRITE(sd_analcime,'(F25.10)') -0.99*dsecondary3(20)
+                WRITE(sd_phillipsite,'(F25.10)') -0.99*dsecondary3(21)
+                WRITE(sd_mont_mg,'(F25.10)') -0.99*dsecondary3(22)
+                WRITE(sd_gismondine,'(F25.10)') -0.99*dsecondary3(23)
+                WRITE(sd_verm_mg,'(F25.10)') -0.99*dsecondary3(24)
+                WRITE(sd_natrolite,'(F25.10)') -0.99*dsecondary3(25)
+                WRITE(sd_talc,'(F25.10)') -0.99*dsecondary3(26) !!!!!!!!!
+                WRITE(sd_smectite_low,'(F25.10)') -0.99*dsecondary3(27)
+                WRITE(sd_prehnite,'(F25.10)') -0.99*dsecondary3(28)
+                WRITE(sd_chlorite,'(F25.10)') -0.99*dsecondary3(29) !!!!!!!!
+                WRITE(sd_scolecite,'(F25.10)') -0.99*dsecondary3(30)
+                WRITE(sd_clinochlore14a,'(F25.10)') -0.99*dsecondary3(31)
+                WRITE(sd_clinochlore7a,'(F25.10)') -0.99*dsecondary3(32)
+                WRITE(sd_saponite_ca,'(F25.10)') -0.99*dsecondary3(33)
+                WRITE(sd_verm_na,'(F25.10)') -0.99*dsecondary3(34)
+                WRITE(sd_pyrrhotite,'(F25.10)') -0.99*dsecondary3(35)
+                WRITE(sd_fe_saponite_ca,'(F25.10)') -0.99*dsecondary3(36) !!!
+                WRITE(sd_fe_saponite_mg,'(F25.10)') -0.99*dsecondary3(37) !!!
+                WRITE(sd_daphnite_7a,'(F25.10)') -0.99*dsecondary3(38) !!!
+                WRITE(sd_daphnite_14a,'(F25.10)') -0.99*dsecondary3(39) !!!
+                WRITE(sd_epidote,'(F25.10)') -0.99*dsecondary3(40) !!!
 
             !END IF
 
@@ -4738,7 +4739,7 @@ PROGRAM main
               WRITE(s_reactive,'(F25.10)') medium3(4)
 
 
-            !-equilibrium input file
+            !-EQ input file
             IF (se_toggle .EQ. 1) THEN
 
               ! EQ solution
@@ -4762,305 +4763,356 @@ PROGRAM main
               !-EQ equilibrium phases
               !if (medium3(2) .eq. precip_th) then
 
-            !   inputz0 = TRIM(inputz0) // "EQUILIBRIUM_PHASES 1" //NEW_LINE('')// &
-            !        &"    Goethite " // TRIM(s_precip) // TRIM(s_goethite) // kinetics //NEW_LINE('')// &
-            !        &"    Celadonite " // TRIM(s_precip) // TRIM(s_celadonite) // kinetics //NEW_LINE('')// & ! mica
-            !        &"    Saponite-Mg " // TRIM(s_precip) // TRIM(s_saponite) // kinetics //NEW_LINE('')// & ! smectite
-            !        &"    Pyrite " // TRIM(s_precip) // TRIM(s_pyrite) // kinetics //NEW_LINE('')// &
-            !        &"    Saponite-Na " // TRIM(s_precip) // TRIM(s_saponite_na) // kinetics //NEW_LINE('')// & ! smectite
-            !        &"    Nontronite-Na " // TRIM(s_precip) // TRIM(s_nont_na) // kinetics //NEW_LINE('')// & ! smectite
-            !        &"    Nontronite-Mg " // TRIM(s_precip) // TRIM(s_nont_mg) // kinetics //NEW_LINE('')// & ! smectite
-            !        !&"    Fe-Celadonite " // TRIM(s_precip) // TRIM(s_fe_celadonite) // kinetics //NEW_LINE('')// & ! mica
-            !        &"    Nontronite-Ca " // TRIM(s_precip) // TRIM(s_nont_ca) // kinetics //NEW_LINE('')// & ! smectite
-            !        &"    Analcime " // TRIM(s_precip) // TRIM(s_analcime) // kinetics //NEW_LINE('')// & ! zeolite
-            !        &"    Phillipsite " // TRIM(s_precip) // TRIM(s_phillipsite) // kinetics //NEW_LINE('')// & ! zeolite
-            !        &"    Natrolite " // TRIM(s_precip) // TRIM(s_natrolite) // kinetics //NEW_LINE('')// & ! zeolite
-            !        &"    Talc " // TRIM(s_precip) // TRIM(s_talc) // kinetics //NEW_LINE('')// &
-            !        &"    Chlorite(14A) " // TRIM(s_precip) // TRIM(s_chlorite) // kinetics //NEW_LINE('')// & ! chlorite
-            !        !&"    Clinochlore-14A " // TRIM(s_precip) // TRIM(s_clinochlore14a) // kinetics //NEW_LINE('')// & ! chlorite
-            !        !&"    Clinochlore-7A " // TRIM(s_precip) // TRIM(s_clinochlore7a) // kinetics //NEW_LINE('')// & ! chlorite
-            !        &"    Saponite-Ca " // TRIM(s_precip) // TRIM(s_saponite_ca) // kinetics //NEW_LINE('')// & ! smectite
-            !        &"    Pyrrhotite " // TRIM(s_precip) // TRIM(s_pyrrhotite) // kinetics //NEW_LINE('')//& ! sulfide
-            !        &"    Fe-Saponite-Ca " // TRIM(s_precip) // TRIM(s_fe_saponite_ca) // kinetics //NEW_LINE('')// & ! sap smec
-            !        &"    Fe-Saponite-Mg " // TRIM(s_precip) // TRIM(s_fe_saponite_mg) // kinetics //NEW_LINE('')// &! sap smec
-            !        ! 		!&"    Calcite " // trim(s_precip) // trim(s_calcite) // kinetics //NEW_LINE('')// & ! .135
-            !        &"    Montmor-Na " // TRIM(s_precip) // TRIM(s_mont_na) // kinetics //NEW_LINE('')// & ! smectite
-            !        &"    Montmor-Mg " // TRIM(s_precip) // TRIM(s_mont_mg) // kinetics //NEW_LINE('')// & ! smectite
-            !        &"    Montmor-Ca " // TRIM(s_precip) // TRIM(s_mont_ca) // kinetics //NEW_LINE('')// & ! smectite
-            !        &"    Smectite-high-Fe-Mg " // trim(s_precip) // trim(s_smectite) // kinetics //NEW_LINE('')// & ! smectite
- 	 	     !       &"    Vermiculite-Na " // TRIM(s_precip) // TRIM(s_verm_na) // kinetics //NEW_LINE('')// & ! clay
-            !        &"    Vermiculite-Ca " // TRIM(s_precip) // TRIM(s_verm_ca) // kinetics //NEW_LINE('')// & ! clay
-            !        &"    Vermiculite-Mg " // TRIM(s_precip) // TRIM(s_verm_mg) // kinetics //NEW_LINE('')//& ! clay
-            !        &"    Hematite " // TRIM(s_precip) // TRIM(s_hematite) // kinetics //NEW_LINE('')//& ! iron oxide
-            !        &"    Epidote  " // trim(s_precip) // trim(s_epidote) // kinetics //NEW_LINE('')// &
-            !         		&"    Smectite-low-Fe-Mg 0.0 " // trim(s_smectite_low) // kinetics //NEW_LINE('')// & ! smectite
-            !        &"   Daphnite-7a " // trim(s_precip) // trim(s_daphnite_7a) // kinetics //NEW_LINE('')// & ! chlorite
-            !   	   &"   Daphnite-14a " // trim(s_precip) // trim(s_daphnite_14a) // kinetics //NEW_LINE('')// &! chlorite
-            !        !&"    Kaolinite " // trim(s_precip) // trim(s_kaolinite) // kinetics //NEW_LINE('')// & ! clay
-            !        &"    Clinoptilolite-Ca " // trim(s_precip) // trim(s_clinoptilolite) // kinetics //NEW_LINE('')// & ! zeolite
-            !        !&"    K-Feldspar " // trim(s_precip) // trim(s_kspar) // kinetics //NEW_LINE('')// &
-            !        !&"    Mesolite " // trim(s_precip) // trim(s_mesolite) // kinetics //NEW_LINE('')// & ! zeolite
-            !        &"    Prehnite " // trim(s_precip) // trim(s_prehnite) // kinetics //NEW_LINE('')// &
-            !        "    Scolecite " // trim(s_precip) // trim(s_scolecite) // kinetics //NEW_LINE('')// & ! zeolite
-            !        !&"    Gismondine " // trim(s_precip) // trim(s_gismondine) // kinetics //NEW_LINE('')// & ! zeolite
-            !        &" "  //NEW_LINE('')
-
-            vol_th = t_vol_s*100.0/10.0
-
-            inputz0 = TRIM(inputz0) // "EQUILIBRIUM_PHASES 1" //NEW_LINE('')
-
-        if (secondary3(7)*sec_molar(7)/sec_density(7) .LE. vol_th) then
-            inputz0 = TRIM(inputz0) //      "    Goethite " // TRIM(s_precip) // TRIM(s_goethite) // kinetics //NEW_LINE('')
-        else
-            !inputz0 = TRIM(inputz0) //      "    Goethite " // TRIM(s_precip_nope) // TRIM(s_goethite) // kinetics //NEW_LINE('')
-        end if
-
-
-        if (secondary3(3)*sec_molar(3)/sec_density(3) .LE. vol_th) then
-            inputz0 = TRIM(inputz0) //      "    Celadonite " // TRIM(s_precip) // TRIM(s_celadonite) // kinetics //NEW_LINE('') ! mica
-        else
-            !inputz0 = TRIM(inputz0) //      "    Celadonite " // TRIM(s_precip_nope) // TRIM(s_celadonite) // kinetics //NEW_LINE('') ! mica
-        end if
-
-
-        if (secondary3(2)*sec_molar(2)/sec_density(2) .LE. vol_th) then
-            inputz0 = TRIM(inputz0) //      "    Saponite-Mg " // TRIM(s_precip) // TRIM(s_saponite) // kinetics //NEW_LINE('') ! smectite
-        else
-            !inputz0 = TRIM(inputz0) //      "    Saponite-Mg " // TRIM(s_precip_nope) // TRIM(s_saponite) // kinetics //NEW_LINE('') ! smectite
-        end if
-
-
-        if (secondary3(5)*sec_molar(5)/sec_density(5) .LE. vol_th) then
-            inputz0 = TRIM(inputz0) //      "    Pyrite " // TRIM(s_precip) // TRIM(s_pyrite) // kinetics //NEW_LINE('')
-        else
-            !inputz0 = TRIM(inputz0) //      "    Pyrite " // TRIM(s_precip_nope) // TRIM(s_pyrite) // kinetics //NEW_LINE('')
-        end if
-
-
-        if (secondary3(11)*sec_molar(11)/sec_density(11) .LE. vol_th) then
-            inputz0 = TRIM(inputz0) //      "    Saponite-Na " // TRIM(s_precip) // TRIM(s_saponite_na) // kinetics //NEW_LINE('') ! smectite
-        else
-            !inputz0 = TRIM(inputz0) //      "    Saponite-Na " // TRIM(s_precip_nope) // TRIM(s_saponite_na) // kinetics //NEW_LINE('') ! smectite
-        end if
-
-
-        if (secondary3(12)*sec_molar(12)/sec_density(12) .LE. vol_th) then
-            inputz0 = TRIM(inputz0) //      "    Nontronite-Na " // TRIM(s_precip) // TRIM(s_nont_na) // kinetics //NEW_LINE('') ! smectite
-        else
-            !inputz0 = TRIM(inputz0) //      "    Nontronite-Na " // TRIM(s_precip_nope) // TRIM(s_nont_na) // kinetics //NEW_LINE('') ! smectite
-        end if
-
-
-        if (secondary3(13)*sec_molar(13)/sec_density(13) .LE. vol_th) then
-            inputz0 = TRIM(inputz0) //      "    Nontronite-Mg " // TRIM(s_precip) // TRIM(s_nont_mg) // kinetics //NEW_LINE('') ! smectite
-        else
-            !inputz0 = TRIM(inputz0) //      "    Nontronite-Mg " // TRIM(s_precip_nope) // TRIM(s_nont_mg) // kinetics //NEW_LINE('') ! smectite
-        end if
-
-
-        if (secondary3(14)*sec_molar(14)/sec_density(14) .LE. vol_th) then
-            inputz0 = TRIM(inputz0) //      "    Fe-Celadonite " // TRIM(s_precip) // TRIM(s_fe_celadonite) // kinetics //NEW_LINE('') ! mica
-        else
-            !inputz0 = TRIM(inputz0) //      "    Fe-Celadonite " // TRIM(s_precip_nope) // TRIM(s_fe_celadonite) // kinetics //NEW_LINE('') ! mica
-        end if
+                          vol_th = 1.0*t_vol_s*100.0/10.0
+
+              inputz0 = TRIM(inputz0) // "EQUILIBRIUM_PHASES 1" //NEW_LINE('')// &
+                   &"    Goethite " // TRIM(s_precip) // TRIM(s_goethite) // kinetics //NEW_LINE('')// &
+                   &"    Celadonite " // TRIM(s_precip) // TRIM(s_celadonite) // kinetics //NEW_LINE('')// & ! mica
+                   !&"    Saponite-Mg " // TRIM(s_precip) // TRIM(s_saponite) // kinetics //NEW_LINE('')// & ! smectite
+                   &"    Pyrite " // TRIM(s_precip) // TRIM(s_pyrite) // kinetics //NEW_LINE('')// &
+                   !&"    Saponite-Na " // TRIM(s_precip) // TRIM(s_saponite_na) // kinetics //NEW_LINE('')// & ! smectite
+                   &"    Nontronite-Na " // TRIM(s_precip) // TRIM(s_nont_na) // kinetics //NEW_LINE('')// & ! smectite
+                   &"    Nontronite-Mg " // TRIM(s_precip) // TRIM(s_nont_mg) // kinetics //NEW_LINE('')// & ! smectite
+                   &"    Fe-Celadonite " // TRIM(s_precip) // TRIM(s_fe_celadonite) // kinetics //NEW_LINE('')// & ! mica
+                   &"    Nontronite-Ca " // TRIM(s_precip) // TRIM(s_nont_ca) // kinetics //NEW_LINE('')// & ! smectite
+                   &"    Analcime " // TRIM(s_precip) // TRIM(s_analcime) // kinetics //NEW_LINE('')// & ! zeolite
+                   &"    Phillipsite " // TRIM(s_precip) // TRIM(s_phillipsite) // kinetics //NEW_LINE('')// & ! zeolite
+                   &"    Natrolite " // TRIM(s_precip) // TRIM(s_natrolite) // kinetics //NEW_LINE('')// & ! zeolite
+                   !!
+                   &"    Talc " // TRIM(s_precip) // TRIM(s_talc) // kinetics //NEW_LINE('')// &
+                   &"    Chlorite(14A) " // TRIM(s_precip) // TRIM(s_chlorite) // kinetics //NEW_LINE('')// & ! chlorite
+                   &"    Clinochlore-14A " // TRIM(s_precip) // TRIM(s_clinochlore14a) // kinetics //NEW_LINE('')// & ! chlorite
+                   &"    Clinochlore-7A " // TRIM(s_precip) // TRIM(s_clinochlore7a) // kinetics //NEW_LINE('')// & ! chlorite
+                   !&"    Saponite-Ca " // TRIM(s_precip) // TRIM(s_saponite_ca) // kinetics //NEW_LINE('')// & ! smectite
+                   &"    Pyrrhotite " // TRIM(s_precip) // TRIM(s_pyrrhotite) // kinetics //NEW_LINE('')//& ! sulfide
+                   &"    Fe-Saponite-Ca " // TRIM(s_precip) // TRIM(s_fe_saponite_ca) // kinetics //NEW_LINE('')// & ! sap smec
+                   &"    Fe-Saponite-Mg " // TRIM(s_precip) // TRIM(s_fe_saponite_mg) // kinetics //NEW_LINE('')// &! sap smec
+                   ! 		!&"    Calcite " // trim(s_precip) // trim(s_calcite) // kinetics //NEW_LINE('')// & ! .135
+                   &"    Montmor-Na " // TRIM(s_precip) // TRIM(s_mont_na) // kinetics //NEW_LINE('')// & ! smectite
+                   &"    Montmor-Mg " // TRIM(s_precip) // TRIM(s_mont_mg) // kinetics //NEW_LINE('')// & ! smectite
+                   &"    Montmor-Ca " // TRIM(s_precip) // TRIM(s_mont_ca) // kinetics //NEW_LINE('')// & ! smectite
+                   &"    Smectite-high-Fe-Mg " // trim(s_precip) // trim(s_smectite) // kinetics //NEW_LINE('')// & ! smectite
+ 	 	           &"    Vermiculite-Na " // TRIM(s_precip) // TRIM(s_verm_na) // kinetics //NEW_LINE('')// & ! clay
+                   &"    Vermiculite-Ca " // TRIM(s_precip) // TRIM(s_verm_ca) // kinetics //NEW_LINE('')// & ! clay
+                   &"    Vermiculite-Mg " // TRIM(s_precip) // TRIM(s_verm_mg) // kinetics //NEW_LINE('')//& ! clay
+                   !!
+                   &"    Hematite " // TRIM(s_precip) // TRIM(s_hematite) // kinetics //NEW_LINE('')//& ! iron oxide
+                   &"    Epidote  " // trim(s_precip) // trim(s_epidote) // kinetics //NEW_LINE('')// &
+                    		&"    Smectite-low-Fe-Mg 0.0 " // trim(s_smectite_low) // kinetics //NEW_LINE('')// & ! smectite
+                   &"   Daphnite-7a " // trim(s_precip) // trim(s_daphnite_7a) // kinetics //NEW_LINE('')// & ! chlorite
+              	   &"   Daphnite-14a " // trim(s_precip) // trim(s_daphnite_14a) // kinetics //NEW_LINE('')// &! chlorite
+                   !&"    Kaolinite " // trim(s_precip) // trim(s_kaolinite) // kinetics //NEW_LINE('')// & ! clay
+                   &"    Clinoptilolite-Ca " // trim(s_precip) // trim(s_clinoptilolite) // kinetics //NEW_LINE('')// & ! zeolite
+                   !&"    K-Feldspar " // trim(s_precip) // trim(s_kspar) // kinetics //NEW_LINE('')// &
+                   !&"    Mesolite " // trim(s_precip) // trim(s_mesolite) // kinetics //NEW_LINE('')// & ! zeolite
+                   &"    Prehnite " // trim(s_precip) // trim(s_prehnite) // kinetics //NEW_LINE('')// &
+                   "    Scolecite " // trim(s_precip) // trim(s_scolecite) // kinetics //NEW_LINE('')// & ! zeolite
+                   !&"    Gismondine " // trim(s_precip) // trim(s_gismondine) // kinetics //NEW_LINE('')// & ! zeolite
+                   &" "  //NEW_LINE('')
+
+            !-EQ layers
+            if (secondary3(2)*sec_molar(2)/sec_density(2) .LE. vol_th) then
+                inputz0 = TRIM(inputz0) //      "    Saponite-Mg " // TRIM(s_precip) // TRIM(s_saponite) // kinetics //NEW_LINE('') ! smectite
+            else
+                write(*,24) my_id , medium3(6) , medium3(7)
+                24 format ("sap_mg  " , I3 , "   x: " , F6.0 , "  y: " , F5.0)
+            end if
+
+
+            if (secondary3(33)*sec_molar(33)/sec_density(33) .LE. vol_th) then
+                inputz0 = TRIM(inputz0) //      "    Saponite-Ca " // TRIM(s_precip) // TRIM(s_saponite_ca) // kinetics //NEW_LINE('') ! smectite
+            else
+                write(*,25) my_id , medium3(6) , medium3(7)
+                25 format ("sap_ca  " , I3 , "   x:" , F6.0 , "  y:" , F5.0)
+            end if
+
+
+            if (secondary3(11)*sec_molar(11)/sec_density(11) .LE. vol_th) then
+                inputz0 = TRIM(inputz0) //      "    Saponite-Na " // TRIM(s_precip) // TRIM(s_saponite_na) // kinetics //NEW_LINE('') ! smectite
+            else
+                write(*,26) my_id , medium3(6) , medium3(7)
+                26 format ("sap_na  " , I3 , "   x:" , F6.0 , "  y:" , F5.0)
+            end if
+
+
+            ! if (secondary3(17)*sec_molar(17)/sec_density(17) .LE. vol_th) then
+            !     inputz0 = TRIM(inputz0) //      "    Hematite " // TRIM(s_precip) // TRIM(s_hematite) // kinetics //NEW_LINE('') ! iron oxide
+            ! else
+            !     write(*,27) my_id , medium3(6) , medium3(7)
+            !     27 format ("hematite  " , I3 , "   x:" , F6.0 , "  y:" , F5.0)
+            ! end if
+            !
+            !
+            ! if (secondary3(26)*sec_molar(26)/sec_density(26) .LE. vol_th) then
+            !     inputz0 = TRIM(inputz0) //      "    Talc " // TRIM(s_precip) // TRIM(s_talc) // kinetics //NEW_LINE('')
+            ! else
+            !     write(*,28) my_id , medium3(6) , medium3(7)
+            !     28 format ("talc  " , I3 , "   x:" , F6.0 , "  y:" , F5.0)
+            ! end if
+
+
+
+
+
+
+
+
+
+        !     inputz0 = TRIM(inputz0) // "EQUILIBRIUM_PHASES 1" //NEW_LINE('')
+        !
+        ! if (secondary3(7)*sec_molar(7)/sec_density(7) .LE. vol_th) then
+        !     inputz0 = TRIM(inputz0) //      "    Goethite " // TRIM(s_precip) // TRIM(s_goethite) // kinetics //NEW_LINE('')
+        ! !else
+        !     !inputz0 = TRIM(inputz0) //      "    Goethite " // TRIM(s_precip_nope) // TRIM(s_goethite) // kinetics //NEW_LINE('')
+        ! end if
+        !
+        !
+        ! if (secondary3(3)*sec_molar(3)/sec_density(3) .LE. vol_th) then
+        !     inputz0 = TRIM(inputz0) //      "    Celadonite " // TRIM(s_precip) // TRIM(s_celadonite) // kinetics //NEW_LINE('') ! mica
+        ! !else
+        !     !inputz0 = TRIM(inputz0) //      "    Celadonite " // TRIM(s_precip_nope) // TRIM(s_celadonite) // kinetics //NEW_LINE('') ! mica
+        ! end if
+        !
+        !
+        ! if (secondary3(2)*sec_molar(2)/sec_density(2) .LE. vol_th) then
+        !     inputz0 = TRIM(inputz0) //      "    Saponite-Mg " // TRIM(s_precip) // TRIM(s_saponite) // kinetics //NEW_LINE('') ! smectite
+        ! !else
+        !     !inputz0 = TRIM(inputz0) //      "    Saponite-Mg " // TRIM(s_precip_nope) // TRIM(s_saponite) // kinetics //NEW_LINE('') ! smectite
+        ! end if
+        !
+        !
+        ! if (secondary3(5)*sec_molar(5)/sec_density(5) .LE. vol_th) then
+        !     inputz0 = TRIM(inputz0) //      "    Pyrite " // TRIM(s_precip) // TRIM(s_pyrite) // kinetics //NEW_LINE('')
+        ! !else
+        !     !inputz0 = TRIM(inputz0) //      "    Pyrite " // TRIM(s_precip_nope) // TRIM(s_pyrite) // kinetics //NEW_LINE('')
+        ! end if
+        !
+        !
+        ! if (secondary3(11)*sec_molar(11)/sec_density(11) .LE. vol_th) then
+        !     inputz0 = TRIM(inputz0) //      "    Saponite-Na " // TRIM(s_precip) // TRIM(s_saponite_na) // kinetics //NEW_LINE('') ! smectite
+        ! !else
+        !     !inputz0 = TRIM(inputz0) //      "    Saponite-Na " // TRIM(s_precip_nope) // TRIM(s_saponite_na) // kinetics //NEW_LINE('') ! smectite
+        ! end if
+        !
+        !
+        ! if (secondary3(12)*sec_molar(12)/sec_density(12) .LE. vol_th) then
+        !     inputz0 = TRIM(inputz0) //      "    Nontronite-Na " // TRIM(s_precip) // TRIM(s_nont_na) // kinetics //NEW_LINE('') ! smectite
+        ! !else
+        !     !inputz0 = TRIM(inputz0) //      "    Nontronite-Na " // TRIM(s_precip_nope) // TRIM(s_nont_na) // kinetics //NEW_LINE('') ! smectite
+        ! end if
+        !
+        !
+        ! if (secondary3(13)*sec_molar(13)/sec_density(13) .LE. vol_th) then
+        !     inputz0 = TRIM(inputz0) //      "    Nontronite-Mg " // TRIM(s_precip) // TRIM(s_nont_mg) // kinetics //NEW_LINE('') ! smectite
+        ! !else
+        !     !inputz0 = TRIM(inputz0) //      "    Nontronite-Mg " // TRIM(s_precip_nope) // TRIM(s_nont_mg) // kinetics //NEW_LINE('') ! smectite
+        ! end if
+        !
+        !
+        ! if (secondary3(14)*sec_molar(14)/sec_density(14) .LE. vol_th) then
+        !     inputz0 = TRIM(inputz0) //      "    Fe-Celadonite " // TRIM(s_precip) // TRIM(s_fe_celadonite) // kinetics //NEW_LINE('') ! mica
+        ! !else
+        !     !inputz0 = TRIM(inputz0) //      "    Fe-Celadonite " // TRIM(s_precip_nope) // TRIM(s_fe_celadonite) // kinetics //NEW_LINE('') ! mica
+        ! end if
+        !
+        !
+        ! if (secondary3(15)*sec_molar(15)/sec_density(15) .LE. vol_th) then
+        !     inputz0 = TRIM(inputz0) //      "    Nontronite-Ca " // TRIM(s_precip) // TRIM(s_nont_ca) // kinetics //NEW_LINE('') ! smectite
+        ! !else
+        !     !inputz0 = TRIM(inputz0) //      "    Nontronite-Ca " // TRIM(s_precip_nope) // TRIM(s_nont_ca) // kinetics //NEW_LINE('') ! smectite
+        ! end if
+        !
+        !
+        ! if (secondary3(20)*sec_molar(20)/sec_density(20) .LE. vol_th) then
+        !     inputz0 = TRIM(inputz0) //      "    Analcime " // TRIM(s_precip) // TRIM(s_analcime) // kinetics //NEW_LINE('') ! zeolite
+        ! !else
+        !     !inputz0 = TRIM(inputz0) //      "    Analcime " // TRIM(s_precip_nope) // TRIM(s_analcime) // kinetics //NEW_LINE('') ! zeolite
+        ! end if
+        !
+        !
+        ! if (secondary3(21)*sec_molar(21)/sec_density(21) .LE. vol_th) then
+        !     inputz0 = TRIM(inputz0) //      "    Phillipsite " // TRIM(s_precip) // TRIM(s_phillipsite) // kinetics //NEW_LINE('') ! zeolite
+        ! !else
+        !     !inputz0 = TRIM(inputz0) //      "    Phillipsite " // TRIM(s_precip_nope) // TRIM(s_phillipsite) // kinetics //NEW_LINE('') ! zeolite
+        ! end if
+        !
+        !
+        ! if (secondary3(25)*sec_molar(25)/sec_density(25) .LE. vol_th) then
+        !     inputz0 = TRIM(inputz0) //      "    Natrolite " // TRIM(s_precip) // TRIM(s_natrolite) // kinetics //NEW_LINE('') ! zeolite
+        ! !else
+        !     !inputz0 = TRIM(inputz0) //      "    Natrolite " // TRIM(s_precip_nope) // TRIM(s_natrolite) // kinetics //NEW_LINE('') ! zeolite
+        ! end if
+        !
+        !
+        ! if (secondary3(26)*sec_molar(26)/sec_density(26) .LE. vol_th) then
+        !     inputz0 = TRIM(inputz0) //      "    Talc " // TRIM(s_precip) // TRIM(s_talc) // kinetics //NEW_LINE('')
+        ! !else
+        !     !inputz0 = TRIM(inputz0) //      "    Talc " // TRIM(s_precip_nope) // TRIM(s_talc) // kinetics //NEW_LINE('')
+        ! end if
+        !
+        !
+        ! if (secondary3(29)*sec_molar(29)/sec_density(29) .LE. vol_th) then
+        !     inputz0 = TRIM(inputz0) //      "    Chlorite(14A) " // TRIM(s_precip) // TRIM(s_chlorite) // kinetics //NEW_LINE('') ! chlorite
+        ! !else
+        !     !inputz0 = TRIM(inputz0) //      "    Chlorite(14A) " // TRIM(s_precip_nope) // TRIM(s_chlorite) // kinetics //NEW_LINE('') ! chlorite
+        ! end if
+        !
+        !
+        ! if (secondary3(31)*sec_molar(31)/sec_density(31) .LE. vol_th) then
+        !     inputz0 = TRIM(inputz0) //      "    Clinochlore-14A " // TRIM(s_precip) // TRIM(s_clinochlore14a) // kinetics //NEW_LINE('') ! chlorite
+        ! !else
+        !     !inputz0 = TRIM(inputz0) //      "    Clinochlore-14A " // TRIM(s_precip_nope) // TRIM(s_clinochlore14a) // kinetics //NEW_LINE('') ! chlorite
+        ! end if
+        !
+        !
+        ! if (secondary3(32)*sec_molar(32)/sec_density(32) .LE. vol_th) then
+        !     inputz0 = TRIM(inputz0) //      "    Clinochlore-7A " // TRIM(s_precip) // TRIM(s_clinochlore7a) // kinetics //NEW_LINE('') ! chlorite
+        ! !else
+        !     !inputz0 = TRIM(inputz0) //      "    Clinochlore-7A " // TRIM(s_precip_nope) // TRIM(s_clinochlore7a) // kinetics //NEW_LINE('') ! chlorite
+        ! end if
+        !
+        !
+        ! if (secondary3(33)*sec_molar(33)/sec_density(33) .LE. vol_th) then
+        !     inputz0 = TRIM(inputz0) //      "    Saponite-Ca " // TRIM(s_precip) // TRIM(s_saponite_ca) // kinetics //NEW_LINE('') ! smectite
+        ! !else
+        !     !inputz0 = TRIM(inputz0) //      "    Saponite-Ca " // TRIM(s_precip_nope) // TRIM(s_saponite_ca) // kinetics //NEW_LINE('') ! smectite
+        ! end if
+        !
+        !
+        ! if (secondary3(35)*sec_molar(35)/sec_density(35) .LE. vol_th) then
+        !     inputz0 = TRIM(inputz0) //      "    Pyrrhotite " // TRIM(s_precip) // TRIM(s_pyrrhotite) // kinetics //NEW_LINE('') ! sulfide
+        ! !else
+        !     !inputz0 = TRIM(inputz0) //      "    Pyrrhotite " // TRIM(s_precip_nope) // TRIM(s_pyrrhotite) // kinetics //NEW_LINE('') ! sulfide
+        ! end if
+        !
+        !
+        ! if (secondary3(36)*sec_molar(36)/sec_density(36) .LE. vol_th) then
+        !     inputz0 = TRIM(inputz0) //      "    Fe-Saponite-Ca " // TRIM(s_precip) // TRIM(s_fe_saponite_ca) // kinetics //NEW_LINE('') ! sap smec
+        ! !else
+        !     !inputz0 = TRIM(inputz0) //      "    Fe-Saponite-Ca " // TRIM(s_precip_nope) // TRIM(s_fe_saponite_ca) // kinetics //NEW_LINE('') ! sap smec
+        ! end if
+        !
+        !
+        ! if (secondary3(37)*sec_molar(37)/sec_density(37) .LE. vol_th) then
+        !     inputz0 = TRIM(inputz0) //      "    Fe-Saponite-Mg " // TRIM(s_precip) // TRIM(s_fe_saponite_mg) // kinetics //NEW_LINE('')! sap smec
+        ! !else
+        !     !inputz0 = TRIM(inputz0) //      "    Fe-Saponite-Mg " // TRIM(s_precip_nope) // TRIM(s_fe_saponite_mg) // kinetics //NEW_LINE('')! sap smec
+        ! end if
+        !
+        !          ! 		!&"    Calcite " // trim(s_precip) // trim(s_calcite) // kinetics //NEW_LINE('')// & ! .135
+        !
+        ! if (secondary3(6)*sec_molar(6)/sec_density(6) .LE. vol_th) then
+        !     inputz0 = TRIM(inputz0) //      "    Montmor-Na " // TRIM(s_precip) // TRIM(s_mont_na) // kinetics //NEW_LINE('') ! smectite
+        ! !else
+        !     !inputz0 = TRIM(inputz0) //      "    Montmor-Na " // TRIM(s_precip_nope) // TRIM(s_mont_na) // kinetics //NEW_LINE('') ! smectite
+        ! end if
+        !
+        !
+        ! if (secondary3(22)*sec_molar(22)/sec_density(22) .LE. vol_th) then
+        !     inputz0 = TRIM(inputz0) //      "    Montmor-Mg " // TRIM(s_precip) // TRIM(s_mont_mg) // kinetics //NEW_LINE('') ! smectite
+        ! !else
+        !     !inputz0 = TRIM(inputz0) //      "    Montmor-Mg " // TRIM(s_precip_nope) // TRIM(s_mont_mg) // kinetics //NEW_LINE('') ! smectite
+        ! end if
+        !
+        !
+        ! if (secondary3(18)*sec_molar(18)/sec_density(18) .LE. vol_th) then
+        !     inputz0 = TRIM(inputz0) //      "    Montmor-Ca " // TRIM(s_precip) // TRIM(s_mont_ca) // kinetics //NEW_LINE('') ! smectite
+        ! !else
+        !     !inputz0 = TRIM(inputz0) //      "    Montmor-Ca " // TRIM(s_precip_nope) // TRIM(s_mont_ca) // kinetics //NEW_LINE('') ! smectite
+        ! end if
+        !
+        !
+        ! if (secondary3(8)*sec_molar(8)/sec_density(8) .LE. vol_th) then
+        !     inputz0 = TRIM(inputz0) //      "    Smectite-high-Fe-Mg " // trim(s_precip) // trim(s_smectite) // kinetics //NEW_LINE('') ! smectite
+        ! !else
+        !     !inputz0 = TRIM(inputz0) //      "    Smectite-high-Fe-Mg " // trim(s_precip_nope) // trim(s_smectite) // kinetics //NEW_LINE('') ! smectite
+        ! end if
+        !
+        !
+        ! if (secondary3(34)*sec_molar(34)/sec_density(34) .LE. vol_th) then
+        !     inputz0 = TRIM(inputz0) //      "    Vermiculite-Na " // TRIM(s_precip) // TRIM(s_verm_na) // kinetics //NEW_LINE('') ! clay
+        ! !else
+        !     !inputz0 = TRIM(inputz0) //      "    Vermiculite-Na " // TRIM(s_precip_nope) // TRIM(s_verm_na) // kinetics //NEW_LINE('') ! clay
+        ! end if
+        !
+        !
+        ! if (secondary3(19)*sec_molar(19)/sec_density(19) .LE. vol_th) then
+        !     inputz0 = TRIM(inputz0) //      "    Vermiculite-Ca " // TRIM(s_precip) // TRIM(s_verm_ca) // kinetics //NEW_LINE('') ! clay
+        ! !else
+        !     !inputz0 = TRIM(inputz0) //      "    Vermiculite-Ca " // TRIM(s_precip_nope) // TRIM(s_verm_ca) // kinetics //NEW_LINE('') ! clay
+        ! end if
+        !
+        !
+        ! if (secondary3(24)*sec_molar(24)/sec_density(24) .LE. vol_th) then
+        !     inputz0 = TRIM(inputz0) //      "    Vermiculite-Mg " // TRIM(s_precip) // TRIM(s_verm_mg) // kinetics //NEW_LINE('') ! clay
+        ! !else
+        !     !inputz0 = TRIM(inputz0) //      "    Vermiculite-Mg " // TRIM(s_precip_nope) // TRIM(s_verm_mg) // kinetics //NEW_LINE('') ! clay
+        ! end if
+        !
+        !
+        ! if (secondary3(17)*sec_molar(17)/sec_density(17) .LE. vol_th) then
+        !     inputz0 = TRIM(inputz0) //      "    Hematite " // TRIM(s_precip) // TRIM(s_hematite) // kinetics //NEW_LINE('') ! iron oxide
+        ! !else
+        !     !inputz0 = TRIM(inputz0) //      "    Hematite " // TRIM(s_precip_nope) // TRIM(s_hematite) // kinetics //NEW_LINE('') ! iron oxide
+        ! end if
+        !
+        !
+        ! if (secondary3(40)*sec_molar(40)/sec_density(40) .LE. vol_th) then
+        !     inputz0 = TRIM(inputz0) //      "    Epidote  " // trim(s_precip) // trim(s_epidote) // kinetics //NEW_LINE('')
+        ! !else
+        !     !inputz0 = TRIM(inputz0) //      "    Epidote  " // trim(s_precip_nope) // trim(s_epidote) // kinetics //NEW_LINE('')
+        ! end if
+        !
+        !
+        ! if (secondary3(27)*sec_molar(27)/sec_density(27) .LE. vol_th) then
+        !     inputz0 = TRIM(inputz0) //      "    Smectite-low-Fe-Mg " // trim(s_precip) // trim(s_smectite_low) // kinetics //NEW_LINE('') ! smectite
+        ! !else
+        !     !inputz0 = TRIM(inputz0) //      "    Smectite-low-Fe-Mg " // trim(s_precip_nope) // trim(s_smectite_low) // kinetics //NEW_LINE('') ! smectite
+        ! end if
+        !
+        !
+        ! if (secondary3(38)*sec_molar(38)/sec_density(38) .LE. vol_th) then
+        !     inputz0 = TRIM(inputz0) //      "   Daphnite-7a " // trim(s_precip) // trim(s_daphnite_7a) // kinetics //NEW_LINE('') ! chlorite
+        ! !else
+        !     !inputz0 = TRIM(inputz0) //      "   Daphnite-7a " // trim(s_precip_nope) // trim(s_daphnite_7a) // kinetics //NEW_LINE('') ! chlorite
+        ! end if
+        !
+        !
+        ! if (secondary3(39)*sec_molar(39)/sec_density(39) .LE. vol_th) then
+        !     inputz0 = TRIM(inputz0) //      "   Daphnite-14a " // trim(s_precip) // trim(s_daphnite_14a) // kinetics //NEW_LINE('')! chlorite
+        ! !else
+        !     !inputz0 = TRIM(inputz0) //      "   Daphnite-14a " // trim(s_precip_nope) // trim(s_daphnite_14a) // kinetics //NEW_LINE('')! chlorite
+        ! end if
+        !
+        !
+        !          !&"    Kaolinite " // trim(s_precip) // trim(s_kaolinite) // kinetics //NEW_LINE('')// & ! clay
+        !
+        ! if (secondary3(4)*sec_molar(4)/sec_density(4) .LE. vol_th) then
+        !     inputz0 = TRIM(inputz0) //      "    Clinoptilolite-Ca " // trim(s_precip) // trim(s_clinoptilolite) // kinetics //NEW_LINE('') ! zeolite
+        ! !else
+        !     !inputz0 = TRIM(inputz0) //      "    Clinoptilolite-Ca " // trim(s_precip_nope) // trim(s_clinoptilolite) // kinetics //NEW_LINE('') ! zeolite
+        ! end if
+        !
+        !          !&"    K-Feldspar " // trim(s_precip) // trim(s_kspar) // kinetics //NEW_LINE('')// &
+        !          !&"    Mesolite " // trim(s_precip) // trim(s_mesolite) // kinetics //NEW_LINE('')// & ! zeolite
+        !
+        ! if (secondary3(28)*sec_molar(28)/sec_density(28) .LE. vol_th) then
+        !     inputz0 = TRIM(inputz0) //      "    Prehnite " // trim(s_precip) // trim(s_prehnite) // kinetics //NEW_LINE('')
+        ! !else
+        !     !inputz0 = TRIM(inputz0) //      "    Prehnite " // trim(s_precip_nope) // trim(s_prehnite) // kinetics //NEW_LINE('')
+        ! end if
+        !
+        !
+        !
+        ! if (secondary3(30)*sec_molar(30)/sec_density(30) .LE. vol_th) then
+        !     inputz0 = TRIM(inputz0) //      "    Scolecite " // trim(s_precip) // trim(s_scolecite) // kinetics //NEW_LINE('') ! zeolite
+        ! !else
+        !     !inputz0 = TRIM(inputz0) //      "    Scolecite " // trim(s_precip_nope) // trim(s_scolecite) // kinetics //NEW_LINE('') ! zeolite
+        ! end if
+        !          !&"    Gismondine " // trim(s_precip) // trim(s_gismondine) // kinetics //NEW_LINE('')// & ! zeolite
+        !          !&" "  //NEW_LINE('')
 
 
-        if (secondary3(15)*sec_molar(15)/sec_density(15) .LE. vol_th) then
-            inputz0 = TRIM(inputz0) //      "    Nontronite-Ca " // TRIM(s_precip) // TRIM(s_nont_ca) // kinetics //NEW_LINE('') ! smectite
-        else
-            !inputz0 = TRIM(inputz0) //      "    Nontronite-Ca " // TRIM(s_precip_nope) // TRIM(s_nont_ca) // kinetics //NEW_LINE('') ! smectite
-        end if
-
-
-        if (secondary3(20)*sec_molar(20)/sec_density(20) .LE. vol_th) then
-            inputz0 = TRIM(inputz0) //      "    Analcime " // TRIM(s_precip) // TRIM(s_analcime) // kinetics //NEW_LINE('') ! zeolite
-        else
-            !inputz0 = TRIM(inputz0) //      "    Analcime " // TRIM(s_precip_nope) // TRIM(s_analcime) // kinetics //NEW_LINE('') ! zeolite
-        end if
-
-
-        if (secondary3(21)*sec_molar(21)/sec_density(21) .LE. vol_th) then
-            inputz0 = TRIM(inputz0) //      "    Phillipsite " // TRIM(s_precip) // TRIM(s_phillipsite) // kinetics //NEW_LINE('') ! zeolite
-        else
-            !inputz0 = TRIM(inputz0) //      "    Phillipsite " // TRIM(s_precip_nope) // TRIM(s_phillipsite) // kinetics //NEW_LINE('') ! zeolite
-        end if
-
-
-        if (secondary3(25)*sec_molar(25)/sec_density(25) .LE. vol_th) then
-            inputz0 = TRIM(inputz0) //      "    Natrolite " // TRIM(s_precip) // TRIM(s_natrolite) // kinetics //NEW_LINE('') ! zeolite
-        else
-            !inputz0 = TRIM(inputz0) //      "    Natrolite " // TRIM(s_precip_nope) // TRIM(s_natrolite) // kinetics //NEW_LINE('') ! zeolite
-        end if
-
-
-        if (secondary3(26)*sec_molar(26)/sec_density(26) .LE. vol_th) then
-            inputz0 = TRIM(inputz0) //      "    Talc " // TRIM(s_precip) // TRIM(s_talc) // kinetics //NEW_LINE('')
-        else
-            !inputz0 = TRIM(inputz0) //      "    Talc " // TRIM(s_precip_nope) // TRIM(s_talc) // kinetics //NEW_LINE('')
-        end if
-
-
-        if (secondary3(29)*sec_molar(29)/sec_density(29) .LE. vol_th) then
-            inputz0 = TRIM(inputz0) //      "    Chlorite(14A) " // TRIM(s_precip) // TRIM(s_chlorite) // kinetics //NEW_LINE('') ! chlorite
-        else
-            !inputz0 = TRIM(inputz0) //      "    Chlorite(14A) " // TRIM(s_precip_nope) // TRIM(s_chlorite) // kinetics //NEW_LINE('') ! chlorite
-        end if
-
-
-        if (secondary3(31)*sec_molar(31)/sec_density(31) .LE. vol_th) then
-            inputz0 = TRIM(inputz0) //      "    Clinochlore-14A " // TRIM(s_precip) // TRIM(s_clinochlore14a) // kinetics //NEW_LINE('') ! chlorite
-        else
-            !inputz0 = TRIM(inputz0) //      "    Clinochlore-14A " // TRIM(s_precip_nope) // TRIM(s_clinochlore14a) // kinetics //NEW_LINE('') ! chlorite
-        end if
-
-
-        if (secondary3(32)*sec_molar(32)/sec_density(32) .LE. vol_th) then
-            inputz0 = TRIM(inputz0) //      "    Clinochlore-7A " // TRIM(s_precip) // TRIM(s_clinochlore7a) // kinetics //NEW_LINE('') ! chlorite
-        else
-            !inputz0 = TRIM(inputz0) //      "    Clinochlore-7A " // TRIM(s_precip_nope) // TRIM(s_clinochlore7a) // kinetics //NEW_LINE('') ! chlorite
-        end if
-
-
-        if (secondary3(33)*sec_molar(33)/sec_density(33) .LE. vol_th) then
-            inputz0 = TRIM(inputz0) //      "    Saponite-Ca " // TRIM(s_precip) // TRIM(s_saponite_ca) // kinetics //NEW_LINE('') ! smectite
-        else
-            !inputz0 = TRIM(inputz0) //      "    Saponite-Ca " // TRIM(s_precip_nope) // TRIM(s_saponite_ca) // kinetics //NEW_LINE('') ! smectite
-        end if
-
-
-        if (secondary3(35)*sec_molar(35)/sec_density(35) .LE. vol_th) then
-            inputz0 = TRIM(inputz0) //      "    Pyrrhotite " // TRIM(s_precip) // TRIM(s_pyrrhotite) // kinetics //NEW_LINE('') ! sulfide
-        else
-            !inputz0 = TRIM(inputz0) //      "    Pyrrhotite " // TRIM(s_precip_nope) // TRIM(s_pyrrhotite) // kinetics //NEW_LINE('') ! sulfide
-        end if
-
-
-        if (secondary3(36)*sec_molar(36)/sec_density(36) .LE. vol_th) then
-            inputz0 = TRIM(inputz0) //      "    Fe-Saponite-Ca " // TRIM(s_precip) // TRIM(s_fe_saponite_ca) // kinetics //NEW_LINE('') ! sap smec
-        else
-            !inputz0 = TRIM(inputz0) //      "    Fe-Saponite-Ca " // TRIM(s_precip_nope) // TRIM(s_fe_saponite_ca) // kinetics //NEW_LINE('') ! sap smec
-        end if
-
-
-        if (secondary3(37)*sec_molar(37)/sec_density(37) .LE. vol_th) then
-            inputz0 = TRIM(inputz0) //      "    Fe-Saponite-Mg " // TRIM(s_precip) // TRIM(s_fe_saponite_mg) // kinetics //NEW_LINE('')! sap smec
-        else
-            !inputz0 = TRIM(inputz0) //      "    Fe-Saponite-Mg " // TRIM(s_precip_nope) // TRIM(s_fe_saponite_mg) // kinetics //NEW_LINE('')! sap smec
-        end if
-
-                 ! 		!&"    Calcite " // trim(s_precip) // trim(s_calcite) // kinetics //NEW_LINE('')// & ! .135
-        if (secondary3(6)*sec_molar(6)/sec_density(6) .LE. vol_th) then
-            inputz0 = TRIM(inputz0) //      "    Montmor-Na " // TRIM(s_precip) // TRIM(s_mont_na) // kinetics //NEW_LINE('') ! smectite
-        else
-            !inputz0 = TRIM(inputz0) //      "    Montmor-Na " // TRIM(s_precip_nope) // TRIM(s_mont_na) // kinetics //NEW_LINE('') ! smectite
-        end if
-
-
-        if (secondary3(22)*sec_molar(22)/sec_density(22) .LE. vol_th) then
-            inputz0 = TRIM(inputz0) //      "    Montmor-Mg " // TRIM(s_precip) // TRIM(s_mont_mg) // kinetics //NEW_LINE('') ! smectite
-        else
-            !inputz0 = TRIM(inputz0) //      "    Montmor-Mg " // TRIM(s_precip_nope) // TRIM(s_mont_mg) // kinetics //NEW_LINE('') ! smectite
-        end if
-
-
-        if (secondary3(18)*sec_molar(18)/sec_density(18) .LE. vol_th) then
-            inputz0 = TRIM(inputz0) //      "    Montmor-Ca " // TRIM(s_precip) // TRIM(s_mont_ca) // kinetics //NEW_LINE('') ! smectite
-        else
-            !inputz0 = TRIM(inputz0) //      "    Montmor-Ca " // TRIM(s_precip_nope) // TRIM(s_mont_ca) // kinetics //NEW_LINE('') ! smectite
-        end if
-
-
-        if (secondary3(8)*sec_molar(8)/sec_density(8) .LE. vol_th) then
-            inputz0 = TRIM(inputz0) //      "    Smectite-high-Fe-Mg " // trim(s_precip) // trim(s_smectite) // kinetics //NEW_LINE('') ! smectite
-        else
-            !inputz0 = TRIM(inputz0) //      "    Smectite-high-Fe-Mg " // trim(s_precip_nope) // trim(s_smectite) // kinetics //NEW_LINE('') ! smectite
-        end if
-
-
-        if (secondary3(34)*sec_molar(34)/sec_density(34) .LE. vol_th) then
-            inputz0 = TRIM(inputz0) //      "    Vermiculite-Na " // TRIM(s_precip) // TRIM(s_verm_na) // kinetics //NEW_LINE('') ! clay
-        else
-            !inputz0 = TRIM(inputz0) //      "    Vermiculite-Na " // TRIM(s_precip_nope) // TRIM(s_verm_na) // kinetics //NEW_LINE('') ! clay
-        end if
-
-
-        if (secondary3(19)*sec_molar(19)/sec_density(19) .LE. vol_th) then
-            inputz0 = TRIM(inputz0) //      "    Vermiculite-Ca " // TRIM(s_precip) // TRIM(s_verm_ca) // kinetics //NEW_LINE('') ! clay
-        else
-            inputz0 = TRIM(inputz0) //      "    Vermiculite-Ca " // TRIM(s_precip_nope) // TRIM(s_verm_ca) // kinetics //NEW_LINE('') ! clay
-        end if
-
-
-        if (secondary3(24)*sec_molar(24)/sec_density(24) .LE. vol_th) then
-            inputz0 = TRIM(inputz0) //      "    Vermiculite-Mg " // TRIM(s_precip) // TRIM(s_verm_mg) // kinetics //NEW_LINE('') ! clay
-        else
-            !inputz0 = TRIM(inputz0) //      "    Vermiculite-Mg " // TRIM(s_precip_nope) // TRIM(s_verm_mg) // kinetics //NEW_LINE('') ! clay
-        end if
-
-
-        if (secondary3(17)*sec_molar(17)/sec_density(17) .LE. vol_th) then
-            inputz0 = TRIM(inputz0) //      "    Hematite " // TRIM(s_precip) // TRIM(s_hematite) // kinetics //NEW_LINE('') ! iron oxide
-        else
-            !inputz0 = TRIM(inputz0) //      "    Hematite " // TRIM(s_precip_nope) // TRIM(s_hematite) // kinetics //NEW_LINE('') ! iron oxide
-        end if
-
-
-        if (secondary3(40)*sec_molar(40)/sec_density(40) .LE. vol_th) then
-            inputz0 = TRIM(inputz0) //      "    Epidote  " // trim(s_precip) // trim(s_epidote) // kinetics //NEW_LINE('')
-        else
-            !inputz0 = TRIM(inputz0) //      "    Epidote  " // trim(s_precip_nope) // trim(s_epidote) // kinetics //NEW_LINE('')
-        end if
-
-
-        if (secondary3(27)*sec_molar(27)/sec_density(27) .LE. vol_th) then
-            inputz0 = TRIM(inputz0) //      "    Smectite-low-Fe-Mg " // trim(s_precip) // trim(s_smectite_low) // kinetics //NEW_LINE('') ! smectite
-        else
-            !inputz0 = TRIM(inputz0) //      "    Smectite-low-Fe-Mg " // trim(s_precip_nope) // trim(s_smectite_low) // kinetics //NEW_LINE('') ! smectite
-        end if
-
-
-        if (secondary3(38)*sec_molar(38)/sec_density(38) .LE. vol_th) then
-            inputz0 = TRIM(inputz0) //      "   Daphnite-7a " // trim(s_precip) // trim(s_daphnite_7a) // kinetics //NEW_LINE('') ! chlorite
-        else
-            !inputz0 = TRIM(inputz0) //      "   Daphnite-7a " // trim(s_precip_nope) // trim(s_daphnite_7a) // kinetics //NEW_LINE('') ! chlorite
-        end if
-
-
-        if (secondary3(39)*sec_molar(39)/sec_density(39) .LE. vol_th) then
-            inputz0 = TRIM(inputz0) //      "   Daphnite-14a " // trim(s_precip) // trim(s_daphnite_14a) // kinetics //NEW_LINE('')! chlorite
-        else
-            !inputz0 = TRIM(inputz0) //      "   Daphnite-14a " // trim(s_precip_nope) // trim(s_daphnite_14a) // kinetics //NEW_LINE('')! chlorite
-        end if
-
-
-                 !&"    Kaolinite " // trim(s_precip) // trim(s_kaolinite) // kinetics //NEW_LINE('')// & ! clay
-
-        if (secondary3(4)*sec_molar(4)/sec_density(4) .LE. vol_th) then
-            inputz0 = TRIM(inputz0) //      "    Clinoptilolite-Ca " // trim(s_precip) // trim(s_clinoptilolite) // kinetics //NEW_LINE('') ! zeolite
-        else
-            !inputz0 = TRIM(inputz0) //      "    Clinoptilolite-Ca " // trim(s_precip_nope) // trim(s_clinoptilolite) // kinetics //NEW_LINE('') ! zeolite
-        end if
-
-                 !&"    K-Feldspar " // trim(s_precip) // trim(s_kspar) // kinetics //NEW_LINE('')// &
-                 !&"    Mesolite " // trim(s_precip) // trim(s_mesolite) // kinetics //NEW_LINE('')// & ! zeolite
-
-        if (secondary3(28)*sec_molar(28)/sec_density(28) .LE. vol_th) then
-            inputz0 = TRIM(inputz0) //      "    Prehnite " // trim(s_precip) // trim(s_prehnite) // kinetics //NEW_LINE('')
-        else
-            !inputz0 = TRIM(inputz0) //      "    Prehnite " // trim(s_precip_nope) // trim(s_prehnite) // kinetics //NEW_LINE('')
-        end if
-
-
-
-        if (secondary3(30)*sec_molar(30)/sec_density(30) .LE. vol_th) then
-            inputz0 = TRIM(inputz0) //      "    Scolecite " // trim(s_precip) // trim(s_scolecite) // kinetics //NEW_LINE('') ! zeolite
-        else
-            !inputz0 = TRIM(inputz0) //      "    Scolecite " // trim(s_precip_nope) // trim(s_scolecite) // kinetics //NEW_LINE('') ! zeolite
-        end if
-                 !&"    Gismondine " // trim(s_precip) // trim(s_gismondine) // kinetics //NEW_LINE('')// & ! zeolite
-                 !&" "  //NEW_LINE('')
-
-               !end if
 
               ! EQ rates
               inputz0 = TRIM(inputz0) // "RATES" //NEW_LINE('')// &
@@ -5173,7 +5225,7 @@ PROGRAM main
 
 
 
-              !-equilibrium PHREEQC
+              !-EQ PHREEQC
               id = CreateIPhreeqc()
 
 
@@ -5339,12 +5391,12 @@ PROGRAM main
 
 
            if (alt0(1,2) .GT. 1.0) then
-
-               if (medium3(2) .eq. precip_th) then
+               !-EQ secondary parse
+               !if (medium3(2) .eq. precip_th) then
                !secLocal = 0.0
                    DO ii=1,g_sec/2
 
-                      if (alt_mat(m,2*ii+14) .GT. 0.0) then
+                      if (alt_mat(m,2*ii+15) .GT. 0.0) then
                           secLocal(m,ii) = alt_mat(m,2*ii+14)
                       else
                           secLocal(m,ii) = secondary3(ii)
@@ -5352,8 +5404,11 @@ PROGRAM main
 
 
                       dsecLocal(m,ii) = secLocal(m,ii) - secondary3(ii)
+
+                        ! secLocal(m,ii) = alt_mat(m,2*ii+14)
+                        ! dsecLocal(m,ii) = secLocal(m,ii) - secondary3(ii)
                    END DO
-               end if
+               !end if
 
             !    if (medium3(2) .ne. precip_th) then
             !        dsecLocal(m,ii) = 0.0
@@ -5383,7 +5438,7 @@ PROGRAM main
 
 
 
-        !-kinetic input file
+        !-KIN input file
         IF (se_toggle .EQ. 0) THEN
             ! !# FE FIX
             ! if ((my_id .EQ. 34) .or. (my_id .EQ. 35)) then
@@ -5864,7 +5919,7 @@ PROGRAM main
                   &"    -time" //NEW_LINE('')// &
                   &"END"
 
-                !-kinetic print statements
+                !-KIN print statements
 
 
                 !   if ((my_id .EQ. 10) .AND. (jjj .EQ. 1)) then
@@ -5888,7 +5943,7 @@ PROGRAM main
 
 
 
-                  !-kinetic PHREEQ
+                  !-KIN PHREEQ
                   id = CreateIPhreeqc()
 
 

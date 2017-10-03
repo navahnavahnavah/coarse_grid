@@ -10,11 +10,11 @@
 # you want to run.
 #
 # set the name of the job
-#PBS -N sites_9
+#PBS -N sites_10_u
 #
 # set the output and error files
-#PBS -o /data/navah/cg_output/mOutG.txt
-#PBS -e /data/navah/cg_output/mErrG.txt
+#PBS -o /data/navah/cg_output/$PBS_JOBNAME/mOutG.txt
+#PBS -e /data/navah/cg_output/$PBS_JOBNAME/mErrG.txt
 #PBS -m abe -M navah@uchicago.edu
 # set the number of nodes to use, and number of processors
 # to use per node
@@ -22,11 +22,22 @@
 
 
 
-#PBS -l nodes=compute-0-0:ppn=12+compute-0-1:ppn=12+compute-0-2:ppn=12
-##PBS -l nodes=compute-0-3:ppn=12+compute-0-4:ppn=12+compute-1-0:ppn=11
-##PBS -l nodes=compute-1-1:ppn=12+compute-1-2:ppn=12+compute-1-3:ppn=12
-##PBS -l nodes=compute-1-4:ppn=12+compute-1-5:ppn=12+compute-1-6:ppn=12
+##PBS -l nodes=compute-1-3:ppn=11+compute-0-4:ppn=11+compute-1-0:ppn=11
+#PBS -l nodes=compute-0-2:ppn=11+compute-1-2:ppn=11
+##PBS -l nodes=compute-0-0:ppn=12+compute-0-1:ppn=11+compute-1-1:ppn=11
 
+
+
+##PBS -l nodes=compute-0-0:ppn=12+compute-0-1:ppn=12+compute-0-2:ppn=11
+
+
+
+##PBS -l nodes=compute-1-1:ppn=12+compute-1-2:ppn=12
+##PBS -l nodes=compute-1-8:ppn=11+compute-1-9:ppn=11+compute-1-10:ppn=11
+
+###+compute-1-3:ppn=11
+##PBS -l nodes=compute-1-4:ppn=12+compute-1-5:ppn=12+compute-1-6:ppn=11
+##PBS -l nodes=compute-1-7:ppn=12+compute-1-8:ppn=12+compute-1-9:ppn=11
 
 ##PBS -l nodes=compute-0-2:ppn=12+compute-0-3:ppn=12
 
@@ -115,9 +126,11 @@ set PARAM_T_DIFF = '1e10'
 set PARAM_B_G = '50'
 set PARAM_D_ONLY = '0'
 
+set PARAM_PATH='/data/navah/cg_output/'$PBS_JOBNAME'/'
+
+#set PARAM_PATH='/data/navah/cg_output/sites_10_t/'
 
 
-set PARAM_PATH='/data/navah/cg_output/sites_10_g/'
 #set PARAM_PATH='/data/navah/cg_output/medium_vel_sites/med_c_no_heat/'
 
 
