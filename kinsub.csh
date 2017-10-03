@@ -13,8 +13,8 @@
 #PBS -N sites_10_u
 #
 # set the output and error files
-#PBS -o /data/navah/cg_output/$PBS_JOBNAME/mOutG.txt
-#PBS -e /data/navah/cg_output/$PBS_JOBNAME/mErrG.txt
+#PBS -o /data/navah/cg_output/$PBS_JOBNAME/e_out.txt
+#PBS -e /data/navah/cg_output/$PBS_JOBNAME/e_err.txt
 #PBS -m abe -M navah@uchicago.edu
 # set the number of nodes to use, and number of processors
 # to use per node
