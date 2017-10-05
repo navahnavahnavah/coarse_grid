@@ -57,8 +57,9 @@ MODULE initialize
   REAL(4) :: soluteMat_d((xn-1)*tn/(cellx*(mstep*ar)),yn/(2*celly),g_sol)
   REAL(4) :: mediumMat_d((xn-1)*tn/(cellx*(mstep*ar)),yn/(2*celly),g_med)
 
-
-
+REAL(4) :: speed((xn-1)/cellx,yn/(2*celly),3), speedMat((xn-1)*tn/(cellx*(mstep*ar)),yn/(2*celly),3)
+REAL(4) :: speed_a((xn-1)/cellx,yn/(2*celly),3), speedMat_a((xn-1)*tn/(cellx*(mstep*ar)),yn/(2*celly),3)
+REAL(4) :: speed_b((xn-1)/cellx,yn/(2*celly),3), speedMat_b((xn-1)*tn/(cellx*(mstep*ar)),yn/(2*celly),3)
 
 
   REAL(4) :: t_vol_s, t_vol_a, t_vol_b
@@ -129,7 +130,7 @@ MODULE initialize
 
 
 
- 
+
 CONTAINS
 
   SUBROUTINE init_mini ()

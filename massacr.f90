@@ -287,6 +287,7 @@ PROGRAM main
   REAL(4) :: secLong(((xn-1)/cellx)*(yn/(2*celly)),g_sec), secLocal(3*((xn-1)/cellx)*(yn/(2*celly)),g_sec)
   REAL(4) :: solLong(((xn-1)/cellx)*(yn/(2*celly)),g_sol), solLocal(3*((xn-1)/cellx)*(yn/(2*celly)),g_sol)
   REAL(4) :: medLong(((xn-1)/cellx)*(yn/(2*celly)),g_med), medLocal(3*((xn-1)/cellx)*(yn/(2*celly)),g_med)
+  REAL(4) :: speedLocal(3*((xn-1)/cellx)*(yn/(2*celly)),3)
   REAL(4) :: ph_fix_Local(3*((xn-1)/cellx)*(yn/(2*celly)))
   REAL(4) :: priLongBit(3*((xn-1)/cellx)*(yn/(2*celly)))
   REAL(4) :: secLongBit(3*((xn-1)/cellx)*(yn/(2*celly)))
@@ -310,6 +311,7 @@ PROGRAM main
   REAL(4) :: volLongBitFull(((xn-1)/cellx)*(yn/(2*celly)))
   REAL(4) :: medLongBitFull(3*((xn-1)/cellx)*(yn/(2*celly)),g_med)
   REAL(4) :: phiLongBitFull(3*((xn-1)/cellx)*(yn/(2*celly)))
+  REAL(4) :: speedLongBitFull(3*((xn-1)/cellx)*(yn/(2*celly)),3)
 
   REAL(4) :: dpriLongBitFull(3*((xn-1)/cellx)*(yn/(2*celly)),g_pri)
   REAL(4) :: dsecLongBitFull(3*((xn-1)/cellx)*(yn/(2*celly)),g_sec)
@@ -3522,7 +3524,7 @@ PROGRAM main
                 solLongBitFull(slave_vector(1:end_loop),2) = solLocal(1:end_loop,2)*solLocal(1:end_loop,3)/(solLongBitFull(slave_vector(1:end_loop),3))
 
                 CALL MPI_RECV( solLocal(1:end_loop,1), end_loop, MPI_REAL4, an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
-                solLongBitFull(slave_vector(1:end_loop),1) = -1.0*LOG10(10.0**(-1.0*solLocal(1:end_loop,1))*solLocal(1:end_loop,3)/(solLongBitFull(slave_vector(1:end_loop),3)))
+                solLongBitFull(slave_vector(1:end_loop),1) =  -1.0*LOG10(10.0**(-1.0*solLocal(1:end_loop,1))*solLocal(1:end_loop,3)/(solLongBitFull(slave_vector(1:end_loop),3))) !solLocal(1:end_loop,1)!
 
                 DO ii = 4 , g_sol
                     CALL MPI_RECV( solLocal(1:end_loop,ii), end_loop, MPI_REAL4, an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
@@ -3540,6 +3542,11 @@ PROGRAM main
                     CALL MPI_RECV( medLocal(1,ii), end_loop, MPI_REAL4, an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
                     medLongBitFull(slave_vector(1:end_loop),ii) = medLocal(1:end_loop,ii)
                 END DO
+
+                ! DO ii = 1,3
+                !     CALL MPI_RECV( speedLocal(1:end_loop,ii), end_loop, MPI_REAL4, an_id, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+                !     speedLongBitFull(slave_vector(1:end_loop),ii) = speedLocal(1:end_loop,ii)
+                ! END DO
 
                 call system_clock(countf, count_rate, count_max)
                 write(*,*) "receive from" , an_id , countf - counti
@@ -3669,6 +3676,21 @@ PROGRAM main
 
               END DO
 
+
+              DO i = 1,3
+
+                 bit_thing_t1 = TRANSPOSE(RESHAPE(speedLongBitFull(1:leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
+                 speed(:,:,i) = bit_thing_t1
+
+                 bit_thing_t1 = TRANSPOSE(RESHAPE(speedLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
+                 speed_a(:,:,i) = bit_thing_t1
+
+                 bit_thing_t1 = TRANSPOSE(RESHAPE(speedLongBitFull(2*leng+1:,i),(/yn/(2*celly), (xn-1)/cellx/)))
+                 speed_b(:,:,i) = bit_thing_t1
+
+
+              END DO
+
             !   ! phi_calc
               bit_thing_t1 = TRANSPOSE(RESHAPE(phiLongBitFull(1:leng),(/yn/(2*celly), (xn-1)/cellx/)))
               phiCalc(:,:) = bit_thing_t1
@@ -3723,16 +3745,19 @@ PROGRAM main
               soluteMat(1+((xn-1)/cellx)*(j/(mstep*ar)-1):((xn-1)/cellx)*(j/(mstep*ar)),1:yn/(2*celly),:) = solute
               mediumMat(1+((xn-1)/cellx)*(j/(mstep*ar)-1):((xn-1)/cellx)*(j/(mstep*ar)),1:yn/(2*celly),:) = medium
               saturationMat(1+((xn-1)/cellx)*(j/(mstep*ar)-1):((xn-1)/cellx)*(j/(mstep*ar)),1:yn/(2*celly),:) = saturation
+              speedMat(1+((xn-1)/cellx)*(j/(mstep*ar)-1):((xn-1)/cellx)*(j/(mstep*ar)),1:yn/(2*celly),:) = speed
 
               primaryMat_a(1+((xn-1)/cellx)*(j/(mstep*ar)-1):((xn-1)/cellx)*(j/(mstep*ar)),1:yn/(2*celly),:) = primary_a
               secondaryMat_a(1+((xn-1)/cellx)*(j/(mstep*ar)-1):((xn-1)/cellx)*(j/(mstep*ar)),1:yn/(2*celly),:)= secondary_a
               soluteMat_a(1+((xn-1)/cellx)*(j/(mstep*ar)-1):((xn-1)/cellx)*(j/(mstep*ar)),1:yn/(2*celly),:) = solute_a
               mediumMat_a(1+((xn-1)/cellx)*(j/(mstep*ar)-1):((xn-1)/cellx)*(j/(mstep*ar)),1:yn/(2*celly),:) = medium_a
+              speedMat_a(1+((xn-1)/cellx)*(j/(mstep*ar)-1):((xn-1)/cellx)*(j/(mstep*ar)),1:yn/(2*celly),:) = speed_a
 
               primaryMat_b(1+((xn-1)/cellx)*(j/(mstep*ar)-1):((xn-1)/cellx)*(j/(mstep*ar)),1:yn/(2*celly),:) = primary_b
               secondaryMat_b(1+((xn-1)/cellx)*(j/(mstep*ar)-1):((xn-1)/cellx)*(j/(mstep*ar)),1:yn/(2*celly),:)= secondary_b
               soluteMat_b(1+((xn-1)/cellx)*(j/(mstep*ar)-1):((xn-1)/cellx)*(j/(mstep*ar)),1:yn/(2*celly),:) = solute_b
               mediumMat_b(1+((xn-1)/cellx)*(j/(mstep*ar)-1):((xn-1)/cellx)*(j/(mstep*ar)),1:yn/(2*celly),:) = medium_b
+              speedMat_b(1+((xn-1)/cellx)*(j/(mstep*ar)-1):((xn-1)/cellx)*(j/(mstep*ar)),1:yn/(2*celly),:) = speed_b
 
               primaryMat_d(1+((xn-1)/cellx)*(j/(mstep*ar)-1):((xn-1)/cellx)*(j/(mstep*ar)),1:yn/(2*celly),:) = primary_a + primary_b
               secondaryMat_d(1+((xn-1)/cellx)*(j/(mstep*ar)-1):((xn-1)/cellx)*(j/(mstep*ar)),1:yn/(2*celly),:) = secondary_a + secondary_b
@@ -3826,6 +3851,12 @@ PROGRAM main
                  yep = write_matrix ( (xn-1)*tn/(cellx*mstep*ar), yn/(2*celly), REAL(mediumMat(:,:,4),kind=4), TRIM(path) // 'ch_s/z_med_reactive.txt' )
                  yep = write_matrix ( (xn-1)*tn/(cellx*mstep*ar), yn/(2*celly), REAL(mediumMat(:,:,5),kind=4), TRIM(path) // 'ch_s/z_med_cell_toggle.txt' )
 
+
+                 ! speed properties
+                 yep = write_matrix ( (xn-1)*tn/(cellx*mstep*ar), yn/(2*celly), REAL(speedMat(:,:,1),kind=4), TRIM(path) // 'ch_s/z_speed_1.txt' )
+                 yep = write_matrix ( (xn-1)*tn/(cellx*mstep*ar), yn/(2*celly), REAL(speedMat(:,:,2),kind=4), TRIM(path) // 'ch_s/z_speed_2.txt' )
+                 yep = write_matrix ( (xn-1)*tn/(cellx*mstep*ar), yn/(2*celly), REAL(speedMat(:,:,3),kind=4), TRIM(path) // 'ch_s/z_speed_3.txt' )
+
                  ! phi
                  yep = write_matrix ( (xn-1)*tn/(cellx*mstep*ar), yn/(2*celly), REAL(phiCalcMat(:,:),kind=4), TRIM(path) // 'ch_s/z_phiCalc.txt' )
 
@@ -3864,6 +3895,11 @@ PROGRAM main
                  yep = write_matrix ( (xn-1)*tn/(cellx*mstep*ar), yn/(2*celly), REAL(mediumMat_a(:,:,3),kind=4), TRIM(path) // 'ch_a/z_med_v_water.txt' )
                  yep = write_matrix ( (xn-1)*tn/(cellx*mstep*ar), yn/(2*celly), REAL(mediumMat_a(:,:,4),kind=4), TRIM(path) // 'ch_a/z_med_reactive.txt' )
                  yep = write_matrix ( (xn-1)*tn/(cellx*mstep*ar), yn/(2*celly), REAL(mediumMat_a(:,:,5),kind=4), TRIM(path) // 'ch_a/z_med_cell_toggle.txt' )
+
+                 ! speed properties
+                 yep = write_matrix ( (xn-1)*tn/(cellx*mstep*ar), yn/(2*celly), REAL(speedMat_a(:,:,1),kind=4), TRIM(path) // 'ch_a/z_speed_1.txt' )
+                 yep = write_matrix ( (xn-1)*tn/(cellx*mstep*ar), yn/(2*celly), REAL(speedMat_a(:,:,2),kind=4), TRIM(path) // 'ch_a/z_speed_2.txt' )
+                 yep = write_matrix ( (xn-1)*tn/(cellx*mstep*ar), yn/(2*celly), REAL(speedMat_a(:,:,3),kind=4), TRIM(path) // 'ch_a/z_speed_3.txt' )
 
                  ! phi
                  yep = write_matrix ( (xn-1)*tn/(cellx*mstep*ar), yn/(2*celly), REAL(phiCalcMat_a(:,:),kind=4), TRIM(path) // 'ch_a/z_phiCalc.txt' )
@@ -3906,6 +3942,11 @@ PROGRAM main
                  yep = write_matrix ( (xn-1)*tn/(cellx*mstep*ar), yn/(2*celly), REAL(mediumMat_b(:,:,3),kind=4), TRIM(path) // 'ch_b/z_med_v_water.txt' )
                  yep = write_matrix ( (xn-1)*tn/(cellx*mstep*ar), yn/(2*celly), REAL(mediumMat_b(:,:,4),kind=4), TRIM(path) // 'ch_b/z_med_reactive.txt' )
                  yep = write_matrix ( (xn-1)*tn/(cellx*mstep*ar), yn/(2*celly), REAL(mediumMat_b(:,:,5),kind=4), TRIM(path) // 'ch_b/z_med_cell_toggle.txt' )
+
+                 ! speed properties
+                 yep = write_matrix ( (xn-1)*tn/(cellx*mstep*ar), yn/(2*celly), REAL(speedMat_b(:,:,1),kind=4), TRIM(path) // 'ch_b/z_speed_1.txt' )
+                 yep = write_matrix ( (xn-1)*tn/(cellx*mstep*ar), yn/(2*celly), REAL(speedMat_b(:,:,2),kind=4), TRIM(path) // 'ch_b/z_speed_2.txt' )
+                 yep = write_matrix ( (xn-1)*tn/(cellx*mstep*ar), yn/(2*celly), REAL(speedMat_b(:,:,3),kind=4), TRIM(path) // 'ch_b/z_speed_3.txt' )
 
                  ! ph_fix
                  yep = write_matrix ( (xn-1)*tn/(cellx*mstep*ar), yn/(2*celly), REAL(ph_fixMat_b(:,:),kind=4), TRIM(path) // 'ch_b/z_ph_fix.txt' )
@@ -4054,7 +4095,7 @@ PROGRAM main
 
      ! receive timestep size
      CALL MPI_RECV ( end_loop, 1 , MPI_INTEGER, root_process, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
-     write(*,*) "my_id: " , my_id , "end loop is: " , end_loop
+     !write(*,*) "my_id: " , my_id , "end loop is: " , end_loop
 
 
 
@@ -4076,6 +4117,8 @@ PROGRAM main
             slave_count = slave_count + 1
         end if
     end do
+    !write(*,202) my_id , end_loop, slave_vector(1:end_loop)
+    !202 format ("id: " , I3 , "end_loop:" , I3 ,"   sv: " , end_loopI5)
     write(*,*) "my_id: " , my_id , "slave_vector(end_loop)" , slave_vector(1:end_loop)
 
      !-primary compositions + amounts
@@ -4420,15 +4463,15 @@ PROGRAM main
 
 
               !-deltas to strings
-            !   WRITE(sd_dbasalt3,'(F25.10)') -1.0*dprimary3(2)
-            !   WRITE(sd_dbasalt2,'(F25.10)') -1.0*dprimary3(3)
-            !   WRITE(sd_dbasalt1,'(F25.10)') -1.0*dprimary3(4)
-            !   WRITE(sd_dglass,'(F25.10)') -1.0*dprimary3(5)
+              WRITE(sd_dbasalt3,'(F25.10)') -1.0*dprimary3(2)
+              WRITE(sd_dbasalt2,'(F25.10)') -1.0*dprimary3(3)
+              WRITE(sd_dbasalt1,'(F25.10)') -1.0*dprimary3(4)
+              WRITE(sd_dglass,'(F25.10)') -1.0*dprimary3(5)
 
-            WRITE(sd_dbasalt3,'(F25.10)') -0.95*dprimary3(2)
-            WRITE(sd_dbasalt2,'(F25.10)') -0.95*dprimary3(3)
-            WRITE(sd_dbasalt1,'(F25.10)') -0.95*dprimary3(4)
-            WRITE(sd_dglass,'(F25.10)') -0.95*dprimary3(5)
+            ! WRITE(sd_dbasalt3,'(F25.10)') -0.75*dprimary3(2)
+            ! WRITE(sd_dbasalt2,'(F25.10)') -0.75*dprimary3(3)
+            ! WRITE(sd_dbasalt1,'(F25.10)') -0.75*dprimary3(4)
+            ! WRITE(sd_dglass,'(F25.10)') -0.75*dprimary3(5)
 
             !   if ((my_id .EQ. 10) .AND. (jjj .EQ. 1)) then
             !       write(*,*) "plag sd_dbasalt3" , sd_dbasalt3
@@ -4479,46 +4522,46 @@ PROGRAM main
             !   WRITE(sd_epidote,'(F25.10)') -1.0*dsecondary3(40) !!!
 
 
-            WRITE(sd_kaolinite,'(F25.10)') -0.9*dsecondary3(1)
-            WRITE(sd_saponite,'(F25.10)') -0.9*dsecondary3(2)
-            WRITE(sd_celadonite,'(F25.10)') -0.9*dsecondary3(3)
-            WRITE(sd_clinoptilolite,'(F25.10)') -0.9*dsecondary3(4)
-            WRITE(sd_pyrite,'(F25.10)') -0.9*dsecondary3(5)
-            WRITE(sd_mont_na,'(F25.10)') -0.9*dsecondary3(6)
-            WRITE(sd_goethite,'(F25.10)') -0.9*dsecondary3(7)
-            WRITE(sd_smectite,'(F25.10)') -0.9*dsecondary3(8)
-            WRITE(sd_calcite,'(F25.10)') -0.9*dsecondary3(9)
-            WRITE(sd_kspar,'(F25.10)') -0.9*dsecondary3(10)
-            WRITE(sd_saponite_na,'(F25.10)') -0.9*dsecondary3(11) !!!!
-            WRITE(sd_nont_na,'(F25.10)') -0.9*dsecondary3(12)
-            WRITE(sd_nont_mg,'(F25.10)') -0.9*dsecondary3(13)
-            WRITE(sd_fe_celadonite,'(F25.10)') -0.9*dsecondary3(14)
-            WRITE(sd_nont_ca,'(F25.10)') -0.9*dsecondary3(15)
-            WRITE(sd_mesolite,'(F25.10)') -0.9*dsecondary3(16)
-            WRITE(sd_hematite,'(F25.10)') -0.9*dsecondary3(17)
-            WRITE(sd_mont_ca,'(F25.10)') -0.9*dsecondary3(18)
-            WRITE(sd_verm_ca,'(F25.10)') -0.9*dsecondary3(19)
-            WRITE(sd_analcime,'(F25.10)') -0.9*dsecondary3(20)
-            WRITE(sd_phillipsite,'(F25.10)') -0.9*dsecondary3(21)
-            WRITE(sd_mont_mg,'(F25.10)') -0.9*dsecondary3(22)
-            WRITE(sd_gismondine,'(F25.10)') -0.9*dsecondary3(23)
-            WRITE(sd_verm_mg,'(F25.10)') -0.9*dsecondary3(24)
-            WRITE(sd_natrolite,'(F25.10)') -0.9*dsecondary3(25)
-            WRITE(sd_talc,'(F25.10)') -0.9*dsecondary3(26) !!!!!!!!!
-            WRITE(sd_smectite_low,'(F25.10)') -0.9*dsecondary3(27)
-            WRITE(sd_prehnite,'(F25.10)') -0.9*dsecondary3(28)
-            WRITE(sd_chlorite,'(F25.10)') -0.9*dsecondary3(29) !!!!!!!!
-            WRITE(sd_scolecite,'(F25.10)') -0.9*dsecondary3(30)
-            WRITE(sd_clinochlore14a,'(F25.10)') -0.9*dsecondary3(31)
-            WRITE(sd_clinochlore7a,'(F25.10)') -0.9*dsecondary3(32)
-            WRITE(sd_saponite_ca,'(F25.10)') -0.9*dsecondary3(33)
-            WRITE(sd_verm_na,'(F25.10)') -0.9*dsecondary3(34)
-            WRITE(sd_pyrrhotite,'(F25.10)') -0.9*dsecondary3(35)
-            WRITE(sd_fe_saponite_ca,'(F25.10)') -0.9*dsecondary3(36) !!!
-            WRITE(sd_fe_saponite_mg,'(F25.10)') -0.9*dsecondary3(37) !!!
-            WRITE(sd_daphnite_7a,'(F25.10)') -0.9*dsecondary3(38) !!!
-            WRITE(sd_daphnite_14a,'(F25.10)') -0.9*dsecondary3(39) !!!
-            WRITE(sd_epidote,'(F25.10)') -0.9*dsecondary3(40) !!!
+            ! WRITE(sd_kaolinite,'(F25.10)') -0.9*dsecondary3(1)
+            ! WRITE(sd_saponite,'(F25.10)') -0.9*dsecondary3(2)
+            ! WRITE(sd_celadonite,'(F25.10)') -0.9*dsecondary3(3)
+            ! WRITE(sd_clinoptilolite,'(F25.10)') -0.9*dsecondary3(4)
+            ! WRITE(sd_pyrite,'(F25.10)') -0.9*dsecondary3(5)
+            ! WRITE(sd_mont_na,'(F25.10)') -0.9*dsecondary3(6)
+            ! WRITE(sd_goethite,'(F25.10)') -0.9*dsecondary3(7)
+            ! WRITE(sd_smectite,'(F25.10)') -0.9*dsecondary3(8)
+            ! WRITE(sd_calcite,'(F25.10)') -0.9*dsecondary3(9)
+            ! WRITE(sd_kspar,'(F25.10)') -0.9*dsecondary3(10)
+            ! WRITE(sd_saponite_na,'(F25.10)') -0.9*dsecondary3(11) !!!!
+            ! WRITE(sd_nont_na,'(F25.10)') -0.9*dsecondary3(12)
+            ! WRITE(sd_nont_mg,'(F25.10)') -0.9*dsecondary3(13)
+            ! WRITE(sd_fe_celadonite,'(F25.10)') -0.9*dsecondary3(14)
+            ! WRITE(sd_nont_ca,'(F25.10)') -0.9*dsecondary3(15)
+            ! WRITE(sd_mesolite,'(F25.10)') -0.9*dsecondary3(16)
+            ! WRITE(sd_hematite,'(F25.10)') -0.9*dsecondary3(17)
+            ! WRITE(sd_mont_ca,'(F25.10)') -0.9*dsecondary3(18)
+            ! WRITE(sd_verm_ca,'(F25.10)') -0.9*dsecondary3(19)
+            ! WRITE(sd_analcime,'(F25.10)') -0.9*dsecondary3(20)
+            ! WRITE(sd_phillipsite,'(F25.10)') -0.9*dsecondary3(21)
+            ! WRITE(sd_mont_mg,'(F25.10)') -0.9*dsecondary3(22)
+            ! WRITE(sd_gismondine,'(F25.10)') -0.9*dsecondary3(23)
+            ! WRITE(sd_verm_mg,'(F25.10)') -0.9*dsecondary3(24)
+            ! WRITE(sd_natrolite,'(F25.10)') -0.9*dsecondary3(25)
+            ! WRITE(sd_talc,'(F25.10)') -0.9*dsecondary3(26) !!!!!!!!!
+            ! WRITE(sd_smectite_low,'(F25.10)') -0.9*dsecondary3(27)
+            ! WRITE(sd_prehnite,'(F25.10)') -0.9*dsecondary3(28)
+            ! WRITE(sd_chlorite,'(F25.10)') -0.9*dsecondary3(29) !!!!!!!!
+            ! WRITE(sd_scolecite,'(F25.10)') -0.9*dsecondary3(30)
+            ! WRITE(sd_clinochlore14a,'(F25.10)') -0.9*dsecondary3(31)
+            ! WRITE(sd_clinochlore7a,'(F25.10)') -0.9*dsecondary3(32)
+            ! WRITE(sd_saponite_ca,'(F25.10)') -0.9*dsecondary3(33)
+            ! WRITE(sd_verm_na,'(F25.10)') -0.9*dsecondary3(34)
+            ! WRITE(sd_pyrrhotite,'(F25.10)') -0.9*dsecondary3(35)
+            ! WRITE(sd_fe_saponite_ca,'(F25.10)') -0.9*dsecondary3(36) !!!
+            ! WRITE(sd_fe_saponite_mg,'(F25.10)') -0.9*dsecondary3(37) !!!
+            ! WRITE(sd_daphnite_7a,'(F25.10)') -0.9*dsecondary3(38) !!!
+            ! WRITE(sd_daphnite_14a,'(F25.10)') -0.9*dsecondary3(39) !!!
+            ! WRITE(sd_epidote,'(F25.10)') -0.9*dsecondary3(40) !!!
 
             ! WRITE(sd_kaolinite,'(F25.10)') -0.1*dsecondary3(1)
             ! WRITE(sd_saponite,'(F25.10)') -0.1*dsecondary3(2)
@@ -4561,46 +4604,89 @@ PROGRAM main
             ! WRITE(sd_daphnite_14a,'(F25.10)') -0.1*dsecondary3(39) !!!
             ! WRITE(sd_epidote,'(F25.10)') -0.1*dsecondary3(40) !!!
 
-            ! WRITE(sd_kaolinite,'(F25.10)') -0.999*dsecondary3(1)
-            ! WRITE(sd_saponite,'(F25.10)') -0.999*dsecondary3(2)
-            ! WRITE(sd_celadonite,'(F25.10)') -0.999*dsecondary3(3)
-            ! WRITE(sd_clinoptilolite,'(F25.10)') -0.999*dsecondary3(4)
-            ! WRITE(sd_pyrite,'(F25.10)') -0.999*dsecondary3(5)
-            ! WRITE(sd_mont_na,'(F25.10)') -0.999*dsecondary3(6)
-            ! WRITE(sd_goethite,'(F25.10)') -0.999*dsecondary3(7)
-            ! WRITE(sd_smectite,'(F25.10)') -0.999*dsecondary3(8)
-            ! WRITE(sd_calcite,'(F25.10)') -0.999*dsecondary3(9)
-            ! WRITE(sd_kspar,'(F25.10)') -0.999*dsecondary3(10)
-            ! WRITE(sd_saponite_na,'(F25.10)') -0.999*dsecondary3(11) !!!!
-            ! WRITE(sd_nont_na,'(F25.10)') -0.999*dsecondary3(12)
-            ! WRITE(sd_nont_mg,'(F25.10)') -0.999*dsecondary3(13)
-            ! WRITE(sd_fe_celadonite,'(F25.10)') -0.999*dsecondary3(14)
-            ! WRITE(sd_nont_ca,'(F25.10)') -0.999*dsecondary3(15)
-            ! WRITE(sd_mesolite,'(F25.10)') -0.999*dsecondary3(16)
-            ! WRITE(sd_hematite,'(F25.10)') -0.999*dsecondary3(17)
-            ! WRITE(sd_mont_ca,'(F25.10)') -0.999*dsecondary3(18)
-            ! WRITE(sd_verm_ca,'(F25.10)') -0.999*dsecondary3(19)
-            ! WRITE(sd_analcime,'(F25.10)') -0.999*dsecondary3(20)
-            ! WRITE(sd_phillipsite,'(F25.10)') -0.999*dsecondary3(21)
-            ! WRITE(sd_mont_mg,'(F25.10)') -0.999*dsecondary3(22)
-            ! WRITE(sd_gismondine,'(F25.10)') -0.999*dsecondary3(23)
-            ! WRITE(sd_verm_mg,'(F25.10)') -0.999*dsecondary3(24)
-            ! WRITE(sd_natrolite,'(F25.10)') -0.999*dsecondary3(25)
-            ! WRITE(sd_talc,'(F25.10)') -0.999*dsecondary3(26) !!!!!!!!!
-            ! WRITE(sd_smectite_low,'(F25.10)') -0.999*dsecondary3(27)
-            ! WRITE(sd_prehnite,'(F25.10)') -0.999*dsecondary3(28)
-            ! WRITE(sd_chlorite,'(F25.10)') -0.999*dsecondary3(29) !!!!!!!!
-            ! WRITE(sd_scolecite,'(F25.10)') -0.999*dsecondary3(30)
-            ! WRITE(sd_clinochlore14a,'(F25.10)') -0.999*dsecondary3(31)
-            ! WRITE(sd_clinochlore7a,'(F25.10)') -0.999*dsecondary3(32)
-            ! WRITE(sd_saponite_ca,'(F25.10)') -0.999*dsecondary3(33)
-            ! WRITE(sd_verm_na,'(F25.10)') -0.999*dsecondary3(34)
-            ! WRITE(sd_pyrrhotite,'(F25.10)') -0.999*dsecondary3(35)
-            ! WRITE(sd_fe_saponite_ca,'(F25.10)') -0.999*dsecondary3(36) !!!
-            ! WRITE(sd_fe_saponite_mg,'(F25.10)') -0.999*dsecondary3(37) !!!
-            ! WRITE(sd_daphnite_7a,'(F25.10)') -0.999*dsecondary3(38) !!!
-            ! WRITE(sd_daphnite_14a,'(F25.10)') -0.999*dsecondary3(39) !!!
-            ! WRITE(sd_epidote,'(F25.10)') -0.999*dsecondary3(40) !!!
+            ! WRITE(sd_kaolinite,'(F25.10)') -0.6*dsecondary3(1)
+            ! WRITE(sd_saponite,'(F25.10)') -0.6*dsecondary3(2)
+            ! WRITE(sd_celadonite,'(F25.10)') -0.6*dsecondary3(3)
+            ! WRITE(sd_clinoptilolite,'(F25.10)') -0.6*dsecondary3(4)
+            ! WRITE(sd_pyrite,'(F25.10)') -0.6*dsecondary3(5)
+            ! WRITE(sd_mont_na,'(F25.10)') -0.6*dsecondary3(6)
+            ! WRITE(sd_goethite,'(F25.10)') -0.6*dsecondary3(7)
+            ! WRITE(sd_smectite,'(F25.10)') -0.6*dsecondary3(8)
+            ! WRITE(sd_calcite,'(F25.10)') -0.6*dsecondary3(9)
+            ! WRITE(sd_kspar,'(F25.10)') -0.6*dsecondary3(10)
+            ! WRITE(sd_saponite_na,'(F25.10)') -0.6*dsecondary3(11) !!!!
+            ! WRITE(sd_nont_na,'(F25.10)') -0.6*dsecondary3(12)
+            ! WRITE(sd_nont_mg,'(F25.10)') -0.6*dsecondary3(13)
+            ! WRITE(sd_fe_celadonite,'(F25.10)') -0.6*dsecondary3(14)
+            ! WRITE(sd_nont_ca,'(F25.10)') -0.6*dsecondary3(15)
+            ! WRITE(sd_mesolite,'(F25.10)') -0.6*dsecondary3(16)
+            ! WRITE(sd_hematite,'(F25.10)') -0.6*dsecondary3(17)
+            ! WRITE(sd_mont_ca,'(F25.10)') -0.6*dsecondary3(18)
+            ! WRITE(sd_verm_ca,'(F25.10)') -0.6*dsecondary3(19)
+            ! WRITE(sd_analcime,'(F25.10)') -0.6*dsecondary3(20)
+            ! WRITE(sd_phillipsite,'(F25.10)') -0.6*dsecondary3(21)
+            ! WRITE(sd_mont_mg,'(F25.10)') -0.6*dsecondary3(22)
+            ! WRITE(sd_gismondine,'(F25.10)') -0.6*dsecondary3(23)
+            ! WRITE(sd_verm_mg,'(F25.10)') -0.6*dsecondary3(24)
+            ! WRITE(sd_natrolite,'(F25.10)') -0.6*dsecondary3(25)
+            ! WRITE(sd_talc,'(F25.10)') -0.6*dsecondary3(26) !!!!!!!!!
+            ! WRITE(sd_smectite_low,'(F25.10)') -0.6*dsecondary3(27)
+            ! WRITE(sd_prehnite,'(F25.10)') -0.6*dsecondary3(28)
+            ! WRITE(sd_chlorite,'(F25.10)') -0.6*dsecondary3(29) !!!!!!!!
+            ! WRITE(sd_scolecite,'(F25.10)') -0.6*dsecondary3(30)
+            ! WRITE(sd_clinochlore14a,'(F25.10)') -0.6*dsecondary3(31)
+            ! WRITE(sd_clinochlore7a,'(F25.10)') -0.6*dsecondary3(32)
+            ! WRITE(sd_saponite_ca,'(F25.10)') -0.6*dsecondary3(33)
+            ! WRITE(sd_verm_na,'(F25.10)') -0.6*dsecondary3(34)
+            ! WRITE(sd_pyrrhotite,'(F25.10)') -0.6*dsecondary3(35)
+            ! WRITE(sd_fe_saponite_ca,'(F25.10)') -0.6*dsecondary3(36) !!!
+            ! WRITE(sd_fe_saponite_mg,'(F25.10)') -0.6*dsecondary3(37) !!!
+            ! WRITE(sd_daphnite_7a,'(F25.10)') -0.6*dsecondary3(38) !!!
+            ! WRITE(sd_daphnite_14a,'(F25.10)') -0.6*dsecondary3(39) !!!
+            ! WRITE(sd_epidote,'(F25.10)') -0.6*dsecondary3(40) !!!
+
+            !write(*,*) "sd_saponite mg  " , TRIM(sd_saponite)
+
+            WRITE(sd_kaolinite,'(F25.10)') -0.999*dsecondary3(1)
+            WRITE(sd_saponite,'(F25.10)') -0.999*dsecondary3(2)
+            WRITE(sd_celadonite,'(F25.10)') -0.999*dsecondary3(3)
+            WRITE(sd_clinoptilolite,'(F25.10)') -0.999*dsecondary3(4)
+            WRITE(sd_pyrite,'(F25.10)') -0.999*dsecondary3(5)
+            WRITE(sd_mont_na,'(F25.10)') -0.999*dsecondary3(6)
+            WRITE(sd_goethite,'(F25.10)') -0.999*dsecondary3(7)
+            WRITE(sd_smectite,'(F25.10)') -0.999*dsecondary3(8)
+            WRITE(sd_calcite,'(F25.10)') -0.999*dsecondary3(9)
+            WRITE(sd_kspar,'(F25.10)') -0.999*dsecondary3(10)
+            WRITE(sd_saponite_na,'(F25.10)') -0.999*dsecondary3(11) !!!!
+            WRITE(sd_nont_na,'(F25.10)') -0.999*dsecondary3(12)
+            WRITE(sd_nont_mg,'(F25.10)') -0.999*dsecondary3(13)
+            WRITE(sd_fe_celadonite,'(F25.10)') -0.999*dsecondary3(14)
+            WRITE(sd_nont_ca,'(F25.10)') -0.999*dsecondary3(15)
+            WRITE(sd_mesolite,'(F25.10)') -0.999*dsecondary3(16)
+            WRITE(sd_hematite,'(F25.10)') -0.999*dsecondary3(17)
+            WRITE(sd_mont_ca,'(F25.10)') -0.999*dsecondary3(18)
+            WRITE(sd_verm_ca,'(F25.10)') -0.999*dsecondary3(19)
+            WRITE(sd_analcime,'(F25.10)') -0.999*dsecondary3(20)
+            WRITE(sd_phillipsite,'(F25.10)') -0.999*dsecondary3(21)
+            WRITE(sd_mont_mg,'(F25.10)') -0.999*dsecondary3(22)
+            WRITE(sd_gismondine,'(F25.10)') -0.999*dsecondary3(23)
+            WRITE(sd_verm_mg,'(F25.10)') -0.999*dsecondary3(24)
+            WRITE(sd_natrolite,'(F25.10)') -0.999*dsecondary3(25)
+            WRITE(sd_talc,'(F25.10)') -0.999*dsecondary3(26) !!!!!!!!!
+            WRITE(sd_smectite_low,'(F25.10)') -0.999*dsecondary3(27)
+            WRITE(sd_prehnite,'(F25.10)') -0.999*dsecondary3(28)
+            WRITE(sd_chlorite,'(F25.10)') -0.999*dsecondary3(29) !!!!!!!!
+            WRITE(sd_scolecite,'(F25.10)') -0.999*dsecondary3(30)
+            WRITE(sd_clinochlore14a,'(F25.10)') -0.999*dsecondary3(31)
+            WRITE(sd_clinochlore7a,'(F25.10)') -0.999*dsecondary3(32)
+            WRITE(sd_saponite_ca,'(F25.10)') -0.999*dsecondary3(33)
+            WRITE(sd_verm_na,'(F25.10)') -0.999*dsecondary3(34)
+            WRITE(sd_pyrrhotite,'(F25.10)') -0.999*dsecondary3(35)
+            WRITE(sd_fe_saponite_ca,'(F25.10)') -0.999*dsecondary3(36) !!!
+            WRITE(sd_fe_saponite_mg,'(F25.10)') -0.999*dsecondary3(37) !!!
+            WRITE(sd_daphnite_7a,'(F25.10)') -0.999*dsecondary3(38) !!!
+            WRITE(sd_daphnite_14a,'(F25.10)') -0.999*dsecondary3(39) !!!
+            WRITE(sd_epidote,'(F25.10)') -0.999*dsecondary3(40) !!!
 
 
             !IF ((se_toggle .EQ. 1) .OR. (MOD(j_root-(4*mstep),mstep*se_factor) .EQ. 0) .OR. (MOD(j_root-(5*mstep),mstep*se_factor) .EQ. 0)) THEN
@@ -4761,6 +4847,9 @@ PROGRAM main
                    &"    Cl " // TRIM(s_cl) //NEW_LINE('')// &
                    &"    Al " // TRIM(s_al) //NEW_LINE('')// &
                    &"    C " // TRIM(s_co2) //NEW_LINE('')// &
+                !    &"    Si 0.0005" //NEW_LINE('')// &
+                !    &"    Al 5.0e-7" //NEW_LINE('')// &
+                !    &"    Fe 1.0e-5" //NEW_LINE('')// &
                    &"    Alkalinity " // TRIM(s_alk) //NEW_LINE('')// &
                    &"    -water "// TRIM(s_water) // " # kg" //NEW_LINE('')// &
                    &" "  //NEW_LINE('')
@@ -4768,7 +4857,8 @@ PROGRAM main
               !-EQ equilibrium phases
               !if (medium3(2) .eq. precip_th) then
 
-                          vol_th = 5.0*t_vol_s*100.0/10.0
+                            !-EQ vol_th
+                          vol_th = 10000000.0*t_vol_s*100.0/10.0
 
             !   inputz0 = TRIM(inputz0) // "EQUILIBRIUM_PHASES 1" //NEW_LINE('')// &
             !        &"    Goethite " // TRIM(s_precip) // TRIM(s_goethite) // kinetics //NEW_LINE('')// &
@@ -5228,6 +5318,10 @@ PROGRAM main
                &"INCREMENTAL_REACTIONS true" //NEW_LINE('')// &
 
 
+            !    &"KNOBS" //NEW_LINE('')// &
+            !    &"-m " // TRIM(s_basalt3) //NEW_LINE('')// &
+
+
 
                &"CALCULATE_VALUES" //NEW_LINE('')// &
 
@@ -5339,13 +5433,18 @@ PROGRAM main
               END IF
 
               ! RUN INPUT
-            !   if ((my_id .EQ. 1) .OR. (my_id .EQ. 8) .OR. (my_id .EQ. 22) .OR. (my_id .EQ. 29)) then
-            !     call system_clock(counti, count_rate, count_max)
-            !   end if
+
+                !  call system_clock(counti, count_rate, count_max)
+
 
               IF (RunString(id, TRIM(inputz0)).NE.0) THEN
                  WRITE(*,*) "issue is:" , RunString(id, TRIM(inputz0))
+                 !-EQ grid_breaks
                  CALL OutputErrorString(id)
+                 OPEN(UNIT=169, status = 'OLD', FILE=TRIM(path_final) // 'grid_breaks.txt')
+                 WRITE(169,224) se_toggle , my_id, j_root, slave_vector(jjj), medium3(6), medium3(7)
+                 224 format ("se: " , I3 , "id " , I3 , "  j " , I7 "  sv(jjj)" , I5 , "   x:" , F6.0 , "  y:" , F5.0 )
+                 CLOSE (169)
                  WRITE(*,*) "primary"
                  WRITE(*,*) primary3
                  WRITE(*,*) "secondary"
@@ -5365,12 +5464,15 @@ PROGRAM main
 
 
 
-            !   if ((my_id .EQ. 1) .OR. (my_id .EQ. 8) .OR. (my_id .EQ. 22) .OR. (my_id .EQ. 29)) then
-            !     call system_clock(countf, count_rate, count_max)
+
+                !  call system_clock(countf, count_rate, count_max)
+                !  speedLocal(m,1) = my_id
+                !  speedLocal(m,2) = m
+                !  speedLocal(m,3) = countf - counti
             !     !write(*,*) my_id , jjj , slave_vector(jjj) , countf - counti
-            !     write(*,22) my_id , slave_vector(jjj) , countf - counti , medium3(6) , medium3(7)
-            !     22 format ("id" , I3 , "  sv(jjj)" , I5 , "  ms" , I7 , "   x:" , F6.0 , "  y:" , F5.0 )
-            !   end if
+                 !write(*,29) my_id , slave_vector(jjj) , countf - counti , medium3(6) , medium3(7)
+                 !29 format ("id" , I3 , "  sv(jjj)" , I5 , "  ms" , I7 , "   x:" , F6.0 , "  y:" , F5.0 )
+
 
               ! WRITE AWAY
               DO i=1,GetSelectedOutputStringLineCount(id)
@@ -5509,12 +5611,16 @@ PROGRAM main
                  &"    Mg " // TRIM(s_mg) //NEW_LINE('')// &
                  &"    Na " // TRIM(s_na) //NEW_LINE('')// &
                  &"    K " // TRIM(s_k) //NEW_LINE('')// &
-                 &"    Fe " // TRIM(s_fe) //NEW_LINE('')// &
+                  &"    Fe " // TRIM(s_fe) //NEW_LINE('')// &
                  &"    S "// TRIM(s_s)  //NEW_LINE('')// &
-                 &"    Si " // TRIM(s_si) //NEW_LINE('')// &
+                  &"    Si " // TRIM(s_si) //NEW_LINE('')// &
                  &"    Cl " // TRIM(s_cl) //NEW_LINE('')// &
-                 &"    Al " // TRIM(s_al) //NEW_LINE('')// &
+                  &"    Al " // TRIM(s_al) //NEW_LINE('')// &
                  &"    C " // TRIM(s_co2) //NEW_LINE('')// &
+
+                 !&"    Si 0.0005" //NEW_LINE('')// &
+                 !&"    Al 5.0e-7" //NEW_LINE('')// &
+                 !&"    Fe 1.0e-5" //NEW_LINE('')// &
                  &"    Alkalinity " // TRIM(s_alk) //NEW_LINE('')// &
                  &"    -water "// TRIM(s_water) // " # kg" //NEW_LINE('')// &
 
@@ -5999,6 +6105,10 @@ PROGRAM main
 
 
                   !-KIN PHREEQ
+
+                  !if (maxval(dsecondary3(1:g_sec/2)) .GT. 0.0) then
+
+
                   id = CreateIPhreeqc()
 
 
@@ -6085,12 +6195,13 @@ PROGRAM main
                   IF (RunString(id, TRIM(inputz0)).NE.0) THEN
                      WRITE(*,*) "issue is:" , RunString(id, TRIM(inputz0))
                      !-KIN grid_breaks
+                     CALL OutputErrorString(id)
                      OPEN(UNIT=169, status = 'OLD', FILE=TRIM(path_final) // 'grid_breaks.txt')
-                     WRITE(169,222) my_id, j_root, slave_vector(jjj), medium3(6), medium3(7)
-                     222 format ("id " , I3 , "  j " , I7 "  sv(jjj)" , I5 , "   x:" , F6.0 , "  y:" , F5.0 )
+                     WRITE(169,222) se_toggle , my_id, j_root, slave_vector(jjj), medium3(6), medium3(7)
+                     222 format ("se: " , I3 , "id " , I3 , "  j " , I7 "  sv(jjj)" , I5 , "   x:" , F6.0 , "  y:" , F5.0 )
                      CLOSE (169)
 
-                     CALL OutputErrorString(id)
+
                      WRITE(*,*) "primary"
                      WRITE(*,*) primary3
                      WRITE(*,*) "secondary"
@@ -6181,6 +6292,9 @@ PROGRAM main
                      STOP
                   END IF
 
+
+
+
                 !   if ((my_id .EQ. 10) .AND. (jjj .EQ. 1)) then
                 !       write(*,*) "BEFORE priLocal:" , priLocal(m,2:)
                 !   end if
@@ -6255,6 +6369,9 @@ PROGRAM main
                 END IF
 
 
+                !end if ! maxval(dsecondary3(1:g_sec/2) .GT. 0.0)
+
+
                 ! if ((my_id .EQ. 10) .AND. (jjj .EQ. 1)) then
                 !     write(*,*) "AFTER priLocal:" , priLocal(m,2:)
                 ! end if
@@ -6321,6 +6438,10 @@ PROGRAM main
     DO ii = 1,g_med
        CALL MPI_SEND( medLongBitFull(slave_vector(1:end_loop),ii), end_loop, MPI_REAL4, root_process, return_data_tag, MPI_COMM_WORLD, ierr)
     END DO
+
+    ! DO ii = 1,3
+    !    CALL MPI_SEND( speedLocal(slave_vector(1:end_loop),ii), end_loop, MPI_REAL4, root_process, return_data_tag, MPI_COMM_WORLD, ierr)
+    ! END DO
 
 
 
