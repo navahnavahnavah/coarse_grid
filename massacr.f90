@@ -5603,8 +5603,8 @@ PROGRAM main
             ! end if
 
 
-
-            inputz0 = "SOLUTION" //NEW_LINE('')// &
+            !-KIN solution 1
+            inputz0 = "SOLUTION 1" //NEW_LINE('')// &
                  &"    units   mol/kgw" //NEW_LINE('')// &
                  &"    temp" // TRIM(s_temp) //NEW_LINE('')// &
                  &"    Ca " // TRIM(s_ca) //NEW_LINE('')// &
@@ -5627,7 +5627,8 @@ PROGRAM main
                  &" "  //NEW_LINE('')
 
 
-                 inputz0 = TRIM(inputz0) // "RATES" //NEW_LINE('')// &
+                 !-KIN rates 1
+                 inputz0 = TRIM(inputz0) // "RATES 1" //NEW_LINE('')// &
 
                   &"BGlass" //NEW_LINE('')// &
                   &"-start" //NEW_LINE('')// &
@@ -5653,6 +5654,49 @@ PROGRAM main
                   &"-end" //NEW_LINE('')// &
 
 
+                  !-KIN kinetics 1
+                  &"KINETICS 1" //NEW_LINE('')// &
+
+                  &"BGlass" //NEW_LINE('')// &
+                  &"-f CaO .1997 SiO2 .847 Al2O3 .138 " //&
+                  & "Fe2O3 .149 MgO .1744 K2O .002 " //&
+                  & "Na2O .043" //NEW_LINE('')// &
+                  &"-m0 " // TRIM(s_glass) //NEW_LINE('')// &
+
+                  &"Basalt1 " //NEW_LINE('')// &
+                  & TRIM(param_ol_string) //NEW_LINE('')// &
+                  &"-m0 " // TRIM(s_basalt1) //NEW_LINE('')// &
+
+                  &"Basalt2 " //NEW_LINE('')// &
+                  & TRIM(param_pyr_string) //NEW_LINE('')// &
+                  &"-m0 " // TRIM(s_basalt2) //NEW_LINE('')// &
+
+                  &"Basalt3 " //NEW_LINE('')// &
+                  & TRIM(param_plag_string) //NEW_LINE('')// &
+                  &"-m0 " // TRIM(s_basalt3) //NEW_LINE('')// &
+
+                  &"    -step "//TRIM(s_timestep)//" in 1" //NEW_LINE('')// &
+
+                  &"INCREMENTAL_REACTIONS true" //NEW_LINE('')// &
+
+
+                  !&"END " // TRIM(s_basalt3) //NEW_LINE('')// &
+                  &"RUN_CELLS " //NEW_LINE('')// &
+                  &"-cells 1" //NEW_LINE('')// &
+                  !-KIN end bits
+                  !&"SAVE SOLUTION 1 " // TRIM(s_basalt3) //NEW_LINE('')// &
+                  !&"SAVE KINETICS 1 " // TRIM(s_basalt3) //NEW_LINE('')// &
+                  !
+                  &"USE SOLUTION 1 " // TRIM(s_basalt3) //NEW_LINE('')// &
+                  &"SAVE SOLUTION 2 " // TRIM(s_basalt3) //NEW_LINE('')// &
+                  !&"USE KINETICS 1 " // TRIM(s_basalt3) //NEW_LINE('')// &
+
+
+
+
+
+                !-KIN rates 2
+                &"RATES 2" //NEW_LINE('')// &
 
                 ! kaolinite
                 &"Kaolinite" //NEW_LINE('')// &
@@ -5898,27 +5942,11 @@ PROGRAM main
 
 
 
-                  ! EQ kinetics
-                  &"KINETICS" //NEW_LINE('')// &
 
-                  &"BGlass" //NEW_LINE('')// &
-                  &"-f CaO .1997 SiO2 .847 Al2O3 .138 " //&
-                  & "Fe2O3 .149 MgO .1744 K2O .002 " //&
-                  & "Na2O .043" //NEW_LINE('')// &
-                  &"-m0 " // TRIM(s_glass) //NEW_LINE('')// &
 
-                  &"Basalt1 " //NEW_LINE('')// &
-                  & TRIM(param_ol_string) //NEW_LINE('')// &
-                  &"-m0 " // TRIM(s_basalt1) //NEW_LINE('')// &
 
-                  &"Basalt2 " //NEW_LINE('')// &
-                  & TRIM(param_pyr_string) //NEW_LINE('')// &
-                  &"-m0 " // TRIM(s_basalt2) //NEW_LINE('')// &
-
-                  &"Basalt3 " //NEW_LINE('')// &
-                  & TRIM(param_plag_string) //NEW_LINE('')// &
-                  &"-m0 " // TRIM(s_basalt3) //NEW_LINE('')// &
-
+                  !-KIN kinetics 2
+                  &"KINETICS 2" //NEW_LINE('')// &
 
                   &"Kaolinite " //NEW_LINE('')// &
                   &"-m0 " // TRIM(s_kaolinite) //NEW_LINE('')// &
@@ -6044,9 +6072,14 @@ PROGRAM main
                   &"    -step "//TRIM(s_timestep)//" in 1" //NEW_LINE('')// &
 
                   &"INCREMENTAL_REACTIONS true" //NEW_LINE('')// &
+                  !&"END" //NEW_LINE('')// &
 
+                  &"RUN_CELLS " //NEW_LINE('')// &
+                  &"-cells 2" //NEW_LINE('')// &
 
+                  !&"SAVE SOLUTION 2 " // TRIM(s_basalt3) //NEW_LINE('')// &
 
+                  !-KIN selected_output
                   &"SELECTED_OUTPUT" //NEW_LINE('')// &
                   &"    -reset false" //NEW_LINE('')// &
                   &"    -high_precision true" //NEW_LINE('')// &
@@ -6078,7 +6111,8 @@ PROGRAM main
                   ! 		&"    -s prehnite chlorite(14a) scolecite Clinochlore-14A Clinochlore-7A saponite-ca" //NEW_LINE('')// &
                   ! 		&"    -s vermiculite-na pyrrhotite Fe-Saponite-Ca Fe-Saponite-Mg" //NEW_LINE('')// &
                   &"    -time" //NEW_LINE('')// &
-                  &"END"
+                  &" "
+                  !&"END"
 
                 !-KIN print statements
 
@@ -6107,6 +6141,23 @@ PROGRAM main
                   !-KIN PHREEQ
 
                   !if (maxval(dsecondary3(1:g_sec/2)) .GT. 0.0) then
+
+                  if (my_id .EQ. 3) then
+                      WRITE(*,*) "primary"
+                      WRITE(*,*) primary3
+                      WRITE(*,*) "secondary"
+                      WRITE(*,*) secondary3
+                      WRITE(*,*) "solute"
+                      WRITE(*,*) solute3
+                      WRITE(*,*) "medium"
+                      WRITE(*,*) medium3
+                      WRITE(*,*) "temp"
+                      WRITE(*,*) temp3
+                      write(*,*) "dprimary"
+                      write(*,*) dprimary3
+                      write(*,*) "dsecondary"
+                      write(*,*) dsecondary3
+                  end if
 
 
                   id = CreateIPhreeqc()
@@ -6238,16 +6289,26 @@ PROGRAM main
                 !       write(*,*) "35 after jjj" , jjj , slave_vector(jjj)
                 !   end if
 
-
+                !-KIN extract!!!
+                if (my_id .EQ. 3) then
+                    write(*,*) " "
+                    write(*,*) "NUMBER OF LINES: " , GetSelectedOutputStringLineCount(id)
+                end if
                   ! WRITE AWAY
                   DO i=1,GetSelectedOutputStringLineCount(id)
                      CALL GetSelectedOutputStringLine(id, i, line)
                      ! HEADER BITS YOU MAY WANT
                     !  if (my_id .EQ. 10) then
-                    !       	if (i .eq. 1) then
+                           	if (i .eq. 1) then
+                                if (my_id .EQ. 3) then
                     !        	   write(12,*) trim(line)
-                    !        	   write(*,*) trim(line) ! PRINT LABELS FOR EVERY FIELD (USEFUL)
-                    !       	end if
+                            	   write(*,*) trim(line) ! PRINT LABELS FOR EVERY FIELD (USEFUL)
+                                end if
+                           	end if
+                    ! if (my_id .EQ. 3) then
+                    !     write(*,*) trim(line)
+                    !     write(*,*) " "
+                    ! end if
                     ! end if
 
                      ! MEAT
@@ -6256,7 +6317,9 @@ PROGRAM main
     !!!!write(12,*) outmat(i,:) ! this writes to file, which i don't need (USEFUL)
                         ! 		if ((medium3(6) .gt. 23000.0) .and. (medium3(7) .gt. -200.0)) then
                         ! 		write(*,*) i
-                        ! 		write(*,*) trim(line) ! PRINT EVERY GOD DAMN LINE
+                            if (my_id .EQ. 3) then
+                         		write(*,*) trim(line) ! PRINT EVERY GOD DAMN LINE
+                            end if
                         ! 		write(*,*) ""
                         ! ! 		! write(*,*) solute3
                         ! ! ! 		write(*,*) ""
@@ -6270,8 +6333,10 @@ PROGRAM main
 
 
                   ! OUTPUT TO THE MAIN MASSACR METHOD
-                  alt0(1,1:103) = outmat(3,1:103)
+                  alt0(1,1:103) = outmat(4,1:103)
+                  alt0(1,16:23) = outmat(3,16:23)
                   alt_mat(m,1:103) = alt0(1,1:103)
+                  alt_mat(m,16:23) = outmat(3,16:23)
 
                 !   if (my_id .EQ. 10) then
                 !       write(*,*) "all of outmat : " , alt_mat(m,1:103)
@@ -6279,9 +6344,9 @@ PROGRAM main
 
                   !write(*,*) "an output alt0: ", alt0
 
-                  IF (GetSelectedOutputStringLineCount(id) .NE. 3) THEN
+                  IF (GetSelectedOutputStringLineCount(id) .NE. 4) THEN
                      alt0(1,:) = 0.0
-                     WRITE(*,*) "not 3 lines error"
+                     WRITE(*,*) "not 2 lines error: " , GetSelectedOutputStringLineCount(id)
                   END IF
 
 

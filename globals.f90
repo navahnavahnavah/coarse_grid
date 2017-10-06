@@ -69,7 +69,7 @@ MODULE globals
   INTEGER :: se_toggle
   INTEGER :: se_factor = 50
   INTEGER :: j_root
-  INTEGER :: se_spinup = 100
+  INTEGER :: se_spinup = 10
   INTEGER :: age_toggle
   INTEGER :: age_root
   CHARACTER(len=25) :: my_id_s
