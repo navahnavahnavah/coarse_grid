@@ -4858,7 +4858,7 @@ PROGRAM main
               !if (medium3(2) .eq. precip_th) then
 
                             !-EQ vol_th
-                          vol_th = 10000000.0*t_vol_s*100.0/10.0
+                          vol_th = 10.0*t_vol_s*100.0/10.0
 
             !   inputz0 = TRIM(inputz0) // "EQUILIBRIUM_PHASES 1" //NEW_LINE('')// &
             !        &"    Goethite " // TRIM(s_precip) // TRIM(s_goethite) // kinetics //NEW_LINE('')// &
@@ -6142,22 +6142,22 @@ PROGRAM main
 
                   !if (maxval(dsecondary3(1:g_sec/2)) .GT. 0.0) then
 
-                  if (my_id .EQ. 3) then
-                      WRITE(*,*) "primary"
-                      WRITE(*,*) primary3
-                      WRITE(*,*) "secondary"
-                      WRITE(*,*) secondary3
-                      WRITE(*,*) "solute"
-                      WRITE(*,*) solute3
-                      WRITE(*,*) "medium"
-                      WRITE(*,*) medium3
-                      WRITE(*,*) "temp"
-                      WRITE(*,*) temp3
-                      write(*,*) "dprimary"
-                      write(*,*) dprimary3
-                      write(*,*) "dsecondary"
-                      write(*,*) dsecondary3
-                  end if
+                !   if (my_id .EQ. 3) then
+                !       WRITE(*,*) "primary"
+                !       WRITE(*,*) primary3
+                !       WRITE(*,*) "secondary"
+                !       WRITE(*,*) secondary3
+                !       WRITE(*,*) "solute"
+                !       WRITE(*,*) solute3
+                !       WRITE(*,*) "medium"
+                !       WRITE(*,*) medium3
+                !       WRITE(*,*) "temp"
+                !       WRITE(*,*) temp3
+                !       write(*,*) "dprimary"
+                !       write(*,*) dprimary3
+                !       write(*,*) "dsecondary"
+                !       write(*,*) dsecondary3
+                !   end if
 
 
                   id = CreateIPhreeqc()
@@ -6290,21 +6290,21 @@ PROGRAM main
                 !   end if
 
                 !-KIN extract!!!
-                if (my_id .EQ. 3) then
-                    write(*,*) " "
-                    write(*,*) "NUMBER OF LINES: " , GetSelectedOutputStringLineCount(id)
-                end if
+                ! if (my_id .EQ. 3) then
+                !     write(*,*) " "
+                !     write(*,*) "NUMBER OF LINES: " , GetSelectedOutputStringLineCount(id)
+                ! end if
                   ! WRITE AWAY
                   DO i=1,GetSelectedOutputStringLineCount(id)
                      CALL GetSelectedOutputStringLine(id, i, line)
                      ! HEADER BITS YOU MAY WANT
                     !  if (my_id .EQ. 10) then
-                           	if (i .eq. 1) then
-                                if (my_id .EQ. 3) then
-                    !        	   write(12,*) trim(line)
-                            	   write(*,*) trim(line) ! PRINT LABELS FOR EVERY FIELD (USEFUL)
-                                end if
-                           	end if
+                    !        	if (i .eq. 1) then
+                    !             if (my_id .EQ. 3) then
+                    ! !        	   write(12,*) trim(line)
+                    !         	   write(*,*) trim(line) ! PRINT LABELS FOR EVERY FIELD (USEFUL)
+                    !             end if
+                    !        	end if
                     ! if (my_id .EQ. 3) then
                     !     write(*,*) trim(line)
                     !     write(*,*) " "
@@ -6317,9 +6317,9 @@ PROGRAM main
     !!!!write(12,*) outmat(i,:) ! this writes to file, which i don't need (USEFUL)
                         ! 		if ((medium3(6) .gt. 23000.0) .and. (medium3(7) .gt. -200.0)) then
                         ! 		write(*,*) i
-                            if (my_id .EQ. 3) then
-                         		write(*,*) trim(line) ! PRINT EVERY GOD DAMN LINE
-                            end if
+                            ! if (my_id .EQ. 3) then
+                         ! 		write(*,*) trim(line) ! PRINT EVERY GOD DAMN LINE
+                            ! end if
                         ! 		write(*,*) ""
                         ! ! 		! write(*,*) solute3
                         ! ! ! 		write(*,*) ""
