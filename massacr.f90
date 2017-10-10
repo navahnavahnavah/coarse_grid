@@ -4858,7 +4858,7 @@ PROGRAM main
               !if (medium3(2) .eq. precip_th) then
 
                             !-EQ vol_th
-                          vol_th = 10.0*t_vol_s*100.0/10.0
+                          vol_th = 5.0*t_vol_s*100.0/10.0
 
             !   inputz0 = TRIM(inputz0) // "EQUILIBRIUM_PHASES 1" //NEW_LINE('')// &
             !        &"    Goethite " // TRIM(s_precip) // TRIM(s_goethite) // kinetics //NEW_LINE('')// &
@@ -5259,7 +5259,7 @@ PROGRAM main
 
 
 
-              ! EQ rates
+              !-EQ rates
               inputz0 = TRIM(inputz0) // "RATES" //NEW_LINE('')// &
 
                &"BGlass" //NEW_LINE('')// &
@@ -5293,7 +5293,7 @@ PROGRAM main
 
 
 
-               ! EQ kinetics
+               !-EQ kinetics
                &"KINETICS 1" //NEW_LINE('')// &
 
                &"BGlass" //NEW_LINE('')// &
@@ -6227,18 +6227,44 @@ PROGRAM main
                 !     call system_clock(counti, count_rate, count_max)
                 ! end if
 
-                ! if (jjj .LT. end_loop) then
-                !     !write(*,*) TRIM(path_final) // 'cell_break/' // TRIM(my_id_s) //'.txt'
-                !     !write(*,*) my_id_s
-                !     OPEN(UNIT=my_id+100, status = 'REPLACE', FILE=TRIM(path_final) // 'cell_break/' // TRIM(my_id_s) //'.txt')
-                !     WRITE(my_id+100,*) "my_id:" , my_id
-                !     WRITE(my_id+100,*) "j_root:" , j_root
-                !     WRITE(my_id+100,*) "jjj:" , jjj
-                !     WRITE(my_id+100,*) "sv(jjj):" , slave_vector(jjj)
-                !     WRITE(my_id+100,*) "x:" , medium3(6)
-                !     WRITE(my_id+100,*) "y:" , medium3(7)
-                !     !CLOSE ( my_id+100 )
-                ! end if
+                if (j_root .GE. 58000) then
+                !if (jjj .LT. end_loop) then
+                    !write(*,*) TRIM(path_final) // 'cell_break/' // TRIM(my_id_s) //'.txt'
+                    !write(*,*) my_id_s
+                    OPEN(UNIT=my_id+100, status = 'REPLACE', FILE=TRIM(path_final) // 'grid_stall_' // TRIM(my_id_s) //'.txt')
+                    WRITE(my_id+100,*) "my_id:" , my_id
+                    WRITE(my_id+100,*) "j_root:" , j_root
+                    WRITE(my_id+100,*) "jjj:" , jjj
+                    WRITE(my_id+100,*) "sv(jjj):" , slave_vector(jjj)
+                    WRITE(my_id+100,*) "x:" , medium3(6)
+                    WRITE(my_id+100,*) "y:" , medium3(7)
+
+                    WRITE(my_id+100,*) " "
+                    WRITE(my_id+100,*) "primary3"
+                    WRITE(my_id+100,*) primary3
+
+                    WRITE(my_id+100,*) " "
+                    WRITE(my_id+100,*) "dprimary3"
+                    WRITE(my_id+100,*) dprimary3
+
+                    WRITE(my_id+100,*) " "
+                    WRITE(my_id+100,*) "secondary3"
+                    WRITE(my_id+100,*) secondary3
+
+                    WRITE(my_id+100,*) " "
+                    WRITE(my_id+100,*) "dsecondary3"
+                    WRITE(my_id+100,*) dsecondary3
+
+                    WRITE(my_id+100,*) " "
+                    WRITE(my_id+100,*) "solute3"
+                    WRITE(my_id+100,*) solute3
+
+                    WRITE(my_id+100,*) " "
+                    WRITE(my_id+100,*) "medium3"
+                    WRITE(my_id+100,*) medium3
+                    CLOSE ( my_id+100 )
+                !end if
+                end if
 
 
 
@@ -6268,9 +6294,15 @@ PROGRAM main
                         CALL OutputErrorString(id)
                      END IF
                      !STOP
-
-
                   END IF
+
+                  if (j_root .GE. 58000) then
+                  if (jjj .EQ. end_loop) then
+                      OPEN(UNIT=my_id+100, status = 'REPLACE', FILE=TRIM(path_final) // 'grid_stall_' // TRIM(my_id_s) //'.txt')
+                      WRITE(my_id+100,*) "!"
+                      CLOSE ( my_id+100 )
+                  end if
+                  end if
 
                 !   if (jjj .LT. end_loop) then
                 !       CLOSE ( my_id+100, status='delete' )

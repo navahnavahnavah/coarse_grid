@@ -10,7 +10,7 @@
 # you want to run.
 #
 # set the name of the job
-#PBS -N sites_11_o
+#PBS -N sites_11_s
 #
 # set the output and error files
 #PBS -o /data/navah/cg_output/$PBS_JOBNAME/e_out.txt
@@ -22,10 +22,24 @@
 
 
 
-##PBS -l nodes=compute-0-2:ppn=12+compute-0-3:ppn=12+compute-0-4:ppn=12
+#PBS -l nodes=compute-0-2:ppn=12+compute-0-3:ppn=12+compute-0-4:ppn=11
+##PBS -l nodes=compute-0-0:ppn=12+compute-1-6:ppn=12+compute-0-1:ppn=12
+##PBS -l nodes=compute-1-0:ppn=12+compute-1-1:ppn=12
+
+
+###
+
+
+
 ##PBS -l nodes=compute-1-0:ppn=12+compute-1-1:ppn=12+compute-1-2:ppn=12
 ##PBS -l nodes=compute-0-1:ppn=12+compute-0-0:ppn=12
-#PBS -l nodes=compute-1-6:ppn=12+compute-1-9:ppn=12
+
+
+
+
+
+
+##PBS -l nodes=compute-0-1:ppn=12+compute-0-0:ppn=12
 
 
 ##PBS -l nodes=compute-0-3:ppn=12+compute-0-4:ppn=12
