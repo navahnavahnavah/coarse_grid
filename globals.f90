@@ -37,7 +37,7 @@ MODULE globals
   INTEGER :: th_bool(.TRUE.:.FALSE.)
   LOGICAL :: sig_bool_a, sig_bool_b
   INTEGER :: tag
-  
+
   REAL(4) :: dt, dx, dy, dt0 = 0.001
   REAL(4) :: dPsi, psiLast(xn,yn)
   INTEGER :: loop
@@ -75,6 +75,8 @@ MODULE globals
   CHARACTER(len=25) :: my_id_s
   REAL(4) :: vol_th
   CHARACTER(len=25) :: s_precip_nope= "100.0"
+  CHARACTER(len=25) :: fixed_volume
+  CHARACTER(len=25) :: grow_bit
 
 CONTAINS
 
