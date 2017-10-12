@@ -4858,7 +4858,7 @@ PROGRAM main
               !if (medium3(2) .eq. precip_th) then
 
                             !-EQ vol_th
-                          vol_th = 5.0*t_vol_s*100.0/10.0
+                          vol_th = 200000000.0*t_vol_s*100.0/10.0
 
             !   inputz0 = TRIM(inputz0) // "EQUILIBRIUM_PHASES 1" //NEW_LINE('')// &
             !        &"    Goethite " // TRIM(s_precip) // TRIM(s_goethite) // kinetics //NEW_LINE('')// &
@@ -6200,7 +6200,7 @@ PROGRAM main
 
 
 
-                !-KIN rates 2
+
                 &"RATES 2" //NEW_LINE('')// &
 
                 ! ! kaolinite
@@ -6444,368 +6444,729 @@ PROGRAM main
                 ! &"    10 save " // TRIM(sd_epidote) //NEW_LINE('')// &
                 ! &"-end" //NEW_LINE('')// &
 
+                !-KIN rates 2
 
                 ! kaolinite
+                &"Kaolinite" //NEW_LINE('')// &
+                &"-start" //NEW_LINE('')// &
+                &'    10 if (SI("Kaolinite") < 0.0 ) then goto 200' //NEW_LINE('')// &
+                &"    20 rate0=" // TRIM(sd_kaolinite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                &"    200 save moles" //NEW_LINE('')// &
+                &"-end" //NEW_LINE('')// &
 
-                  &"Kaolinite" //NEW_LINE('')// &
-                  &"-start" //NEW_LINE('')// &
-                  &'    10 if (SI("Kaolinite") <= 0.0 ) then goto 200' //NEW_LINE('')// &
-                  &"    20 rate0=" // TRIM(sd_kaolinite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
-                  &"    30 moles = rate0 * time" //NEW_LINE('')// &
-                  &"    200 save moles" //NEW_LINE('')// &
-                  &"-end" //NEW_LINE('')// &
+                ! saponite-mg
+                &"Saponite-Mg" //NEW_LINE('')// &
+                &"-start" //NEW_LINE('')// &
+                &'    10 if (SI("Saponite-Mg") < 0.0 ) then goto 200' //NEW_LINE('')// &
+                &"    20 rate0=" // TRIM(sd_saponite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                &"    200 save moles" //NEW_LINE('')// &
+                &"-end" //NEW_LINE('')// &
 
-                  ! saponite-mg
-                  &"Saponite-Mg" //NEW_LINE('')// &
-                  &"-start" //NEW_LINE('')// &
-                  &'    10 if (SI("Saponite-Mg") <= 0.0 ) then goto 200' //NEW_LINE('')// &
-                  &"    20 rate0=" // TRIM(sd_saponite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
-                  &"    30 moles = rate0 * time" //NEW_LINE('')// &
-                  &"    200 save moles" //NEW_LINE('')// &
-                  &"-end" //NEW_LINE('')// &
+                ! celadonite
+                &"Celadonite" //NEW_LINE('')// &
+                &"-start" //NEW_LINE('')// &
+                &'    10 if (SI("Celadonite") < 0.0 ) then goto 200' //NEW_LINE('')// &
+                &"    20 rate0=" // TRIM(sd_celadonite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                &"    200 save moles" //NEW_LINE('')// &
+                &"-end" //NEW_LINE('')// &
 
-                  ! celadonite
-                  &"Celadonite" //NEW_LINE('')// &
-                  &"-start" //NEW_LINE('')// &
-                  &'    10 if (SI("Celadonite") <= 0.0 ) then goto 200' //NEW_LINE('')// &
-                  &"    20 rate0=" // TRIM(sd_celadonite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
-                  &"    30 moles = rate0 * time" //NEW_LINE('')// &
-                  &"    200 save moles" //NEW_LINE('')// &
-                  &"-end" //NEW_LINE('')// &
+                ! clinoptilolite
+                &"Clinoptilolite-Ca" //NEW_LINE('')// &
+                &"-start" //NEW_LINE('')// &
+                &'    10 if (SI("Clinoptilolite-Ca") < 0.0 ) then goto 200' //NEW_LINE('')// &
+                &"    20 rate0=" // TRIM(sd_clinoptilolite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                &"    200 save moles" //NEW_LINE('')// &
+                &"-end" //NEW_LINE('')// &
 
-                  ! clinoptilolite
-                  &"Clinoptilolite-Ca" //NEW_LINE('')// &
-                  &"-start" //NEW_LINE('')// &
-                  &'    10 if (SI("Clinoptilolite-Ca") <= 0.0 ) then goto 200' //NEW_LINE('')// &
-                  &"    20 rate0=" // TRIM(sd_clinoptilolite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
-                  &"    30 moles = rate0 * time" //NEW_LINE('')// &
-                  &"    200 save moles" //NEW_LINE('')// &
-                  &"-end" //NEW_LINE('')// &
-
-                  ! pyrite
-                  &"Pyrite" //NEW_LINE('')// &
-                  &"-start" //NEW_LINE('')// &
-                  &'    10 if (SI("Pyrite") <= 0.0 ) then goto 200' //NEW_LINE('')// &
-                  &"    20 rate0=" // TRIM(sd_pyrite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
-                  &"    30 moles = rate0 * time" //NEW_LINE('')// &
-                  &"    200 save moles" //NEW_LINE('')// &
-                  &"-end" //NEW_LINE('')// &
+                ! pyrite
+                &"Pyrite" //NEW_LINE('')// &
+                &"-start" //NEW_LINE('')// &
+                &'    10 if (SI("Pyrite") < 0.0 ) then goto 200' //NEW_LINE('')// &
+                &"    20 rate0=" // TRIM(sd_pyrite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                &"    200 save moles" //NEW_LINE('')// &
+                &"-end" //NEW_LINE('')// &
 
 
-                  ! mont-na
-                  &"Montmor-Na" //NEW_LINE('')// &
-                  &"-start" //NEW_LINE('')// &
-                  &'    10 if (SI("Montmor-Na") <= 0.0 ) then goto 200' //NEW_LINE('')// &
-                  &"    20 rate0=" // TRIM(sd_mont_na) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
-                  &"    30 moles = rate0 * time" //NEW_LINE('')// &
-                  &"    200 save moles" //NEW_LINE('')// &
-                  &"-end" //NEW_LINE('')// &
+                ! mont-na
+                &"Montmor-Na" //NEW_LINE('')// &
+                &"-start" //NEW_LINE('')// &
+                &'    10 if (SI("Montmor-Na") < 0.0 ) then goto 200' //NEW_LINE('')// &
+                &"    20 rate0=" // TRIM(sd_mont_na) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                &"    200 save moles" //NEW_LINE('')// &
+                &"-end" //NEW_LINE('')// &
 
-                  ! goethite
-                  &"Goethite" //NEW_LINE('')// &
-                  &"-start" //NEW_LINE('')// &
-                  &'    10 if (SI("Goethite") <= 0.0 ) then goto 200' //NEW_LINE('')// &
-                  &"    20 rate0=" // TRIM(sd_goethite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
-                  &"    30 moles = rate0 * time" //NEW_LINE('')// &
-                  &"    200 save moles" //NEW_LINE('')// &
-                  &"-end" //NEW_LINE('')// &
+                ! goethite
+                &"Goethite" //NEW_LINE('')// &
+                &"-start" //NEW_LINE('')// &
+                &'    10 if (SI("Goethite") < 0.0 ) then goto 200' //NEW_LINE('')// &
+                &"    20 rate0=" // TRIM(sd_goethite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                &"    200 save moles" //NEW_LINE('')// &
+                &"-end" //NEW_LINE('')// &
 
-                  ! smectite
-                  &"Smectite-high-Fe-Mg" //NEW_LINE('')// &
-                  &"-start" //NEW_LINE('')// &
-                  &'    10 if (SI("Smectite-high-Fe-Mg") <= 0.0 ) then goto 200' //NEW_LINE('')// &
-                  &"    20 rate0=" // TRIM(sd_smectite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
-                  &"    30 moles = rate0 * time" //NEW_LINE('')// &
-                  &"    200 save moles" //NEW_LINE('')// &
-                  &"-end" //NEW_LINE('')// &
+                ! smectite
+                &"Smectite-high-Fe-Mg" //NEW_LINE('')// &
+                &"-start" //NEW_LINE('')// &
+                &'    10 if (SI("Smectite-high-Fe-Mg") < 0.0 ) then goto 200' //NEW_LINE('')// &
+                &"    20 rate0=" // TRIM(sd_smectite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                &"    200 save moles" //NEW_LINE('')// &
+                &"-end" //NEW_LINE('')// &
 
-                  ! calcite
-                  &"Calcite" //NEW_LINE('')// &
-                  &"-start" //NEW_LINE('')// &
-                  &'    10 if (SI("Calcite") <= 0.0 ) then goto 200' //NEW_LINE('')// &
-                  &"    20 rate0=" // TRIM(sd_calcite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
-                  &"    30 moles = rate0 * time" //NEW_LINE('')// &
-                  &"    200 save moles" //NEW_LINE('')// &
-                  &"-end" //NEW_LINE('')// &
+                ! calcite
+                &"Calcite" //NEW_LINE('')// &
+                &"-start" //NEW_LINE('')// &
+                &'    10 if (SI("Calcite") < 0.0 ) then goto 200' //NEW_LINE('')// &
+                &"    20 rate0=" // TRIM(sd_calcite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                &"    200 save moles" //NEW_LINE('')// &
+                &"-end" //NEW_LINE('')// &
 
-                  ! kspar
-                  &"K-Feldspar" //NEW_LINE('')// &
-                  &"-start" //NEW_LINE('')// &
-                  &'    10 if (SI("K-Feldspar") <= 0.0 ) then goto 200' //NEW_LINE('')// &
-                  &"    20 rate0=" // TRIM(sd_kspar) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
-                  &"    30 moles = rate0 * time" //NEW_LINE('')// &
-                  &"    200 save moles" //NEW_LINE('')// &
-                  &"-end" //NEW_LINE('')// &
+                ! kspar
+                &"K-Feldspar" //NEW_LINE('')// &
+                &"-start" //NEW_LINE('')// &
+                &'    10 if (SI("K-Feldspar") < 0.0 ) then goto 200' //NEW_LINE('')// &
+                &"    20 rate0=" // TRIM(sd_kspar) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                &"    200 save moles" //NEW_LINE('')// &
+                &"-end" //NEW_LINE('')// &
 
-                  ! saponite-na
-                  &"Saponite-Na" //NEW_LINE('')// &
-                  &"-start" //NEW_LINE('')// &
-                  &'    10 if (SI("Saponite-Na") <= 0.0 ) then goto 200' //NEW_LINE('')// &
-                  &"    20 rate0=" // TRIM(sd_saponite_na) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
-                  &"    30 moles = rate0 * time" //NEW_LINE('')// &
-                  &"    200 save moles" //NEW_LINE('')// &
-                  &"-end" //NEW_LINE('')// &
+                ! saponite-na
+                &"Saponite-Na" //NEW_LINE('')// &
+                &"-start" //NEW_LINE('')// &
+                &'    10 if (SI("Saponite-Na") < 0.0 ) then goto 200' //NEW_LINE('')// &
+                &"    20 rate0=" // TRIM(sd_saponite_na) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                &"    200 save moles" //NEW_LINE('')// &
+                &"-end" //NEW_LINE('')// &
 
-                  ! nont na
-                  &"Nontronite-Na" //NEW_LINE('')// &
-                  &"-start" //NEW_LINE('')// &
-                  &'    10 if (SI("Nontronite-Na") <= 0.0 ) then goto 200' //NEW_LINE('')// &
-                  &"    20 rate0=" // TRIM(sd_nont_na) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
-                  &"    30 moles = rate0 * time" //NEW_LINE('')// &
-                  &"    200 save moles" //NEW_LINE('')// &
-                  &"-end" //NEW_LINE('')// &
+                ! nont na
+                &"Nontronite-Na" //NEW_LINE('')// &
+                &"-start" //NEW_LINE('')// &
+                &'    10 if (SI("Nontronite-Na") < 0.0 ) then goto 200' //NEW_LINE('')// &
+                &"    20 rate0=" // TRIM(sd_nont_na) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                &"    200 save moles" //NEW_LINE('')// &
+                &"-end" //NEW_LINE('')// &
 
-                  ! nont mg
-                  &"Nontronite-Mg" //NEW_LINE('')// &
-                  &"-start" //NEW_LINE('')// &
-                  &'    10 if (SI("Nontronite-Mg") <= 0.0 ) then goto 200' //NEW_LINE('')// &
-                  &"    20 rate0=" // TRIM(sd_nont_mg) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
-                  &"    30 moles = rate0 * time" //NEW_LINE('')// &
-                  &"    200 save moles" //NEW_LINE('')// &
-                  &"-end" //NEW_LINE('')// &
+                ! nont mg
+                &"Nontronite-Mg" //NEW_LINE('')// &
+                &"-start" //NEW_LINE('')// &
+                &'    10 if (SI("Nontronite-Mg") < 0.0 ) then goto 200' //NEW_LINE('')// &
+                &"    20 rate0=" // TRIM(sd_nont_mg) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                &"    200 save moles" //NEW_LINE('')// &
+                &"-end" //NEW_LINE('')// &
 
-                  ! fe celad
-                  &"Fe-Celadonite" //NEW_LINE('')// &
-                  &"-start" //NEW_LINE('')// &
-                  &'    10 if (SI("Fe-Celadonite") <= 0.0 ) then goto 200' //NEW_LINE('')// &
-                  &"    20 rate0=" // TRIM(sd_fe_celadonite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
-                  &"    30 moles = rate0 * time" //NEW_LINE('')// &
-                  &"    200 save moles" //NEW_LINE('')// &
-                  &"-end" //NEW_LINE('')// &
+                ! fe celad
+                &"Fe-Celadonite" //NEW_LINE('')// &
+                &"-start" //NEW_LINE('')// &
+                &'    10 if (SI("Fe-Celadonite") < 0.0 ) then goto 200' //NEW_LINE('')// &
+                &"    20 rate0=" // TRIM(sd_fe_celadonite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                &"    200 save moles" //NEW_LINE('')// &
+                &"-end" //NEW_LINE('')// &
 
-                  ! nont ca
-                  &"Nontronite-Ca" //NEW_LINE('')// &
-                  &"-start" //NEW_LINE('')// &
-                  &'    10 if (SI("Nontronite-Ca") <= 0.0 ) then goto 200' //NEW_LINE('')// &
-                  &"    20 rate0=" // TRIM(sd_nont_ca) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
-                  &"    30 moles = rate0 * time" //NEW_LINE('')// &
-                  &"    200 save moles" //NEW_LINE('')// &
-                  &"-end" //NEW_LINE('')// &
+                ! nont ca
+                &"Nontronite-Ca" //NEW_LINE('')// &
+                &"-start" //NEW_LINE('')// &
+                &'    10 if (SI("Nontronite-Ca") < 0.0 ) then goto 200' //NEW_LINE('')// &
+                &"    20 rate0=" // TRIM(sd_nont_ca) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                &"    200 save moles" //NEW_LINE('')// &
+                &"-end" //NEW_LINE('')// &
 
-                  ! mesolite
-                  &"Mesolite" //NEW_LINE('')// &
-                  &"-start" //NEW_LINE('')// &
-                  &'    10 if (SI("Mesolite") <= 0.0 ) then goto 200' //NEW_LINE('')// &
-                  &"    20 rate0=" // TRIM(sd_mesolite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
-                  &"    30 moles = rate0 * time" //NEW_LINE('')// &
-                  &"    200 save moles" //NEW_LINE('')// &
-                  &"-end" //NEW_LINE('')// &
+                ! mesolite
+                &"Mesolite" //NEW_LINE('')// &
+                &"-start" //NEW_LINE('')// &
+                &'    10 if (SI("Mesolite") < 0.0 ) then goto 200' //NEW_LINE('')// &
+                &"    20 rate0=" // TRIM(sd_mesolite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                &"    200 save moles" //NEW_LINE('')// &
+                &"-end" //NEW_LINE('')// &
 
-                  ! hematite
-                  &"Hematite" //NEW_LINE('')// &
-                  &"-start" //NEW_LINE('')// &
-                  &'    10 if (SI("Hematite") <= 0.0 ) then goto 200' //NEW_LINE('')// &
-                  &"    20 rate0=" // TRIM(sd_hematite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
-                  &"    30 moles = rate0 * time" //NEW_LINE('')// &
-                  &"    200 save moles" //NEW_LINE('')// &
-                  &"-end" //NEW_LINE('')// &
+                ! hematite
+                &"Hematite" //NEW_LINE('')// &
+                &"-start" //NEW_LINE('')// &
+                &'    10 if (SI("Hematite") < 0.0 ) then goto 200' //NEW_LINE('')// &
+                &"    20 rate0=" // TRIM(sd_hematite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                &"    200 save moles" //NEW_LINE('')// &
+                &"-end" //NEW_LINE('')// &
 
-                  ! mont ca
-                  &"Montmor-Ca" //NEW_LINE('')// &
-                  &"-start" //NEW_LINE('')// &
-                  &'    10 if (SI("Montmor-Ca") <= 0.0 ) then goto 200' //NEW_LINE('')// &
-                  &"    20 rate0=" // TRIM(sd_mont_ca) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
-                  &"    30 moles = rate0 * time" //NEW_LINE('')// &
-                  &"    200 save moles" //NEW_LINE('')// &
-                  &"-end" //NEW_LINE('')// &
+                ! mont ca
+                &"Montmor-Ca" //NEW_LINE('')// &
+                &"-start" //NEW_LINE('')// &
+                &'    10 if (SI("Montmor-Ca") < 0.0 ) then goto 200' //NEW_LINE('')// &
+                &"    20 rate0=" // TRIM(sd_mont_ca) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                &"    200 save moles" //NEW_LINE('')// &
+                &"-end" //NEW_LINE('')// &
 
-                  ! verm ca
-                  &"Vermiculite-Ca" //NEW_LINE('')// &
-                  &"-start" //NEW_LINE('')// &
-                  &'    10 if (SI("Vermiculite-Ca") <= 0.0 ) then goto 200' //NEW_LINE('')// &
-                  &"    20 rate0=" // TRIM(sd_verm_ca) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
-                  &"    30 moles = rate0 * time" //NEW_LINE('')// &
-                  &"    200 save moles" //NEW_LINE('')// &
-                  &"-end" //NEW_LINE('')// &
+                ! verm ca
+                &"Vermiculite-Ca" //NEW_LINE('')// &
+                &"-start" //NEW_LINE('')// &
+                &'    10 if (SI("Vermiculite-Ca") < 0.0 ) then goto 200' //NEW_LINE('')// &
+                &"    20 rate0=" // TRIM(sd_verm_ca) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                &"    200 save moles" //NEW_LINE('')// &
+                &"-end" //NEW_LINE('')// &
 
-                  ! analcime
-                  &"Analcime" //NEW_LINE('')// &
-                  &"-start" //NEW_LINE('')// &
-                  &'    10 if (SI("Analcime") <= 0.0 ) then goto 200' //NEW_LINE('')// &
-                  &"    20 rate0=" // TRIM(sd_analcime) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
-                  &"    30 moles = rate0 * time" //NEW_LINE('')// &
-                  &"    200 save moles" //NEW_LINE('')// &
-                  &"-end" //NEW_LINE('')// &
+                ! analcime
+                &"Analcime" //NEW_LINE('')// &
+                &"-start" //NEW_LINE('')// &
+                &'    10 if (SI("Analcime") < 0.0 ) then goto 200' //NEW_LINE('')// &
+                &"    20 rate0=" // TRIM(sd_analcime) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                &"    200 save moles" //NEW_LINE('')// &
+                &"-end" //NEW_LINE('')// &
 
-                  ! phillipsite
-                  &"Phillipsite" //NEW_LINE('')// &
-                  &"-start" //NEW_LINE('')// &
-                  &'    10 if (SI("Phillipsite") <= 0.0 ) then goto 200' //NEW_LINE('')// &
-                  &"    20 rate0=" // TRIM(sd_phillipsite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
-                  &"    30 moles = rate0 * time" //NEW_LINE('')// &
-                  &"    200 save moles" //NEW_LINE('')// &
-                  &"-end" //NEW_LINE('')// &
+                ! phillipsite
+                &"Phillipsite" //NEW_LINE('')// &
+                &"-start" //NEW_LINE('')// &
+                &'    10 if (SI("Phillipsite") < 0.0 ) then goto 200' //NEW_LINE('')// &
+                &"    20 rate0=" // TRIM(sd_phillipsite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                &"    200 save moles" //NEW_LINE('')// &
+                &"-end" //NEW_LINE('')// &
 
-                  ! mont mg
-                  &"Montmor-Mg" //NEW_LINE('')// &
-                  &"-start" //NEW_LINE('')// &
-                  &'    10 if (SI("Montmor-Mg") <= 0.0 ) then goto 200' //NEW_LINE('')// &
-                  &"    20 rate0=" // TRIM(sd_mont_mg) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
-                  &"    30 moles = rate0 * time" //NEW_LINE('')// &
-                  &"    200 save moles" //NEW_LINE('')// &
-                  &"-end" //NEW_LINE('')// &
+                ! mont mg
+                &"Montmor-Mg" //NEW_LINE('')// &
+                &"-start" //NEW_LINE('')// &
+                &'    10 if (SI("Montmor-Mg") < 0.0 ) then goto 200' //NEW_LINE('')// &
+                &"    20 rate0=" // TRIM(sd_mont_mg) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                &"    200 save moles" //NEW_LINE('')// &
+                &"-end" //NEW_LINE('')// &
 
-                  ! gismondine
-                  &"Gismondine" //NEW_LINE('')// &
-                  &"-start" //NEW_LINE('')// &
-                  &'    10 if (SI("Gismondine") <= 0.0 ) then goto 200' //NEW_LINE('')// &
-                  &"    20 rate0=" // TRIM(sd_gismondine) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
-                  &"    30 moles = rate0 * time" //NEW_LINE('')// &
-                  &"    200 save moles" //NEW_LINE('')// &
-                  &"-end" //NEW_LINE('')// &
+                ! gismondine
+                &"Gismondine" //NEW_LINE('')// &
+                &"-start" //NEW_LINE('')// &
+                &'    10 if (SI("Gismondine") < 0.0 ) then goto 200' //NEW_LINE('')// &
+                &"    20 rate0=" // TRIM(sd_gismondine) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                &"    200 save moles" //NEW_LINE('')// &
+                &"-end" //NEW_LINE('')// &
 
-                  ! verm mg
-                  &"Vermiculite-Mg" //NEW_LINE('')// &
-                  &"-start" //NEW_LINE('')// &
-                  &'    10 if (SI("Vermiculite-Mg") <= 0.0 ) then goto 200' //NEW_LINE('')// &
-                  &"    20 rate0=" // TRIM(sd_verm_mg) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
-                  &"    30 moles = rate0 * time" //NEW_LINE('')// &
-                  &"    200 save moles" //NEW_LINE('')// &
-                  &"-end" //NEW_LINE('')// &
+                ! verm mg
+                &"Vermiculite-Mg" //NEW_LINE('')// &
+                &"-start" //NEW_LINE('')// &
+                &'    10 if (SI("Vermiculite-Mg") < 0.0 ) then goto 200' //NEW_LINE('')// &
+                &"    20 rate0=" // TRIM(sd_verm_mg) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                &"    200 save moles" //NEW_LINE('')// &
+                &"-end" //NEW_LINE('')// &
 
-                  ! natrolite
-                  &"Natrolite" //NEW_LINE('')// &
-                  &"-start" //NEW_LINE('')// &
-                  &'    10 if (SI("Natrolite") <= 0.0 ) then goto 200' //NEW_LINE('')// &
-                  &"    20 rate0=" // TRIM(sd_natrolite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
-                  &"    30 moles = rate0 * time" //NEW_LINE('')// &
-                  &"    200 save moles" //NEW_LINE('')// &
-                  &"-end" //NEW_LINE('')// &
+                ! natrolite
+                &"Natrolite" //NEW_LINE('')// &
+                &"-start" //NEW_LINE('')// &
+                &'    10 if (SI("Natrolite") < 0.0 ) then goto 200' //NEW_LINE('')// &
+                &"    20 rate0=" // TRIM(sd_natrolite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                &"    200 save moles" //NEW_LINE('')// &
+                &"-end" //NEW_LINE('')// &
 
-                  ! talc
-                  &"Talc" //NEW_LINE('')// &
-                  &"-start" //NEW_LINE('')// &
-                  &'    10 if (SI("Talc") <= 0.0 ) then goto 200' //NEW_LINE('')// &
-                  &"    20 rate0=" // TRIM(sd_talc) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
-                  &"    30 moles = rate0 * time" //NEW_LINE('')// &
-                  &"    200 save moles" //NEW_LINE('')// &
-                  &"-end" //NEW_LINE('')// &
+                ! talc
+                &"Talc" //NEW_LINE('')// &
+                &"-start" //NEW_LINE('')// &
+                &'    10 if (SI("Talc") < 0.0 ) then goto 200' //NEW_LINE('')// &
+                &"    20 rate0=" // TRIM(sd_talc) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                &"    200 save moles" //NEW_LINE('')// &
+                &"-end" //NEW_LINE('')// &
 
-                  ! smectite low
-                  &"Smectite-low-Fe-Mg" //NEW_LINE('')// &
-                  &"-start" //NEW_LINE('')// &
-                  &'    10 if (SI("Natrolite") <= 0.0 ) then goto 200' //NEW_LINE('')// &
-                  &"    20 rate0=" // TRIM(sd_smectite_low) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
-                  &"    30 moles = rate0 * time" //NEW_LINE('')// &
-                  &"    200 save moles" //NEW_LINE('')// &
-                  &"-end" //NEW_LINE('')// &
+                ! smectite low
+                &"Smectite-low-Fe-Mg" //NEW_LINE('')// &
+                &"-start" //NEW_LINE('')// &
+                &'    10 if (SI("Smectite-low-Fe-Mg") < 0.0 ) then goto 200' //NEW_LINE('')// &
+                &"    20 rate0=" // TRIM(sd_smectite_low) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                &"    200 save moles" //NEW_LINE('')// &
+                &"-end" //NEW_LINE('')// &
 
-                  ! prehnite
-                  &"Prehnite" //NEW_LINE('')// &
-                  &"-start" //NEW_LINE('')// &
-                  &'    10 if (SI("Prehnite") <= 0.0 ) then goto 200' //NEW_LINE('')// &
-                  &"    20 rate0=" // TRIM(sd_prehnite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
-                  &"    30 moles = rate0 * time" //NEW_LINE('')// &
-                  &"    200 save moles" //NEW_LINE('')// &
-                  &"-end" //NEW_LINE('')// &
+                ! prehnite
+                &"Prehnite" //NEW_LINE('')// &
+                &"-start" //NEW_LINE('')// &
+                &'    10 if (SI("Prehnite") < 0.0 ) then goto 200' //NEW_LINE('')// &
+                &"    20 rate0=" // TRIM(sd_prehnite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                &"    200 save moles" //NEW_LINE('')// &
+                &"-end" //NEW_LINE('')// &
 
-                  ! chlorite
-                  &"Chlorite(14a)" //NEW_LINE('')// &
-                  &"-start" //NEW_LINE('')// &
-                  &'    10 if (SI("Chlorite(14a)") <= 0.0 ) then goto 200' //NEW_LINE('')// &
-                  &"    20 rate0=" // TRIM(sd_chlorite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
-                  &"    30 moles = rate0 * time" //NEW_LINE('')// &
-                  &"    200 save moles" //NEW_LINE('')// &
-                  &"-end" //NEW_LINE('')// &
+                ! chlorite
+                &"Chlorite(14a)" //NEW_LINE('')// &
+                &"-start" //NEW_LINE('')// &
+                &'    10 if (SI("Chlorite(14a)") < 0.0 ) then goto 200' //NEW_LINE('')// &
+                &"    20 rate0=" // TRIM(sd_chlorite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                &"    200 save moles" //NEW_LINE('')// &
+                &"-end" //NEW_LINE('')// &
 
-                  ! scolecite
-                  &"Scolecite" //NEW_LINE('')// &
-                  &"-start" //NEW_LINE('')// &
-                  &'    10 if (SI("Scolecite") <= 0.0 ) then goto 200' //NEW_LINE('')// &
-                  &"    20 rate0=" // TRIM(sd_scolecite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
-                  &"    30 moles = rate0 * time" //NEW_LINE('')// &
-                  &"    200 save moles" //NEW_LINE('')// &
-                  &"-end" //NEW_LINE('')// &
+                ! scolecite
+                &"Scolecite" //NEW_LINE('')// &
+                &"-start" //NEW_LINE('')// &
+                &'    10 if (SI("Scolecite") < 0.0 ) then goto 200' //NEW_LINE('')// &
+                &"    20 rate0=" // TRIM(sd_scolecite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                &"    200 save moles" //NEW_LINE('')// &
+                &"-end" //NEW_LINE('')// &
 
-                  ! clinochlorte
-                  &"Clinochlore-14A" //NEW_LINE('')// &
-                  &"-start" //NEW_LINE('')// &
-                  &'    10 if (SI("Clinochlore-14A") <= 0.0 ) then goto 200' //NEW_LINE('')// &
-                  &"    20 rate0=" // TRIM(sd_clinochlore14a) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
-                  &"    30 moles = rate0 * time" //NEW_LINE('')// &
-                  &"    200 save moles" //NEW_LINE('')// &
-                  &"-end" //NEW_LINE('')// &
+                ! clinochlorte
+                &"Clinochlore-14A" //NEW_LINE('')// &
+                &"-start" //NEW_LINE('')// &
+                &'    10 if (SI("Clinochlore-14A") < 0.0 ) then goto 200' //NEW_LINE('')// &
+                &"    20 rate0=" // TRIM(sd_clinochlore14a) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                &"    200 save moles" //NEW_LINE('')// &
+                &"-end" //NEW_LINE('')// &
 
-                  ! Clinochlore-7A
-                  &"Clinochlore-7A" //NEW_LINE('')// &
-                  &"-start" //NEW_LINE('')// &
-                  &'    10 if (SI("Clinochlore-7A") <= 0.0 ) then goto 200' //NEW_LINE('')// &
-                  &"    20 rate0=" // TRIM(sd_clinochlore7a) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
-                  &"    30 moles = rate0 * time" //NEW_LINE('')// &
-                  &"    200 save moles" //NEW_LINE('')// &
-                  &"-end" //NEW_LINE('')// &
+                ! Clinochlore-7A
+                &"Clinochlore-7A" //NEW_LINE('')// &
+                &"-start" //NEW_LINE('')// &
+                &'    10 if (SI("Clinochlore-7A") < 0.0 ) then goto 200' //NEW_LINE('')// &
+                &"    20 rate0=" // TRIM(sd_clinochlore7a) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                &"    200 save moles" //NEW_LINE('')// &
+                &"-end" //NEW_LINE('')// &
 
-                  ! saponite_ca
-                  &"Saponite-Ca" //NEW_LINE('')// &
-                  &"-start" //NEW_LINE('')// &
-                  &'    10 if (SI("Saponite-Ca") <= 0.0 ) then goto 200' //NEW_LINE('')// &
-                  &"    20 rate0=" // TRIM(sd_saponite_ca) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
-                  &"    30 moles = rate0 * time" //NEW_LINE('')// &
-                  &"    200 save moles" //NEW_LINE('')// &
-                  &"-end" //NEW_LINE('')// &
+                ! saponite_ca
+                &"Saponite-Ca" //NEW_LINE('')// &
+                &"-start" //NEW_LINE('')// &
+                &'    10 if (SI("Saponite-Ca") < 0.0 ) then goto 200' //NEW_LINE('')// &
+                &"    20 rate0=" // TRIM(sd_saponite_ca) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                &"    200 save moles" //NEW_LINE('')// &
+                &"-end" //NEW_LINE('')// &
 
-                  ! verm-na
-                  &"Vermiculite-Na" //NEW_LINE('')// &
-                  &"-start" //NEW_LINE('')// &
-                  &'    10 if (SI("Vermiculite-Na") <= 0.0 ) then goto 200' //NEW_LINE('')// &
-                  &"    20 rate0=" // TRIM(sd_verm_na) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
-                  &"    30 moles = rate0 * time" //NEW_LINE('')// &
-                  &"    200 save moles" //NEW_LINE('')// &
-                  &"-end" //NEW_LINE('')// &
+                ! verm-na
+                &"Vermiculite-Na" //NEW_LINE('')// &
+                &"-start" //NEW_LINE('')// &
+                &'    10 if (SI("Vermiculite-Na") < 0.0 ) then goto 200' //NEW_LINE('')// &
+                &"    20 rate0=" // TRIM(sd_verm_na) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                &"    200 save moles" //NEW_LINE('')// &
+                &"-end" //NEW_LINE('')// &
 
-                  ! pyrrhotite
-                  &"Pyrrhotite" //NEW_LINE('')// &
-                  &"-start" //NEW_LINE('')// &
-                  &'    10 if (SI("Pyrrhotite") <= 0.0 ) then goto 200' //NEW_LINE('')// &
-                  &"    20 rate0=" // TRIM(sd_pyrrhotite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
-                  &"    30 moles = rate0 * time" //NEW_LINE('')// &
-                  &"    200 save moles" //NEW_LINE('')// &
-                  &"-end" //NEW_LINE('')// &
+                ! pyrrhotite
+                &"Pyrrhotite" //NEW_LINE('')// &
+                &"-start" //NEW_LINE('')// &
+                &'    10 if (SI("Pyrrhotite") < 0.0 ) then goto 200' //NEW_LINE('')// &
+                &"    20 rate0=" // TRIM(sd_pyrrhotite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                &"    200 save moles" //NEW_LINE('')// &
+                &"-end" //NEW_LINE('')// &
 
-                  ! fe-sap-ca
-                  &"Fe-Saponite-Ca" //NEW_LINE('')// &
-                  &"-start" //NEW_LINE('')// &
-                  &'    10 if (SI("Fe-Saponite-Ca") <= 0.0 ) then goto 200' //NEW_LINE('')// &
-                  &"    20 rate0=" // TRIM(sd_fe_saponite_ca) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
-                  &"    30 moles = rate0 * time" //NEW_LINE('')// &
-                  &"    200 save moles" //NEW_LINE('')// &
-                  &"-end" //NEW_LINE('')// &
+                ! fe-sap-ca
+                &"Fe-Saponite-Ca" //NEW_LINE('')// &
+                &"-start" //NEW_LINE('')// &
+                &'    10 if (SI("Fe-Saponite-Ca") < 0.0 ) then goto 200' //NEW_LINE('')// &
+                &"    20 rate0=" // TRIM(sd_fe_saponite_ca) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                &"    200 save moles" //NEW_LINE('')// &
+                &"-end" //NEW_LINE('')// &
 
-                  ! fe sap mg
-                  &"Fe-Saponite-Mg" //NEW_LINE('')// &
-                  &"-start" //NEW_LINE('')// &
-                  &'    10 if (SI("Fe-Saponite-Mg") <= 0.0 ) then goto 200' //NEW_LINE('')// &
-                  &"    20 rate0=" // TRIM(sd_fe_saponite_mg) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
-                  &"    30 moles = rate0 * time" //NEW_LINE('')// &
-                  &"    200 save moles" //NEW_LINE('')// &
-                  &"-end" //NEW_LINE('')// &
+                ! fe sap mg
+                &"Fe-Saponite-Mg" //NEW_LINE('')// &
+                &"-start" //NEW_LINE('')// &
+                &'    10 if (SI("Fe-Saponite-Mg") < 0.0 ) then goto 200' //NEW_LINE('')// &
+                &"    20 rate0=" // TRIM(sd_fe_saponite_mg) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                &"    200 save moles" //NEW_LINE('')// &
+                &"-end" //NEW_LINE('')// &
 
-                  ! daphnite-7a
-                  &"Daphnite-7a" //NEW_LINE('')// &
-                  &"-start" //NEW_LINE('')// &
-                  &'    10 if (SI("Daphnite-7a") <= 0.0 ) then goto 200' //NEW_LINE('')// &
-                  &"    20 rate0=" // TRIM(sd_daphnite_7a) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
-                  &"    30 moles = rate0 * time" //NEW_LINE('')// &
-                  &"    200 save moles" //NEW_LINE('')// &
-                  &"-end" //NEW_LINE('')// &
+                ! daphnite-7a
+                &"Daphnite-7a" //NEW_LINE('')// &
+                &"-start" //NEW_LINE('')// &
+                &'    10 if (SI("Daphnite-7a") < 0.0 ) then goto 200' //NEW_LINE('')// &
+                &"    20 rate0=" // TRIM(sd_daphnite_7a) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                &"    200 save moles" //NEW_LINE('')// &
+                &"-end" //NEW_LINE('')// &
 
-                  ! daphnite-14a
-                  &"Daphnite-14a" //NEW_LINE('')// &
-                  &"-start" //NEW_LINE('')// &
-                  &'    10 if (SI("Daphnite-14a") <= 0.0 ) then goto 200' //NEW_LINE('')// &
-                  &"    20 rate0=" // TRIM(sd_daphnite_14a) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
-                  &"    30 moles = rate0 * time" //NEW_LINE('')// &
-                  &"    200 save moles" //NEW_LINE('')// &
-                  &"-end" //NEW_LINE('')// &
+                ! daphnite-14a
+                &"Daphnite-14a" //NEW_LINE('')// &
+                &"-start" //NEW_LINE('')// &
+                &'    10 if (SI("Daphnite-14a") < 0.0 ) then goto 200' //NEW_LINE('')// &
+                &"    20 rate0=" // TRIM(sd_daphnite_14a) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                &"    200 save moles" //NEW_LINE('')// &
+                &"-end" //NEW_LINE('')// &
 
-                  ! epidote
-                  &"Epidote" //NEW_LINE('')// &
-                  &"-start" //NEW_LINE('')// &
-                  &'    10 if (SI("Epidote") <= 0.0 ) then goto 200' //NEW_LINE('')// &
-                  &"    20 rate0=" // TRIM(sd_epidote) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
-                  &"    30 moles = rate0 * time" //NEW_LINE('')// &
-                  &"    200 save moles" //NEW_LINE('')// &
-                  &"-end" //NEW_LINE('')// &
+                ! epidote
+                &"Epidote" //NEW_LINE('')// &
+                &"-start" //NEW_LINE('')// &
+                &'    10 if (SI("Epidote") < 0.0 ) then goto 200' //NEW_LINE('')// &
+                &"    20 rate0=" // TRIM(sd_epidote) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                &"    200 save moles" //NEW_LINE('')// &
+                &"-end" //NEW_LINE('')// &
+
+                !   ! kaolinite
+                !   &"Kaolinite" //NEW_LINE('')// &
+                !   &"-start" //NEW_LINE('')// &
+                !   &'    10 if (SI("Kaolinite") <= 0.0 ) then goto 200' //NEW_LINE('')// &
+                !   &"    20 rate0=" // TRIM(sd_kaolinite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                !   &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                !   &"    200 save moles" //NEW_LINE('')// &
+                !   &"-end" //NEW_LINE('')// &
+                  !
+                !   ! saponite-mg
+                !   &"Saponite-Mg" //NEW_LINE('')// &
+                !   &"-start" //NEW_LINE('')// &
+                !   &'    10 if (SI("Saponite-Mg") <= 0.0 ) then goto 200' //NEW_LINE('')// &
+                !   &"    20 rate0=" // TRIM(sd_saponite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                !   &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                !   &"    200 save moles" //NEW_LINE('')// &
+                !   &"-end" //NEW_LINE('')// &
+                  !
+                !   ! celadonite
+                !   &"Celadonite" //NEW_LINE('')// &
+                !   &"-start" //NEW_LINE('')// &
+                !   &'    10 if (SI("Celadonite") <= 0.0 ) then goto 200' //NEW_LINE('')// &
+                !   &"    20 rate0=" // TRIM(sd_celadonite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                !   &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                !   &"    200 save moles" //NEW_LINE('')// &
+                !   &"-end" //NEW_LINE('')// &
+                  !
+                !   ! clinoptilolite
+                !   &"Clinoptilolite-Ca" //NEW_LINE('')// &
+                !   &"-start" //NEW_LINE('')// &
+                !   &'    10 if (SI("Clinoptilolite-Ca") <= 0.0 ) then goto 200' //NEW_LINE('')// &
+                !   &"    20 rate0=" // TRIM(sd_clinoptilolite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                !   &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                !   &"    200 save moles" //NEW_LINE('')// &
+                !   &"-end" //NEW_LINE('')// &
+                  !
+                !   ! pyrite
+                !   &"Pyrite" //NEW_LINE('')// &
+                !   &"-start" //NEW_LINE('')// &
+                !   &'    10 if (SI("Pyrite") <= 0.0 ) then goto 200' //NEW_LINE('')// &
+                !   &"    20 rate0=" // TRIM(sd_pyrite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                !   &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                !   &"    200 save moles" //NEW_LINE('')// &
+                !   &"-end" //NEW_LINE('')// &
+                  !
+                  !
+                !   ! mont-na
+                !   &"Montmor-Na" //NEW_LINE('')// &
+                !   &"-start" //NEW_LINE('')// &
+                !   &'    10 if (SI("Montmor-Na") <= 0.0 ) then goto 200' //NEW_LINE('')// &
+                !   &"    20 rate0=" // TRIM(sd_mont_na) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                !   &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                !   &"    200 save moles" //NEW_LINE('')// &
+                !   &"-end" //NEW_LINE('')// &
+                  !
+                !   ! goethite
+                !   &"Goethite" //NEW_LINE('')// &
+                !   &"-start" //NEW_LINE('')// &
+                !   &'    10 if (SI("Goethite") <= 0.0 ) then goto 200' //NEW_LINE('')// &
+                !   &"    20 rate0=" // TRIM(sd_goethite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                !   &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                !   &"    200 save moles" //NEW_LINE('')// &
+                !   &"-end" //NEW_LINE('')// &
+                  !
+                !   ! smectite
+                !   &"Smectite-high-Fe-Mg" //NEW_LINE('')// &
+                !   &"-start" //NEW_LINE('')// &
+                !   &'    10 if (SI("Smectite-high-Fe-Mg") <= 0.0 ) then goto 200' //NEW_LINE('')// &
+                !   &"    20 rate0=" // TRIM(sd_smectite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                !   &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                !   &"    200 save moles" //NEW_LINE('')// &
+                !   &"-end" //NEW_LINE('')// &
+                  !
+                !   ! calcite
+                !   &"Calcite" //NEW_LINE('')// &
+                !   &"-start" //NEW_LINE('')// &
+                !   &'    10 if (SI("Calcite") <= 0.0 ) then goto 200' //NEW_LINE('')// &
+                !   &"    20 rate0=" // TRIM(sd_calcite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                !   &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                !   &"    200 save moles" //NEW_LINE('')// &
+                !   &"-end" //NEW_LINE('')// &
+                  !
+                !   ! kspar
+                !   &"K-Feldspar" //NEW_LINE('')// &
+                !   &"-start" //NEW_LINE('')// &
+                !   &'    10 if (SI("K-Feldspar") <= 0.0 ) then goto 200' //NEW_LINE('')// &
+                !   &"    20 rate0=" // TRIM(sd_kspar) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                !   &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                !   &"    200 save moles" //NEW_LINE('')// &
+                !   &"-end" //NEW_LINE('')// &
+                  !
+                !   ! saponite-na
+                !   &"Saponite-Na" //NEW_LINE('')// &
+                !   &"-start" //NEW_LINE('')// &
+                !   &'    10 if (SI("Saponite-Na") <= 0.0 ) then goto 200' //NEW_LINE('')// &
+                !   &"    20 rate0=" // TRIM(sd_saponite_na) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                !   &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                !   &"    200 save moles" //NEW_LINE('')// &
+                !   &"-end" //NEW_LINE('')// &
+                  !
+                !   ! nont na
+                !   &"Nontronite-Na" //NEW_LINE('')// &
+                !   &"-start" //NEW_LINE('')// &
+                !   &'    10 if (SI("Nontronite-Na") <= 0.0 ) then goto 200' //NEW_LINE('')// &
+                !   &"    20 rate0=" // TRIM(sd_nont_na) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                !   &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                !   &"    200 save moles" //NEW_LINE('')// &
+                !   &"-end" //NEW_LINE('')// &
+                  !
+                !   ! nont mg
+                !   &"Nontronite-Mg" //NEW_LINE('')// &
+                !   &"-start" //NEW_LINE('')// &
+                !   &'    10 if (SI("Nontronite-Mg") <= 0.0 ) then goto 200' //NEW_LINE('')// &
+                !   &"    20 rate0=" // TRIM(sd_nont_mg) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                !   &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                !   &"    200 save moles" //NEW_LINE('')// &
+                !   &"-end" //NEW_LINE('')// &
+                  !
+                !   ! fe celad
+                !   &"Fe-Celadonite" //NEW_LINE('')// &
+                !   &"-start" //NEW_LINE('')// &
+                !   &'    10 if (SI("Fe-Celadonite") <= 0.0 ) then goto 200' //NEW_LINE('')// &
+                !   &"    20 rate0=" // TRIM(sd_fe_celadonite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                !   &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                !   &"    200 save moles" //NEW_LINE('')// &
+                !   &"-end" //NEW_LINE('')// &
+                  !
+                !   ! nont ca
+                !   &"Nontronite-Ca" //NEW_LINE('')// &
+                !   &"-start" //NEW_LINE('')// &
+                !   &'    10 if (SI("Nontronite-Ca") <= 0.0 ) then goto 200' //NEW_LINE('')// &
+                !   &"    20 rate0=" // TRIM(sd_nont_ca) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                !   &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                !   &"    200 save moles" //NEW_LINE('')// &
+                !   &"-end" //NEW_LINE('')// &
+                  !
+                !   ! mesolite
+                !   &"Mesolite" //NEW_LINE('')// &
+                !   &"-start" //NEW_LINE('')// &
+                !   &'    10 if (SI("Mesolite") <= 0.0 ) then goto 200' //NEW_LINE('')// &
+                !   &"    20 rate0=" // TRIM(sd_mesolite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                !   &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                !   &"    200 save moles" //NEW_LINE('')// &
+                !   &"-end" //NEW_LINE('')// &
+                  !
+                !   ! hematite
+                !   &"Hematite" //NEW_LINE('')// &
+                !   &"-start" //NEW_LINE('')// &
+                !   &'    10 if (SI("Hematite") <= 0.0 ) then goto 200' //NEW_LINE('')// &
+                !   &"    20 rate0=" // TRIM(sd_hematite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                !   &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                !   &"    200 save moles" //NEW_LINE('')// &
+                !   &"-end" //NEW_LINE('')// &
+                  !
+                !   ! mont ca
+                !   &"Montmor-Ca" //NEW_LINE('')// &
+                !   &"-start" //NEW_LINE('')// &
+                !   &'    10 if (SI("Montmor-Ca") <= 0.0 ) then goto 200' //NEW_LINE('')// &
+                !   &"    20 rate0=" // TRIM(sd_mont_ca) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                !   &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                !   &"    200 save moles" //NEW_LINE('')// &
+                !   &"-end" //NEW_LINE('')// &
+                  !
+                !   ! verm ca
+                !   &"Vermiculite-Ca" //NEW_LINE('')// &
+                !   &"-start" //NEW_LINE('')// &
+                !   &'    10 if (SI("Vermiculite-Ca") <= 0.0 ) then goto 200' //NEW_LINE('')// &
+                !   &"    20 rate0=" // TRIM(sd_verm_ca) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                !   &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                !   &"    200 save moles" //NEW_LINE('')// &
+                !   &"-end" //NEW_LINE('')// &
+                  !
+                !   ! analcime
+                !   &"Analcime" //NEW_LINE('')// &
+                !   &"-start" //NEW_LINE('')// &
+                !   &'    10 if (SI("Analcime") <= 0.0 ) then goto 200' //NEW_LINE('')// &
+                !   &"    20 rate0=" // TRIM(sd_analcime) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                !   &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                !   &"    200 save moles" //NEW_LINE('')// &
+                !   &"-end" //NEW_LINE('')// &
+                  !
+                !   ! phillipsite
+                !   &"Phillipsite" //NEW_LINE('')// &
+                !   &"-start" //NEW_LINE('')// &
+                !   &'    10 if (SI("Phillipsite") <= 0.0 ) then goto 200' //NEW_LINE('')// &
+                !   &"    20 rate0=" // TRIM(sd_phillipsite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                !   &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                !   &"    200 save moles" //NEW_LINE('')// &
+                !   &"-end" //NEW_LINE('')// &
+                  !
+                !   ! mont mg
+                !   &"Montmor-Mg" //NEW_LINE('')// &
+                !   &"-start" //NEW_LINE('')// &
+                !   &'    10 if (SI("Montmor-Mg") <= 0.0 ) then goto 200' //NEW_LINE('')// &
+                !   &"    20 rate0=" // TRIM(sd_mont_mg) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                !   &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                !   &"    200 save moles" //NEW_LINE('')// &
+                !   &"-end" //NEW_LINE('')// &
+                  !
+                !   ! gismondine
+                !   &"Gismondine" //NEW_LINE('')// &
+                !   &"-start" //NEW_LINE('')// &
+                !   &'    10 if (SI("Gismondine") <= 0.0 ) then goto 200' //NEW_LINE('')// &
+                !   &"    20 rate0=" // TRIM(sd_gismondine) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                !   &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                !   &"    200 save moles" //NEW_LINE('')// &
+                !   &"-end" //NEW_LINE('')// &
+                  !
+                !   ! verm mg
+                !   &"Vermiculite-Mg" //NEW_LINE('')// &
+                !   &"-start" //NEW_LINE('')// &
+                !   &'    10 if (SI("Vermiculite-Mg") <= 0.0 ) then goto 200' //NEW_LINE('')// &
+                !   &"    20 rate0=" // TRIM(sd_verm_mg) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                !   &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                !   &"    200 save moles" //NEW_LINE('')// &
+                !   &"-end" //NEW_LINE('')// &
+                  !
+                !   ! natrolite
+                !   &"Natrolite" //NEW_LINE('')// &
+                !   &"-start" //NEW_LINE('')// &
+                !   &'    10 if (SI("Natrolite") <= 0.0 ) then goto 200' //NEW_LINE('')// &
+                !   &"    20 rate0=" // TRIM(sd_natrolite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                !   &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                !   &"    200 save moles" //NEW_LINE('')// &
+                !   &"-end" //NEW_LINE('')// &
+                  !
+                !   ! talc
+                !   &"Talc" //NEW_LINE('')// &
+                !   &"-start" //NEW_LINE('')// &
+                !   &'    10 if (SI("Talc") <= 0.0 ) then goto 200' //NEW_LINE('')// &
+                !   &"    20 rate0=" // TRIM(sd_talc) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                !   &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                !   &"    200 save moles" //NEW_LINE('')// &
+                !   &"-end" //NEW_LINE('')// &
+                  !
+                !   ! smectite low
+                !   &"Smectite-low-Fe-Mg" //NEW_LINE('')// &
+                !   &"-start" //NEW_LINE('')// &
+                !   &'    10 if (SI("Natrolite") <= 0.0 ) then goto 200' //NEW_LINE('')// &
+                !   &"    20 rate0=" // TRIM(sd_smectite_low) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                !   &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                !   &"    200 save moles" //NEW_LINE('')// &
+                !   &"-end" //NEW_LINE('')// &
+                  !
+                !   ! prehnite
+                !   &"Prehnite" //NEW_LINE('')// &
+                !   &"-start" //NEW_LINE('')// &
+                !   &'    10 if (SI("Prehnite") <= 0.0 ) then goto 200' //NEW_LINE('')// &
+                !   &"    20 rate0=" // TRIM(sd_prehnite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                !   &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                !   &"    200 save moles" //NEW_LINE('')// &
+                !   &"-end" //NEW_LINE('')// &
+                  !
+                !   ! chlorite
+                !   &"Chlorite(14a)" //NEW_LINE('')// &
+                !   &"-start" //NEW_LINE('')// &
+                !   &'    10 if (SI("Chlorite(14a)") <= 0.0 ) then goto 200' //NEW_LINE('')// &
+                !   &"    20 rate0=" // TRIM(sd_chlorite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                !   &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                !   &"    200 save moles" //NEW_LINE('')// &
+                !   &"-end" //NEW_LINE('')// &
+                  !
+                !   ! scolecite
+                !   &"Scolecite" //NEW_LINE('')// &
+                !   &"-start" //NEW_LINE('')// &
+                !   &'    10 if (SI("Scolecite") <= 0.0 ) then goto 200' //NEW_LINE('')// &
+                !   &"    20 rate0=" // TRIM(sd_scolecite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                !   &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                !   &"    200 save moles" //NEW_LINE('')// &
+                !   &"-end" //NEW_LINE('')// &
+                  !
+                !   ! clinochlorte
+                !   &"Clinochlore-14A" //NEW_LINE('')// &
+                !   &"-start" //NEW_LINE('')// &
+                !   &'    10 if (SI("Clinochlore-14A") <= 0.0 ) then goto 200' //NEW_LINE('')// &
+                !   &"    20 rate0=" // TRIM(sd_clinochlore14a) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                !   &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                !   &"    200 save moles" //NEW_LINE('')// &
+                !   &"-end" //NEW_LINE('')// &
+                  !
+                !   ! Clinochlore-7A
+                !   &"Clinochlore-7A" //NEW_LINE('')// &
+                !   &"-start" //NEW_LINE('')// &
+                !   &'    10 if (SI("Clinochlore-7A") <= 0.0 ) then goto 200' //NEW_LINE('')// &
+                !   &"    20 rate0=" // TRIM(sd_clinochlore7a) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                !   &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                !   &"    200 save moles" //NEW_LINE('')// &
+                !   &"-end" //NEW_LINE('')// &
+                  !
+                !   ! saponite_ca
+                !   &"Saponite-Ca" //NEW_LINE('')// &
+                !   &"-start" //NEW_LINE('')// &
+                !   &'    10 if (SI("Saponite-Ca") <= 0.0 ) then goto 200' //NEW_LINE('')// &
+                !   &"    20 rate0=" // TRIM(sd_saponite_ca) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                !   &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                !   &"    200 save moles" //NEW_LINE('')// &
+                !   &"-end" //NEW_LINE('')// &
+                  !
+                !   ! verm-na
+                !   &"Vermiculite-Na" //NEW_LINE('')// &
+                !   &"-start" //NEW_LINE('')// &
+                !   &'    10 if (SI("Vermiculite-Na") <= 0.0 ) then goto 200' //NEW_LINE('')// &
+                !   &"    20 rate0=" // TRIM(sd_verm_na) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                !   &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                !   &"    200 save moles" //NEW_LINE('')// &
+                !   &"-end" //NEW_LINE('')// &
+                  !
+                !   ! pyrrhotite
+                !   &"Pyrrhotite" //NEW_LINE('')// &
+                !   &"-start" //NEW_LINE('')// &
+                !   &'    10 if (SI("Pyrrhotite") <= 0.0 ) then goto 200' //NEW_LINE('')// &
+                !   &"    20 rate0=" // TRIM(sd_pyrrhotite) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                !   &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                !   &"    200 save moles" //NEW_LINE('')// &
+                !   &"-end" //NEW_LINE('')// &
+                  !
+                !   ! fe-sap-ca
+                !   &"Fe-Saponite-Ca" //NEW_LINE('')// &
+                !   &"-start" //NEW_LINE('')// &
+                !   &'    10 if (SI("Fe-Saponite-Ca") <= 0.0 ) then goto 200' //NEW_LINE('')// &
+                !   &"    20 rate0=" // TRIM(sd_fe_saponite_ca) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                !   &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                !   &"    200 save moles" //NEW_LINE('')// &
+                !   &"-end" //NEW_LINE('')// &
+                  !
+                !   ! fe sap mg
+                !   &"Fe-Saponite-Mg" //NEW_LINE('')// &
+                !   &"-start" //NEW_LINE('')// &
+                !   &'    10 if (SI("Fe-Saponite-Mg") <= 0.0 ) then goto 200' //NEW_LINE('')// &
+                !   &"    20 rate0=" // TRIM(sd_fe_saponite_mg) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                !   &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                !   &"    200 save moles" //NEW_LINE('')// &
+                !   &"-end" //NEW_LINE('')// &
+                  !
+                !   ! daphnite-7a
+                !   &"Daphnite-7a" //NEW_LINE('')// &
+                !   &"-start" //NEW_LINE('')// &
+                !   &'    10 if (SI("Daphnite-7a") <= 0.0 ) then goto 200' //NEW_LINE('')// &
+                !   &"    20 rate0=" // TRIM(sd_daphnite_7a) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                !   &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                !   &"    200 save moles" //NEW_LINE('')// &
+                !   &"-end" //NEW_LINE('')// &
+                  !
+                !   ! daphnite-14a
+                !   &"Daphnite-14a" //NEW_LINE('')// &
+                !   &"-start" //NEW_LINE('')// &
+                !   &'    10 if (SI("Daphnite-14a") <= 0.0 ) then goto 200' //NEW_LINE('')// &
+                !   &"    20 rate0=" // TRIM(sd_daphnite_14a) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                !   &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                !   &"    200 save moles" //NEW_LINE('')// &
+                !   &"-end" //NEW_LINE('')// &
+                  !
+                !   ! epidote
+                !   &"Epidote" //NEW_LINE('')// &
+                !   &"-start" //NEW_LINE('')// &
+                !   &'    10 if (SI("Epidote") <= 0.0 ) then goto 200' //NEW_LINE('')// &
+                !   &"    20 rate0=" // TRIM(sd_epidote) // "/" // TRIM(s_timestep) //NEW_LINE('')// &
+                !   &"    30 moles = rate0 * time" //NEW_LINE('')// &
+                !   &"    200 save moles" //NEW_LINE('')// &
+                !   &"-end" //NEW_LINE('')// &
 
 
 
