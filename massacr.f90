@@ -295,6 +295,10 @@ PROGRAM main
   REAL(4) :: medLongBit(3*((xn-1)/cellx)*(yn/(2*celly)))
   REAL(4) :: dpriLocal(3*((xn-1)/cellx)*(yn/(2*celly)),g_pri)
   REAL(4) :: dsecLocal(3*((xn-1)/cellx)*(yn/(2*celly)),g_sec)
+  REAL(4) :: secVolLocal(3*((xn-1)/cellx)*(yn/(2*celly)))
+  REAL(4) :: priVolLocal(3*((xn-1)/cellx)*(yn/(2*celly)))
+  REAL(4) :: surfSecLocal(3*((xn-1)/cellx)*(yn/(2*celly)))
+  REAL(4) :: surfPriLocal(3*((xn-1)/cellx)*(yn/(2*celly)))
 
 
   REAL(4) :: sol_coarse_long(((xn-1)/cellx)*(yn/(2*celly)))
@@ -402,6 +406,8 @@ PROGRAM main
   CHARACTER(len=25) :: exp_ol1, exp_ol2, exp_ol3, exp_ol
   CHARACTER(len=25) :: exp_pyr1, exp_pyr2, exp_pyr3, exp_pyr
   CHARACTER(len=25) :: exp_plag1, exp_plag2, exp_plag3, exp_plag
+  CHARACTER(len=25) :: ol_scale_string, pyr_scale_string, plag_scale_string, glass_scale_string
+  REAL(4) :: ol_scale, pyr_scale, plag_scale, glass_scale
 
 
 
@@ -4373,7 +4379,7 @@ PROGRAM main
 
            IF (medLongBitFull(m,5) .EQ. 1.0) THEN
 
-               !-primary3, secondar 3, etc.
+               !-pri3, sec3, etc.
               primary3 = priLongBitFull(m,:)
               secondary3 = secLongBitFull(m,:)
               solute3 = solLongBitFull(m,:)
@@ -4415,9 +4421,9 @@ PROGRAM main
               WRITE(s_glass,'(F25.10)') primary3(5)
 
               !-rate constants!
-              exp_ol = "0.0375"
-              exp_pyr = "0.005"
-              exp_plag = "0.05"
+              exp_ol = "0.00000375"
+              exp_pyr = "5.0e-7"
+              exp_plag = "0.000005"
               param_exp_string = "0.000125"
 
               WRITE(s_kaolinite,'(F25.10)') secondary3(1)
@@ -4460,6 +4466,26 @@ PROGRAM main
               WRITE(s_daphnite_7a,'(F25.10)') secondary3(38) !!!
               WRITE(s_daphnite_14a,'(F25.10)') secondary3(39) !!!
               WRITE(s_epidote,'(F25.10)') secondary3(40) !!!
+
+
+              !-GLASS SCALE
+
+              ! units are m^3
+              priVolLocal(m) = SUM(primary3(2:5)*pri_molar(2:5)/pri_density(2:5)) * (1.0e-6)
+              secVolLocal(m) = SUM(secondary3(1:40)*sec_molar(1:40)/sec_density(1:40)) * (1.0e-6)
+
+              ! need specific surface area in m^2 / m^3
+              surfPriLocal(m) = (4.56e5) * priVolLocal(m)
+              surfSecLocal(m) = (9.0e6) * secVolLocal(m)
+
+
+              glass_scale = 1.0 - (surfSecLocal(m)/surfPriLocal(m))
+              if (glass_scale .LE. 0.0) then
+                  glass_scale = 0.001
+              end if
+
+              !write(*,*) "glass_scale" , glass_scale
+              WRITE(glass_scale_string,'(F25.10)') glass_scale !!!
 
 
               !-deltas to strings
@@ -5266,28 +5292,28 @@ PROGRAM main
                &"-start" //NEW_LINE('')// &
                &"	 10 base0 = 1e-10" //NEW_LINE('')// &
                &"	 20 if (ACT('Al+3') > 1e-10) then base0 = ACT('Al+3')" //NEW_LINE('')// &
-               &"    30 rate0=M*110.0*(1.52e-5)*" // TRIM(param_exp_string) // "*(1.0e4)*(2.51189e-6)*exp(-25.5/(.008314*TK))*(((ACT('H+')^3)/(ACT('Al+3')))^.33333)" //NEW_LINE('')// &
+               &"    30 rate0=M*110.0*((4.56e5)/(3.0e6))*" // TRIM(param_exp_string) // "*" // TRIM(glass_scale_string) // "*(2.51189e-6)*exp(-25.5/(.008314*TK))*(((ACT('H+')^3)/(ACT('Al+3')))^.33333)" //NEW_LINE('')// &
                &"    40 save rate0 * time" //NEW_LINE('')// &
                &"-end" //NEW_LINE('')// &
 
                ! olivine
                &"Basalt1" //NEW_LINE('')// &
                &"-start" //NEW_LINE('')// &
-               &"    10 rate0=M*140.7*(1.52e-5)*" // TRIM(exp_ol) //"*(" //TRIM(ol_k1)//"*(ACT('H+')^"//TRIM(ol_n1)//")*exp(-("//TRIM(ol_e1)//"/.008314)*((1.0/TK) - (1.0/298.0))) + "//TRIM(ol_k2)//"*exp(-("//TRIM(ol_e2)//"/.008314)*((1.0/TK) - (1.0/298.0))))" //NEW_LINE('')// &
+               &"    10 rate0=M*158.81*((4.56e5)/(3.0e6))*" // TRIM(exp_ol) // "*" // TRIM(glass_scale_string) //"*(" //TRIM(ol_k1)//"*(ACT('H+')^"//TRIM(ol_n1)//")*exp(-("//TRIM(ol_e1)//"/.008314)*((1.0/TK) - (1.0/298.0))) + "//TRIM(ol_k2)//"*exp(-("//TRIM(ol_e2)//"/.008314)*((1.0/TK) - (1.0/298.0))))" //NEW_LINE('')// &
                &"    20 save rate0 * time" //NEW_LINE('')// &
                &"-end" //NEW_LINE('')// &
 
                ! pyroxene
                &"Basalt2" //NEW_LINE('')// &
                &"-start" //NEW_LINE('')// &
-               &"    10 rate0=M*250.0*(1.52e-5)*" // TRIM(exp_pyr) //"*(" //TRIM(pyr_k1)//"*(ACT('H+')^"//TRIM(pyr_n1)//")*exp(-("//TRIM(pyr_e1)//"/.008314)*((1.0/TK) - (1.0/298.0))) + "//TRIM(pyr_k2)//"*exp(-("//TRIM(pyr_e2)//"/.008314)*((1.0/TK) - (1.0/298.0))))" //NEW_LINE('')// &
+               &"    10 rate0=M*153.0*((4.56e5)/(3.0e6))*" // TRIM(exp_pyr) // "*" // TRIM(glass_scale_string) //"*(" //TRIM(pyr_k1)//"*(ACT('H+')^"//TRIM(pyr_n1)//")*exp(-("//TRIM(pyr_e1)//"/.008314)*((1.0/TK) - (1.0/298.0))) + "//TRIM(pyr_k2)//"*exp(-("//TRIM(pyr_e2)//"/.008314)*((1.0/TK) - (1.0/298.0))))" //NEW_LINE('')// &
                &"    20 save rate0 * time" //NEW_LINE('')// &
                &"-end" //NEW_LINE('')// &
 
                ! plagioclase
                &"Basalt3" //NEW_LINE('')// &
                &"-start" //NEW_LINE('')// &
-               &"    10 rate0=M*270.0*(1.52e-5)*" // TRIM(exp_plag) //"*" //TRIM(plag_k1)//"*(ACT('H+')^"//TRIM(plag_n1)//")*exp(-("//TRIM(plag_e1)//"/.008314)*((1.0/TK) - (1.0/298.0)))" //NEW_LINE('')// &
+               &"    10 rate0=M*277.0*((4.56e5)/(2.7e6))*" // TRIM(exp_plag) // "*" // TRIM(glass_scale_string) //"*" //TRIM(plag_k1)//"*(ACT('H+')^"//TRIM(plag_n1)//")*exp(-("//TRIM(plag_e1)//"/.008314)*((1.0/TK) - (1.0/298.0)))" //NEW_LINE('')// &
                &"    20 save rate0 * time" //NEW_LINE('')// &
                &"-end" //NEW_LINE('')// &
 
