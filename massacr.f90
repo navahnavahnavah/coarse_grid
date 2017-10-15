@@ -2863,6 +2863,7 @@ PROGRAM main
         !    u_coarse((xn-1)/cellx-2,:) = 0.0
 
         ! SAME VELOCITY ON ALL 3 ROWS
+        !-QUICK FIX VELOCITIES
         DO i = 3,yn/(2*celly)-1
             if ((u_coarse(5,i) .gt. 0.0) .and. (u_coarse(5,i+1) .eq. 0.0)) then
             u_coarse(:,i-1) = u_coarse(5,i)
@@ -4476,7 +4477,7 @@ PROGRAM main
 
               ! need specific surface area in m^2 / m^3
               surfPriLocal(m) = (4.56e5) * priVolLocal(m)
-              surfSecLocal(m) = (9.0e6) * secVolLocal(m)
+              surfSecLocal(m) = (9.0e5) * secVolLocal(m)
 
 
               glass_scale = 1.0 - (surfSecLocal(m)/surfPriLocal(m))
@@ -5262,10 +5263,10 @@ PROGRAM main
 
                  !&"    K-Feldspar " // trim(s_precip) // trim(s_kspar) // kinetics //NEW_LINE('')// &
 
-        if (secondary3(16)*sec_molar(16)/sec_density(16) .LE. vol_th) then
-                 inputz0 = TRIM(inputz0) //"    Mesolite " // trim(s_precip) // trim(s_mesolite) // kinetics //NEW_LINE('') ! zeolite
-        else
-        end if
+        ! if (secondary3(16)*sec_molar(16)/sec_density(16) .LE. vol_th) then
+        !          inputz0 = TRIM(inputz0) //"    Mesolite " // trim(s_precip) // trim(s_mesolite) // kinetics //NEW_LINE('') ! zeolite
+        ! else
+        ! end if
 
         if (secondary3(28)*sec_molar(28)/sec_density(28) .LE. vol_th) then
             inputz0 = TRIM(inputz0) //      "    Prehnite " // trim(s_precip) // trim(s_prehnite) // kinetics //NEW_LINE('')

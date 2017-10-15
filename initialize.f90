@@ -754,7 +754,7 @@ CONTAINS
     ! primary_a(:,14:,:) = 0.0
     ! primary_b(:,14:,:) = 0.0
 
-    !-QUICK FIX 2 CELLS HIGH ONLY
+    ! !-QUICK FIX 2 CELLS HIGH ONLY
     ! medium(:,8:,5) = 0.0
     ! medium_a(:,8:,5) = 0.0
     ! medium_b(:,8:,5) = 0.0

@@ -9,7 +9,7 @@ MODULE globals
   INTEGER, PARAMETER :: cellx = 90, celly = 1
   INTEGER, PARAMETER ::  g_pri = 5, g_sec = 80, g_sol = 15, g_med = 7, g_iso = 2, cstep = 125, ar = 800 ! cstep = 1000
   INTEGER, PARAMETER :: tn = 1000000, mstep = 25, wscale = 1, ison = 10, inertn = 10! ison = 10000, inertn = 100000
-  INTEGER, PARAMETER :: write_factor = 50, res_factor = 300 ! res factor is how many flushes happen within t_max
+  INTEGER, PARAMETER :: write_factor = 25, res_factor = 300 ! res factor is how many flushes happen within t_max
   INTEGER :: active_cells
   INTEGER, PARAMETER :: particle_sat = 1, inert_sat = 10
   REAL(4) :: tb_res = 1.0e10
@@ -67,7 +67,7 @@ MODULE globals
   INTEGER :: dabs_loop
 
   INTEGER :: se_toggle
-  INTEGER :: se_factor = 50
+  INTEGER :: se_factor = 200
   INTEGER :: j_root
   INTEGER :: se_spinup = 100
   INTEGER :: age_toggle
