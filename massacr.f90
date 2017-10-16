@@ -2869,9 +2869,9 @@ PROGRAM main
             u_coarse(:,i-1) = u_coarse(5,i)
             u_coarse(:,i-2) = u_coarse(5,i)
             u_coarse(:,i-3) = u_coarse(5,i)
-            u_coarse(:,i-4) = u_coarse(5,i)
-            u_coarse(:,i-5) = u_coarse(5,i)
-            u_coarse(:,i-6) = u_coarse(5,i)
+            ! u_coarse(:,i-4) = u_coarse(5,i)
+            ! u_coarse(:,i-5) = u_coarse(5,i)
+            ! u_coarse(:,i-6) = u_coarse(5,i)
             end if
         END DO
         !u_coarse = u_coarse/1.5
@@ -4422,10 +4422,10 @@ PROGRAM main
               WRITE(s_glass,'(F25.10)') primary3(5)
 
               !-rate constants!
-              exp_ol = "0.00000375"
+              exp_ol = "3.75e-6"
               exp_pyr = "5.0e-7"
-              exp_plag = "0.000005"
-              param_exp_string = "0.000125"
+              exp_plag = "5.0e-6"
+              param_exp_string = "1.25e-4"
 
               WRITE(s_kaolinite,'(F25.10)') secondary3(1)
               WRITE(s_saponite,'(F25.10)') secondary3(2)
@@ -5251,7 +5251,12 @@ PROGRAM main
         end if
 
 
+        if (secondary3(1)*sec_molar(1)/sec_density(1) .LE. vol_th) then
+                 inputz0 = TRIM(inputz0) //"    Kaolinite " // trim(s_precip) // trim(s_kaolinite) // kinetics //NEW_LINE('') ! zeolite
+        else
+        end if
                  !&"    Kaolinite " // trim(s_precip) // trim(s_kaolinite) // kinetics //NEW_LINE('')// & ! clay
+
 
         if (secondary3(4)*sec_molar(4)/sec_density(4) .LE. vol_th) then
             inputz0 = TRIM(inputz0) //      "    Clinoptilolite-Ca " // trim(s_precip) // trim(s_clinoptilolite) // kinetics //NEW_LINE('') ! zeolite
@@ -5261,12 +5266,18 @@ PROGRAM main
 
 
 
+
+        if (secondary3(10)*sec_molar(10)/sec_density(10) .LE. vol_th) then
+                 inputz0 = TRIM(inputz0) //"    K-Feldspar " // trim(s_precip) // trim(s_kspar) // kinetics //NEW_LINE('') ! zeolite
+        else
+        end if
                  !&"    K-Feldspar " // trim(s_precip) // trim(s_kspar) // kinetics //NEW_LINE('')// &
 
-        ! if (secondary3(16)*sec_molar(16)/sec_density(16) .LE. vol_th) then
-        !          inputz0 = TRIM(inputz0) //"    Mesolite " // trim(s_precip) // trim(s_mesolite) // kinetics //NEW_LINE('') ! zeolite
-        ! else
-        ! end if
+        if (secondary3(16)*sec_molar(16)/sec_density(16) .LE. vol_th) then
+                 inputz0 = TRIM(inputz0) //"    Mesolite " // trim(s_precip) // trim(s_mesolite) // kinetics //NEW_LINE('') ! zeolite
+        else
+        end if
+
 
         if (secondary3(28)*sec_molar(28)/sec_density(28) .LE. vol_th) then
             inputz0 = TRIM(inputz0) //      "    Prehnite " // trim(s_precip) // trim(s_prehnite) // kinetics //NEW_LINE('')
@@ -5280,6 +5291,12 @@ PROGRAM main
             inputz0 = TRIM(inputz0) //      "    Scolecite " // trim(s_precip) // trim(s_scolecite) // kinetics //NEW_LINE('') ! zeolite
         else
             !inputz0 = TRIM(inputz0) //      "    Scolecite " // trim(s_precip_nope) // trim(s_scolecite) // kinetics //NEW_LINE('') ! zeolite
+        end if
+
+
+        if (secondary3(23)*sec_molar(23)/sec_density(23) .LE. vol_th) then
+                 inputz0 = TRIM(inputz0) //"    Gismondine " // trim(s_precip) // trim(s_gismondine) // kinetics //NEW_LINE('') ! zeolite
+        else
         end if
                  !&"    Gismondine " // trim(s_precip) // trim(s_gismondine) // kinetics //NEW_LINE('')// & ! zeolite
                  !&" "  //NEW_LINE('')
@@ -5468,9 +5485,9 @@ PROGRAM main
                  WRITE(*,*) "issue is:" , RunString(id, TRIM(inputz0))
                  !-EQ grid_breaks
                  CALL OutputErrorString(id)
-                 OPEN(UNIT=169, status = 'OLD', FILE=TRIM(path_final) // 'grid_breaks.txt')
+                 OPEN(UNIT=169, status = 'OLD', access = 'append', FILE=TRIM(path_final) // 'grid_breaks.txt')
                  WRITE(169,224) se_toggle , my_id, j_root, slave_vector(jjj), medium3(6), medium3(7)
-                 224 format ("se: " , I3 , "id " , I3 , "  j " , I7 "  sv(jjj)" , I5 , "   x:" , F6.0 , "  y:" , F5.0 )
+                 224 format ("se:" , I2 , "     id " , I3 , "    j " , I7 "     sv(jjj)" , I5 , "     x:" , F6.0 , "     y:" , F5.0 )
                  CLOSE (169)
                  WRITE(*,*) "primary"
                  WRITE(*,*) primary3
@@ -7540,9 +7557,9 @@ PROGRAM main
                      WRITE(*,*) "issue is:" , RunString(id, TRIM(inputz0))
                      !-KIN grid_breaks
                      CALL OutputErrorString(id)
-                     OPEN(UNIT=169, status = 'OLD', FILE=TRIM(path_final) // 'grid_breaks.txt')
+                     OPEN(UNIT=169, status = 'OLD', access = 'append', FILE=TRIM(path_final) // 'grid_breaks.txt')
                      WRITE(169,222) se_toggle , my_id, j_root, slave_vector(jjj), medium3(6), medium3(7)
-                     222 format ("se: " , I3 , "id " , I3 , "  j " , I7 "  sv(jjj)" , I5 , "   x:" , F6.0 , "  y:" , F5.0 )
+                     222 format ("se:" , I2 , "     id " , I3 , "    j " , I7 "     sv(jjj)" , I5 , "     x:" , F6.0 , "     y:" , F5.0 )
                      CLOSE (169)
 
 
