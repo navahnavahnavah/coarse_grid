@@ -352,11 +352,33 @@ CONTAINS
 
 
     ! primary minerals [mol]
+    ! primary(:,:,:) = 0.0
+    ! primary(:,:,1) = 0.0 !1.29600 ! feldspar
+    ! primary(:,:,2) = 0.5 !.69600 ! plag
+    ! primary(:,:,3) = 0.5 !.12600 ! pyr
+    ! primary(:,:,4) = 0.95068 !.04000 ! ol
+    ! primary(:,:,5) = 1.0 !9.67700 ! basaltic glass
+    !
+    ! primary_a(:,:,:) = 0.0
+    ! primary_a(:,:,1) = 0.0   ! feldspar
+    ! primary_a(:,:,2) = 0.0   ! plag
+    ! primary_a(:,:,3) = 0.0   ! pyr
+    ! primary_a(:,:,4) = 0.0   ! ol
+    ! primary_a(:,:,5) = 1.0 - param_b_g  ! basaltic glass
+    !
+    ! primary_b(:,:,:) = 0.0
+    ! primary_b(:,:,1) = 0.0  ! feldspar
+    ! primary_b(:,:,2) = 0.5 ! plag
+    ! primary_b(:,:,3) = 0.5 ! pyr
+    ! primary_b(:,:,4) = 0.95068 ! ol
+    ! primary_b(:,:,5) = param_b_g  ! basaltic glass
+
+
     primary(:,:,:) = 0.0
     primary(:,:,1) = 0.0 !1.29600 ! feldspar
-    primary(:,:,2) = 0.5 !.69600 ! plag
-    primary(:,:,3) = 0.5 !.12600 ! pyr
-    primary(:,:,4) = 0.95068 !.04000 ! ol
+    primary(:,:,2) = 0.0 !.69600 ! plag
+    primary(:,:,3) = 0.0 !.12600 ! pyr
+    primary(:,:,4) = 0.0 !.04000 ! ol
     primary(:,:,5) = 1.0 !9.67700 ! basaltic glass
 
     primary_a(:,:,:) = 0.0
@@ -364,14 +386,14 @@ CONTAINS
     primary_a(:,:,2) = 0.0   ! plag
     primary_a(:,:,3) = 0.0   ! pyr
     primary_a(:,:,4) = 0.0   ! ol
-    primary_a(:,:,5) = 1.0 - param_b_g  ! basaltic glass
+    primary_a(:,:,5) = 0.5! basaltic glass
 
     primary_b(:,:,:) = 0.0
     primary_b(:,:,1) = 0.0  ! feldspar
-    primary_b(:,:,2) = 0.5 ! plag
-    primary_b(:,:,3) = 0.5 ! pyr
-    primary_b(:,:,4) = 0.95068 ! ol
-    primary_b(:,:,5) = param_b_g  ! basaltic glass
+    primary_b(:,:,2) = 0.0 ! plag
+    primary_b(:,:,3) = 0.0 ! pyr
+    primary_b(:,:,4) = 0.0 ! ol
+    primary_b(:,:,5) = 0.5  ! basaltic glass
 
 
 
@@ -762,21 +784,21 @@ CONTAINS
     ! primary_a(:,8:,:) = 0.0
     ! primary_b(:,8:,:) = 0.0
 
-    ! 3 cells high
-    medium(:,9:,5) = 0.0
-    medium_a(:,9:,5) = 0.0
-    medium_b(:,9:,5) = 0.0
-    primary(:,9:,:) = 0.0
-    primary_a(:,9:,:) = 0.0
-    primary_b(:,9:,:) = 0.0
+    ! ! 3 cells high
+    ! medium(:,9:,5) = 0.0
+    ! medium_a(:,9:,5) = 0.0
+    ! medium_b(:,9:,5) = 0.0
+    ! primary(:,9:,:) = 0.0
+    ! primary_a(:,9:,:) = 0.0
+    ! primary_b(:,9:,:) = 0.0
 
-    ! ! 7 cells high
-    ! medium(:,13:,5) = 0.0
-    ! medium_a(:,13:,5) = 0.0
-    ! medium_b(:,13:,5) = 0.0
-    ! primary(:,13:,:) = 0.0
-    ! primary_a(:,13:,:) = 0.0
-    ! primary_b(:,13:,:) = 0.0
+    ! 7 cells high
+    medium(:,13:,5) = 0.0
+    medium_a(:,13:,5) = 0.0
+    medium_b(:,13:,5) = 0.0
+    primary(:,13:,:) = 0.0
+    primary_a(:,13:,:) = 0.0
+    primary_b(:,13:,:) = 0.0
 
 
     ! quick fix full column, early august
@@ -913,7 +935,7 @@ CONTAINS
     END DO
 
     !- COARSE MASK QUICK FIX
-    coarse_mask(:,9:) = 0.0
+    coarse_mask(:,13:) = 0.0
 
     ! LHS COARSE MASK QUICK FIX
     coarse_mask(1,:) = 0.0

@@ -2869,9 +2869,9 @@ PROGRAM main
             u_coarse(:,i-1) = u_coarse(5,i)
             u_coarse(:,i-2) = u_coarse(5,i)
             u_coarse(:,i-3) = u_coarse(5,i)
-            ! u_coarse(:,i-4) = u_coarse(5,i)
-            ! u_coarse(:,i-5) = u_coarse(5,i)
-            ! u_coarse(:,i-6) = u_coarse(5,i)
+            u_coarse(:,i-4) = u_coarse(5,i)
+            u_coarse(:,i-5) = u_coarse(5,i)
+            u_coarse(:,i-6) = u_coarse(5,i)
             end if
         END DO
         !u_coarse = u_coarse/1.5
@@ -4489,6 +4489,44 @@ PROGRAM main
               WRITE(glass_scale_string,'(F25.10)') glass_scale !!!
 
 
+
+              !-SURF_SCALE (!!!!)
+              surf_scale_1 = 1.0 - (1.0*j_root/200000.0)
+
+              if (surf_scale_1 .LE. 0.0) then
+                  surf_scale_1 = 0.0
+              end if
+
+              surf_scale_2 = (1.0*j_root/200000.0)
+
+              if (surf_scale_2 .GE. 1.0) then
+                  surf_scale_2 = 1.0
+              end if
+
+
+
+              WRITE(surf_scale_1_string,'(F25.10)') surf_scale_1
+              WRITE(surf_scale_2_string,'(F25.10)') surf_scale_2
+
+            !   ! control experiment
+            !   surf_scale_1_string = "0.5"
+            !   surf_scale_2_string = "0.5"
+
+              if (slave_vector(jjj) .LE. leng) then
+                  surf_scale_gen_string = "1.0"
+              end if
+
+              if ((slave_vector(jjj) .GT. leng) .AND. (slave_vector(jjj) .LE. 2*leng)) then
+                  surf_scale_gen_string = surf_scale_1_string
+              end if
+
+              if (slave_vector(jjj) .GT. 2*leng) then
+                  surf_scale_gen_string = surf_scale_2_string
+              end if
+
+              !write(*,*) slave_vector(jjj) , surf_scale_gen_string
+
+
               !-deltas to strings
               WRITE(sd_dbasalt3,'(F25.10)') -1.0*dprimary3(2)
               WRITE(sd_dbasalt2,'(F25.10)') -1.0*dprimary3(3)
@@ -5310,7 +5348,7 @@ PROGRAM main
                &"-start" //NEW_LINE('')// &
                &"	 10 base0 = 1e-10" //NEW_LINE('')// &
                &"	 20 if (ACT('Al+3') > 1e-10) then base0 = ACT('Al+3')" //NEW_LINE('')// &
-               &"    30 rate0=M*110.0*((4.56e5)/(3.0e6))*" // TRIM(param_exp_string) // "*" // TRIM(glass_scale_string) // "*(2.51189e-6)*exp(-25.5/(.008314*TK))*(((ACT('H+')^3)/(ACT('Al+3')))^.33333)" //NEW_LINE('')// &
+               &"    30 rate0=M*110.0*((4.56e5)/(3.0e6))*" // TRIM(param_exp_string) // "*" // TRIM(surf_scale_gen_string) // "*(2.51189e-6)*exp(-25.5/(.008314*TK))*(((ACT('H+')^3)/(ACT('Al+3')))^.33333)" //NEW_LINE('')// &
                &"    40 save rate0 * time" //NEW_LINE('')// &
                &"-end" //NEW_LINE('')// &
 
@@ -5341,9 +5379,12 @@ PROGRAM main
                &"KINETICS 1" //NEW_LINE('')// &
 
                &"BGlass" //NEW_LINE('')// &
-               &"-f CaO .1997 SiO2 .847 Al2O3 .138 " //&
-               & "Fe2O3 .149 MgO .1744 K2O .002 " //&
-               & "Na2O .043" //NEW_LINE('')// &
+            !    &"-f CaO .1997 SiO2 .847 Al2O3 .138 " //&
+            !    & "Fe2O3 .149 MgO .1744 K2O .002 " //&
+            !    & "Na2O .043" //NEW_LINE('')// &
+            &"-f CaO .2151 SiO2 .85 Al2O3 .14 " //&
+            & "Fe2O3 .0234 FeO .166 MgO .178 K2O .002 " //&
+            & "Na2O .043" //NEW_LINE('')// &
                &"-m0 " // TRIM(s_glass) //NEW_LINE('')// &
 
                &"Basalt1 " //NEW_LINE('')// &
@@ -6207,9 +6248,12 @@ PROGRAM main
                   &"KINETICS 1" //NEW_LINE('')// &
 
                   &"BGlass" //NEW_LINE('')// &
-                  &"-f CaO .1997 SiO2 .847 Al2O3 .138 " //&
-                  & "Fe2O3 .149 MgO .1744 K2O .002 " //&
-                  & "Na2O .043" //NEW_LINE('')// &
+                !   &"-f CaO .1997 SiO2 .847 Al2O3 .138 " //&
+                !   & "Fe2O3 .149 MgO .1744 K2O .002 " //&
+                !   & "Na2O .043" //NEW_LINE('')// &
+                &"-f CaO .2151 SiO2 .85 Al2O3 .14 " //&
+                & "Fe2O3 .0234 FeO .166 MgO .178 K2O .002 " //&
+                & "Na2O .043" //NEW_LINE('')// &
                   &"-m0 " // TRIM(s_glass) //NEW_LINE('')// &
 
                   &"Basalt1 " //NEW_LINE('')// &
