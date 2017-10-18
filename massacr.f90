@@ -2868,10 +2868,10 @@ PROGRAM main
             if ((u_coarse(5,i) .gt. 0.0) .and. (u_coarse(5,i+1) .eq. 0.0)) then
             u_coarse(:,i-1) = u_coarse(5,i)
             u_coarse(:,i-2) = u_coarse(5,i)
-            u_coarse(:,i-3) = u_coarse(5,i)
-            u_coarse(:,i-4) = u_coarse(5,i)
-            u_coarse(:,i-5) = u_coarse(5,i)
-            u_coarse(:,i-6) = u_coarse(5,i)
+            ! u_coarse(:,i-3) = u_coarse(5,i)
+            ! u_coarse(:,i-4) = u_coarse(5,i)
+            ! u_coarse(:,i-5) = u_coarse(5,i)
+            ! u_coarse(:,i-6) = u_coarse(5,i)
             end if
         END DO
         !u_coarse = u_coarse/1.5
@@ -2985,6 +2985,17 @@ PROGRAM main
            medium_a(:,:,2) = 0.0
            medium_b(:,:,2) = 0.0
            ! end if
+
+        !    !-linear velocity decrease
+        !    DO i = 1,leng
+        !        if (u_coarse_long(i) .GT. 0.0) then
+        !            u_coarse_long(i) = (1.0 - (1.0*j/500000.0))*(0.3e-5) + (0.122e-5)
+           !
+        !            if (u_coarse_long(i) .LT. 0.122e-5) then
+        !                u_coarse_long(i) = 0.122e-5
+        !            end if
+        !        end if
+        !    END DO
 
 
 
@@ -4209,8 +4220,8 @@ PROGRAM main
      plag_n3 = ""
 
 
-     kinetics = " precipitate_only"
-     !kinetics = " "
+     !kinetics = " precipitate_only"
+     kinetics = " "
 
 
      DO jj = 1, tn/mstep
@@ -4422,7 +4433,7 @@ PROGRAM main
               WRITE(s_glass,'(F25.10)') primary3(5)
 
               !-rate constants!
-              exp_ol = "3.75e-6"
+              exp_ol = "3.75e-5"
               exp_pyr = "5.0e-7"
               exp_plag = "5.0e-6"
               param_exp_string = "1.25e-4"
@@ -4508,9 +4519,9 @@ PROGRAM main
               WRITE(surf_scale_1_string,'(F25.10)') surf_scale_1
               WRITE(surf_scale_2_string,'(F25.10)') surf_scale_2
 
-            !   ! control experiment
-            !   surf_scale_1_string = "0.5"
-            !   surf_scale_2_string = "0.5"
+              ! control experiment
+              surf_scale_1_string = "0.5"
+              surf_scale_2_string = "0.5"
 
               if (slave_vector(jjj) .LE. leng) then
                   surf_scale_gen_string = "1.0"
