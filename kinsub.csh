@@ -10,7 +10,7 @@
 # you want to run.
 #
 # set the name of the job
-#PBS -N sites_11_s
+#PBS -N sites_meso_1e10_sr
 #
 # set the output and error files
 #PBS -o /data/navah/cg_output/$PBS_JOBNAME/e_out.txt
@@ -20,89 +20,14 @@
 # to use per node
 
 
+##PBS -l nodes=compute-0-0:ppn=12+compute-0-1:ppn=12+compute-0-2:ppn=12+compute-0-3:ppn=12+compute-0-4:ppn=12
+#PBS -l nodes=compute-1-0:ppn=12+compute-1-1:ppn=12+compute-1-2:ppn=12+compute-1-3:ppn=12+compute-1-4:ppn=12
 
 
-#PBS -l nodes=compute-0-2:ppn=12+compute-0-3:ppn=12+compute-0-4:ppn=11
-##PBS -l nodes=compute-0-0:ppn=12+compute-1-6:ppn=12+compute-0-1:ppn=12
-##PBS -l nodes=compute-1-0:ppn=12+compute-1-1:ppn=12
-
-
-###
-
-
-
-##PBS -l nodes=compute-1-0:ppn=12+compute-1-1:ppn=12+compute-1-2:ppn=12
-##PBS -l nodes=compute-0-1:ppn=12+compute-0-0:ppn=12
-
-
-
-
-
-
-##PBS -l nodes=compute-0-1:ppn=12+compute-0-0:ppn=12
-
-
-##PBS -l nodes=compute-0-3:ppn=12+compute-0-4:ppn=12
-##PBS -l nodes=compute-1-0:ppn=12+compute-0-0:ppn=12
-##PBS -l nodes=compute-0-2:ppn=12+compute-1-2:ppn=12
-##PBS -l nodes=compute-0-1:ppn=12+compute-1-1:ppn=12
-
-
-
-##PBS -l nodes=compute-0-0:ppn=12+compute-0-1:ppn=12+compute-0-2:ppn=11
-
-
-
-##PBS -l nodes=compute-1-1:ppn=12+compute-1-2:ppn=12
-##PBS -l nodes=compute-1-8:ppn=11+compute-1-9:ppn=11+compute-1-10:ppn=11
-
-###+compute-1-3:ppn=11
-##PBS -l nodes=compute-1-4:ppn=12+compute-1-5:ppn=12+compute-1-6:ppn=11
-##PBS -l nodes=compute-1-7:ppn=12+compute-1-8:ppn=12+compute-1-9:ppn=11
-
-##PBS -l nodes=compute-0-2:ppn=12+compute-0-3:ppn=12
-
-
-###+compute-0-2:ppn=12
-##PBS -l nodes=compute-1-1:ppn=12+compute-1-2:ppn=12
-##PBS -l nodes=compute-1-3:ppn=12+compute-1-4:ppn=12
-##PBS -l nodes=compute-1-5:ppn=12+compute-1-6:ppn=12
-
-
-
-##PBS -l nodes=compute-0-3:ppn=12+compute-0-4:ppn=12+compute-1-0:ppn=12
-##PBS -l nodes=compute-1-4:ppn=12+compute-1-9:ppn=12+compute-1-8:ppn=12
-##PBS -l nodes=compute-0-0:ppn=12+compute-0-1:ppn=12+compute-0-2:ppn=12
-
-
-##PBS -l nodes=compute-1-3:ppn=12+compute-1-4:ppn=12+compute-1-5:ppn=12
-##PBS -l nodes=compute-0-0:ppn=12+compute-0-1:ppn=12+compute-0-2:ppn=12
-
-
-##PBS -l nodes=compute-1-0:ppn=12+compute-1-1:ppn=12+compute-1-2:ppn=12
-
-
-##+compute-0-3:ppn=12+compute-1-5:ppn=12
-##PBS -l nodes=compute-1-9:ppn=12+compute-1-0:ppn=12+compute-1-7:ppn=12
-##PBS -l nodes=compute-1-2:ppn=12+compute-1-10:ppn=12+compute-1-8:ppn=12
-##PBS -l nodes=compute-1-4:ppn=12+compute-0-4:ppn=12+compute-1-3:ppn=12
-
-##+compute-1-2:ppn=12
-##PBS -l nodes=compute-1-4:ppn=12+compute-1-10:ppn=12+compute-1-7:ppn=12+compute-1-9:ppn=12
-
-##PBS -l nodes=compute-1-5:ppn=12
-
-
-
-
-
-# ! whew
 
 # or, if using only one node, you can do it this way too
 ##PBS -l ncpus=5
 
-
-# NEW STUFF MAY 2016
 
 # in this example, I'm using the intel compilers and mvapich2
 #
@@ -117,6 +42,15 @@ module load mpi/mvapich2/intel
 
 
 # model parameters go here i guess
+
+set PARAM_T_DIFF = '1e10'
+set PARAM_D_ONLY = '1'
+
+set PARAM_PATH='/data/navah/cg_output/'$PBS_JOBNAME'/'
+
+
+
+
 set PARAM_O='100'
 set PARAM_O_RHS='-50'
 set PARAM_W='300'
@@ -132,9 +66,7 @@ set PARAM_TRACE='0'
 
 
 set PARAM_CH='600'
-
 set PARAM_PAQ = '1e-12'
-
 set PARAM_CH_RHS = '600'
 
 ## FRACTURE PARAMS
@@ -143,26 +75,10 @@ set PARAM_F_K = '1e-5'
 #set PARAM_F_FREQ = '0.0005'
 set PARAM_F_FREQ = '20'
 set PARAM_F_POR = '6e-4'
-set PARAM_T_DIFF = '1e10'
-set PARAM_B_G = '50'
-set PARAM_D_ONLY = '0'
-
-set PARAM_PATH='/data/navah/cg_output/'$PBS_JOBNAME'/'
-
-#set PARAM_PATH='/data/navah/cg_output/sites_10_t/'
+set PARAM_B_G = '0'
 
 
-#set PARAM_PATH='/data/navah/cg_output/medium_vel_sites/med_c_no_heat/'
-
-
-
-
-
-
-
-
-
-set PARAM_ISO_PATH='/data/navah/cg_output/sites_0_u/'
+set PARAM_ISO_PATH='/data/navah/cg_output/'$PBS_JOBNAME'/'
 
 
 echo $PARAM_PATH

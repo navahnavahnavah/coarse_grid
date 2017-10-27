@@ -2826,6 +2826,10 @@ PROGRAM main
               h_coarse(:,i) = SUM(h_coarse(:,i))/((xn-1)/cellx)
            END DO
 
+           !-QUICK FIX WEIRD TEMPERATURE THING
+           h_coarse(:,8) = h_coarse(:,12)
+           h_coarse(:,7) = h_coarse(:,9)
+
 
 
            !h_coarse((xn-1)/cellx,:) = h_coarse(((xn-1)/cellx)-1,:)
@@ -4141,7 +4145,7 @@ PROGRAM main
 
      !-primary compositions + amounts
 
-     param_ol_string ='-f MgO 1.0 FeO 1.0 SiO2 1.0'
+     param_ol_string ='-f MgO 0.85 FeO 0.15 SiO2 1.0'
      !param_ol_string ='-f MgO 2.0 SiO2 1.0'
      !param_ol_string ='-f FeO 2.0 SiO2 1.0'
 
@@ -4433,10 +4437,10 @@ PROGRAM main
               WRITE(s_glass,'(F25.10)') primary3(5)
 
               !-rate constants!
-              exp_ol = "3.75e-5"
+              exp_ol = "2.0e-5"
               exp_pyr = "5.0e-7"
               exp_plag = "5.0e-6"
-              param_exp_string = "1.25e-4"
+              param_exp_string = "1.0e-4"
 
               WRITE(s_kaolinite,'(F25.10)') secondary3(1)
               WRITE(s_saponite,'(F25.10)') secondary3(2)
@@ -4480,24 +4484,45 @@ PROGRAM main
               WRITE(s_epidote,'(F25.10)') secondary3(40) !!!
 
 
-              !-GLASS SCALE
+              !-GLASS SCALE (not really being used)
 
               ! units are m^3
               priVolLocal(m) = SUM(primary3(2:5)*pri_molar(2:5)/pri_density(2:5)) * (1.0e-6)
               secVolLocal(m) = SUM(secondary3(1:40)*sec_molar(1:40)/sec_density(1:40)) * (1.0e-6)
 
               ! need specific surface area in m^2 / m^3
-              surfPriLocal(m) = (4.56e5) * priVolLocal(m)
+              surfPriLocal(m) = (4.5e5) * priVolLocal(m)
               surfSecLocal(m) = (9.0e5) * secVolLocal(m)
 
 
-              glass_scale = 1.0 - (surfSecLocal(m)/surfPriLocal(m))
-              if (glass_scale .LE. 0.0) then
-                  glass_scale = 0.001
-              end if
+            !   glass_scale = 1.0 - (surfSecLocal(m)/surfPriLocal(m))
+            !   if (glass_scale .LE. 0.0) then
+            !       glass_scale = 0.0
+            !   end if
+            glass_scale = 1.0
 
-              !write(*,*) "glass_scale" , glass_scale
               WRITE(glass_scale_string,'(F25.10)') glass_scale !!!
+
+
+              ! OL SCALE
+              ol_scale_string = "1.0"
+            ! !   ol_scale = 1.0 - (surfSecLocal(m)/surfPriLocal(m))
+            ! !   if (ol_scale .LE. 0.0) then
+            ! !       ol_scale = 0.0
+            ! !   end if
+            !   ol_scale = ( 3.0/(0.01*((0.75*3.14*primary3(4)*pri_molar(4)/pri_density(4))**(0.3333))) )/(4.56e5)
+            !
+            !   WRITE(ol_scale_string,'(F25.10)') ol_scale !!!
+
+
+
+              ! PYR SCALE
+              pyr_scale_string = "1.0"
+
+
+
+              ! PLAG SCALE
+              plag_scale_string = "1.0"
 
 
 
@@ -4520,8 +4545,8 @@ PROGRAM main
               WRITE(surf_scale_2_string,'(F25.10)') surf_scale_2
 
               ! control experiment
-              surf_scale_1_string = "0.5"
-              surf_scale_2_string = "0.5"
+              surf_scale_1_string = "1.0"
+              surf_scale_2_string = "1.0"
 
               if (slave_vector(jjj) .LE. leng) then
                   surf_scale_gen_string = "1.0"
@@ -4534,6 +4559,10 @@ PROGRAM main
               if (slave_vector(jjj) .GT. 2*leng) then
                   surf_scale_gen_string = surf_scale_2_string
               end if
+
+
+
+
 
               !write(*,*) slave_vector(jjj) , surf_scale_gen_string
 
@@ -5366,21 +5395,21 @@ PROGRAM main
                ! olivine
                &"Basalt1" //NEW_LINE('')// &
                &"-start" //NEW_LINE('')// &
-               &"    10 rate0=M*158.81*((4.56e5)/(3.0e6))*" // TRIM(exp_ol) // "*" // TRIM(glass_scale_string) //"*(" //TRIM(ol_k1)//"*(ACT('H+')^"//TRIM(ol_n1)//")*exp(-("//TRIM(ol_e1)//"/.008314)*((1.0/TK) - (1.0/298.0))) + "//TRIM(ol_k2)//"*exp(-("//TRIM(ol_e2)//"/.008314)*((1.0/TK) - (1.0/298.0))))" //NEW_LINE('')// &
+               &"    10 rate0=M*158.81*((4.56e5)/(3.0e6))*" // TRIM(exp_ol) // "*" // TRIM(ol_scale_string) //"*(" //TRIM(ol_k1)//"*(ACT('H+')^"//TRIM(ol_n1)//")*exp(-("//TRIM(ol_e1)//"/.008314)*((1.0/TK) - (1.0/298.0))) + "//TRIM(ol_k2)//"*exp(-("//TRIM(ol_e2)//"/.008314)*((1.0/TK) - (1.0/298.0))))" //NEW_LINE('')// &
                &"    20 save rate0 * time" //NEW_LINE('')// &
                &"-end" //NEW_LINE('')// &
 
                ! pyroxene
                &"Basalt2" //NEW_LINE('')// &
                &"-start" //NEW_LINE('')// &
-               &"    10 rate0=M*153.0*((4.56e5)/(3.0e6))*" // TRIM(exp_pyr) // "*" // TRIM(glass_scale_string) //"*(" //TRIM(pyr_k1)//"*(ACT('H+')^"//TRIM(pyr_n1)//")*exp(-("//TRIM(pyr_e1)//"/.008314)*((1.0/TK) - (1.0/298.0))) + "//TRIM(pyr_k2)//"*exp(-("//TRIM(pyr_e2)//"/.008314)*((1.0/TK) - (1.0/298.0))))" //NEW_LINE('')// &
+               &"    10 rate0=M*153.0*((4.56e5)/(3.0e6))*" // TRIM(exp_pyr) // "*" // TRIM(pyr_scale_string) //"*(" //TRIM(pyr_k1)//"*(ACT('H+')^"//TRIM(pyr_n1)//")*exp(-("//TRIM(pyr_e1)//"/.008314)*((1.0/TK) - (1.0/298.0))) + "//TRIM(pyr_k2)//"*exp(-("//TRIM(pyr_e2)//"/.008314)*((1.0/TK) - (1.0/298.0))))" //NEW_LINE('')// &
                &"    20 save rate0 * time" //NEW_LINE('')// &
                &"-end" //NEW_LINE('')// &
 
                ! plagioclase
                &"Basalt3" //NEW_LINE('')// &
                &"-start" //NEW_LINE('')// &
-               &"    10 rate0=M*277.0*((4.56e5)/(2.7e6))*" // TRIM(exp_plag) // "*" // TRIM(glass_scale_string) //"*" //TRIM(plag_k1)//"*(ACT('H+')^"//TRIM(plag_n1)//")*exp(-("//TRIM(plag_e1)//"/.008314)*((1.0/TK) - (1.0/298.0)))" //NEW_LINE('')// &
+               &"    10 rate0=M*277.0*((4.56e5)/(2.7e6))*" // TRIM(exp_plag) // "*" // TRIM(plag_scale_string) //"*" //TRIM(plag_k1)//"*(ACT('H+')^"//TRIM(plag_n1)//")*exp(-("//TRIM(plag_e1)//"/.008314)*((1.0/TK) - (1.0/298.0)))" //NEW_LINE('')// &
                &"    20 save rate0 * time" //NEW_LINE('')// &
                &"-end" //NEW_LINE('')// &
 

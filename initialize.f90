@@ -173,8 +173,8 @@ CONTAINS
     !           alk dic ca mg na k  fe s   si  cl  al
 
     t_vol_s = 0.016
-    t_vol_a = 0.012! - 0.0112/2.0
-    t_vol_b = 0.004!/2.0
+    t_vol_a = 0.014! - 0.0112/2.0
+    t_vol_b = 0.002!/2.0
 
     RETURN
 
@@ -319,8 +319,8 @@ CONTAINS
     ! t_vol_b = 0.004!/2.0
 
     t_vol_s = 0.016
-    t_vol_a = 0.012! - 0.0112/2.0
-    t_vol_b = 0.004!/2.0
+    t_vol_a = 0.014! - 0.0112/2.0
+    t_vol_b = 0.002!/2.0
 
 
 
@@ -374,26 +374,75 @@ CONTAINS
     ! primary_b(:,:,5) = param_b_g  ! basaltic glass
 
 
+
+    ! a little bit of all phenos
+
+    ! primary(:,:,:) = 0.0
+    ! primary(:,:,1) = 0.0 !1.29600 ! ?
+    ! primary(:,:,2) = 0.1 !.69600 ! plag
+    ! primary(:,:,3) = 0.1 !.12600 ! pyr
+    ! primary(:,:,4) = 0.1 !.04000 ! ol
+    ! primary(:,:,5) = 1.0 !9.67700 ! basaltic glass
+    !
+    ! primary_a(:,:,:) = 0.0
+    ! primary_a(:,:,1) = 0.0   ! ?
+    ! primary_a(:,:,2) = 0.1   ! plag
+    ! primary_a(:,:,3) = 0.1   ! pyr
+    ! primary_a(:,:,4) = 0.1   ! ol
+    ! primary_a(:,:,5) = 0.0! basaltic glass
+    !
+    ! primary_b(:,:,:) = 0.0
+    ! primary_b(:,:,1) = 0.0  ! ?
+    ! primary_b(:,:,2) = 0.0 ! plag
+    ! primary_b(:,:,3) = 0.0 ! pyr
+    ! primary_b(:,:,4) = 0.0 ! ol
+    ! primary_b(:,:,5) = 1.0  ! basaltic glass
+
+
+    ! ! no phenos at all, even split of glass/meso
+    !
     primary(:,:,:) = 0.0
-    primary(:,:,1) = 0.0 !1.29600 ! feldspar
+    primary(:,:,1) = 0.0 !1.29600 ! ?
     primary(:,:,2) = 0.0 !.69600 ! plag
     primary(:,:,3) = 0.0 !.12600 ! pyr
-    primary(:,:,4) = 0.2 !.04000 ! ol
+    primary(:,:,4) = 0.0 !.04000 ! ol
     primary(:,:,5) = 1.0 !9.67700 ! basaltic glass
 
     primary_a(:,:,:) = 0.0
-    primary_a(:,:,1) = 0.0   ! feldspar
+    primary_a(:,:,1) = 0.0   ! ?
     primary_a(:,:,2) = 0.0   ! plag
     primary_a(:,:,3) = 0.0   ! pyr
-    primary_a(:,:,4) = 0.2   ! ol
+    primary_a(:,:,4) = 0.0   ! ol
     primary_a(:,:,5) = 0.5! basaltic glass
 
     primary_b(:,:,:) = 0.0
-    primary_b(:,:,1) = 0.0  ! feldspar
+    primary_b(:,:,1) = 0.0  ! ?
     primary_b(:,:,2) = 0.0 ! plag
     primary_b(:,:,3) = 0.0 ! pyr
     primary_b(:,:,4) = 0.0 ! ol
     primary_b(:,:,5) = 0.5  ! basaltic glass
+
+
+    ! primary(:,:,:) = 0.0
+    ! primary(:,:,1) = 0.0 !1.29600 ! ?
+    ! primary(:,:,2) = 0.0 !.69600 ! plag
+    ! primary(:,:,3) = 0.0 !.12600 ! pyr
+    ! primary(:,:,4) = 0.1 !.04000 ! ol
+    ! primary(:,:,5) = 1.0 !9.67700 ! basaltic glass
+    !
+    ! primary_a(:,:,:) = 0.0
+    ! primary_a(:,:,1) = 0.0   ! ?
+    ! primary_a(:,:,2) = 0.0   ! plag
+    ! primary_a(:,:,3) = 0.0   ! pyr
+    ! primary_a(:,:,4) = 0.1   ! ol
+    ! primary_a(:,:,5) = 0.0! basaltic glass
+    !
+    ! primary_b(:,:,:) = 0.0
+    ! primary_b(:,:,1) = 0.0  ! ?
+    ! primary_b(:,:,2) = 0.0 ! plag
+    ! primary_b(:,:,3) = 0.0 ! pyr
+    ! primary_b(:,:,4) = 0.0 ! ol
+    ! primary_b(:,:,5) = 1.0  ! basaltic glass
 
 
 
