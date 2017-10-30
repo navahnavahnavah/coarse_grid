@@ -5351,10 +5351,10 @@ PROGRAM main
         end if
                  !&"    K-Feldspar " // trim(s_precip) // trim(s_kspar) // kinetics //NEW_LINE('')// &
 
-        if (secondary3(16)*sec_molar(16)/sec_density(16) .LE. vol_th) then
-                 inputz0 = TRIM(inputz0) //"    Mesolite " // trim(s_precip) // trim(s_mesolite) // kinetics //NEW_LINE('') ! zeolite
-        else
-        end if
+        ! if (secondary3(16)*sec_molar(16)/sec_density(16) .LE. vol_th) then
+        !          inputz0 = TRIM(inputz0) //"    Mesolite " // trim(s_precip) // trim(s_mesolite) // kinetics //NEW_LINE('') ! zeolite
+        ! else
+        ! end if
 
 
         if (secondary3(28)*sec_molar(28)/sec_density(28) .LE. vol_th) then
