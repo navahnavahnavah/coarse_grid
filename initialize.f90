@@ -833,21 +833,21 @@ CONTAINS
     ! primary_a(:,8:,:) = 0.0
     ! primary_b(:,8:,:) = 0.0
 
-    ! 3 cells high
-    medium(:,9:,5) = 0.0
-    medium_a(:,9:,5) = 0.0
-    medium_b(:,9:,5) = 0.0
-    primary(:,9:,:) = 0.0
-    primary_a(:,9:,:) = 0.0
-    primary_b(:,9:,:) = 0.0
+    ! ! 3 cells high
+    ! medium(:,9:,5) = 0.0
+    ! medium_a(:,9:,5) = 0.0
+    ! medium_b(:,9:,5) = 0.0
+    ! primary(:,9:,:) = 0.0
+    ! primary_a(:,9:,:) = 0.0
+    ! primary_b(:,9:,:) = 0.0
 
-    ! ! 7 cells high
-    ! medium(:,13:,5) = 0.0
-    ! medium_a(:,13:,5) = 0.0
-    ! medium_b(:,13:,5) = 0.0
-    ! primary(:,13:,:) = 0.0
-    ! primary_a(:,13:,:) = 0.0
-    ! primary_b(:,13:,:) = 0.0
+    ! 7 cells high
+    medium(:,13:,5) = 0.0
+    medium_a(:,13:,5) = 0.0
+    medium_b(:,13:,5) = 0.0
+    primary(:,13:,:) = 0.0
+    primary_a(:,13:,:) = 0.0
+    primary_b(:,13:,:) = 0.0
 
 
     ! quick fix full column, early august
@@ -984,7 +984,7 @@ CONTAINS
     END DO
 
     !- COARSE MASK QUICK FIX
-    coarse_mask(:,9:) = 0.0
+    coarse_mask(:,13:) = 0.0
 
     ! LHS COARSE MASK QUICK FIX
     coarse_mask(1,:) = 0.0

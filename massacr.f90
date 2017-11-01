@@ -2827,8 +2827,8 @@ PROGRAM main
            END DO
 
            !-QUICK FIX WEIRD TEMPERATURE THING
-           h_coarse(:,8) = h_coarse(:,12)
-           h_coarse(:,7) = h_coarse(:,9)
+        !    h_coarse(:,8) = h_coarse(:,12)
+        !    h_coarse(:,7) = h_coarse(:,9)
 
 
 
@@ -2868,14 +2868,25 @@ PROGRAM main
 
         ! SAME VELOCITY ON ALL 3 ROWS
         !-QUICK FIX VELOCITIES
+        ! DO i = 3,yn/(2*celly)-1
+        !     if ((u_coarse(5,i) .gt. 0.0) .and. (u_coarse(5,i+1) .eq. 0.0)) then
+        !     u_coarse(:,i-1) = u_coarse(5,i)
+        !     u_coarse(:,i-2) = u_coarse(5,i)
+        !     ! u_coarse(:,i-3) = u_coarse(5,i)
+        !     ! u_coarse(:,i-4) = u_coarse(5,i)
+        !     ! u_coarse(:,i-5) = u_coarse(5,i)
+        !     ! u_coarse(:,i-6) = u_coarse(5,i)
+        !     end if
+        ! END DO
+
         DO i = 3,yn/(2*celly)-1
             if ((u_coarse(5,i) .gt. 0.0) .and. (u_coarse(5,i+1) .eq. 0.0)) then
             u_coarse(:,i-1) = u_coarse(5,i)
             u_coarse(:,i-2) = u_coarse(5,i)
-            ! u_coarse(:,i-3) = u_coarse(5,i)
-            ! u_coarse(:,i-4) = u_coarse(5,i)
-            ! u_coarse(:,i-5) = u_coarse(5,i)
-            ! u_coarse(:,i-6) = u_coarse(5,i)
+            u_coarse(:,i-3) = u_coarse(5,i)
+            u_coarse(:,i-4) = u_coarse(5,i)
+            u_coarse(:,i-5) = u_coarse(5,i)
+            u_coarse(:,i-6) = u_coarse(5,i)
             end if
         END DO
         !u_coarse = u_coarse/1.5
@@ -5351,10 +5362,10 @@ PROGRAM main
         end if
                  !&"    K-Feldspar " // trim(s_precip) // trim(s_kspar) // kinetics //NEW_LINE('')// &
 
-        ! if (secondary3(16)*sec_molar(16)/sec_density(16) .LE. vol_th) then
-        !          inputz0 = TRIM(inputz0) //"    Mesolite " // trim(s_precip) // trim(s_mesolite) // kinetics //NEW_LINE('') ! zeolite
-        ! else
-        ! end if
+        if (secondary3(16)*sec_molar(16)/sec_density(16) .LE. vol_th) then
+                 inputz0 = TRIM(inputz0) //"    Mesolite " // trim(s_precip) // trim(s_mesolite) // kinetics //NEW_LINE('') ! zeolite
+        else
+        end if
 
 
         if (secondary3(28)*sec_molar(28)/sec_density(28) .LE. vol_th) then
