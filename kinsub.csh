@@ -10,7 +10,7 @@
 # you want to run.
 #
 # set the name of the job
-#PBS -N v3_meso_10e10
+#PBS -N v7_8e10
 #
 # set the output and error files
 #PBS -o /data/navah/cg_output/$PBS_JOBNAME/e_out.txt
@@ -21,8 +21,8 @@
 
 
 ##PBS -l nodes=compute-0-0:ppn=12+compute-0-1:ppn=12+compute-0-2:ppn=12+compute-0-3:ppn=12+compute-0-4:ppn=12
-##PBS -l nodes=compute-1-0:ppn=12+compute-1-1:ppn=12+compute-1-2:ppn=12+compute-1-3:ppn=12+compute-1-4:ppn=12
-#PBS -l nodes=compute-1-5:ppn=12+compute-1-6:ppn=12+compute-1-7:ppn=12+compute-1-8:ppn=12+compute-1-9:ppn=12
+#PBS -l nodes=compute-1-0:ppn=12+compute-1-1:ppn=12+compute-1-2:ppn=12+compute-1-3:ppn=12+compute-1-4:ppn=12
+##PBS -l nodes=compute-1-5:ppn=12+compute-1-6:ppn=12+compute-1-7:ppn=12+compute-1-8:ppn=12+compute-1-9:ppn=12
 
 
 
@@ -44,7 +44,7 @@ module load mpi/mvapich2/intel
 
 # model parameters go here i guess
 
-set PARAM_T_DIFF = '1e11'
+set PARAM_T_DIFF = '8e10'
 set PARAM_D_ONLY = '1'
 
 set PARAM_PATH='/data/navah/cg_output/'$PBS_JOBNAME'/'
