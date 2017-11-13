@@ -61,7 +61,7 @@ REAL(4) :: speed((xn-1)/cellx,yn/(2*celly),3), speedMat((xn-1)*tn/(cellx*(mstep*
 REAL(4) :: speed_a((xn-1)/cellx,yn/(2*celly),3), speedMat_a((xn-1)*tn/(cellx*(mstep*ar)),yn/(2*celly),3)
 REAL(4) :: speed_b((xn-1)/cellx,yn/(2*celly),3), speedMat_b((xn-1)*tn/(cellx*(mstep*ar)),yn/(2*celly),3)
 
-
+!#hi
   REAL(4) :: t_vol_s, t_vol_a, t_vol_b
 
   REAL(4) :: sec_density(g_sec/2), sec_molar(g_sec/2)
@@ -172,9 +172,13 @@ CONTAINS
     sol_index = (/2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13/)
     !           alk dic ca mg na k  fe s   si  cl  al
 
-    t_vol_s = 0.016
-    t_vol_a = 0.014! - 0.0112/2.0
-    t_vol_b = 0.002!/2.0
+    ! t_vol_s = 0.016
+    ! t_vol_a = 0.014! - 0.0112/2.0
+    ! t_vol_b = 0.002!/2.0
+
+    t_vol_s = 0.032
+    t_vol_a = 0.028! - 0.0112/2.0
+    t_vol_b = 0.004!/2.0
 
     RETURN
 
@@ -318,9 +322,13 @@ CONTAINS
     ! t_vol_a = 0.008! - 0.0112/2.0
     ! t_vol_b = 0.004!/2.0
 
-    t_vol_s = 0.016
-    t_vol_a = 0.014! - 0.0112/2.0
-    t_vol_b = 0.002!/2.0
+    ! t_vol_s = 0.016
+    ! t_vol_a = 0.014! - 0.0112/2.0
+    ! t_vol_b = 0.002!/2.0
+
+    t_vol_s = 0.032
+    t_vol_a = 0.028! - 0.0112/2.0
+    t_vol_b = 0.004!/2.0
 
 
 
