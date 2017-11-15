@@ -421,14 +421,14 @@ CONTAINS
     primary_a(:,:,2) = 0.0   ! plag
     primary_a(:,:,3) = 0.0   ! pyr
     primary_a(:,:,4) = 0.0   ! ol
-    primary_a(:,:,5) = 0.5! basaltic glass
+    primary_a(:,:,5) = 0.75! basaltic glass
 
     primary_b(:,:,:) = 0.0
     primary_b(:,:,1) = 0.0  ! ?
     primary_b(:,:,2) = 0.0 ! plag
     primary_b(:,:,3) = 0.0 ! pyr
     primary_b(:,:,4) = 0.0 ! ol
-    primary_b(:,:,5) = 0.5  ! basaltic glass
+    primary_b(:,:,5) = 0.25  ! basaltic glass
 
 
     ! primary(:,:,:) = 0.0

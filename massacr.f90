@@ -2889,7 +2889,7 @@ PROGRAM main
             u_coarse(:,i-6) = u_coarse(5,i)
             end if
         END DO
-        u_coarse = u_coarse*0.5
+        u_coarse = u_coarse*1.0
 
            velocities0 = velocities(psi)
            u = phi*velocities0(1:xn,1:yn)/(rho_fluid)
