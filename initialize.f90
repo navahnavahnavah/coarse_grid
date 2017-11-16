@@ -176,9 +176,21 @@ CONTAINS
     ! t_vol_a = 0.014! - 0.0112/2.0
     ! t_vol_b = 0.002!/2.0
 
-    t_vol_s = 0.032
-    t_vol_a = 0.028! - 0.0112/2.0
-    t_vol_b = 0.004!/2.0
+    ! t_vol_s = 0.032
+    ! t_vol_a = 0.028! - 0.0112/2.0
+    ! t_vol_b = 0.004!/2.0
+
+    ! t_vol_s = 0.032
+    ! t_vol_a = 0.022! - 0.0112/2.0
+    ! t_vol_b = 0.010!/2.0
+
+    ! t_vol_s = 0.032
+    ! t_vol_a = 0.028
+    ! t_vol_b = 0.004
+
+    t_vol_s = 0.016
+    t_vol_a = 0.015
+    t_vol_b = 0.001
 
     RETURN
 
@@ -326,9 +338,17 @@ CONTAINS
     ! t_vol_a = 0.014! - 0.0112/2.0
     ! t_vol_b = 0.002!/2.0
 
-    t_vol_s = 0.032
-    t_vol_a = 0.028! - 0.0112/2.0
-    t_vol_b = 0.004!/2.0
+    ! t_vol_s = 0.032
+    ! t_vol_a = 0.028! - 0.0112/2.0
+    ! t_vol_b = 0.004!/2.0
+
+    ! t_vol_s = 0.032
+    ! t_vol_a = 0.028
+    ! t_vol_b = 0.004
+
+    t_vol_s = 0.016
+    t_vol_a = 0.015
+    t_vol_b = 0.001
 
 
 
@@ -421,14 +441,14 @@ CONTAINS
     primary_a(:,:,2) = 0.0   ! plag
     primary_a(:,:,3) = 0.0   ! pyr
     primary_a(:,:,4) = 0.0   ! ol
-    primary_a(:,:,5) = 0.75! basaltic glass
+    primary_a(:,:,5) = 0.5! basaltic glass
 
     primary_b(:,:,:) = 0.0
     primary_b(:,:,1) = 0.0  ! ?
     primary_b(:,:,2) = 0.0 ! plag
     primary_b(:,:,3) = 0.0 ! pyr
     primary_b(:,:,4) = 0.0 ! ol
-    primary_b(:,:,5) = 0.25  ! basaltic glass
+    primary_b(:,:,5) = 0.5  ! basaltic glass
 
 
     ! primary(:,:,:) = 0.0

@@ -915,13 +915,13 @@ PROGRAM main
        &"        log_k           +4.9000" //NEW_LINE('')// &
        &"	-delta_H	0	      	# Not possible to calculate enthalpy of reaction	Al(SO4)2-" //NEW_LINE('')// &
        ! &"#	Enthalpy of formation:	-0 kcal/mol" //NEW_LINE('')// &
-
-       &" " //NEW_LINE('')// &
-       &"28.0000 H2O + 13.0000 Al+++  =  Al13O4(OH)24+7 +32.0000 H+" //NEW_LINE('')// &
-       &"        -llnl_gamma           6.0    " //NEW_LINE('')// &
-       &"        log_k           -98.73" //NEW_LINE('')// &
-       &"	-delta_H	0	      	# Not possible to calculate enthalpy of reaction	Al13O4(OH)24+7" //NEW_LINE('')// &
-       ! &"#	Enthalpy of formation:	-0 kcal/mol" //NEW_LINE('')// &
+!# removed Al 24 phase
+    !    &" " //NEW_LINE('')// &
+    !    &"28.0000 H2O + 13.0000 Al+++  =  Al13O4(OH)24+7 +32.0000 H+" //NEW_LINE('')// &
+    !    &"        -llnl_gamma           6.0    " //NEW_LINE('')// &
+    !    &"        log_k           -98.73" //NEW_LINE('')// &
+    !    &"	-delta_H	0	      	# Not possible to calculate enthalpy of reaction	Al13O4(OH)24+7" //NEW_LINE('')// &
+    !    ! &"#	Enthalpy of formation:	-0 kcal/mol" //NEW_LINE('')// &
 
        &" " //NEW_LINE('')// &
        &"2.0000 H2O + 2.0000 Al+++  =  Al2(OH)2++++ +2.0000 H+" //NEW_LINE('')// &
@@ -4364,6 +4364,7 @@ PROGRAM main
         IF ((MOD(j_root,mstep*se_factor) .EQ. 0) .OR. (j_root .LE. mstep*se_spinup) .OR. (MOD(j_root-mstep,mstep*se_factor) .EQ. 0) .OR. (MOD(j_root-(2*mstep),mstep*se_factor) .EQ. 0) .OR. (MOD(j_root-(3*mstep),mstep*se_factor) .EQ. 0)) THEN
             se_toggle = 1
         END IF
+        se_toggle = 1
 
         if (my_id .eq. 10) then
             write(*,22) j_root , se_toggle
