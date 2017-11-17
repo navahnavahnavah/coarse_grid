@@ -3400,30 +3400,30 @@ PROGRAM main
                 !  bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
                 !  medLongBitFull(2*leng+1:,5) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
 
-                !  DO i = 1,g_sol
-                !     bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(1:leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
-                !     bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                !     solLongBitFull(:leng,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
-                !
-                !     bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
-                !     bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                !     solLongBitFull(leng+1:2*leng,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
-                !
-                !     bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(2*leng+1:,i),(/yn/(2*celly), (xn-1)/cellx/)))
-                !     bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                !     solLongBitFull(2*leng+1:,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
-                !     ! bit_thing_t1 = RESHAPE(solLongBitFull(1:leng,i),(/(xn-1)/cellx,yn/(2*celly)/))
-                !     ! bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                !     ! solLongBitFull(:leng,i) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
-                !     !
-                !     ! bit_thing_t1 = RESHAPE(solLongBitFull(leng+1:2*leng,i),(/(xn-1)/cellx,yn/(2*celly)/))
-                !     ! bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                !     ! solLongBitFull(leng+1:2*leng,i) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
-                !     !
-                !     ! bit_thing_t1 = RESHAPE(solLongBitFull(2*leng+1:,i),(/(xn-1)/cellx,yn/(2*celly)/))
-                !     ! bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
-                !     ! solLongBitFull(2*leng+1:,i) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
-                !  END DO
+                 DO i = 1,g_sol
+                    bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(1:leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
+                    bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                    solLongBitFull(:leng,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
+
+                    bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(leng+1:2*leng,i),(/yn/(2*celly), (xn-1)/cellx/)))
+                    bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                    solLongBitFull(leng+1:2*leng,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
+
+                    bit_thing_t1 = TRANSPOSE(RESHAPE(solLongBitFull(2*leng+1:,i),(/yn/(2*celly), (xn-1)/cellx/)))
+                    bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                    solLongBitFull(2*leng+1:,i) = RESHAPE(TRANSPOSE(bit_thing_t1(:,:)), (/ leng /))
+                    ! bit_thing_t1 = RESHAPE(solLongBitFull(1:leng,i),(/(xn-1)/cellx,yn/(2*celly)/))
+                    ! bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                    ! solLongBitFull(:leng,i) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
+                    !
+                    ! bit_thing_t1 = RESHAPE(solLongBitFull(leng+1:2*leng,i),(/(xn-1)/cellx,yn/(2*celly)/))
+                    ! bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                    ! solLongBitFull(leng+1:2*leng,i) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
+                    !
+                    ! bit_thing_t1 = RESHAPE(solLongBitFull(2*leng+1:,i),(/(xn-1)/cellx,yn/(2*celly)/))
+                    ! bit_thing_t1(2:,:) = bit_thing_t1(:(xn-1)/cellx-1,:)
+                    ! solLongBitFull(2*leng+1:,i) = RESHAPE(bit_thing_t1(:,:), (/ leng /))
+                 END DO
 
 
                  bit_thing_t1 = TRANSPOSE(RESHAPE(medLongBitFull(1:leng,2),(/yn/(2*celly), (xn-1)/cellx/)))
