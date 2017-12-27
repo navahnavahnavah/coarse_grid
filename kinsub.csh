@@ -10,7 +10,7 @@
 # you want to run.
 #
 # set the name of the job
-#PBS -N v7_8e10
+#PBS -N v_50A_50B_10e10
 #
 # set the output and error files
 #PBS -o /data/navah/cg_output/$PBS_JOBNAME/e_out.txt
@@ -19,15 +19,32 @@
 # set the number of nodes to use, and number of processors
 # to use per node
 
+##PBS -l nodes=compute-0-0:ppn=12+compute-0-1:ppn=12
+##PBS -l nodes=compute-0-2:ppn=12+compute-0-3:ppn=12
+##PBS -l nodes=compute-0-4:ppn=12+compute-1-0:ppn=12
+##PBS -l nodes=compute-1-1:ppn=12+compute-1-2:ppn=12
 
-##PBS -l nodes=compute-0-0:ppn=12+compute-0-1:ppn=12+compute-0-2:ppn=12+compute-0-3:ppn=12+compute-0-4:ppn=12
-#PBS -l nodes=compute-1-0:ppn=12+compute-1-1:ppn=12+compute-1-2:ppn=12+compute-1-3:ppn=12+compute-1-4:ppn=12
-##PBS -l nodes=compute-1-5:ppn=12+compute-1-6:ppn=12+compute-1-7:ppn=12+compute-1-8:ppn=12+compute-1-9:ppn=12
+
+##PBS -l nodes=compute-1-3:ppn=12+compute-1-4:ppn=12
+##PBS -l nodes=compute-1-5:ppn=12+compute-1-6:ppn=12
+##PBS -l nodes=compute-1-7:ppn=12+compute-1-8:ppn=12
+
+##PBS -l nodes=compute-1-9:ppn=12
+###+compute-1-10:ppn=11
 
 
 
-# or, if using only one node, you can do it this way too
-##PBS -l ncpus=5
+
+##PBS -l nodes=compute-0-0:ppn=12+compute-0-1:ppn=12+compute-0-2:ppn=11
+##PBS -l nodes=compute-0-3:ppn=12+compute-0-4:ppn=12+compute-1-0:ppn=11
+##PBS -l nodes=compute-1-1:ppn=12+compute-1-2:ppn=12+compute-1-3:ppn=11
+##PBS -l nodes=compute-1-4:ppn=12+compute-1-5:ppn=12+compute-1-6:ppn=11
+#PBS -l nodes=compute-1-7:ppn=12+compute-1-8:ppn=12+compute-1-9:ppn=11
+
+
+
+
+
 
 
 # in this example, I'm using the intel compilers and mvapich2
@@ -40,13 +57,10 @@ module load intel/intel-12
 module load mpi/mvapich2/intel
 
 
-
-
 # model parameters go here i guess
 
-set PARAM_T_DIFF = '8e10'
+set PARAM_T_DIFF = '10e10'
 set PARAM_D_ONLY = '1'
-
 set PARAM_PATH='/data/navah/cg_output/'$PBS_JOBNAME'/'
 
 
