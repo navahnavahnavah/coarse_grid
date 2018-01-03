@@ -4286,7 +4286,8 @@ PROGRAM main
 
            IF (an_id_local .GT. 11) THEN
               DO ii = 1,cstep
-                 sol_coarse_local = solute_next_coarse(sol_coarse_local,(t_vol_s/t_vol_a)*u_coarse_local,v_coarse_local,phi_coarse_local,sea(sol_index(an_id_local-11)))
+                  ! scaling goes here?
+                 sol_coarse_local = solute_next_coarse(sol_coarse_local,u_coarse_local,v_coarse_local,phi_coarse_local,sea(sol_index(an_id_local-11)))
               END DO
               ! proc 34 cell fix
             !   sol_coarse_local(2,:) = sol_coarse_local(3,:)
@@ -4340,7 +4341,8 @@ PROGRAM main
 
             IF (an_id_local .GT. 11) THEN
                DO ii = 1,cstep
-                  sol_coarse_local = solute_next_coarse(sol_coarse_local,(t_vol_s/t_vol_a)*u_coarse_local,v_coarse_local,phi_coarse_local,sea(sol_index(an_id_local-11)))
+                   ! scaling goes here?
+                  sol_coarse_local = solute_next_coarse(sol_coarse_local,u_coarse_local,v_coarse_local,phi_coarse_local,sea(sol_index(an_id_local-11)))
                END DO
             END IF
 
@@ -4452,7 +4454,7 @@ PROGRAM main
               exp_ol = "1.0e-5"
               exp_pyr = "5.0e-7"
               exp_plag = "5.0e-6"
-              param_exp_string = "1.0e-4"
+              param_exp_string = "0.8e-4"
 
               WRITE(s_kaolinite,'(F25.10)') secondary3(1)
               WRITE(s_saponite,'(F25.10)') secondary3(2)
@@ -5207,7 +5209,8 @@ PROGRAM main
             !    & "Fe2O3 .149 MgO .1744 K2O .002 " //&
             !    & "Na2O .043" //NEW_LINE('')// &
             &"-f CaO .2151 SiO2 .85 Al2O3 .14 " //&
-            & "Fe2O3 .0234 FeO .166 MgO .178 K2O .002 " //&
+            ! & "Fe2O3 .0234 FeO .166 MgO .178 K2O .002 " //&
+            & "Fe2O3 .026 FeO .166 MgO .178 K2O .002 " //&
             & "Na2O .043" //NEW_LINE('')// &
                &"-m0 " // TRIM(s_glass) //NEW_LINE('')// &
 

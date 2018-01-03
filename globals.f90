@@ -79,6 +79,9 @@ MODULE globals
   CHARACTER(len=25) :: grow_bit
   CHARACTER(len=25) :: surf_scale_1_string, surf_scale_2_string, surf_scale_gen_string
   REAL(4) :: surf_scale_1, surf_scale_2
+  REAL(4) :: glob_t_vol_s = 0.008
+  REAL(4) :: glob_t_vol_a = 0.0075
+  REAL(4) :: glob_t_vol_b = 0.0005
 
 CONTAINS
 

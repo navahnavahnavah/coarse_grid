@@ -99,10 +99,12 @@ REAL(4) :: speed_b((xn-1)/cellx,yn/(2*celly),3), speedMat_b((xn-1)*tn/(cellx*(ms
   CHARACTER(len=300) :: param_dic_string, param_scope_string, param_trace_string, param_ch_string, param_f_dx_string, param_f_k_string
   CHARACTER(len=300) :: param_paq_string, param_ch_rhs_string, param_f_freq_string, param_f_por_string
   CHARACTER(len=300) :: param_t_diff_string, param_b_g_string, param_d_only_string
+  CHARACTER(len=300) :: param_a_frac_string, param_b_frac_string
   INTEGER :: in, crashstep, restart, param_trace, param_d_only
   REAL(4):: param_o, param_w, param_w_rhs, param_h, param_o_rhs, param_tsw, param_dic, param_scope, param_ch
   REAL(4) :: param_paq, param_ch_rhs, param_f_dx, param_f_k, param_f_freq, param_f_por
   REAL(4) :: param_t_diff, param_b_g
+  REAL(4) :: param_a_frac, param_b_frac
 
 
   ! TRANSPOSED
@@ -192,9 +194,9 @@ CONTAINS
     ! t_vol_a = 0.015
     ! t_vol_b = 0.001
 
-    t_vol_s = 0.008
-    t_vol_a = 0.0075
-    t_vol_b = 0.0005
+    t_vol_s = glob_t_vol_s
+    t_vol_a = glob_t_vol_a
+    t_vol_b = glob_t_vol_b
 
     RETURN
 
@@ -237,6 +239,8 @@ CONTAINS
     CALL getarg(22,param_t_diff_string)
     CALL getarg(23,param_b_g_string)
     CALL getarg(24,param_d_only_string)
+    CALL getarg(25,param_a_frac_string)
+    CALL getarg(26,param_b_frac_string)
 
     READ (crashstring, *) crashstep
     READ (restartstring, *) restart
@@ -281,6 +285,9 @@ CONTAINS
     param_b_g = param_b_g / 100.0
 
     READ (param_d_only_string, *) param_d_only
+
+    READ (param_a_frac_string, *) param_a_frac
+    READ (param_b_frac_string, *) param_b_frac
 
 
 
@@ -359,9 +366,13 @@ CONTAINS
     ! t_vol_a = 0.015
     ! t_vol_b = 0.001
 
-    t_vol_s = 0.008
-    t_vol_a = 0.0075
-    t_vol_b = 0.0005
+    ! t_vol_s = 0.008
+    ! t_vol_a = 0.0075
+    ! t_vol_b = 0.0005
+
+    t_vol_s = glob_t_vol_s
+    t_vol_a = glob_t_vol_a
+    t_vol_b = glob_t_vol_b
 
 
 
@@ -380,14 +391,14 @@ CONTAINS
     primary_a(:,:,2) = 0.0   ! plag
     primary_a(:,:,3) = 0.0   ! pyr
     primary_a(:,:,4) = 0.0   ! ol
-    primary_a(:,:,5) = 0.50! basaltic glass
+    primary_a(:,:,5) = param_a_frac/100.0 !0.50! basaltic glass
 
     primary_b(:,:,:) = 0.0
     primary_b(:,:,1) = 0.0  ! ?
     primary_b(:,:,2) = 0.0 ! plag
     primary_b(:,:,3) = 0.0 ! pyr
     primary_b(:,:,4) = 0.0 ! ol
-    primary_b(:,:,5) = 0.50  ! basaltic glass
+    primary_b(:,:,5) = param_b_frac/100.0 !0.50  ! basaltic glass
 
 
     ! primary(:,:,:) = 0.0

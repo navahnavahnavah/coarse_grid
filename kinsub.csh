@@ -10,7 +10,7 @@
 # you want to run.
 #
 # set the name of the job
-#PBS -N v_50A_50B_10e10
+#PBS -N su_80_75_05_80A_20B_10e10
 #
 # set the output and error files
 #PBS -o /data/navah/cg_output/$PBS_JOBNAME/e_out.txt
@@ -23,9 +23,9 @@
 ##PBS -l nodes=compute-0-2:ppn=12+compute-0-3:ppn=12
 ##PBS -l nodes=compute-0-4:ppn=12+compute-1-0:ppn=12
 ##PBS -l nodes=compute-1-1:ppn=12+compute-1-2:ppn=12
-
-
 ##PBS -l nodes=compute-1-3:ppn=12+compute-1-4:ppn=12
+
+
 ##PBS -l nodes=compute-1-5:ppn=12+compute-1-6:ppn=12
 ##PBS -l nodes=compute-1-7:ppn=12+compute-1-8:ppn=12
 
@@ -62,7 +62,8 @@ module load mpi/mvapich2/intel
 set PARAM_T_DIFF = '10e10'
 set PARAM_D_ONLY = '1'
 set PARAM_PATH='/data/navah/cg_output/'$PBS_JOBNAME'/'
-
+set PARAM_A_FRAC = '80'
+set PARAM_B_FRAC = '20'
 
 
 
@@ -171,7 +172,7 @@ touch ${PARAM_PATH}'grid_breaks.txt'
 # find $PARAM_PATH + 'ch_b/' -name '*.txt' -exec rm -f {} \;
 ##wait
 #### -x PSM_MEMORY=large
-${LAUNCH} -n {$NCPU} -hostfile ${PBS_NODEFILE} ${WORKDIR}/${PROGNAME} ${PARAM_RESTART} ${PARAM_PATH} ${PARAM_PATH} ${PARAM_CRASHSTEP} ${PARAM_O} ${PARAM_W} ${PARAM_W_RHS} ${PARAM_H} ${PARAM_O_RHS} ${PARAM_TSW} ${PARAM_DIC} ${PARAM_SCOPE} ${PARAM_TRACE} ${PARAM_CH} ${PARAM_PAQ} ${PARAM_CH_RHS} ${PARAM_F_DX} ${PARAM_F_K} ${PARAM_F_FREQ} ${PARAM_F_POR} ${PARAM_ISO_PATH} ${PARAM_T_DIFF} ${PARAM_B_G} ${PARAM_D_ONLY}
+${LAUNCH} -n {$NCPU} -hostfile ${PBS_NODEFILE} ${WORKDIR}/${PROGNAME} ${PARAM_RESTART} ${PARAM_PATH} ${PARAM_PATH} ${PARAM_CRASHSTEP} ${PARAM_O} ${PARAM_W} ${PARAM_W_RHS} ${PARAM_H} ${PARAM_O_RHS} ${PARAM_TSW} ${PARAM_DIC} ${PARAM_SCOPE} ${PARAM_TRACE} ${PARAM_CH} ${PARAM_PAQ} ${PARAM_CH_RHS} ${PARAM_F_DX} ${PARAM_F_K} ${PARAM_F_FREQ} ${PARAM_F_POR} ${PARAM_ISO_PATH} ${PARAM_T_DIFF} ${PARAM_B_G} ${PARAM_D_ONLY} ${PARAM_A_FRAC} ${PARAM_B_FRAC}
 # ${LAUNCH} -n {$NCPU} -hostfile ${PBS_NODEFILE} --nooversubscribe ${WORKDIR}/${PROGNAME} ${PARAM_RESTART} ${SCRDIR} ${PARAM_PATH} ${PARAM_CRASHSTEP} ${PARAM_O} ${PARAM_W} ${PARAM_W_RHS} ${PARAM_H} ${PARAM_O_RHS} ${PARAM_TSW} ${PARAM_DIC} ${PARAM_SCOPE} ${PARAM_TRACE} ${PARAM_CH} ${PARAM_PAQ} ${PARAM_CH_RHS} ${PARAM_F_DX} ${PARAM_F_K} ${PARAM_F_FREQ} ${PARAM_F_POR}
 
 # wait
